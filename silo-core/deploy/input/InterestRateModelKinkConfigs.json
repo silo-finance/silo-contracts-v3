@@ -1,0 +1,20 @@
+[
+  {
+    "name": "empty",
+    "config": {
+      "ulow": 0,
+      "u1": 0,
+      "u2": 0,
+      "ucrit": 0,
+      "rmin": 0,
+      "kmin": 0,
+      "kmax": 0,
+      "alpha": 0,
+      "cminus": 0,
+      "cplus": 0,
+      "c1": 0,
+      "c2": 0,
+      "dmax": 0
+    }
+  }
+]

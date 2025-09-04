@@ -58,6 +58,12 @@ fs_permissions = [
     { access = "read", path = "./silo-core/deploy/input/"}
 ]
 
+[profile.echidna_dkink]
+src = 'silo-core/contracts'
+test = 'silo-core/test/echidna-dkink-irm'
+out = 'cache/foundry/out/silo-core'
+broadcast = 'silo-core/broadcast'
+
 [profile.echidna_leverage]
 src = 'silo-core/contracts'
 test = 'silo-core/test/echidna-leverage'

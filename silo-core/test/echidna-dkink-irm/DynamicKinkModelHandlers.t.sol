@@ -5,9 +5,7 @@ import {console2} from "forge-std/console2.sol";
 
 import {DynamicKinkModel} from "silo-core/contracts/interestRateModel/kink/DynamicKinkModel.sol";
 import {IDynamicKinkModel} from "silo-core/contracts/interfaces/IDynamicKinkModel.sol";
-import {IInterestRateModel} from "silo-core/contracts/interfaces/IInterestRateModel.sol";
 import {KinkCommon} from "silo-core/test/foundry/interestRateModel/kink/KinkCommon.sol";
-import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {Setup} from "silo-core/test/echidna-dkink-irm/base/Setup.t.sol";
 
 /// @title DynamicKinkModelHandlers
@@ -60,7 +58,7 @@ abstract contract DynamicKinkModelHandlers is Setup {
             dmax: _dmax
         });
 
-        _makeConfigValid({_config: config, _c1c2Sorted: true});
+        _makeConfigValid(config);
 
         _printConfig(config);
 

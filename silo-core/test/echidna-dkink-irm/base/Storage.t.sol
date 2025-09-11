@@ -29,12 +29,14 @@ abstract contract Storage is KinkCommon {
     SiloMock internal _siloMock;
 
     State internal _stateBefore;
+    State internal _stateAfterAccrueInterest;
     State internal _stateAfter;
 
     bool internal _setupConfigWithNonZeroValues;
 
     constructor() {
         _stateBefore.name = "stateBefore";
+        _stateAfterAccrueInterest.name = "stateAfterAccrueInterest";
         _stateAfter.name = "stateAfter";
     }
 

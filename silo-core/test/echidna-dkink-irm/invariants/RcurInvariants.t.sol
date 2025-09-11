@@ -23,34 +23,34 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
     }
 
     function assert_when_u_grow_rcur_grow_afterAction() public view {
-        _when_u_grow_rcur_grow(_stateBefore, _stateAfter.u, _stateAfter.rcur);
+        _when_u_grow_rcur_grow(_stateBefore, _stateAfterAccrueInterest);
     }
 
     /// @dev If utilization grows while remaining above u1, or jumps from below u1 to above u1, then rcur grows or stays the same.
-    function _when_u_grow_rcur_grow(State memory _lastState, int256 _currentUtilization, uint256 _rcur) internal view {
-        if (_stateBefore.irmConfig != _stateAfter.irmConfig) {
-            console2.log("irm config changed");
+    function _when_u_grow_rcur_grow(State memory _before, State memory _after) internal view {
+        if (_before.irmConfig != _after.irmConfig) {
+            console2.log("irm config changed, we can not compare");
             return;
         }
 
-        bool uGrow = _lastState.u < _currentUtilization;
+        bool uGrow = _before.u < _after.u;
 
         if (!uGrow) {
             console2.log("utilization did not grow");
             return;
         }
-        if (_currentUtilization < _lastState.config.u1) {
-            console2.log("utilization is below u1");
+        if (_after.u < _after.config.u1) {
+            console2.log("utilization is below u1, rule does not apply for this case");
             return;
         }
 
-        console2.log("    prev state u", _lastState.u);
-        console2.log(" current state u", _currentUtilization);
-        console2.log("    prev state rcur", _lastState.rcur);
-        console2.log(" current state rcur", _rcur);
+        console2.log("    prev state u", _before.u);
+        console2.log(" current state u", _after.u);
+        console2.log("    prev state rcur", _before.rcur);
+        console2.log(" current state rcur", _after.rcur);
 
         // we accept 0 as response, because it can happen in case of overflow
-        assert(_rcur == 0 || _lastState.rcur <= _rcur); // correct condition is: _lastState.rcur <= _rcur 
+        assert(_after.rcur == 0 || _before.rcur <= _after.rcur);
         // assert(false); // does it run?
     }
 
@@ -60,7 +60,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
     }
 
     function assert_when_u_decrease_rcur_decrease_afterAction() public view {
-        _when_u_decrease_rcur_decrease(_stateBefore, _stateAfter.u, _stateAfter.rcur);
+        _when_u_decrease_rcur_decrease(_stateBefore, _stateAfterAccrueInterest);
     }
 
     function echidna_when_u_decrease_rcur_decrease_afterAction() public view returns (bool) {
@@ -68,24 +68,24 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
         return true;
     }
 
-    function _when_u_decrease_rcur_decrease(State memory _lastState, int256 _currentUtilization, uint256 _rcur) internal view {
+    function _when_u_decrease_rcur_decrease(State memory _before, State memory _after) internal view {
         return; // TODO
-        if (_stateBefore.irmConfig != _stateAfter.irmConfig) {
+        if (_before.irmConfig != _after.irmConfig) {
             console2.log("irm config changed");
             return;
         }
 
-        bool uDecrease = _currentUtilization < _lastState.u;
+        bool uDecrease = _before.u > _after.u;
 
         if (!uDecrease) return;
-        if (_currentUtilization >= _lastState.config.u2) return;
+        if (_after.u >= _after.config.u2) return;
 
-        console2.log("    prev state u", _lastState.u);
-        console2.log(" current state u", _currentUtilization);
-        console2.log("    prev state rcur", _lastState.rcur);
-        console2.log(" current state rcur", _rcur);
+        console2.log("    prev state u", _before.u);
+        console2.log(" current state u", _after.u);
+        console2.log("    prev state rcur", _before.rcur);
+        console2.log(" current state rcur", _after.rcur);
 
-        assert(_rcur < _lastState.rcur);
+        assert(_after.rcur < _before.rcur);
         // assert(false); // does it run?
     }
 

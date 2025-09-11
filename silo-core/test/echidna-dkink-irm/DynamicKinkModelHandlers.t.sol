@@ -15,13 +15,13 @@ abstract contract DynamicKinkModelHandlers is Setup {
         _printIrmConfig();
 
         _updateStateBeforeAction();
-        // it's acrue interest the actin that update the state
+        // it's acrue interest the action that update the state
         _siloMock.acrueInterest();
-        _updateStateAfterAction();
+        _updateStateAfterAccrueInterest();
 
         // after acrue interest, we executing any action but rcomp data is already updated
         _;
-
+        _updateStateAfterAction();
     }
 
     /// @notice Updates the setup of the IRM

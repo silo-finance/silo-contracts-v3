@@ -2,6 +2,7 @@
 pragma solidity 0.8.28;
 
 import {console2} from "forge-std/console2.sol";
+import {Vm} from "forge-std/Vm.sol";
 
 import {Storage} from "silo-core/test/echidna-dkink-irm/base/Storage.t.sol";
 
@@ -13,27 +14,34 @@ import {IDynamicKinkModel} from "silo-core/contracts/interfaces/IDynamicKinkMode
 /// @notice Hook management for pre/post action checks
 /// @dev Allows for modular testing with before/after hooks
 abstract contract Hooks is Storage {
+    /// @dev Cheat code address, 0x7109709ECfa91a80626fF3989D68f67F5b1DD12D.
+    Vm private constant vm = Vm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
+
     /// @dev Update state before silo state is updated
     function _updateStateBeforeAction() internal {
-        _updateCommonState(_stateBefore);
-
-        _stateBefore.rcur = _stateAfter.rcur;
-        _stateBefore.rcomp = _stateAfter.rcomp;
-        _updateSiloState(_stateBefore);
+        _stateBefore = _stateAfter;
 
         _printState(_stateBefore);
     }
 
+    function _updateStateAfterAccrueInterest() internal {
+       _saveCurrentState(_stateAfterAccrueInterest);
+    }
+
     function _updateStateAfterAction() internal {
-        _updateSiloState(_stateAfter);
+        _saveCurrentState(_stateAfter);
+    }
 
-        _stateAfter.rcur = _irm.getCurrentInterestRate(address(_siloMock), block.timestamp);
+    function _saveCurrentState(State storage _state) internal {
+        _updateSiloState(_state);
 
-        _stateAfter.rcomp = _irm.getCompoundInterestRate(address(_siloMock), block.timestamp);
+        _state.rcur = _irm.getCurrentInterestRate(address(_siloMock), block.timestamp);
 
-        _updateCommonState(_stateAfter);
+        _state.rcomp = _irm.getCompoundInterestRate(address(_siloMock), block.timestamp);
 
-        _printState(_stateAfter);
+        _updateCommonState(_state);
+
+        _printState(_state);
     }
 
     /// @dev Update state after silo state is updated
@@ -99,4 +107,68 @@ abstract contract Hooks is Storage {
         console2.log("  dmax:", config.dmax);
         console2.log("  k:", modelState.k);
     }    
+
+/*
+    {
+      "id": 0,
+      "input": {
+        "lastTransactionTime": 337812,
+        "currentTime": 337812,
+        "lastSlope": 29,
+        "lastUtilization": 345371008406398333,
+        "totalBorrowAmount": 130216351404093119,
+        "totalDeposits": 377033243192397427
+      },
+      "constants": {
+        "ulow": 0,
+        "u1": 0,
+        "u2": 1000000000000000000,
+        "ucrit": 1000000000000000000,
+        "rmin": 0,
+        "kmin": 29,
+        "kmax": 5214973493986630,
+        "alpha": 0,
+        "cminus": 1000000000000000000000000000,
+        "cplus": 1000000000000000000000000000,
+        "c1": 0,
+        "c2": 1000000000000000000000000000,
+        "dmax": 1000000000000000000000000000
+      },
+      "expected": {
+        "currentAnnualInterest": 315356811
+      }
+    },
+*/
+    function printJsonTestCase() public view {
+        console2.log("Json Test Case:");
+        console2.log("{");
+        console2.log("  \"id\": 0,");
+        console2.log("  \"input\": {");
+        console2.log("    \"lastTransactionTime\": ", _stateBefore.interestRateTimestamp, ",");
+        console2.log("    \"currentTime\": ", block.timestamp, ",");
+        console2.log("    \"lastSlope\": ", vm.toString(_stateBefore.modelState.k), ",");
+        console2.log("    \"lastUtilization\": ", vm.toString(_stateBefore.u), ",");
+        console2.log("    \"totalBorrowAmount\": ", _stateBefore.debtAssets, ",");
+        console2.log("    \"totalDeposits\": ", _stateBefore.collateralAssets);
+        console2.log("  },");
+        console2.log("  \"constants\": {");
+        console2.log("    \"ulow\": ", vm.toString(_stateBefore.config.ulow), ",");
+        console2.log("    \"u1\": ", vm.toString(_stateBefore.config.u1), ",");
+        console2.log("    \"u2\": ", vm.toString(_stateBefore.config.u2), ",");
+        console2.log("    \"ucrit\": ", vm.toString(_stateBefore.config.ucrit), ",");
+        console2.log("    \"rmin\": ", vm.toString(_stateBefore.config.rmin), ",");
+        console2.log("    \"kmin\": ", vm.toString(_stateBefore.config.kmin), ",");
+        console2.log("    \"kmax\": ", vm.toString(_stateBefore.config.kmax), ",");
+        console2.log("    \"alpha\": ", vm.toString(_stateBefore.config.alpha), ",");
+        console2.log("    \"cminus\": ", vm.toString(_stateBefore.config.cminus), ",");
+        console2.log("    \"cplus\": ", vm.toString(_stateBefore.config.cplus), ",");
+        console2.log("    \"c1\": ", vm.toString(_stateBefore.config.c1), ",");
+        console2.log("    \"c2\": ", vm.toString(_stateBefore.config.c2), ",");
+        console2.log("    \"dmax\": ", _stateBefore.config.dmax);
+        console2.log("  },");
+        console2.log("  \"expected\": {");
+        console2.log("    \"currentAnnualInterest\": ", _stateAfter.rcur);
+        console2.log("  }");
+        console2.log("}");
+    }
 }

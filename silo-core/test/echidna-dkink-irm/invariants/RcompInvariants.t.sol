@@ -44,6 +44,8 @@ abstract contract RcompInvariants is DynamicKinkModelHandlers {
     9. Check Alexey’s rules.
     */
     function assert_rcomp_monotonicity(uint32 _warp, uint8 _action, uint128 _assets) public {
+        _siloMock.accrueInterest(); // this is our starting point for warp
+
         vm.warp(block.timestamp + _warp);
         (int256 kBefore, int256 uBefore) = _pullKandUtilization();
         uint256 rcomp1 = _irm.getCompoundInterestRate(address(_siloMock), block.timestamp);

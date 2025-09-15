@@ -23,7 +23,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
     }
 
     function assert_when_u_grow_rcur_grow_afterAction() public view {
-        _when_u_grow_rcur_grow(_stateBefore, _stateAfterAccrueInterest);
+        _when_u_grow_rcur_grow(_stateAfterAccrueInterest, _stateAfter);
     }
 
     /// @dev If utilization grows while remaining above u1, or jumps from below u1 to above u1, then rcur grows or stays the same.

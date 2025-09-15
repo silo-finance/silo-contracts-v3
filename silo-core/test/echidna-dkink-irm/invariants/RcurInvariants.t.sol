@@ -90,12 +90,8 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
         // if (_before.rcur > _after.rcur) assert(false); // debug: if we have case whre it grows   
     }
 
-    function _doesIrmChanged() internal view returns (bool) {
-        return _stateBefore.irmConfig != _stateAfter.irmConfig;
-    }
-
     function assert_rcur_slope_below_ucrit() public view {
-        _rule_rcur_slope_below_ucrit();
+        _rule_rcur_slope_below_ucrit(_stateAfterAccrueInterest, _stateAfter);
     }
 
     function echidna_rcur_slope_below_ucrit() public view returns (bool) {
@@ -105,47 +101,47 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
     /// @dev Verifies slope behavior when both states are below ucrit
     /// Test: When utilization is below ucrit, slope is k
-    function _rule_rcur_slope_below_ucrit() internal view {
+    function _rule_rcur_slope_below_ucrit(State memory _before, State memory _after) internal view {
         // Only test when both states are below ucrit
-        if (int256(_stateBefore.u) >= _stateBefore.config.ucrit || int256(_stateAfter.u) >= _stateAfter.config.ucrit) {
+        if (int256(_before.u) >= _before.config.ucrit || int256(_after.u) >= _after.config.ucrit) {
             return; // Not applicable
         }
 
         // Skip if utilization didn't change
-        if (_stateAfter.u == _stateBefore.u) {
+        if (_after.u == _before.u) {
             return;
         }
 
         // Test behavior in different regions below ucrit
-        if (_stateBefore.u == 0 && _stateAfter.u != 0) {
+        if (_before.u == 0 && _after.u != 0) {
             assert(_stateAfter.rcur >= _stateBefore.rcur);
             return;
         }
 
         // Case 1: Both states below ulow - rate should be constant at rmin
-        if (_stateBefore.u < _stateBefore.config.ulow && _stateAfter.u < _stateAfter.config.ulow) {
+        if (_before.u < _before.config.ulow && _after.u < _after.config.ulow) {
             // Rate should stay constant at rmin regardless of utilization changes
             assert(_stateAfter.rcur == _stateBefore.rcur);
             return;
         }
 
         // Case 2: Both states between ulow and ucrit
-        if (_stateBefore.u >= _stateBefore.config.ulow && _stateAfter.u >= _stateAfter.config.ulow) {
-            int256 deltaU = _stateAfter.u - _stateBefore.u;
+        if (_before.u >= _before.config.ulow && _after.u >= _after.config.ulow) {
+            int256 deltaU = _after.u - _before.u;
 
             // Rate should change with slope k (no alpha factor)
             if (deltaU > 0) {
-                assert(_stateAfter.rcur >= _stateBefore.rcur); // Rate increases
+                assert(_after.rcur >= _before.rcur); // Rate increases
                 return;
             } else if (deltaU < 0) {
-                assert(_stateAfter.rcur <= _stateBefore.rcur); // Rate decreases
+                assert(_after.rcur <= _before.rcur); // Rate decreases
                 return;
             }
         }
     }
 
     function assert_rcur_slope_above_ucrit() public view {
-        _rule_rcur_slope_above_ucrit();
+        _rule_rcur_slope_above_ucrit(_stateAfterAccrueInterest, _stateAfter);
     }
 
     function echidna_rcur_slope_above_ucrit() public view returns (bool) {
@@ -155,19 +151,19 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
     /// @dev Verifies slope behavior when both states are above ucrit
     /// Test: When utilization is above ucrit, effective slope is k(1 + α)
-    function _rule_rcur_slope_above_ucrit() internal view {
+    function _rule_rcur_slope_above_ucrit(State memory _before, State memory _after) internal view {
         // Only test when both states are above ucrit
-        if (int256(_stateBefore.u) <= _stateBefore.config.ucrit || int256(_stateAfter.u) <= _stateAfter.config.ucrit) {
+        if (int256(_before.u) <= _before.config.ucrit || int256(_after.u) <= _after.config.ucrit) {
             return; // Not applicable
         }
 
         // Skip if utilization didn't change
-        if (_stateAfter.u == _stateBefore.u) {
+        if (_after.u == _before.u) {
             return;
         }
 
         // When above ucrit with alpha > 0, the rate change should reflect the steeper slope
-        if (_stateAfter.config.alpha != 0) {
+        if (_after.config.alpha != 0) {
             int256 deltaU = _stateAfter.u - _stateBefore.u;
 
             // The rate should change according to the effective slope k(1 + alpha)
@@ -175,38 +171,50 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
             // k changes and annualization factors
             if (deltaU > 0) {
                 // Utilization increased, rate must increase
-                assert(_stateAfter.rcur >= _stateBefore.rcur);
+                assert(_after.rcur >= _before.rcur);
                 return;
             } else {
                 // Utilization decreased, rate must decrease
-                assert(_stateAfter.rcur <= _stateBefore.rcur);
+                assert(_after.rcur <= _before.rcur);
                 return;
             }
         }
     }
 
-    // /// @dev Verifies rate behavior when crossing ucrit upward
-    // /// Test: When utilization crosses above ucrit, the α factor is applied
-    // function echidna_rcur_ucrit_crossing_up() public view returns (bool) {
-    //     // Only test when utilization crosses ucrit upward
-    //     bool crossedUp = _stateBefore.u < _stateBefore.config.ucrit &&
-    //                     _stateAfter.u >= _stateAfter.config.ucrit;
+    function assert_rcur_ucrit_crossing_up() public view {
+        _rule_rcur_ucrit_crossing_up(_stateAfterAccrueInterest, _stateAfter);
+    }
 
-    //     if (!crossedUp) {
-    //         return true; // Not an upward crossing
-    //     }
+    function echidna_rcur_ucrit_crossing_up() public view returns (bool) {
+        assert_rcur_ucrit_crossing_up();
+        return true;
+    }
 
-    //     // When crossing ucrit upward, the formula adds the α component:
-    //     // Before: r = rmin + k(u - ulow)
-    //     // After:  r = rmin + k(u - ulow) + k*α*(u - ucrit)
+    /// @dev Verifies rate behavior when crossing ucrit upward
+    /// Test: When utilization crosses above ucrit, the α factor is applied
+    function _rule_rcur_ucrit_crossing_up(State memory _before, State memory _after) internal view {
+        if (_doesIrmChanged()) {
+            console2.log("irm config changed");
+            return;
+        }
 
-    //     // When alpha > 0, rate must increase due to alpha component being added
-    //     if (_stateAfter.config.alpha != 0 && _lastCallFnSig != DynamicKinkModel.updateConfig.selector) {
-    //         return _stateAfter.rcur >= _stateBefore.rcur;
-    //     }
+        // Only test when utilization crosses ucrit upward
+        bool crossedUp = _before.u < _before.config.ucrit && _after.u >= _after.config.ucrit;
 
-    //     return true;
-    // }
+        if (!crossedUp) {
+            return; // Not an upward crossing
+        }
+
+        // When crossing ucrit upward, the formula adds the α component:
+        // Before: r = rmin + k(u - ulow)
+        // After:  r = rmin + k(u - ulow) + k*α*(u - ucrit)
+
+        // When alpha > 0, rate must increase due to alpha component being added
+        if (_after.config.alpha != 0) {
+            assert(_after.rcur >= _before.rcur);
+            return;
+        }
+    }
 
     // /// @dev Verifies rate behavior when crossing ucrit downward
     // /// Test: When utilization crosses below ucrit, the α factor is removed
@@ -231,4 +239,8 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
     //     // When alpha = 0, there's no alpha effect to remove
     //     return true;
     // }
+
+    function _doesIrmChanged() internal view returns (bool) {
+        return _stateBefore.irmConfig != _stateAfter.irmConfig;
+    }
 }

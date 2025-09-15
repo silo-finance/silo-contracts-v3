@@ -16,7 +16,7 @@ abstract contract DynamicKinkModelHandlers is Setup {
 
         _updateStateBeforeAction();
         // it's acrue interest the action that update the state
-        _siloMock.acrueInterest();
+        _siloMock.accrueInterest();
         _updateStateAfterAccrueInterest();
 
         // after acrue interest, we executing any action but rcomp data is already updated

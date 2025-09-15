@@ -55,8 +55,8 @@ contract SiloMock {
     }
 
     /// @notice Accrue interest is based on Silo logic, but we do not handle fractions
-    function acrueInterest() external returns (uint256 rcomp) {
-        console2.log("\nacrueInterest()");
+    function accrueInterest() external returns (uint256 rcomp) {
+        console2.log("\naccrueInterest()");
 
         // Interest has already been accrued this block
         if (_utilizationData.interestRateTimestamp == block.timestamp) {
@@ -106,12 +106,10 @@ contract SiloMock {
         _utilizationData.interestRateTimestamp = uint64(block.timestamp);
     }
 
-    // function doSiloAction(uint256 _collateralAssets, uint256 _debtAssets) external returns (uint256 rcomp) {
-    //     acrueInterest();
-
-    //     _utilizationData.collateralAssets = _collateralAssets;
-    //     _utilizationData.debtAssets = _debtAssets;
-    // } TODO uncomment once everything else will pass
+    function doSiloAction(uint128 _collateralAssets, uint128 _debtAssets) external {
+        _utilizationData.collateralAssets = _collateralAssets;
+        _utilizationData.debtAssets = _debtAssets;
+    }
 
     function calculateMaxRcomp(uint256 _blockTimestamp) public view returns (uint256) {
         return (_blockTimestamp - _utilizationData.interestRateTimestamp) 

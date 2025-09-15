@@ -28,7 +28,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
     /// @dev If utilization grows while remaining above u1, or jumps from below u1 to above u1, then rcur grows or stays the same.
     function _when_u_grow_rcur_grow(State memory _before, State memory _after) internal view {
-        if (_before.irmConfig != _after.irmConfig) {
+        if (_doesIrmChanged()) {
             console2.log("irm config changed, we can not compare");
             return;
         }
@@ -70,7 +70,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
     }
 
     function _when_u_decrease_rcur_decrease(State memory _before, State memory _after) internal view {
-        if (_before.irmConfig != _after.irmConfig) {
+        if (_doesIrmChanged()) {
             console2.log("irm config changed");
             return;
         }
@@ -88,6 +88,10 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
         assert(_after.rcur < _before.rcur);
         // assert(false); // does it run?
         // if (_before.rcur > _after.rcur) assert(false); // debug: if we have case whre it grows   
+    }
+
+    function _doesIrmChanged() internal view returns (bool) {
+        return _stateBefore.irmConfig != _stateAfter.irmConfig;
     }
 
     /// @dev Interest rate increases monotonically with utilization

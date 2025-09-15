@@ -114,15 +114,23 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
         // Test behavior in different regions below ucrit
         if (_before.u == 0 && _after.u != 0) {
-            assert(_stateAfter.rcur >= _stateBefore.rcur);
-            return;
+            if (_stateAfter.rcur >= _stateBefore.rcur) return;
+            else {
+                console2.log("[slope_below_ucrit] first action failed");
+                assert(false);
+            }
         }
 
         // Case 1: Both states below ulow - rate should be constant at rmin
         if (_before.u < _before.config.ulow && _after.u < _after.config.ulow) {
             // Rate should stay constant at rmin regardless of utilization changes
-            assert(_stateAfter.rcur == _stateBefore.rcur);
-            return;
+            if(_before.rcur == _after.rcur) return;
+            else {
+                console2.log("[slope_below_ucrit] Case 1: Both states below ulow - rate should be constant at rmin");
+                console2.log("[slope_below_ucrit] Rate should stay constant at rmin regardless of utilization");
+                console2.log("[slope_below_ucrit]", _before.rcur, _after.rcur);
+                assert(false);
+            }
         }
 
         // Case 2: Both states between ulow and ucrit
@@ -227,7 +235,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
     /// @dev Verifies rate behavior when crossing ucrit downward
     /// Test: When utilization crosses below ucrit, the α factor is removed
-    function _rule_rcur_ucrit_crossing_down(State memory _before, State memory _after) public view returns (bool) {
+    function _rule_rcur_ucrit_crossing_down(State memory _before, State memory _after) internal view {
         if (_doesIrmChanged()) {
             console2.log("irm config changed");
             return;

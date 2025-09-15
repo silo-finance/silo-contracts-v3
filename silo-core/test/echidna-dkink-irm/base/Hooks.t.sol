@@ -25,7 +25,7 @@ abstract contract Hooks is Storage {
     }
 
     function _updateStateAfterAccrueInterest() internal {
-       _saveCurrentState(_stateAfterAccrueInterest);
+        _saveCurrentState(_stateAfterAccrueInterest);
     }
 
     function _updateStateAfterAction() internal {
@@ -106,9 +106,9 @@ abstract contract Hooks is Storage {
         console2.log("  c2:     ", config.c2);
         console2.log("  dmax:", config.dmax);
         console2.log("  k:", modelState.k);
-    }    
+    }
 
-/*
+    /*
     {
       "id": 0,
       "input": {
@@ -138,7 +138,7 @@ abstract contract Hooks is Storage {
         "currentAnnualInterest": 315356811
       }
     },
-*/
+    */
     function printJsonTestCase() public view {
         console2.log("Json Test Case:");
         console2.log("{");

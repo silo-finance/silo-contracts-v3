@@ -39,7 +39,7 @@ abstract contract DynamicKinkModelHandlers is Setup {
         int256 _c1,
         // int256 _c2, // stack too deep
         int256 _dmax
-    ) public {    
+    ) public {
         console2.log("updateconfig()");
 
         IDynamicKinkModel.Config memory config = IDynamicKinkModel.Config({

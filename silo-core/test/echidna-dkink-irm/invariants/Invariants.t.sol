@@ -47,6 +47,4 @@ contract Invariants is RcurInvariants, RcompInvariants, UtilizationInvariants {
 
         return true;
     }
-
-    // TODO k does not change when dT == 0
 }

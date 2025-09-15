@@ -59,7 +59,7 @@ contract SiloMock {
 
         if (_action == 0) {
             deposit(_assets);
-        } else if (_action == 1){
+        } else if (_action == 1) {
             withdraw(_assets);
         } else if (_action == 2) {
             borrow(_assets);
@@ -106,9 +106,8 @@ contract SiloMock {
 
         uint256 accruedInterest;
 
-        (
-            _utilizationData.collateralAssets, _utilizationData.debtAssets,, accruedInterest
-        ) = SiloMathLib.getCollateralAmountsWithInterest({
+        (_utilizationData.collateralAssets, _utilizationData.debtAssets,, accruedInterest) = SiloMathLib
+            .getCollateralAmountsWithInterest({
             _collateralAssets: _utilizationData.collateralAssets,
             _debtAssets: _utilizationData.debtAssets,
             _rcomp: rcomp,
@@ -123,7 +122,7 @@ contract SiloMock {
     }
 
     function calculateMaxRcomp(uint256 _blockTimestamp) public view returns (uint256) {
-        return (_blockTimestamp - _utilizationData.interestRateTimestamp) 
+        return (_blockTimestamp - _utilizationData.interestRateTimestamp)
             * uint256(IDynamicKinkModel(address(_irm)).RCOMP_CAP_PER_SECOND());
     }
 
@@ -140,6 +139,8 @@ contract SiloMock {
     }
 
     function _ltv() internal view returns (uint256) {
-        return _utilizationData.collateralAssets == 0 ? 0 : _utilizationData.debtAssets * 1e18 / _utilizationData.collateralAssets;
+        return _utilizationData.collateralAssets == 0
+            ? 0
+            : _utilizationData.debtAssets * 1e18 / _utilizationData.collateralAssets;
     }
 }

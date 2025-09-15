@@ -87,7 +87,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
         assert(_after.rcur < _before.rcur);
         // assert(false); // does it run?
-        // if (_before.rcur > _after.rcur) assert(false); // debug: if we have case whre it grows   
+        // if (_before.rcur > _after.rcur) assert(false); // debug: if we have case whre it grows
     }
 
     function assert_rcur_slope_below_ucrit() public view {
@@ -216,29 +216,42 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
         }
     }
 
-    // /// @dev Verifies rate behavior when crossing ucrit downward
-    // /// Test: When utilization crosses below ucrit, the α factor is removed
-    // function echidna_rcur_ucrit_crossing_down() public view returns (bool) {
-    //     // Only test when utilization crosses ucrit downward
-    //     bool crossedDown = _stateBefore.u >= _stateBefore.config.ucrit &&
-    //                       _stateAfter.u < _stateAfter.config.ucrit;
+    function assert_rcur_ucrit_crossing_down() public view {
+        _rule_rcur_ucrit_crossing_down(_stateAfterAccrueInterest, _stateAfter);
+    }
 
-    //     if (!crossedDown) {
-    //         return true; // Not a downward crossing
-    //     }
+    function echidna_rcur_ucrit_crossing_down() public view returns (bool) {
+        assert_rcur_ucrit_crossing_down();
+        return true;
+    }
 
-    //     // When crossing ucrit downward, the α component is removed:
-    //     // Before: r = rmin + k(u - ulow) + k*α*(u - ucrit)
-    //     // After:  r = rmin + k(u - ulow)
+    /// @dev Verifies rate behavior when crossing ucrit downward
+    /// Test: When utilization crosses below ucrit, the α factor is removed
+    function _rule_rcur_ucrit_crossing_down(State memory _before, State memory _after) public view returns (bool) {
+        if (_doesIrmChanged()) {
+            console2.log("irm config changed");
+            return;
+        }
 
-    //     // When alpha > 0, removing the alpha component should decrease the rate
-    //     if (_stateBefore.config.alpha != 0 && _lastCallFnSig != DynamicKinkModel.updateConfig.selector) {
-    //         return _stateAfter.rcur <= _stateBefore.rcur;
-    //     }
+        // Only test when utilization crosses ucrit downward
+        bool crossedDown = _before.u >= _before.config.ucrit && _after.u < _after.config.ucrit;
 
-    //     // When alpha = 0, there's no alpha effect to remove
-    //     return true;
-    // }
+        if (!crossedDown) {
+            return; // Not a downward crossing
+        }
+
+        // When crossing ucrit downward, the α component is removed:
+        // Before: r = rmin + k(u - ulow) + k*α*(u - ucrit)
+        // After:  r = rmin + k(u - ulow)
+
+        // When alpha > 0, removing the alpha component should decrease the rate
+        if (_before.config.alpha != 0) {
+            assert(_after.rcur <= _before.rcur);
+            return;
+        }
+
+        // When alpha = 0, there's no alpha effect to remove
+    }
 
     function _doesIrmChanged() internal view returns (bool) {
         return _stateBefore.irmConfig != _stateAfter.irmConfig;

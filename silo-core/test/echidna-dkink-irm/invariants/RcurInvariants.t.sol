@@ -89,7 +89,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
         else {
             console2.log("[when_u_decrease_rcur_decrease] fail");
             console2.log("[when_u_decrease_rcur_decrease]", _before.rcur, _after.rcur);
-            assert(false);
+            assert(false); // todo was never reached
         }
         // assert(false); // does it run?
         // if (_before.rcur > _after.rcur) assert(false); // debug: if we have case whre it grows
@@ -224,7 +224,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
         // When alpha > 0, rate must increase due to alpha component being added
         if (_after.config.alpha != 0) {
-            assert(_after.rcur >= _before.rcur);
+            assert(_after.rcur >= _before.rcur); // todo was never reached
             return;
         }
     }
@@ -259,7 +259,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
         // When alpha > 0, removing the alpha component should decrease the rate
         if (_before.config.alpha != 0) {
-            assert(_after.rcur <= _before.rcur);
+            assert(_after.rcur <= _before.rcur); // todo was never reached
             return;
         }
 

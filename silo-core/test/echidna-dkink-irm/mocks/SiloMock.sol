@@ -34,7 +34,7 @@ contract SiloMock {
 
     function withdraw(uint128 _collateralAssets) public {
         console2.log("withdraw(%s)", _collateralAssets);
-        require(_liquidity() <= _collateralAssets, "we can only withdraw up to liquidity");
+        require(_liquidity() >= _collateralAssets, "we can only withdraw up to liquidity");
 
         _utilizationData.collateralAssets -= _collateralAssets;
     }
@@ -43,7 +43,7 @@ contract SiloMock {
     /// @param _debtAssets Amount of debt assets
     function borrow(uint128 _debtAssets) public {
         console2.log("borrow(%s)", _debtAssets);
-        require(_liquidity() <= _debtAssets, "we can only borrow up to liquidity");
+        require(_liquidity() >= _debtAssets, "we can only borrow up to liquidity");
 
         _utilizationData.debtAssets += _debtAssets;
     }

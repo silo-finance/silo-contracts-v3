@@ -51,7 +51,8 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
         // we accept 0 as response, because it can happen in case of overflow
         assert(_after.rcur == 0 || _before.rcur <= _after.rcur);
-        // assert(false); // does it run?
+        // assert(false); // debug: does it run?
+        // if (_before.rcur < _after.rcur) assert(false); // debug: if we have case whre it grows
     }
 
     function echidna_when_u_grow_rcur_grow_afterAction() public view returns (bool) {
@@ -60,7 +61,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
     }
 
     function assert_when_u_decrease_rcur_decrease_afterAction() public view {
-        _when_u_decrease_rcur_decrease(_stateBefore, _stateAfterAccrueInterest);
+        _when_u_decrease_rcur_decrease(_stateAfterAccrueInterest, _stateAfter);
     }
 
     function echidna_when_u_decrease_rcur_decrease_afterAction() public view returns (bool) {
@@ -69,7 +70,6 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
     }
 
     function _when_u_decrease_rcur_decrease(State memory _before, State memory _after) internal view {
-        return; // TODO
         if (_before.irmConfig != _after.irmConfig) {
             console2.log("irm config changed");
             return;
@@ -87,6 +87,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
         assert(_after.rcur < _before.rcur);
         // assert(false); // does it run?
+        if (_before.rcur > _after.rcur) assert(false); // debug: if we have case whre it grows   
     }
 
     /// @dev Interest rate increases monotonically with utilization

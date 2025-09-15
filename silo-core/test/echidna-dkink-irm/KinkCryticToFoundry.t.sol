@@ -71,4 +71,14 @@ contract KinkCryticToFoundry is DynamicKinkModelHandlers, Invariants, Test {
         DynamicKinkModelTester.printJsonTestCase();
         DynamicKinkModelTester.assert_when_u_grow_rcur_grow_afterAction();
     }
+
+    /*
+    FOUNDRY_PROFILE=echidna_dkink forge test --mt test_when_u_decrease_rcur_decrease_afterAction -vv
+    */
+    function test_when_u_decrease_rcur_decrease_afterAction() public {
+        DynamicKinkModelTester.borrow(2);
+        DynamicKinkModelTester.updateConfig(0,0,13185699687740,-24559672914004,247582911680770379883531864819208560928649556960597828686139126,0,1440238090361,0,0,7445291143321681668380369354110237320472113918258465408852560,-2900602285452622261947023555856627934653248769697174847207886,-13029892974880);
+        DynamicKinkModelTester.deposit(245881748);
+        DynamicKinkModelTester.assert_when_u_decrease_rcur_decrease_afterAction();
+    }
 }

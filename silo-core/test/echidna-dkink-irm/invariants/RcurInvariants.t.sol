@@ -94,65 +94,57 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
         return _stateBefore.irmConfig != _stateAfter.irmConfig;
     }
 
-    /// @dev Interest rate increases monotonically with utilization
-    /// Invariant: For any u1 < u2, calculateRate(u1, k) ≤ calculateRate(u2, k)
-    /// not true, because in case of overflow, we will return 0, also on full repay we will return 0
-    // function echidna_rcur_monotonicity() public view returns (bool) {
-    //     if (_stateBefore.u < _stateAfter.u) {
-    //         return _stateBefore.rcur <= _stateAfter.rcur;
-    //     }
+    function assert_rcur_slope_below_ucrit() public view {
+        _assert_rcur_slope_below_ucrit();
+    }
 
-    //     if (_stateBefore.u > _stateAfter.u) {
-    //         return _stateBefore.rcur >= _stateAfter.rcur;
-    //     }
-
-    //     return true;
-    // }
+    function echidna_rcur_slope_below_ucrit() public view returns (bool) {
+        assert_rcur_slope_below_ucrit();
+        return true;
+    }
 
     /// @dev Verifies slope behavior when both states are below ucrit
     /// Test: When utilization is below ucrit, slope is k
-    // function echidna_rcur_slope_below_ucrit() public view returns (bool) {
-    //     State memory stateAfter;
+    function _assert_rcur_slope_below_ucrit() internal view {
+        // Only test when both states are below ucrit
+        if (int256(_stateBefore.u) >= _stateBefore.config.ucrit || int256(_stateAfter.u) >= _stateAfter.config.ucrit) {
+            return; // Not applicable
+        }
 
-    //     stateAfter.u = _calculateUtiliation();
-    //     (stateAfter.modelState, stateAfter.config) = _irm.getModelStateAndConfig();
-    //     stateAfter.rcur = _irm.getCurrentInterestRate(address(_siloMock), block.timestamp);
+        // Skip if utilization didn't change
+        if (_stateAfter.u == _stateBefore.u) {
+            return;
+        }
 
-    //     // Only test when both states are below ucrit
-    //     if (int256(_stateBefore.u) >= _stateBefore.config.ucrit || int256(stateAfter.u) >= stateAfter.config.ucrit) {
-    //         return true; // Not applicable
-    //     }
+        // Test behavior in different regions below ucrit
+        if (_stateBefore.u == 0 && _stateAfter.u != 0) {
+            assert(_stateAfter.rcur >= _stateBefore.rcur);
+            return;
+        }
 
-    //     // Skip if utilization didn't change
-    //     if (stateAfter.u == _stateBefore.u) {
-    //         return true;
-    //     }
+        // Case 1: Both states below ulow - rate should be constant at rmin
+        if (_stateBefore.u < _stateBefore.config.ulow && _stateAfter.u < _stateAfter.config.ulow) {
+            // Rate should stay constant at rmin regardless of utilization changes
+            assert(_stateAfter.rcur == _stateBefore.rcur);
+            return;
+        }
 
-    //     // Test behavior in different regions below ucrit
-    //     if (_stateBefore.u == 0 && stateAfter.u != 0) {
-    //         return stateAfter.rcur >= _stateBefore.rcur;
-    //     }
+        // Case 2: Both states between ulow and ucrit
+        if (_stateBefore.u >= _stateBefore.config.ulow && _stateAfter.u >= _stateAfter.config.ulow) {
+            int256 deltaU = _stateAfter.u - _stateBefore.u;
 
-    //     // Case 1: Both states below ulow - rate should be constant at rmin
-    //     if (_stateBefore.u < _stateBefore.config.ulow && stateAfter.u < stateAfter.config.ulow) {
-    //         // Rate should stay constant at rmin regardless of utilization changes
-    //         return stateAfter.rcur == _stateBefore.rcur;
-    //     }
+            // Rate should change with slope k (no alpha factor)
+            if (deltaU > 0) {
+                assert(_stateAfter.rcur >= _stateBefore.rcur); // Rate increases
+                return;
+            } else if (deltaU < 0) {
+                assert(_stateAfter.rcur <= _stateBefore.rcur); // Rate decreases
+                return;
+            }
+        }
+    }
 
-    //     // Case 2: Both states between ulow and ucrit
-    //     if (_stateBefore.u >= _stateBefore.config.ulow && stateAfter.u >= stateAfter.config.ulow) {
-    //         int256 deltaU = stateAfter.u - _stateBefore.u;
 
-    //         // Rate should change with slope k (no alpha factor)
-    //         if (deltaU > 0) {
-    //             return stateAfter.rcur >= _stateBefore.rcur; // Rate increases
-    //         } else if (deltaU < 0) {
-    //             return stateAfter.rcur <= _stateBefore.rcur; // Rate decreases
-    //         }
-    //     }
-
-    //     return true;
-    // }
 
     // /// @dev Verifies slope behavior when both states are above ucrit
     // /// Test: When utilization is above ucrit, effective slope is k(1 + α)

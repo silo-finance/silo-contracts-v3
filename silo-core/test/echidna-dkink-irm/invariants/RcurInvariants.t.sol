@@ -95,7 +95,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
     }
 
     function assert_rcur_slope_below_ucrit() public view {
-        _assert_rcur_slope_below_ucrit();
+        _rule_rcur_slope_below_ucrit();
     }
 
     function echidna_rcur_slope_below_ucrit() public view returns (bool) {
@@ -105,7 +105,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
     /// @dev Verifies slope behavior when both states are below ucrit
     /// Test: When utilization is below ucrit, slope is k
-    function _assert_rcur_slope_below_ucrit() internal view {
+    function _rule_rcur_slope_below_ucrit() internal view {
         // Only test when both states are below ucrit
         if (int256(_stateBefore.u) >= _stateBefore.config.ucrit || int256(_stateAfter.u) >= _stateAfter.config.ucrit) {
             return; // Not applicable
@@ -144,39 +144,46 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
         }
     }
 
+    function assert_rcur_slope_above_ucrit() public view {
+        _rule_rcur_slope_above_ucrit();
+    }
 
+    function echidna_rcur_slope_above_ucrit() public view returns (bool) {
+        assert_rcur_slope_above_ucrit();
+        return true;
+    }
 
-    // /// @dev Verifies slope behavior when both states are above ucrit
-    // /// Test: When utilization is above ucrit, effective slope is k(1 + α)
-    // function echidna_rcur_slope_above_ucrit() public view returns (bool) {
-    //     // Only test when both states are above ucrit
-    //     if (int256(_stateBefore.u) <= _stateBefore.config.ucrit || int256(_stateAfter.u) <= _stateAfter.config.ucrit) {
-    //         return true; // Not applicable
-    //     }
+    /// @dev Verifies slope behavior when both states are above ucrit
+    /// Test: When utilization is above ucrit, effective slope is k(1 + α)
+    function _rule_rcur_slope_above_ucrit() internal view {
+        // Only test when both states are above ucrit
+        if (int256(_stateBefore.u) <= _stateBefore.config.ucrit || int256(_stateAfter.u) <= _stateAfter.config.ucrit) {
+            return; // Not applicable
+        }
 
-    //     // Skip if utilization didn't change
-    //     if (_stateAfter.u == _stateBefore.u) {
-    //         return true;
-    //     }
+        // Skip if utilization didn't change
+        if (_stateAfter.u == _stateBefore.u) {
+            return;
+        }
 
-    //     // When above ucrit with alpha > 0, the rate change should reflect the steeper slope
-    //     if (_stateAfter.config.alpha != 0) {
-    //         int256 deltaU = _stateAfter.u - _stateBefore.u;
+        // When above ucrit with alpha > 0, the rate change should reflect the steeper slope
+        if (_stateAfter.config.alpha != 0) {
+            int256 deltaU = _stateAfter.u - _stateBefore.u;
 
-    //         // The rate should change according to the effective slope k(1 + alpha)
-    //         // This is a simplified check - exact calculation would need to account for
-    //         // k changes and annualization factors
-    //         if (deltaU > 0) {
-    //             // Utilization increased, rate must increase
-    //             return _stateAfter.rcur >= _stateBefore.rcur;
-    //         } else {
-    //             // Utilization decreased, rate must decrease
-    //             return _stateAfter.rcur <= _stateBefore.rcur;
-    //         }
-    //     }
-
-    //     return true;
-    // }
+            // The rate should change according to the effective slope k(1 + alpha)
+            // This is a simplified check - exact calculation would need to account for
+            // k changes and annualization factors
+            if (deltaU > 0) {
+                // Utilization increased, rate must increase
+                assert(_stateAfter.rcur >= _stateBefore.rcur);
+                return;
+            } else {
+                // Utilization decreased, rate must decrease
+                assert(_stateAfter.rcur <= _stateBefore.rcur);
+                return;
+            }
+        }
+    }
 
     // /// @dev Verifies rate behavior when crossing ucrit upward
     // /// Test: When utilization crosses above ucrit, the α factor is applied

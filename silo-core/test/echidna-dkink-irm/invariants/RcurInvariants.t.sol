@@ -87,7 +87,7 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
         assert(_after.rcur < _before.rcur);
         // assert(false); // does it run?
-        if (_before.rcur > _after.rcur) assert(false); // debug: if we have case whre it grows   
+        // if (_before.rcur > _after.rcur) assert(false); // debug: if we have case whre it grows   
     }
 
     /// @dev Interest rate increases monotonically with utilization

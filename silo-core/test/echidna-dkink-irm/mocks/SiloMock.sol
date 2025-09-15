@@ -34,18 +34,18 @@ contract SiloMock {
 
     function withdraw(uint128 _collateralAssets) external {
         console2.log("withdraw(%s)", _collateralAssets);
+        require(_liquidity() <= _collateralAssets, "we can only withdraw up to liquidity");
 
         _utilizationData.collateralAssets -= _collateralAssets;
-        require(_ltv() <= 1e18, "we can only withdraw up to 100%");
     }
 
     /// @notice Set debt assets amount
     /// @param _debtAssets Amount of debt assets
     function borrow(uint128 _debtAssets) external {
         console2.log("borrow(%s)", _debtAssets);
+        require(_liquidity() <= _debtAssets, "we can only borrow up to liquidity");
 
         _utilizationData.debtAssets += _debtAssets;
-        require(_ltv() <= 1e18, "we can only borrow up to 100%");
     }
 
     function repay(uint128 _debtAssets) external {
@@ -106,11 +106,6 @@ contract SiloMock {
         _utilizationData.interestRateTimestamp = uint64(block.timestamp);
     }
 
-    function doSiloAction(uint128 _collateralAssets, uint128 _debtAssets) external {
-        _utilizationData.collateralAssets = _collateralAssets;
-        _utilizationData.debtAssets = _debtAssets;
-    }
-
     function calculateMaxRcomp(uint256 _blockTimestamp) public view returns (uint256) {
         return (_blockTimestamp - _utilizationData.interestRateTimestamp) 
             * uint256(IDynamicKinkModel(address(_irm)).RCOMP_CAP_PER_SECOND());
@@ -120,6 +115,12 @@ contract SiloMock {
     /// @return The current utilization data
     function utilizationData() external view returns (ISilo.UtilizationData memory) {
         return _utilizationData;
+    }
+
+    function _liquidity() internal view returns (uint256) {
+        if (_utilizationData.debtAssets > _utilizationData.collateralAssets) return 0;
+
+        return _utilizationData.collateralAssets - _utilizationData.debtAssets;
     }
 
     function _ltv() internal view returns (uint256) {

@@ -26,13 +26,13 @@ contract SiloMock {
         _irm = IInterestRateModel(address(_irmInput));
     }
 
-    function deposit(uint128 _collateralAssets) external {
+    function deposit(uint128 _collateralAssets) public {
         console2.log("deposit(%s)", _collateralAssets);
 
         _utilizationData.collateralAssets += _collateralAssets;
     }
 
-    function withdraw(uint128 _collateralAssets) external {
+    function withdraw(uint128 _collateralAssets) public {
         console2.log("withdraw(%s)", _collateralAssets);
         require(_liquidity() <= _collateralAssets, "we can only withdraw up to liquidity");
 
@@ -41,17 +41,33 @@ contract SiloMock {
 
     /// @notice Set debt assets amount
     /// @param _debtAssets Amount of debt assets
-    function borrow(uint128 _debtAssets) external {
+    function borrow(uint128 _debtAssets) public {
         console2.log("borrow(%s)", _debtAssets);
         require(_liquidity() <= _debtAssets, "we can only borrow up to liquidity");
 
         _utilizationData.debtAssets += _debtAssets;
     }
 
-    function repay(uint128 _debtAssets) external {
+    function repay(uint128 _debtAssets) public {
         console2.log("repay(%s)", _debtAssets);
 
         _utilizationData.debtAssets -= _debtAssets;
+    }
+
+    function doRandomAction(uint8 _action, uint128 _assets) external {
+        _action = _action % 4;
+
+        if (_action == 0) {
+            deposit(_assets);
+        } else if (_action == 1){
+            withdraw(_assets);
+        } else if (_action == 2) {
+            borrow(_assets);
+        } else if (_action == 3) {
+            repay(_assets);
+        } else {
+            revert("invalid action");
+        }
     }
 
     /// @notice Accrue interest is based on Silo logic, but we do not handle fractions

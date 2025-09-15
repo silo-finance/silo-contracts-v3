@@ -43,14 +43,18 @@ abstract contract RcompInvariants is DynamicKinkModelHandlers {
     8. Query rcomp(), it returns rcomp_2.
     9. Check Alexey’s rules.
     */
-    function assert_rcomp_monotonicity(uint32 _warp, uint128 _collateralAssets, uint128 _debtAssets) public {
+    function assert_rcomp_monotonicity(
+        uint32 _warp,
+        uint8 _action,
+        uint128 _assets
+    ) public {
         vm.warp(block.timestamp + _warp);
         (int256 kBefore, int256 uBefore) = _pullKandUtilization();
         uint256 rcomp1 = _irm.getCompoundInterestRate(address(_siloMock), block.timestamp);
 
         _siloMock.accrueInterest();
         // action
-        _siloMock.doSiloAction(_collateralAssets, _debtAssets);
+        _siloMock.doRandomAction(_action, _assets);
 
         (int256 kAfter, int256 uAfter) = _pullKandUtilization();
 

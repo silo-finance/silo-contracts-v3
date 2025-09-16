@@ -85,8 +85,9 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
         console2.log("    prev state rcur", _before.rcur);
         console2.log(" current state rcur", _after.rcur);
 
-        if (_after.rcur <= _before.rcur) return;
-        else {
+        if (_after.rcur <= _before.rcur) {
+            return;
+        } else {
             console2.log("[when_u_decrease_rcur_decrease] fail");
             console2.log("[when_u_decrease_rcur_decrease]", _before.rcur, _after.rcur);
             assert(false); // todo was never reached
@@ -119,8 +120,9 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
 
         // Test behavior in different regions below ucrit
         if (_before.u == 0 && _after.u != 0) {
-            if (_stateAfter.rcur >= _stateBefore.rcur) return;
-            else {
+            if (_stateAfter.rcur >= _stateBefore.rcur) {
+                return;
+            } else {
                 console2.log("[slope_below_ucrit] first action failed");
                 assert(false);
             }
@@ -129,8 +131,9 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
         // Case 1: Both states below ulow - rate should be constant at rmin
         if (_before.u < _before.config.ulow && _after.u < _after.config.ulow) {
             // Rate should stay constant at rmin regardless of utilization changes
-            if(_before.rcur == _after.rcur) return;
-            else {
+            if (_before.rcur == _after.rcur) {
+                return;
+            } else {
                 console2.log("[slope_below_ucrit] Case 1: Both states below ulow - rate should be constant at rmin");
                 console2.log("[slope_below_ucrit] Rate should stay constant at rmin regardless of utilization");
                 console2.log("[slope_below_ucrit]", _before.rcur, _after.rcur);

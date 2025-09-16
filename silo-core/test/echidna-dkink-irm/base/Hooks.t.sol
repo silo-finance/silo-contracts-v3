@@ -72,7 +72,7 @@ abstract contract Hooks is Storage {
         return _irm.calculateUtiliation(utilizationData.collateralAssets, utilizationData.debtAssets);
     }
 
-    function _printState(State memory _state) internal view {
+    function _printState(State memory _state) internal pure {
         console2.log("State: %s", _state.name);
         console2.log("  collateralAssets:", _state.collateralAssets);
         console2.log("  debtAssets:", _state.debtAssets);

@@ -92,8 +92,6 @@ abstract contract RcurInvariants is DynamicKinkModelHandlers {
             console2.log("[when_u_decrease_rcur_decrease]", _before.rcur, _after.rcur);
             assert(false); // todo was never reached
         }
-        // assert(false); // does it run?
-        // if (_before.rcur > _after.rcur) assert(false); // debug: if we have case whre it grows
     }
 
     function assert_rcur_slope_below_ucrit() public view {

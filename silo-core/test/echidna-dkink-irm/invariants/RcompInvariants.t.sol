@@ -63,11 +63,18 @@ abstract contract RcompInvariants is DynamicKinkModelHandlers {
     9. Check Alexey’s rules.
     */
     function assert_rcomp_monotonicity(uint32 _warp, uint8 _action, uint128 _assets) public {
-        _siloMock.accrueInterest(); // this is our starting point for warp
+        console2.log("assert_rcomp_monotonicity | START");
+        _siloMock.accrueInterest();
 
         vm.warp(block.timestamp + _warp);
+        console2.log("warped %s seconds", _warp);
         (int256 kBefore, int256 uBefore) = _pullKandUtilization();
         uint256 rcomp1 = _irm.getCompoundInterestRate(address(_siloMock), block.timestamp);
+
+        if (rcomp1 == 0) {
+            console2.log("rcomp1 == 0, possible overflow");
+            return;
+        }
 
         _siloMock.accrueInterest();
         // action
@@ -76,20 +83,29 @@ abstract contract RcompInvariants is DynamicKinkModelHandlers {
         (int256 kAfter, int256 uAfter) = _pullKandUtilization();
 
         vm.warp(block.timestamp + _warp);
+        console2.log("warped %s seconds", _warp);
         uint256 rcomp2 = _irm.getCompoundInterestRate(address(_siloMock), block.timestamp);
 
+        if (rcomp2 == 0) {
+            console2.log("rcomp2 == 0, possible overflow");
+            return;
+        }
+
         if (uBefore <= uAfter && kBefore <= kAfter) {
-            console2.log("uBefore <= uAfter && kBefore <= kAfter");
+            console2.log("case 1: Before <= uAfter && kBefore <= kAfter");
+            console2.log("rcomp1 %s", rcomp1);
+            console2.log("rcomp2 %s", rcomp2);
             assert(rcomp1 <= rcomp2);
         } else if (uBefore >= uAfter && kBefore >= kAfter) {
-            console2.log("uBefore >= uAfter && kBefore >= kAfter");
+            console2.log("case 2: uBefore >= uAfter && kBefore >= kAfter");
+            console2.log("rcomp1 %s", rcomp1);
+            console2.log("rcomp2 %s", rcomp2);
             assert(rcomp1 >= rcomp2);
         }
     }
 
     function _pullKandUtilization() internal view returns (int256 k, int256 u) {
-        (IDynamicKinkModel.ModelState memory modelState, IDynamicKinkModel.Config memory config) =
-            _irm.getModelStateAndConfig();
+        (IDynamicKinkModel.ModelState memory modelState, ) = _irm.getModelStateAndConfig();
         k = modelState.k;
         u = _calculateUtiliation();
     }

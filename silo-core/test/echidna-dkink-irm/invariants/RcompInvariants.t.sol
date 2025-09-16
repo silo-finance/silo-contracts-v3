@@ -24,6 +24,25 @@ abstract contract RcompInvariants is DynamicKinkModelHandlers {
         return true;
     }
 
+    // compoundInterestRate = 0 => currentInterestRate = 0;
+    function assert_rcomp_zero_then_rcur_zero() internal view {
+        // _siloMock.accrueInterest(); ??
+        uint256 rcomp = _irm.getCompoundInterestRate(address(_siloMock), block.timestamp);
+        uint256 rcur = _irm.getCurrentInterestRate(address(_siloMock), block.timestamp);
+
+        if (rcomp == 0) {
+            if (rcur != 0) {
+                console2.log("rcomp == 0 but rcur != 0");
+                assert(false);
+            }
+        }
+    }
+
+    function echidna_rcomp_zero_then_rcur_zero() public view returns (bool) {
+        assert_rcomp_zero_then_rcur_zero();
+        return true;
+    }
+
     /*
     We make two consecutive calls of function rcomp. Both calls must be made with the same difference t1-t0.
     The first call takes any valid u_before and k_before as input. The output is rcomp_1 and k_after.

@@ -12,8 +12,7 @@ import {CommonDeploy} from "./_CommonDeploy.sol";
 /*
     FOUNDRY_PROFILE=core \
     forge script silo-core/deploy/TowerDeploy.s.sol:TowerDeploy \
-    --ffi --rpc-url $RPC_INJECTIVE --broadcast --verify
-
+    --ffi --rpc-url $RPC_XDC --broadcast --verify
 
     in case verification fail, set `ETHERSCAN_API_KEY` in env and run:
     FOUNDRY_PROFILE=core \
@@ -23,6 +22,23 @@ import {CommonDeploy} from "./_CommonDeploy.sol";
         --verifier blockscout \
         --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
+
+    XDC chain deployment:
+
+    FOUNDRY_PROFILE=core \
+    forge script silo-core/deploy/TowerDeploy.s.sol:TowerDeploy \
+    --ffi --rpc-url $RPC_XDC --legacy --broadcast --verify
+
+    FOUNDRY_PROFILE=core \
+        forge script silo-core/deploy/TowerDeploy.s.sol \
+        --verifier-url $VERIFIER_URL_ETHERSCAN_V2 \
+        --verifier etherscan \
+        --chain 50 \
+        --ffi --rpc-url $RPC_XDC \
+        --etherscan-api-key $ETHERSCAN_API_KEY \
+        --verify \
+        --private-key $PRIVATE_KEY \
+        --legacy \
         --resume
  */
 contract TowerDeploy is CommonDeploy {

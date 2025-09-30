@@ -1,0 +1,24 @@
+{
+    "CHAINLINK_XDC_USD": {
+        "baseToken": "XDC",
+        "quoteToken": "SVA8D",
+        "primaryAggregator": "CHAINLINK_XDC_USD_aggregator",
+        "secondaryAggregator": "",
+        "primaryHeartbeat": 0,
+        "secondaryHeartbeat": 0,
+        "normalizationDivider": 1e8,
+        "normalizationMultiplier": 0,
+        "invertSecondPrice": false
+    },
+    "CHAINLINK_USDC_USD": {
+        "baseToken": "USDC",
+        "quoteToken": "SVA8D",
+        "primaryAggregator": "CHAINLINK_USDC_USD_aggregator",
+        "secondaryAggregator": "",
+        "primaryHeartbeat": 0,
+        "secondaryHeartbeat": 0,
+        "normalizationDivider": 0,
+        "normalizationMultiplier": 1e8,
+        "invertSecondPrice": false
+    }
+}

@@ -220,7 +220,8 @@ okx = { key = "${ETHERSCAN_API_KEY_OKX}", chain = 196, url = "${VERIFIER_URL_OKX
 sonic = { key = "${VERIFIER_API_KEY_SONIC}", chain = 146, url = "${VERIFIER_URL_SONIC}" }
 ink = { key = "", chain = 57073, url = "https://explorer.inkonchain.com/api/", verifier = "blockscout" }
 injective = { key = "", chain = 1776, url = "https://blockscout-api.injective.network/api", verifier = "blockscout" }
-xdc = { key = "", chain = 50, url = "${VERIFIER_URL_XDC}", verifier = "etherscan" }
+# TODO on XDC depoyment this line prevents it, it must be set only on resume for verification
+xdc = { key = "${ETHERSCAN_API_KEY}", chain = 50, url = "${VERIFIER_URL_ETHERSCAN_V2}", verifier = "etherscan" }
 
 [lint]
 exclude_lints = [

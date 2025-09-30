@@ -17,6 +17,7 @@ contract CommonDeploy is Deployer {
     string constant AGGREGATOR_ODOS = "ODOS";
     string constant AGGREGATOR_ENSO = "ENSO";
     string constant AGGREGATOR_0X = "0x";
+    string constant AGGREGATOR_LI_FI = "LI_FI";
 
     error UnsupportedNetworkForDeploy(string networkAlias);
 
@@ -46,6 +47,7 @@ contract CommonDeploy is Deployer {
         if (chainId == ChainsLib.OKX_CHAIN_ID) return AddrLib.getAddress(AddrKey.WOKB);
         if (chainId == ChainsLib.BASE_CHAIN_ID) return AddrLib.getAddress(AddrKey.WETH);
         if (chainId == ChainsLib.INJECTIVE_CHAIN_ID) return AddrLib.getAddress(AddrKey.WINJ);
+        if (chainId == ChainsLib.XDC_CHAIN_ID) return AddrLib.getAddress(AddrKey.XDC);
 
         revert(string.concat("can not find native token for ", ChainsLib.chainAlias()));
     }

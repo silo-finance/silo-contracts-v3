@@ -84,6 +84,7 @@ contract LiquidationHelperDeploy is CommonDeploy {
         if (_isRequestedAggregator(AGGREGATOR_ODOS)) return AddrLib.getAddress(AddrKey.EXCHANGE_AGGREGATOR_ODOS);
         if (_isRequestedAggregator(AGGREGATOR_ENSO)) return AddrLib.getAddress(AddrKey.EXCHANGE_AGGREGATOR_ENSO);
         if (_isRequestedAggregator(AGGREGATOR_0X)) return AddrLib.getAddress(AddrKey.EXCHANGE_AGGREGATOR_0X);
+        if (_isRequestedAggregator(AGGREGATOR_LI_FI)) return AddrLib.getAddress(AddrKey.EXCHANGE_AGGREGATOR_LI_FI);
 
         return address(0);
     }
@@ -126,6 +127,7 @@ contract LiquidationHelperDeploy is CommonDeploy {
         if (chainId == ChainsLib.OKX_CHAIN_ID) return GNOSIS_SAFE_OKX;
         if (chainId == ChainsLib.BASE_CHAIN_ID) return GNOSIS_SAFE_BASE;
         if (chainId == ChainsLib.INJECTIVE_CHAIN_ID) return payable(AddrLib.getAddress(AddrKey.DAO));
+        if (chainId == ChainsLib.XDC_CHAIN_ID) return payable(AddrLib.getAddress(AddrKey.DAO));
 
         revert(string.concat("[LiquidationHelperDeploy] tokenReceiver not set for ", ChainsLib.chainAlias()));
     }

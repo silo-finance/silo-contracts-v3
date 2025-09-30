@@ -16,18 +16,23 @@ import {ShareDebtToken} from "silo-core/contracts/utils/ShareDebtToken.sol";
     FOUNDRY_PROFILE=core forge clean
     FOUNDRY_PROFILE=core forge build --force 
 
-    FOUNDRY_PROFILE=core \
-        forge script silo-core/deploy/SiloImplementationDeploy.s.sol \
-        --ffi --rpc-url $RPC_INJECTIVE --broadcast --verify
+    XDC chain deployment use --legacy flag
 
-    Resume verification:
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloImplementationDeploy.s.sol \
-        --ffi --rpc-url $RPC_INJECTIVE \
+        --ffi --rpc-url $RPC_XDC --broadcast --verify --legacy
+
+
+    FOUNDRY_PROFILE=core \
+        forge script silo-core/deploy/SiloImplementationDeploy.s.sol \
+        --verifier-url $VERIFIER_URL_ETHERSCAN_V2 \
+        --verifier etherscan \
+        --chain 50 \
+        --ffi --rpc-url $RPC_XDC \
+        --etherscan-api-key $ETHERSCAN_API_KEY \
         --verify \
-        --verifier blockscout \
-        --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
+        --legacy \
         --resume
 
     Lib verification:

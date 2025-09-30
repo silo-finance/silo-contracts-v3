@@ -29,11 +29,7 @@ import {
 /*
     FOUNDRY_PROFILE=core AGGREGATOR=1INCH \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_MAINNET --broadcast --verify
-
-    FOUNDRY_PROFILE=core \
-        forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify
+        --ffi --rpc-url $RPC_XDC --broadcast --verify --slow --legacy
 
     Resume verification:
     FOUNDRY_PROFILE=core \

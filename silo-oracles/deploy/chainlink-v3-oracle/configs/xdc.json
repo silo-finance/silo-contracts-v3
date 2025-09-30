@@ -18,7 +18,7 @@
         "primaryHeartbeat": 0,
         "secondaryHeartbeat": 0,
         "normalizationDivider": 0,
-        "normalizationMultiplier": 1e8,
+        "normalizationMultiplier": 1e4,
         "invertSecondPrice": false
     }
 }

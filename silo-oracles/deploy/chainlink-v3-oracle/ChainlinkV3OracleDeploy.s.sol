@@ -16,9 +16,11 @@ import {PriceFormatter} from "silo-core/deploy/lib/PriceFormatter.sol";
 FOUNDRY_PROFILE=oracles CONFIG=CHAINLINK_USDC_USD \
     forge script silo-oracles/deploy/chainlink-v3-oracle/ChainlinkV3OracleDeploy.s.sol \
     --ffi --rpc-url $RPC_MAINNET --broadcast --verify
+    --verifier-url $VERIFIER_URL_INK
 
-    --verifier-url $VERIFIER_URL_INK \
-
+FOUNDRY_PROFILE=oracles CONFIG=CHAINLINK_USDC_USD \
+    forge script silo-oracles/deploy/chainlink-v3-oracle/ChainlinkV3OracleDeploy.s.sol \
+    --ffi --rpc-url $RPC_XDC --legacy --broadcast --verify 
 
 FOUNDRY_PROFILE=oracles \
     forge script silo-oracles/deploy/chainlink-v3-oracle/ChainlinkV3OracleDeploy.s.sol \

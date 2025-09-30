@@ -23,6 +23,24 @@ import {SiloVaultsVerifier} from "./SiloVaultsVerifier.s.sol";
         --verifier blockscout \
         --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
+
+
+    XDC chain deployment:
+
+    FOUNDRY_PROFILE=vaults \
+        forge script silo-vaults/deploy/MainnetDeploy.s.sol:MainnetDeploy \
+        --ffi --rpc-url $RPC_XDC --legacy --broadcast --verify
+
+    FOUNDRY_PROFILE=vaults \
+        forge script silo-vaults/deploy/MainnetDeploy.s.sol:MainnetDeploy \
+        --verifier-url $VERIFIER_URL_ETHERSCAN_V2 \
+        --verifier etherscan \
+        --chain 50 \
+        --ffi --rpc-url $RPC_XDC \
+        --etherscan-api-key $ETHERSCAN_API_KEY \
+        --verify \
+        --private-key $PRIVATE_KEY \
+        --legacy \
         --resume
  */
 contract MainnetDeploy {

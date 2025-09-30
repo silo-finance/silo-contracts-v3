@@ -25,6 +25,24 @@ import {SiloFactory} from "silo-core/contracts/SiloFactory.sol";
         --verifier blockscout \
         --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
+=
+
+    XDC chain deployment:
+
+    FOUNDRY_PROFILE=core \
+        forge script silo-core/deploy/SiloFactoryDeploy.s.sol \
+        --ffi --rpc-url $RPC_XDC --legacy --broadcast --verify
+
+    FOUNDRY_PROFILE=core \
+        forge script silo-core/deploy/SiloFactoryDeploy.s.sol \
+        --verifier-url $VERIFIER_URL_ETHERSCAN_V2 \
+        --verifier etherscan \
+        --chain 50 \
+        --ffi --rpc-url $RPC_XDC \
+        --etherscan-api-key $ETHERSCAN_API_KEY \
+        --verify \
+        --private-key $PRIVATE_KEY \
+        --legacy \
         --resume
  */
 contract SiloFactoryDeploy is CommonDeploy {

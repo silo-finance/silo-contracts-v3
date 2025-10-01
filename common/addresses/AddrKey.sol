@@ -49,4 +49,5 @@ library AddrKey {
     string constant public YINJ = "yINJ";
     string constant public XDC = "XDC";
     string constant public TXDC = "TXDC";
+    string constant public FXD = "FXD";
 }

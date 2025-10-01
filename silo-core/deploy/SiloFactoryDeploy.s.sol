@@ -44,6 +44,8 @@ import {SiloFactory} from "silo-core/contracts/SiloFactory.sol";
         --private-key $PRIVATE_KEY \
         --legacy \
         --resume
+
+        --ffi --rpc-url $RPC_XDC_APOTHEM --verify --broadcast
  */
 contract SiloFactoryDeploy is CommonDeploy {
     function run() public returns (ISiloFactory siloFactory) {

@@ -93,6 +93,7 @@ contract MainnetDeploy is CommonDeploy {
         siloHookV2Deploy.run();
         siloHookV3Deploy.run();
         liquidationHelperDeploy.run(); // TODO once we have exchange on Injective
+        // liquidationHelperDeploy.run();
         siloLensDeploy.run();
         siloRouterV2Deploy.run();
         siloIncentivesControllerFactoryDeploy.run();

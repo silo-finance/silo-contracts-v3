@@ -22,6 +22,12 @@ import {SiloImplementationDeploy} from "./SiloImplementationDeploy.s.sol";
         forge script silo-core/deploy/SiloDeployerDeploy.s.sol \
         --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify
 
+    XDC chain deployment:
+
+    FOUNDRY_PROFILE=core \
+        forge script silo-core/deploy/SiloDeployerDeploy.s.sol \
+        --ffi --rpc-url $RPC_XDC --legacy --broadcast
+
     Resume verification:
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloDeployerDeploy.s.sol \

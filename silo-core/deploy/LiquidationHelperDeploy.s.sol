@@ -112,7 +112,7 @@ contract LiquidationHelperDeploy is CommonDeploy {
         aggregator = vm.envOr(string("AGGREGATOR"), string(""));
     }
 
-    function _tokenReceiver() internal view returns (address payable) {
+    function _tokenReceiver() internal returns (address payable) {
         uint256 chainId = getChainId();
 
         if (chainId == ChainsLib.ANVIL_CHAIN_ID) return payable(address(3));
@@ -125,7 +125,8 @@ contract LiquidationHelperDeploy is CommonDeploy {
         if (chainId == ChainsLib.BNB_CHAIN_ID) return GNOSIS_SAFE_BNB;
         if (chainId == ChainsLib.OKX_CHAIN_ID) return GNOSIS_SAFE_OKX;
         if (chainId == ChainsLib.BASE_CHAIN_ID) return GNOSIS_SAFE_BASE;
+        if (chainId == ChainsLib.INJECTIVE_CHAIN_ID) return payable(AddrLib.getAddress(AddrKey.DAO));
 
-        revert(string.concat("tokenReceiver not set for ", ChainsLib.chainAlias()));
+        revert(string.concat("[LiquidationHelperDeploy] tokenReceiver not set for ", ChainsLib.chainAlias()));
     }
 }

@@ -41,4 +41,5 @@ library AddrKey {
     string constant public WRAPPER_LPT_eUSDe_14AUG25 = "Wrapper-LPT-sUSDe-25SEP25";
     string constant public wS = "wS";
     string constant public XSilo = "XSilo";
+    string constant public INJ = "INJ";
 }

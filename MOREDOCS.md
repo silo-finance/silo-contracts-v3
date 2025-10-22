@@ -193,13 +193,22 @@ https://github.com/crytic/slither
 
 ## Deployment
 
-set env variable `PRIVATE_KEY` then run
+### Silo Core
+1. set env variable `PRIVATE_KEY` then run
+1. some adjustment is needed for new blockchain, I will use `Injective` as example:
+  - update silo utils to add new blockchain
+  - create `common/addresses/injective.json` and add necessary addresses
+  - add necessary keys `common/addresses/AddrKey.sol`
+1. run `silo-core/deploy/SiloFactoryDeploy.s.sol`
+1. run `silo-core/deploy/SiloImplementationDeploy.s.sol`
+1. run [MainnetDeploy.sol](silo-core/deploy/MainnetDeploy.s.sol) script
+1. update onchain registry `silo-core/deploy/TowerRegistration.s.sol`
+1. deploy any test market, to confirm everything is ok.
 
-```bash
-FOUNDRY_PROFILE=core \
-forge script silo-core/deploy/MainnetDeploy.s.sol \
---ffi --broadcast --rpc-url https://arbitrum-mainnet.infura.io/v3/<key>
-```
+### Silo Vaults
+1. run `silo-vaults/deploy/MainnetDeploy.s.sol`
+
+
 
 ## Flat Standard JSON script
 

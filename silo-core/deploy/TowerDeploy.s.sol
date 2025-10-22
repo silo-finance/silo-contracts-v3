@@ -12,7 +12,8 @@ import {CommonDeploy} from "./_CommonDeploy.sol";
 /*
     FOUNDRY_PROFILE=core \
     forge script silo-core/deploy/TowerDeploy.s.sol:TowerDeploy \
-    --ffi --rpc-url $RPC_BASE --broadcast --verify
+    --ffi --rpc-url $RPC_INJECTIVE --broadcast --verify
+
 
     in case verification fail, set `ETHERSCAN_API_KEY` in env and run:
     FOUNDRY_PROFILE=core forge verify-contract <contract-address> \

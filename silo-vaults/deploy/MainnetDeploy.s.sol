@@ -11,7 +11,19 @@ import {SiloIncentivesControllerCLDeployerDeploy} from "./SiloIncentivesControll
 /**
     FOUNDRY_PROFILE=vaults \
         forge script silo-vaults/deploy/MainnetDeploy.s.sol:MainnetDeploy \
-        --ffi --rpc-url $RPC_SONIC --verify --broadcast
+        --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow \
+        --verify --verifier blockscout \
+        --verifier-url $VERIFIER_URL_INJECTIVE
+
+    Resume verification:
+    FOUNDRY_PROFILE=vaults \
+        forge script silo-vaults/deploy/MainnetDeploy.s.sol:MainnetDeploy \
+        --ffi --rpc-url $RPC_INJECTIVE \
+        --verify \
+        --verifier blockscout \
+        --verifier-url $VERIFIER_URL_INJECTIVE \
+        --private-key $PRIVATE_KEY \
+        --resume
  */
 contract MainnetDeploy {
     function run() public {

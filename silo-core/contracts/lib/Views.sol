@@ -22,9 +22,8 @@ import {SiloStorageLib} from "./SiloStorageLib.sol";
 // solhint-disable ordering
 
 library Views {
-    uint256 internal constant _100_PERCENT = 1e18;
-
     bytes32 internal constant _FLASHLOAN_CALLBACK = keccak256("ERC3156FlashBorrower.onFlashLoan");
+    uint256 internal constant _100_PERCENT = 1e18;
 
     function isSolvent(address _borrower) external view returns (bool) {
         (

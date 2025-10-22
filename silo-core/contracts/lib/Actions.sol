@@ -29,8 +29,8 @@ import {Views} from "./Views.sol";
 import {Rounding} from "./Rounding.sol";
 
 library Actions {
-    using Address for address;
     using SafeERC20 for IERC20;
+    using Address for address;
     using Hook for uint256;
     using Hook for uint24;
     using CallBeforeQuoteLib for ISiloConfig.ConfigData;

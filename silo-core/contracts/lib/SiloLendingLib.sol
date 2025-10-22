@@ -21,8 +21,8 @@ import {ShareTokenLib} from "./ShareTokenLib.sol";
 import {SiloStorageLib} from "./SiloStorageLib.sol";
 
 library SiloLendingLib {
-    using SafeERC20 for IERC20;
     using Math for uint256;
+    using SafeERC20 for IERC20;
 
     uint256 internal constant _PRECISION_DECIMALS = 1e18;
     /// @dev If SILO has low total debt, interest might be lost to rounding for low deposits.

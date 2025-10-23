@@ -10,7 +10,6 @@ import {CallBeforeQuoteLib} from "./CallBeforeQuoteLib.sol";
 import {SiloSolvencyLib} from "./SiloSolvencyLib.sol";
 
 library ShareCollateralTokenLib {
-    
     using CallBeforeQuoteLib for ISiloConfig.ConfigData;
 
     function isSolventAfterCollateralTransfer(address _sender) external returns (bool isSolvent) {

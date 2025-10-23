@@ -11,6 +11,7 @@ env:
   RPC_SONIC: ${{ secrets.RPC_SONIC }}
   RPC_AVALANCHE: ${{ secrets.RPC_AVALANCHE }}
   RPC_ANVIL: ${{ secrets.RPC_ANVIL }}
+  RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
   PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
 
 on:

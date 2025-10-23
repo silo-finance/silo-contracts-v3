@@ -10,6 +10,7 @@ env:
   RPC_OPTIMISM: ${{ secrets.RPC_OPTIMISM }}
   RPC_SONIC: ${{ secrets.RPC_SONIC }}
   RPC_ANVIL: ${{ secrets.RPC_ANVIL }}
+  RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
   PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
 
 on:

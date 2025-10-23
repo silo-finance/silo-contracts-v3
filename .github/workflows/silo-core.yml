@@ -11,6 +11,7 @@ env:
     RPC_SONIC: ${{ secrets.RPC_SONIC }}
     RPC_AVALANCHE: ${{ secrets.RPC_AVALANCHE }}
     RPC_INK: ${{ secrets.RPC_INK }}
+    RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
     PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
     VERIFIER_URL_SONIC: ${{ secrets.VERIFIER_URL_SONIC }}
     VERIFIER_API_KEY_SONIC: ${{ secrets.VERIFIER_API_KEY_SONIC }}

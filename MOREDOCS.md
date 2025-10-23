@@ -205,10 +205,16 @@ https://github.com/crytic/slither
 1. update onchain registry `silo-core/deploy/TowerRegistration.s.sol`
 1. deploy any test market, to confirm everything is ok.
 
+#### New SiloDeployer with Silo, ProtectedShareToken, and DebtShareToken implementations
+SiloDeployer is deployed using `MainnetDeploy` script. In case you need to redeploy:
+- run `silo-core/deploy/SiloDeployerDeploy.s.sol` script
+- then deploy new market
+
 ### Silo Vaults
 1. run `silo-vaults/deploy/MainnetDeploy.s.sol`
 
-
+### Oracles
+Choose oracle you want to deploy and ruch each deployer individually.
 
 ## Flat Standard JSON script
 
@@ -218,8 +224,3 @@ Example:
 ```bash
 python3 scripts/get_standard_json.py --network arbitrum_one --address 0xA8C5eb9ae9c7a8fab4116d1e9c1FCfc8A478b390
 ```
-
-### New Silo deployer with Silo, ProtectedShareToken, and DebtShareToken implementations
-
-- run `silo-core/deploy/SiloDeployerDeploy.s.sol` script
-- then deploy new market

@@ -6,14 +6,14 @@ import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {SiloDeploy, ISiloDeployer} from "./SiloDeploy.s.sol";
 
 /*
-FOUNDRY_PROFILE=core CONFIG=Test_Silo_WINJ_PURENOISE_KinkIRM HOOK_RECEIVER_OWNER=DAO \
+FOUNDRY_PROFILE=core CONFIG=Test_Silo_WINJ_USDT HOOK_RECEIVER_OWNER=DAO \
     forge script silo-core/deploy/silo/SiloDeployWithHookReceiverOwner.s.sol \
     --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify \
     --verifier blockscout \
     --verifier-url $VERIFIER_URL_INJECTIVE
 
 Resume verification:
-    FOUNDRY_PROFILE=core CONFIG=Test_Silo_WINJ_PURENOISE_KinkIRM HOOK_RECEIVER_OWNER=DAO \
+    FOUNDRY_PROFILE=core CONFIG=Test_Silo_WINJ_USDT HOOK_RECEIVER_OWNER=DAO \
     forge script silo-core/deploy/silo/SiloDeployWithHookReceiverOwner.s.sol \
         --ffi --rpc-url $RPC_INJECTIVE \
         --verify \

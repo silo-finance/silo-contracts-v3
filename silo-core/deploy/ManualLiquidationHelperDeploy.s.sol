@@ -36,7 +36,10 @@ contract ManualLiquidationHelperDeploy is LiquidationHelperDeploy {
         address payable tokenReceiver = _tokenReceiver();
 
         console2.log("[ManualLiquidationHelperDeploy] nativeToken: ", nativeToken);
+        require(nativeToken != address(0), "Native token is not set");
+        
         console2.log("[ManualLiquidationHelperDeploy] tokensReceiver: ", tokenReceiver);
+        require(tokenReceiver != address(0), "Token receiver is not set");
 
         vm.startBroadcast(deployerPrivateKey);
 

@@ -36,7 +36,7 @@ contract SiloLensDeploy is CommonDeploy {
 
         vm.stopBroadcast();
 
-        console2.log("SiloLens redeployed - remember to run `TowerRegistration` script!");
+        console2.log("\n\tSiloLens redeployed - remember to run `TowerRegistration` script\n");
 
         _registerDeployment(address(siloLens), SiloCoreContracts.SILO_LENS);
     }

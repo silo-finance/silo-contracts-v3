@@ -6,6 +6,7 @@ import {Test} from "forge-std/Test.sol";
 
 import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
+import {AddrKey} from "common/addresses/AddrKey.sol";
 
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {Ownable} from "openzeppelin5/access/Ownable2Step.sol";
@@ -94,6 +95,20 @@ contract NewMarketTest is Test {
 
         MAX_LTV0 = SILO_CONFIG.getConfig(silo0).maxLtv;
         MAX_LTV1 = SILO_CONFIG.getConfig(silo1).maxLtv;
+
+        _coverMissingDecimals();
+    }
+
+    // in verification script we need decimals, if token does not have this method, we need to hardcode it
+    function _coverMissingDecimals() internal {
+        if (ChainsLib.getChainId() == ChainsLib.INJECTIVE_CHAIN_ID) {
+            // WINJ token on Injective does not have decimals, we need to cover for that
+            address WINJ = AddrLib.getAddress(AddrKey.WINJ);
+
+            if (address(TOKEN0) == WINJ || address(TOKEN1) == WINJ) {
+                vm.mockCall(WINJ, abi.encodeWithSignature("decimals()"), abi.encode(18));
+            }
+        }
     }
 
     function test_newMarketTest_borrowSilo1() public logSiloConfigName {

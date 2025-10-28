@@ -1,0 +1,95 @@
+name: Build Foundry from Source
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "develop", "feature/*" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+env:
+  FOUNDRY_PROFILE: core_test
+  FOUNDRY_EVM_VERSION: paris
+  FOUNDRY_COMMIT: 5fe55108b4ed5535b65a328fddaeb5f718fe9305
+
+jobs:
+  build-foundry-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libssl-dev
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            foundry/target
+          key: ${{ runner.os }}-rust-${{ hashFiles('**/Cargo.lock') }}-${{ env.FOUNDRY_COMMIT }}
+          restore-keys: |
+            ${{ runner.os }}-rust-${{ hashFiles('**/Cargo.lock') }}-
+            ${{ runner.os }}-rust-
+
+      - name: Clone Foundry repository
+        run: |
+          if [ ! -d "foundry" ]; then
+            git clone https://github.com/foundry-rs/foundry.git
+          fi
+          cd foundry
+          git fetch origin
+          
+          # Checkout specific commit
+          git checkout ${{ env.FOUNDRY_COMMIT }}
+          echo "Using commit: ${{ env.FOUNDRY_COMMIT }}"
+          
+          # Show current commit info
+          git log --oneline -1
+          git describe --tags --always
+
+      - name: Build Foundry from source
+        run: |
+          cd foundry
+          
+          # Build with optimizations
+          cargo build --release --bins
+          
+          # Verify the build
+          ./target/release/forge --version
+          ./target/release/cast --version
+          ./target/release/anvil --version
+          ./target/release/chisel --version
+
+      - name: Install built Foundry binaries
+        run: |
+          cd foundry
+          sudo cp target/release/forge /usr/local/bin/
+          sudo cp target/release/cast /usr/local/bin/
+          sudo cp target/release/anvil /usr/local/bin/
+          sudo cp target/release/chisel /usr/local/bin/
+          
+          # Verify installation
+          forge --version
+          cast --version
+          anvil --version
+          chisel --version
+
+      - name: Run Foundry build
+        run: |
+          forge --version
+          forge build --sizes
+
+

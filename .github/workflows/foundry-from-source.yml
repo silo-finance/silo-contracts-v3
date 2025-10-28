@@ -3,9 +3,8 @@ name: Build Foundry from Source
 on:
   workflow_dispatch:
   push:
-    branches: [ "main", "develop", "feature/*" ]
-  pull_request:
     branches: [ "main", "develop" ]
+  pull_request:
 
 env:
   FOUNDRY_PROFILE: core_test

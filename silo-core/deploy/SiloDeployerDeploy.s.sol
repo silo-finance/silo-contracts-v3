@@ -17,7 +17,7 @@ import {SiloImplementationDeploy} from "./SiloImplementationDeploy.s.sol";
 /*
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloDeployerDeploy.s.sol \
-        --ffi --rpc-url $RPC_MAINNET --broadcast --verify
+        --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify
 
     Resume verification:
     FOUNDRY_PROFILE=core \

@@ -20,7 +20,7 @@ library DefaultingRepayLib {
 
     /// @notice Repays a given asset amount and returns the equivalent number of shares
     /// @dev This is a copy of lib/Actions.sol repay() function with a single line changed.
-    /// this.actionsRepay() is used instead of SiloLendingLib.repay().
+    /// siloLendingLibRepay(), line 48, is used instead of SiloLendingLib.repay().
     /// @param _assets Amount of assets to be repaid
     /// @param _borrower Address of the borrower whose debt is being repaid
     /// @param _repayer Address of the repayer who repay debt

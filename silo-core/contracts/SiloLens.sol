@@ -25,7 +25,7 @@ contract SiloLens is ISiloLens, IVersioned {
     uint256 internal constant _PRECISION_DECIMALS = 1e18;
 
     /// @notice version contains the contract name and release version
-    string public constant VERSION = "SiloLens 4.0.0";
+    string public constant VERSION = "SiloLens 3.14.0";
 
     /// @inheritdoc ISiloLens
     function getVersion(address _contract) external view returns (string memory version) {

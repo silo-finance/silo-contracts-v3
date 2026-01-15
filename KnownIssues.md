@@ -63,7 +63,7 @@ Because of all above factors, cumulative rounding errors can exceed 2 wei. As a 
 
 ### Liquidation when we have share dust
 
-In an edge case where during liquidation we need to transfer shares that cannot be converted to a full asset amount (e.g., 999 shares => 0 assets), liquidation will fail if `_receiveSToken` is `false`.  
+For version below 4.0.0, in an edge case where during liquidation we need to transfer shares that cannot be converted to a 1 wei of assets (e.g., 999 shares => 0 assets), liquidation will fail if `_receiveSToken` is `false`.  
 
 Workarounds for this case are:
 - deposit a dust amount of assets for the borrower for the collateral type that has dust

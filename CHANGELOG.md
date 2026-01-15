@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.0.0] - 2026-01-15
+### Added
+- silo-core: Liquidation by defaulting (#1694)
+- add additional events for external app integration (#1737)
+
+### Fixed
+- silo-core: handle 999 share case in liquidation (#1696)
+- silo-core: fix rounding direction in `valueToAssetsByRatio` (#1701)
+- fix: silo incentive backwards compatible (#1710)
+- silo-core: fix limitation of rewards amount for immediate  (#1740)
+- silo-core: fix max withdraw - totalAssets underestimation (#1735)
+
+### Removed
+- silo-core: remove same borrow functionality (#1703)
+
 ## [3.19.0] - 2026-02-16
 ### Markets
 - rsETH / WETH new market on Mainnet

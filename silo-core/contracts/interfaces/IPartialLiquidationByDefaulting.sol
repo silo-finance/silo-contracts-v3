@@ -50,15 +50,14 @@ interface IPartialLiquidationByDefaulting {
     /// - oracle is throwing (might be also because of tiny position eg 1wei)
     /// - `_borrower` is solvent in terms of defaulting (might be insolvent for standard liquidation)
     /// - on ReturnZeroShares error
-    /// - when asset:share ratio is changes so much 
-    ///   that `convertToShares` returns more shares to liquidate than totalShares in system, eg: 
-    ///   totalAssets = 100, totalShares = 10, assetsToLiquidate = 1
+    /// - when asset:share ratio is such that 1 asset does not equal at least 1 share eg: 
+    ///    totalAssets = 100, totalShares = 10, assetsToLiquidate = 1
     /// @param _user The address of the borrower getting liquidated
-    /// @param _maxDebtToCover The maximum debt amount of borrowed `asset` the liquidator wants to cover. 
+    /// @param _maxDebtToCover The maximum debt amount of borrowed `asset` the protocol should cover.
     /// This cap not work when full liquidation is required. In that case defaulting will do full liquidation anyway.
-    /// @return withdrawCollateral collateral that was send to `msg.sender`, in case of `_receiveSToken` is TRUE,
+    /// @return withdrawCollateral collateral that was taken from liquidated user
     /// `withdrawCollateral` will be estimated, on redeem one can expect this value to be rounded down
-    /// @return repayDebtAssets actual debt value that was repaid by `msg.sender`
+    /// @return repayDebtAssets actual debt value that was defaulted/erased
     function liquidationCallByDefaulting(address _user, uint256 _maxDebtToCover)
         external
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets);

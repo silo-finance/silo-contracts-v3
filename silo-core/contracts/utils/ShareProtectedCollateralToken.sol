@@ -5,6 +5,7 @@ import {ShareCollateralToken} from "./ShareCollateralToken.sol";
 import {ShareTokenLib} from "../lib/ShareTokenLib.sol";
 import {ISilo} from "../interfaces/ISilo.sol";
 import {IShareTokenInitializable} from "../interfaces/IShareTokenInitializable.sol";
+import {IVersioned} from "../interfaces/IVersioned.sol";
 
 contract ShareProtectedCollateralToken is ShareCollateralToken, IShareTokenInitializable {
     /// @inheritdoc IShareTokenInitializable
@@ -21,5 +22,11 @@ contract ShareProtectedCollateralToken is ShareCollateralToken, IShareTokenIniti
     /// @inheritdoc IShareTokenInitializable
     function initialize(ISilo _silo, address _hookReceiver, uint24 _tokenType) external virtual {
         _shareTokenInitialize(_silo, _hookReceiver, _tokenType);
+    }
+
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure virtual override returns (string memory) {
+        return "ShareProtectedCollateralToken 4.0.0";
     }
 }

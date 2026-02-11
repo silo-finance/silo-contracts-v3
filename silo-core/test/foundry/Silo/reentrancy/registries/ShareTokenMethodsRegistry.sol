@@ -13,6 +13,7 @@ import {BurnReentrancyTest} from "../methods/share-token/BurnReentrancyTest.sol"
 import {CallOnBehalfOfShareTokenReentrancyTest} from
     "../methods/share-token/CallOnBehalfOfShareTokenReentrancyTest.sol";
 import {DecimalsReentrancyTest} from "../methods/share-token/DecimalsReentrancyTest.sol";
+import {DecimalsOffsetReentrancyTest} from "../methods/share-token/DecimalsOffsetReentrancyTest.sol";
 import {Eip712DomainReentrancyTest} from "../methods/share-token/Eip712DomainReentrancyTest.sol";
 import {ForwardTransferFromNoChecksReentrancyTest} from
     "../methods/share-token/ForwardTransferFromNoChecksReentrancyTest.sol";
@@ -28,6 +29,7 @@ import {SiloConfigReentrancyTest} from "../methods/share-token/SiloConfigReentra
 import {SymbolReentrancyTest} from "../methods/share-token/SymbolReentrancyTest.sol";
 import {SynchronizeHooksReentrancyTest} from "../methods/share-token/SynchronizeHooksReentrancyTest.sol";
 import {TotalSupplyReentrancyTest} from "../methods/share-token/TotalSupplyReentrancyTest.sol";
+import {VersionReentrancyTest} from "../methods/silo-hook-v2/VersionReentrancyTest.sol";
 
 abstract contract ShareTokenMethodsRegistry is IMethodsRegistry {
     mapping(bytes4 methodSig => IMethodReentrancyTest) public methods;
@@ -42,6 +44,7 @@ abstract contract ShareTokenMethodsRegistry is IMethodsRegistry {
         _registerMethod(new BurnReentrancyTest());
         _registerMethod(new CallOnBehalfOfShareTokenReentrancyTest());
         _registerMethod(new DecimalsReentrancyTest());
+        _registerMethod(new DecimalsOffsetReentrancyTest());
         _registerMethod(new Eip712DomainReentrancyTest());
         _registerMethod(new ForwardTransferFromNoChecksReentrancyTest());
         _registerMethod(new HookReceiverReentrancyTest());
@@ -56,6 +59,8 @@ abstract contract ShareTokenMethodsRegistry is IMethodsRegistry {
         _registerMethod(new SymbolReentrancyTest());
         _registerMethod(new SynchronizeHooksReentrancyTest());
         _registerMethod(new TotalSupplyReentrancyTest());
+        _registerMethod(new VersionReentrancyTest());
+
     }
 
     function supportedMethodsLength() external view returns (uint256) {

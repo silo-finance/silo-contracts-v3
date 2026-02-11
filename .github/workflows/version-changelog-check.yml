@@ -1,19 +1,25 @@
 name: Version and Changelog Check
 
+# Only for release/hotfix TO master. Does NOT run for PRs into release/* (e.g. feature/* -> release/4.0.0).
 on:
-  push:
-    branches:
-      - 'release/*'
-      - 'hotfix/*'
   pull_request:
     branches:
-      - 'release/*'
-      - 'hotfix/*'
+      - master
+  push:
+    branches:
+      - master
 
 jobs:
   version-changelog-check:
     runs-on: ubuntu-latest
-    
+    # PR: target must be master, source must be release/* or hotfix/*.
+    # Push: must be to master.
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'master' &&
+        (startsWith(github.event.pull_request.head.ref, 'release/') ||
+         startsWith(github.event.pull_request.head.ref, 'hotfix/')))
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -23,19 +29,23 @@ jobs:
       with:
         node-version: '18'
         
-    - name: Extract version from branch name
+    - name: Resolve version to check
       id: extract-version
       run: |
-        # Extract version from branch name (e.g., release/3.10.0 -> 3.10.0)
-        BRANCH_NAME=${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}
-        if [[ $BRANCH_NAME =~ ^(release|hotfix)/(.+)$ ]]; then
-          VERSION=${BASH_REMATCH[2]}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Extracted version: $VERSION from branch: $BRANCH_NAME"
+        if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          if [[ $BRANCH_NAME =~ ^(release|hotfix)/(.+)$ ]]; then
+            VERSION=${BASH_REMATCH[2]}
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "Extracted version: $VERSION from branch: $BRANCH_NAME"
+          else
+            echo "Unexpected: source should be release/* or hotfix/*, got: $BRANCH_NAME"
+            exit 1
+          fi
         else
-          echo "Branch name does not match expected pattern (release/* or hotfix/*)"
-          echo "Branch name: $BRANCH_NAME"
-          exit 1
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Using version from package.json (push to master): $VERSION"
         fi
         
     - name: Check package.json version

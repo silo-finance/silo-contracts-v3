@@ -7,8 +7,10 @@ on:
 jobs:
   generate-commit-list:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write  # Required for sticky comment
     # Only run on PRs from release or hotfix branches
-    if: startsWith(github.head_ref, 'release/') || startsWith(github.head_ref, 'hotfix/')
+    if: startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix/')
     
     steps:
     - name: Checkout code
@@ -107,60 +109,39 @@ jobs:
         echo ""
         echo "**Previous version:** ${{ steps.get-commits.outputs.previous_tag }}"
         echo "**Total commits:** ${{ steps.get-commits.outputs.commits_count }}"
-        echo "**Suggestion comment created for CHANGELOG.md**"
         
-    - name: Create CHANGELOG.md suggestion comment
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          const commitList = fs.readFileSync('commits_bullets.txt', 'utf8');
-          
-          const version = '${{ steps.extract-version.outputs.version }}';
-          const commitCount = '${{ steps.get-commits.outputs.commits_count }}';
-          const previousTag = '${{ steps.get-commits.outputs.previous_tag }}';
-          
-          // Create the suggested changelog entry
-          const changelogSuggestion = [
-            '## 📝 Suggested CHANGELOG.md Entry for Version ' + version,
-            '',
-            '**Previous version:** ' + previousTag,
-            '**Total commits:** ' + commitCount,
-            '**Generated:** ' + new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC',
-            '',
-            '### Suggested addition to CHANGELOG.md:',
-            '',
-            '```markdown',
-            '## [' + version + '] - ' + new Date().toISOString().split('T')[0],
-            '',
-            '### Added',
-            commitList,
-            '```',
-            '',
-            '### Instructions:',
-            '1. Copy the markdown block above',
-            '2. Add it to the CHANGELOG.md file under the "## Unreleased" section',
-            '3. Replace the "## Unreleased" section with the new version entry',
-            '4. Update the date to the actual release date',
-            '',
-            '### Commit Details:',
-            commitList
-          ].join('\n');
+    - name: Create changelog suggestion file for sticky comment
+      run: |
+        VERSION="${{ steps.extract-version.outputs.version }}"
+        COMMIT_COUNT="${{ steps.get-commits.outputs.commits_count }}"
+        PREVIOUS_TAG="${{ steps.get-commits.outputs.previous_tag }}"
+        DATE_UTC=$(date -u '+%Y-%m-%d %H:%M:%S')
+        DATE_SHORT=$(date -u '+%Y-%m-%d')
+        
+        {
+          echo "## 📝 Suggested CHANGELOG.md Entry for Version $VERSION"
+          echo ""
+          echo "**Previous version:** $PREVIOUS_TAG"
+          echo "**Total commits:** $COMMIT_COUNT"
+          echo "**Generated:** $DATE_UTC UTC"
+          echo ""
+          echo "### Suggested addition to CHANGELOG.md:"
+          echo ""
+          echo '```markdown'
+          echo "## [$VERSION] - $DATE_SHORT"
+          echo ""
+          echo "### Added"
+          echo ""
+          cat commits_bullets.txt
+          echo '```'
+          echo ""
+          echo "### Commit Details:"
+          echo ""
+          cat commits_bullets.txt
+        } > changelog_suggestion.md
 
-          try {
-            console.log('Creating comment for PR #' + context.issue.number);
-            
-            // Create a comment with the changelog suggestion
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: changelogSuggestion
-            });
-            
-            console.log('Created CHANGELOG.md suggestion comment with ' + commitCount + ' commits for version ' + version);
-          } catch (error) {
-            console.log('Failed to create comment:', error.message);
-            console.log('PR number:', context.issue?.number);
-            throw error; // Re-throw to fail the step
-          }
+    - name: Post changelog suggestion as sticky comment (overwrites previous, no duplicate comments)
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: changelog-suggestion
+        path: changelog_suggestion.md

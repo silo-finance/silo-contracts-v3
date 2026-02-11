@@ -195,7 +195,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     function test_defaulting_ImmediateDistributionOverflows_fuzz(uint256 _collateral, uint32 _warp) public {
         _defaulting_ImmediateDistributionOverflows(_collateral, _warp);
     }
-    
+
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_ImmediateDistributionOverflows_uint104_fuzz -vv
     */
@@ -209,8 +209,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         _addLiquidity(_collateral);
 
-        bool success =
-            _createPosition({_borrower: borrower, _collateral: _collateral, _protected: 0, _maxOut: true});
+        bool success = _createPosition({_borrower: borrower, _collateral: _collateral, _protected: 0, _maxOut: true});
 
         vm.assume(success);
 
@@ -241,7 +240,9 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
             if (_isControllerOverflowing(e)) {
                 console2.log("immediate distribution overflow, accepted, but exlude this case");
                 vm.assume(false);
-            } else RevertLib.revertBytes(e, "executeDefaulting failed");
+            } else {
+                RevertLib.revertBytes(e, "executeDefaulting failed");
+            }
         }
     }
 
@@ -1636,14 +1637,13 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_Defaulting_maxDebtToCover1Wei -vv
     */
-    function test_Defaulting_maxDebtToCover1Wei(
-        uint64 _collateral, uint64 _protected, bool _maxOut
-    ) public {
+    function test_Defaulting_maxDebtToCover1Wei(uint64 _collateral, uint64 _protected, bool _maxOut) public {
         // (uint64 _collateral, uint64 _protected, bool _maxOut) = (30088, 1290024793, false);
         _addLiquidity(100e18);
-        bool position = _createPosition({_borrower: borrower, _collateral: _collateral, _protected: _protected, _maxOut: _maxOut});
+        bool position =
+            _createPosition({_borrower: borrower, _collateral: _collateral, _protected: _protected, _maxOut: _maxOut});
         vm.assume(position);
-        
+
         _createIncentiveController();
 
         _moveUntillDefaultingPossible(borrower, 0.001e18, 1 hours);
@@ -1666,7 +1666,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         uint256 totalDebtAfter = debtSilo.getDebtAssets();
         uint256 totalProtectedAfter = debtSilo.getTotalAssetsStorage(ISilo.AssetType.Protected);
         uint256 totalCollateralAfter = debtSilo.totalAssets();
-        
+
         bool fullLiquidation;
         (bool throwing,) = _isOracleThrowing(borrower);
 

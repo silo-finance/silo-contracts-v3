@@ -201,6 +201,9 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         ISiloConfig.ConfigData memory config1 = siloConfig.getConfig(silo1);
 
         require(config0.lt == 0 || config1.lt == 0, TwoWayMarketNotAllowed());
+
+        if (config0.lt == 0) require(config0.liquidationFee == 0, UnnecessaryLiquidationFee());
+        else require(config1.liquidationFee == 0, UnnecessaryLiquidationFee());
         
         require(config0.lt + LT_MARGIN_FOR_DEFAULTING < _DECIMALS_PRECISION, InvalidLTConfig0());
         require(config1.lt + LT_MARGIN_FOR_DEFAULTING < _DECIMALS_PRECISION, InvalidLTConfig1());

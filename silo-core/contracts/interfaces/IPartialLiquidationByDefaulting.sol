@@ -32,6 +32,7 @@ interface IPartialLiquidationByDefaulting {
     error NoControllerForCollateral();
     error CollateralNotSupportedForDefaulting();
     error TwoWayMarketNotAllowed();
+    error UnnecessaryLiquidationFee();
     error EmptyCollateralShareToken();
     error DeductDefaultedDebtFromCollateralFailed();
     error RepayDebtByDefaultingFailed();

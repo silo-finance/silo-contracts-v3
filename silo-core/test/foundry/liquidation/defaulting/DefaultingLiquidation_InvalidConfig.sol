@@ -63,6 +63,41 @@ contract DefaultingLiquidationInvalidConfigTest is Test {
     }
 
     /*
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_validateDefaultingCollateral_UnnecessaryLiquidationFee -vv
+    */
+    function test_validateDefaultingCollateral_UnnecessaryLiquidationFee() public {
+        ISiloConfig.ConfigData memory config0;
+        ISiloConfig.ConfigData memory config1;
+
+        config0.lt = 1;
+        config1.lt = 0;
+
+        defaulting = _cloneHook(config0, config1);
+
+        config0.liquidationFee = 1;
+        config1.liquidationFee = 1;
+        _mockSiloConfig(config0, config1);
+
+        vm.expectRevert(IPartialLiquidationByDefaulting.UnnecessaryLiquidationFee.selector);
+        defaulting.validateDefaultingCollateral();
+
+        config0.liquidationFee = 0;
+        config1.liquidationFee = 1;
+        _mockSiloConfig(config0, config1);
+
+        vm.expectRevert(IPartialLiquidationByDefaulting.UnnecessaryLiquidationFee.selector);
+        defaulting.validateDefaultingCollateral();
+
+        // counterexample
+        config0.liquidationFee = 1;
+        config1.liquidationFee = 0;
+        _mockSiloConfig(config0, config1);
+
+        // pass
+        defaulting.validateDefaultingCollateral();
+    }
+
+    /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_validateDefaultingCollateral_InvalidLT -vv
     */
     function test_validateDefaultingCollateral_InvalidLT() public {
@@ -113,10 +148,17 @@ contract DefaultingLiquidationInvalidConfigTest is Test {
     }
 
     function _cloneHook(ISiloConfig.ConfigData memory _config) internal returns (SiloHookV2 hook) {
+        return _cloneHook(_config, _config);
+    }
+
+    function _cloneHook(ISiloConfig.ConfigData memory _config0, ISiloConfig.ConfigData memory _config1)
+        internal
+        returns (SiloHookV2 hook)
+    {
         SiloHookV2 implementation = new SiloHookV2();
         hook = SiloHookV2(Clones.clone(address(implementation)));
 
-        _mockSiloConfig(_config, _config);
+        _mockSiloConfig(_config0, _config1);
 
         hook.initialize(siloConfig, abi.encode(address(this)));
     }

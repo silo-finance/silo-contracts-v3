@@ -31,16 +31,13 @@ import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefaulting, PartialLiquidation, Whitelist {
     using CallBeforeQuoteLib for ISiloConfig.ConfigData;
 
-    /// @dev The portion of total liquidation fee proceeds allocated to the keeper. Expressed in 18 decimals.
-    /// For example, liquidation fee is 10% (0.1e18), and keeper fee is 20% (0.2e18),
-    /// then 2% liquidation fee goes to the keeper and 8% goes to the protocol.
+    /// @inheritdoc IPartialLiquidationByDefaulting
     uint256 public constant KEEPER_FEE = 0.2e18;
 
-    /// @dev Address of the DefaultingSiloLogic contract used by Silo for delegate calls
+    /// @inheritdoc IPartialLiquidationByDefaulting
     address public immutable LIQUIDATION_LOGIC;
 
-    /// @dev Additional liquidation threshold (LT) margin applied during defaulting liquidations
-    /// to give priority to traditional liquidations over defaulting ones. Expressed in 18 decimals.
+    /// @inheritdoc IPartialLiquidationByDefaulting
     uint256 public constant LT_MARGIN_FOR_DEFAULTING = 0.025e18;
 
     uint256 internal constant _DECIMALS_PRECISION = 1e18;

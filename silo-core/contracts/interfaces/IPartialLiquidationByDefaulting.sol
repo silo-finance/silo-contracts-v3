@@ -85,12 +85,18 @@ interface IPartialLiquidationByDefaulting {
         view
         returns (ISiloIncentivesController controllerCollateral);
 
+    /// @dev Additional liquidation threshold (LT) margin applied during defaulting liquidations
+    /// to give priority to traditional liquidations over defaulting ones. Expressed in 18 decimals.
     // solhint-disable-next-line func-name-mixedcase
     function LT_MARGIN_FOR_DEFAULTING() external view returns (uint256);
 
+    /// @dev Address of the DefaultingSiloLogic contract used by Silo for delegate calls
     // solhint-disable-next-line func-name-mixedcase
     function LIQUIDATION_LOGIC() external view returns (address);
 
+    /// @dev The portion of total liquidation fee proceeds allocated to the keeper. Expressed in 18 decimals.
+    /// For example, liquidation fee is 10% (0.1e18), and keeper fee is 20% (0.2e18),
+    /// then 2% liquidation fee goes to the keeper and 8% goes to the protocol.
     // solhint-disable-next-line func-name-mixedcase
     function KEEPER_FEE() external view returns (uint256);   
 }

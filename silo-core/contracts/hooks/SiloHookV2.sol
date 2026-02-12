@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: BUSL-1.1
+
 pragma solidity 0.8.28;
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";

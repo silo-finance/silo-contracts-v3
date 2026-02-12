@@ -147,7 +147,6 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x42655, 0x5b6b);
         _setUpActor(USER2);
         Target.liquidationCallByDefaulting(
-            37422699887768669765783046586599516837044989231599567131519487622971353741226,
             RandomGenerator(255, 74, 255)
         );
         _delay(0x8af1a, 0x320);
@@ -172,7 +171,6 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x62e05, 0xff);
         _setUpActor(USER2);
         Target.liquidationCallByDefaulting(
-            31012643420486718865104172824785518880978806563527511629903994531281080040044,
             RandomGenerator(114, 255, 197)
         );
         _delay(0x103ef, 0x95ce);
@@ -196,7 +194,6 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x475d0, 0xa663);
         _setUpActor(USER1);
         Target.liquidationCallByDefaulting(
-            102534336929198877321702095445937357962574072565302534037659811884723175914078,
             RandomGenerator(76, 83, 255)
         );
         _delay(0x6fa94, 0xe59f);
@@ -256,7 +253,6 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x4daf5, 0x20);
         _setUpActor(USER3);
         Target.liquidationCallByDefaulting(
-            115792089237316195423570985008687907853269984665640564039457584007913129639935,
             RandomGenerator(255, 255, 255)
         );
         _delay(0x3340a, 0x7f);
@@ -298,7 +294,6 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x65373, 0x9de);
         _setUpActor(USER2);
         Target.liquidationCallByDefaulting(
-            76597552767090721918719815898960607117313991696237260016271266784287660272610,
             RandomGenerator(87, 179, 255)
         );
         _delay(0x4eac7, 0xe4d);
@@ -313,7 +308,6 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x103ef, 0x107f);
         _setUpActor(USER3);
         Target.liquidationCallByDefaulting(
-            22219085446096088425086531464894483902672762533719580988545515823426312680099,
             RandomGenerator(255, 240, 255)
         );
         _delay(0x46b47, 0xd619);
@@ -384,7 +378,7 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         Target.borrow(4369999, 15, 42);
         _delay(0x1b73c, 0x440);
         _setUpActor(USER2);
-        Target.liquidationCallByDefaulting(565, RandomGenerator(61, 14, 255));
+        Target.liquidationCallByDefaulting(RandomGenerator(61, 14, 255));
         _delay(0x5408b, 0x26ee);
         _setUpActor(USER2);
         Target.receiveAllowance(1524785992, 224, 255, 22);
@@ -460,7 +454,7 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x214c8, 0xd8f2);
         _setUpActor(USER3);
         Target.liquidationCallByDefaulting(
-            19440281052238228046917137526546382794030784465697728187592931051976865117079, RandomGenerator(43, 255, 0)
+            RandomGenerator(43, 255, 0)
         );
         _delay(0x28928, 0xc107);
         _setUpActor(USER1);
@@ -512,13 +506,13 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         Target.MAX_PRICE();
         _delay(0x3340a, 0xd619);
         _setUpActor(USER3);
-        Target.liquidationCallByDefaulting(1524785993, RandomGenerator(125, 252, 255));
+        Target.liquidationCallByDefaulting(RandomGenerator(125, 252, 255));
         _delay(0x7f467, 0x3b9a);
         _setUpActor(USER3);
         Target.repay(1524785992, 117, 255);
         _delay(0x81f7, 0x753b);
         _setUpActor(USER1);
-        Target.liquidationCallByDefaulting(0, RandomGenerator(56, 40, 126));
+        Target.liquidationCallByDefaulting(RandomGenerator(56, 40, 126));
         _delay(0x6d464, 0xea4f);
         _setUpActor(USER1);
         Target.assert_SILO_HSPOST_D(115);
@@ -538,13 +532,11 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x142f0, 0x5caa);
         _setUpActor(USER1);
         Target.liquidationCallByDefaulting(
-            41156989385870650511201598624304639187324262764121025257385690308482112243436,
             RandomGenerator(157, 255, 138)
         );
         _delay(0x142ef, 0x7630);
         _setUpActor(USER2);
         Target.liquidationCallByDefaulting(
-            66505786955507820238401180420926220756841145654195074064083144180067794290705,
             RandomGenerator(255, 255, 83)
         );
         _delay(0x29247, 0x8ffb);
@@ -631,7 +623,6 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x64ad5, 0xe8a0);
         _setUpActor(USER2);
         Target.liquidationCallByDefaulting(
-            62642639977860731642902822164935719331006320956980023718404314800998625436649,
             RandomGenerator(62, 255, 253)
         );
         _delay(0x37272, 0x7660);
@@ -649,7 +640,6 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x4694f, 0x95ce);
         _setUpActor(USER3);
         Target.liquidationCallByDefaulting(
-            72142487059008203792313838954728895985149319951503394542868515209319545467410,
             RandomGenerator(231, 99, 179)
         );
         _delay(0x52be8, 0x13bd);
@@ -712,7 +702,6 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x42655, 0x231);
         _setUpActor(USER1);
         Target.liquidationCallByDefaulting(
-            83827132201277929604310278461769535334031346570138975986843818449008384355583,
             RandomGenerator(35, 255, 67)
         );
         _delay(0x5617a, 0x1c9b);
@@ -728,7 +717,6 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x712e4, 0x9d0);
         _setUpActor(USER2);
         Target.liquidationCallByDefaulting(
-            115792089237316195423570985008687907853269984665640564039457584007913129639935,
             RandomGenerator(255, 40, 64)
         );
         _delay(0x43af0, 0xa663);
@@ -751,7 +739,7 @@ contract CryticToFoundryDefaulting is Invariants, DefaultingHandler, SetupDefaul
         _delay(0x7cf4e, 0x9de);
         _setUpActor(USER3);
         Target.liquidationCallByDefaulting(
-            22311278005040445027574342426498668344330648383954249661449739558162887707303, RandomGenerator(8, 255, 18)
+            RandomGenerator(8, 255, 18)
         );
         _delay(0xb056, 0x13bd);
         _setUpActor(USER1);

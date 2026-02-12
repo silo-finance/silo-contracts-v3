@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 interface ILiquidationHandler {
     function liquidationCall(uint256 _debtToCover, bool _receiveSToken, RandomGenerator memory _random) external;
 
-    function liquidationCallByDefaulting(uint256 _maxDebtToCover, RandomGenerator memory _random)
+    function liquidationCallByDefaulting(RandomGenerator memory _random)
         external
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets);
 

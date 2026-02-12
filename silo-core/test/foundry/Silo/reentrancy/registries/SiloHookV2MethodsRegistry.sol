@@ -5,8 +5,6 @@ import {IMethodReentrancyTest} from "../interfaces/IMethodReentrancyTest.sol";
 
 import {LiquidationCallByDefaultingReentrancyTest} from
     "../methods/silo-hook-v2/LiquidationCallByDefaultingReentrancyTest.sol";
-import {LiquidationCallByDefaulting2ReentrancyTest} from
-    "../methods/silo-hook-v2/LiquidationCallByDefaulting2ReentrancyTest.sol";
 
 import {GetRoleAdminReentrancyTest} from "../methods/leverage/GetRoleAdminReentrancyTest.sol";
 import {GrantRoleReentrancyTest} from "../methods/leverage/GrantRoleReentrancyTest.sol";
@@ -35,7 +33,6 @@ import {SiloHookV1MethodsRegistry} from "./SiloHookV1MethodsRegistry.sol";
 contract SiloHookV2MethodsRegistry is SiloHookV1MethodsRegistry {
     constructor() {
         _registerMethod(new LiquidationCallByDefaultingReentrancyTest());
-        _registerMethod(new LiquidationCallByDefaulting2ReentrancyTest());
         _registerMethod(new GetRoleAdminReentrancyTest());
         _registerMethod(new GrantRoleReentrancyTest());
         _registerMethod(new HasRoleReentrancyTest());

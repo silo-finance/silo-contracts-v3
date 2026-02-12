@@ -56,20 +56,11 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
 
         validateDefaultingCollateral();
     }
-    
-    /// @inheritdoc IPartialLiquidationByDefaulting
-    function liquidationCallByDefaulting(address _borrower) 
-        external 
-        virtual
-        returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
-    {
-        (withdrawCollateral, repayDebtAssets) = liquidationCallByDefaulting(_borrower, type(uint256).max);
-    }
 
     /// @inheritdoc IPartialLiquidationByDefaulting
     // solhint-disable-next-line function-max-lines, code-complexity
-    function liquidationCallByDefaulting(address _borrower, uint256 _maxDebtToCover)
-        public
+    function liquidationCallByDefaulting(address _borrower)
+        external
         virtual
         nonReentrant
         onlyAllowedOrPublic
@@ -94,7 +85,7 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
             _collateralConfig: collateralConfig,
             _debtConfig: debtConfig,
             _user: _borrower,
-            _maxDebtToCover: _maxDebtToCover,
+            _maxDebtToCover: type(uint256).max,
             _liquidationFee: collateralConfig.liquidationFee
         });
 

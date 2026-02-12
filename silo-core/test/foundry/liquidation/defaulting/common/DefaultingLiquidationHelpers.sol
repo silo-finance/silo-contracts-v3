@@ -388,14 +388,6 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         }
     }
 
-    function _tryDefaulting(address _borrower, uint256 _maxDebtToCover) internal returns (bool success) {
-        try defaulting.liquidationCallByDefaulting(_borrower, _maxDebtToCover) {
-            success = true;
-        } catch {
-            success = false;
-        }
-    }
-
     function _executeMaxLiquidation(address _borrower) internal returns (bool success) {
         (address collateralAsset, address debtAsset) = _getTokens();
 

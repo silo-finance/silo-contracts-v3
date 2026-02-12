@@ -47,18 +47,20 @@ contract MainnetDeploy is CommonDeploy {
 
         siloFactoryDeploy.run();
         siloImplementationDeploy.run();
-        interestRateModelV2ConfigFactoryDeploy.run();
+        // interestRateModelV2ConfigFactoryDeploy.run();
         dkinkIRMFactoryDeploy.run();
-        interestRateModelV2Deploy.run();
+        // interestRateModelV2Deploy.run();
         siloHookV1Deploy.run();
         siloHookV2Deploy.run();
         siloHookV3Deploy.run();
         siloDeployerDeploy.run();
         liquidationHelperDeploy.run();
         siloLensDeploy.run();
-        towerDeploy.run();
-        siloRouterV2Deploy.run();
+        // siloRouterV2Deploy.run();
         siloIncentivesControllerFactoryDeploy.run();
-        manualLiquidationHelperDeploy.run();
+
+
+        // manualLiquidationHelperDeploy.run();
+        // towerDeploy.run();
     }
 }

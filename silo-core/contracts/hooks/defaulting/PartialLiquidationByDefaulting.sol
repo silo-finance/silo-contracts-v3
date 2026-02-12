@@ -49,8 +49,8 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
 
     function __PartialLiquidationByDefaulting_init(address _owner) // solhint-disable-line func-name-mixedcase
         internal
-        onlyInitializing
         virtual
+        onlyInitializing
     {
         __Whitelist_init(_owner);
 
@@ -193,9 +193,14 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
 
         if (config0.lt == 0) require(config0.liquidationFee == 0, UnnecessaryLiquidationFee());
         else require(config1.liquidationFee == 0, UnnecessaryLiquidationFee());
+
+        require(
+            config0.lt + LT_MARGIN_FOR_DEFAULTING + config0.liquidationFee < _DECIMALS_PRECISION, InvalidLTConfig0()
+        );
         
-        require(config0.lt + LT_MARGIN_FOR_DEFAULTING < _DECIMALS_PRECISION, InvalidLTConfig0());
-        require(config1.lt + LT_MARGIN_FOR_DEFAULTING < _DECIMALS_PRECISION, InvalidLTConfig1());
+        require(
+            config1.lt + LT_MARGIN_FOR_DEFAULTING + config1.liquidationFee < _DECIMALS_PRECISION, InvalidLTConfig1()
+        );
     }
 
     function _deductDefaultedDebtFromCollateral(address _silo, uint256 _assetsToRepay) internal virtual {
@@ -296,9 +301,9 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
 
         uint256 totalAssets = ISilo(_silo).getTotalAssetsStorage(ISilo.AssetType(uint8(_collateralType)));
         uint256 totalShares = IShareToken(_shareToken).totalSupply();
-            
+
         // assets were calculating with rounding down for withdraw,
-        // if we want to go back to shares, we can round up, 
+        // if we want to go back to shares, we can round up,
         // however we choose to have exact results as we get via original liquidation, so we are using same direction
         totalSharesToLiquidate = SiloMathLib.convertToShares({
             _assets: _assetsToLiquidate,
@@ -329,8 +334,8 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         // R - rounding, we want to round down for keeper
         keeperShares = Math.mulDiv(
             _liquidationFee * KEEPER_FEE,
-            totalSharesToLiquidate, 
-            PartialLiquidationLib._PRECISION_DECIMALS, 
+            totalSharesToLiquidate,
+            PartialLiquidationLib._PRECISION_DECIMALS,
             Math.Rounding.Floor
         ) / (PartialLiquidationLib._PRECISION_DECIMALS + _liquidationFee);
 

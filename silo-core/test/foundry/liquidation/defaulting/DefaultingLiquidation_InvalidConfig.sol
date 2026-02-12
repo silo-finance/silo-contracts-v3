@@ -112,7 +112,8 @@ contract DefaultingLiquidationInvalidConfigTest is Test {
         defaulting.validateDefaultingCollateral();
 
         config0.lt = 0;
-        config1.lt = 1e18 - defaulting.LT_MARGIN_FOR_DEFAULTING();
+        config1.liquidationFee = 1;
+        config1.lt = 1e18 - defaulting.LT_MARGIN_FOR_DEFAULTING() - config1.liquidationFee;
         _mockSiloConfig(config0, config1);
 
         vm.expectRevert(IPartialLiquidationByDefaulting.InvalidLTConfig1.selector);
@@ -120,7 +121,8 @@ contract DefaultingLiquidationInvalidConfigTest is Test {
 
         // counterexample
         config0.lt = 0;
-        config1.lt = 1e18 - defaulting.LT_MARGIN_FOR_DEFAULTING() - 1;
+        config1.liquidationFee = 1;
+        config1.lt = 1e18 - defaulting.LT_MARGIN_FOR_DEFAULTING() - config1.liquidationFee - 1;
         _mockSiloConfig(config0, config1);
 
         // pass

@@ -1138,7 +1138,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_getKeeperAndLenderSharesSplit_fuzz -vv --fuzz-runs 2345
 
-    we should never generate more shares then borrower has, rounding check
+    we should never generate more shares than borrower has, rounding check
     */
     function test_defaulting_getKeeperAndLenderSharesSplit_fuzz(uint32 _collateral, uint32 _protected, uint32 _warp)
         public
@@ -1203,18 +1203,25 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         assertLe(collateralShareToken.balanceOf(address(gauge)), 1, "gauge should have ~0 collateral shares");
         assertLe(protectedShareToken.balanceOf(address(gauge)), 1, "gauge should have ~0 protected shares");
 
+        uint256 keeperCollateralShares = collateralShareToken.balanceOf(address(this));
+        uint256 keeperProtectedShares = protectedShareToken.balanceOf(address(this));
+
         if (_protected == 0) {
             assertEq(protectedRewards, 0, "no protected rewards if no protected deposit");
-            assertEq(protectedShareToken.balanceOf(address(this)), 0, "keeper should have 0 protected shares");
+            assertEq(keeperProtectedShares, 0, "keeper should have 0 protected shares");
         } else {
             assertGt(protectedRewards, 0, "protected rewards are always somethig after liquidation");
-            assertLt(protectedRewards, protectedSharesBefore, "protected rewards are always less, because of fee");
-            // keeprs can have 0 or more
+
+            if (keeperProtectedShares == 0) {
+                assertLe(protectedRewards, protectedSharesBefore, "rewards are always le, because of NO fee");
+            } else {
+                assertLt(protectedRewards, protectedSharesBefore, "protected rewards are always less, because of fee");
+            }
         }
 
         if (_collateral == 0) {
             assertEq(collateralRewards, 0, "no collateral rewards if no collateral deposit");
-            assertEq(collateralShareToken.balanceOf(address(this)), 0, "keeper should have 0 collateral shares");
+            assertEq(keeperCollateralShares, 0, "keeper should have 0 collateral shares");
         } else {
             if (_protected == 0) {
                 assertGt(collateralRewards, 0, "collateral rewards are always somethig");
@@ -1222,8 +1229,11 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
                 // collaterar rewards depends if protected were enough or not
             }
 
-            assertLt(collateralRewards, collateralSharesBefore, "rewards are always less, because of fee");
-            // keeprs can have 0 or more
+            if (keeperCollateralShares == 0) {
+                assertLe(collateralRewards, collateralSharesBefore, "rewards are always le, because of NO fee");
+            } else {
+                assertLt(collateralRewards, collateralSharesBefore, "rewards are always less, because of fee");
+            }
         }
     }
 

@@ -17,14 +17,17 @@ import {SiloFactoryDeploy} from "./SiloFactoryDeploy.s.sol";
 import {SiloIncentivesControllerFactoryDeploy} from "silo-core/deploy/SiloIncentivesControllerFactoryDeploy.s.sol";
 import {ManualLiquidationHelperDeploy} from "silo-core/deploy/ManualLiquidationHelperDeploy.s.sol";
 import {DKinkIRMFactoryDeploy} from "silo-core/deploy/DKinkIRMFactoryDeploy.s.sol";
+import {SiloImplementationDeploy} from "silo-core/deploy/SiloImplementationDeploy.s.sol";
 
 /*
-    FOUNDRY_PROFILE=core \
+    FOUNDRY_PROFILE=core AGGREGATOR=1INCH \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
         --ffi --rpc-url $RPC_SONIC --verify --broadcast
  */
 contract MainnetDeploy is CommonDeploy {
     function run() public {
+        SiloFactoryDeploy siloFactoryDeploy = new SiloFactoryDeploy();
+        SiloImplementationDeploy siloImplementationDeploy = new SiloImplementationDeploy();
         InterestRateModelV2FactoryDeploy interestRateModelV2ConfigFactoryDeploy =
             new InterestRateModelV2FactoryDeploy();
         InterestRateModelV2Deploy interestRateModelV2Deploy = new InterestRateModelV2Deploy();
@@ -42,14 +45,14 @@ contract MainnetDeploy is CommonDeploy {
         SiloIncentivesControllerFactoryDeploy siloIncentivesControllerFactoryDeploy =
             new SiloIncentivesControllerFactoryDeploy();
 
-        _requireSiloFactoryDeployed();
-        _requireSiloImplementationDeployed();
-
+        siloFactoryDeploy.run();
+        siloImplementationDeploy.run();
         interestRateModelV2ConfigFactoryDeploy.run();
         dkinkIRMFactoryDeploy.run();
         interestRateModelV2Deploy.run();
         siloHookV1Deploy.run();
         siloHookV2Deploy.run();
+        siloHookV3Deploy.run();
         siloDeployerDeploy.run();
         liquidationHelperDeploy.run();
         siloLensDeploy.run();
@@ -57,17 +60,5 @@ contract MainnetDeploy is CommonDeploy {
         siloRouterV2Deploy.run();
         siloIncentivesControllerFactoryDeploy.run();
         manualLiquidationHelperDeploy.run();
-    }
-
-    function _requireSiloFactoryDeployed() internal virtual {
-        string memory chainAlias = ChainsLib.chainAlias();
-        address siloFactory = SiloCoreDeployments.get(SiloCoreContracts.SILO_FACTORY, chainAlias);
-        require(siloFactory != address(0), string.concat(SiloCoreContracts.SILO_FACTORY, " not deployed"));
-    }
-
-    function _requireSiloImplementationDeployed() internal virtual {
-        string memory chainAlias = ChainsLib.chainAlias();
-        address siloImplementation = SiloCoreDeployments.get(SiloCoreContracts.SILO, chainAlias);
-        require(siloImplementation != address(0), string.concat(SiloCoreContracts.SILO, " not deployed"));
     }
 }

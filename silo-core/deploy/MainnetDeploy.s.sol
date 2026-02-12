@@ -7,6 +7,7 @@ import {InterestRateModelV2FactoryDeploy} from "./InterestRateModelV2FactoryDepl
 import {InterestRateModelV2Deploy} from "./InterestRateModelV2Deploy.s.sol";
 import {SiloHookV1Deploy} from "./SiloHookV1Deploy.s.sol";
 import {SiloHookV2Deploy} from "./SiloHookV2Deploy.s.sol";
+import {SiloHookV3Deploy} from "./SiloHookV3Deploy.s.sol";
 import {SiloDeployerDeploy} from "./SiloDeployerDeploy.s.sol";
 import {LiquidationHelperDeploy} from "./LiquidationHelperDeploy.s.sol";
 import {TowerDeploy} from "./TowerDeploy.s.sol";
@@ -29,6 +30,7 @@ contract MainnetDeploy is CommonDeploy {
         InterestRateModelV2Deploy interestRateModelV2Deploy = new InterestRateModelV2Deploy();
         SiloHookV1Deploy siloHookV1Deploy = new SiloHookV1Deploy();
         SiloHookV2Deploy siloHookV2Deploy = new SiloHookV2Deploy();
+        SiloHookV3Deploy siloHookV3Deploy = new SiloHookV3Deploy();
         SiloDeployerDeploy siloDeployerDeploy = new SiloDeployerDeploy();
         LiquidationHelperDeploy liquidationHelperDeploy = new LiquidationHelperDeploy();
         SiloLensDeploy siloLensDeploy = new SiloLensDeploy();
@@ -40,9 +42,9 @@ contract MainnetDeploy is CommonDeploy {
         SiloIncentivesControllerFactoryDeploy siloIncentivesControllerFactoryDeploy =
             new SiloIncentivesControllerFactoryDeploy();
 
-        // TODO this way will deploy factory multiple times, the fix is inside 
-        // https://github.com/silo-finance/silo-contracts-v2/pull/1649
-        _deploySiloFactory();
+        _requireSiloFactoryDeployed();
+        _requireSiloImplementationDeployed();
+
         interestRateModelV2ConfigFactoryDeploy.run();
         dkinkIRMFactoryDeploy.run();
         interestRateModelV2Deploy.run();
@@ -57,8 +59,15 @@ contract MainnetDeploy is CommonDeploy {
         manualLiquidationHelperDeploy.run();
     }
 
-    function _deploySiloFactory() internal virtual {
-        SiloFactoryDeploy siloFactoryDeploy = new SiloFactoryDeploy();
-        siloFactoryDeploy.run();
+    function _requireSiloFactoryDeployed() internal virtual {
+        string memory chainAlias = ChainsLib.chainAlias();
+        address siloFactory = SiloCoreDeployments.get(SiloCoreContracts.SILO_FACTORY, chainAlias);
+        require(siloFactory != address(0), string.concat(SiloCoreContracts.SILO_FACTORY, " not deployed"));
+    }
+
+    function _requireSiloImplementationDeployed() internal virtual {
+        string memory chainAlias = ChainsLib.chainAlias();
+        address siloImplementation = SiloCoreDeployments.get(SiloCoreContracts.SILO, chainAlias);
+        require(siloImplementation != address(0), string.concat(SiloCoreContracts.SILO, " not deployed"));
     }
 }

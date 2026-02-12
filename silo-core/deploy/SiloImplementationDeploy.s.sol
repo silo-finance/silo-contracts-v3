@@ -76,23 +76,24 @@ contract SiloImplementationDeploy is CommonDeploy {
         require(siloFactory != address(0), string.concat(SiloCoreContracts.SILO_FACTORY, " not deployed"));
         console2.log("siloFactory", siloFactory);
 
-        vm.startBroadcast(deployerPrivateKey);
-
-        _deployNewSiloImplementation(ISiloFactory(siloFactory));
-
-        vm.stopBroadcast();
-    }
-
-    function _deployNewSiloImplementation(ISiloFactory _siloFactory) internal {
         console2.log("\n[SiloImplementationDeploy] deploying new SiloImplementation\n");
 
-        address siloImpl = address(new Silo(_siloFactory));
+        vm.startBroadcast(deployerPrivateKey);
+        address siloImpl = address(new Silo(ISiloFactory(siloFactory)));
+        vm.stopBroadcast();
+        
         console2.log("New SiloImplementation deployed", siloImpl);
 
+        vm.startBroadcast(deployerPrivateKey);
         address shareProtectedCollateralTokenImpl = address(new ShareProtectedCollateralToken());
+        vm.stopBroadcast();
+
         console2.log("New ShareProtectedCollateralToken deployed", shareProtectedCollateralTokenImpl);
 
+        vm.startBroadcast(deployerPrivateKey);
         address shareDebtTokenImpl = address(new ShareDebtToken());
+        vm.stopBroadcast();
+
         console2.log("New ShareDebtToken deployed", shareDebtTokenImpl);
 
         _registerDeployment(siloImpl, SiloCoreContracts.SILO);

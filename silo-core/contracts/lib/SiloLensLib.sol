@@ -10,12 +10,24 @@ import {ISiloConfig} from "../interfaces/ISiloConfig.sol";
 import {IInterestRateModel} from "../interfaces/IInterestRateModel.sol";
 import {IPartialLiquidation} from "../interfaces/IPartialLiquidation.sol";
 import {ISiloOracle} from "../interfaces/ISiloOracle.sol";
+import {IVersioned} from "../interfaces/IVersioned.sol";
 
 import {SiloSolvencyLib} from "./SiloSolvencyLib.sol";
 import {SiloMathLib} from "./SiloMathLib.sol";
 
 library SiloLensLib {
     uint256 internal constant _PRECISION_DECIMALS = 1e18;
+
+    function getVersion(address _contract) internal view returns (string memory version) {
+        if (_contract.code.length == 0) return "Not a contract";
+
+        try IVersioned(_contract).VERSION() returns (string memory v) {
+            return v;
+        } catch {
+            // handle error gracefully
+            return "legacy";
+        }
+    }
 
     function getRawLiquidity(ISilo _silo) internal view returns (uint256 liquidity) {
         return SiloMathLib.liquidity(

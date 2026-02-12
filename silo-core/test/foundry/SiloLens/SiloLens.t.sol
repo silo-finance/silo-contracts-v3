@@ -59,6 +59,19 @@ contract SiloLensTest is SiloLittleHelper, Test {
     function test_SiloLens_getVersion_version() public view {
         assertEq(siloLens.getVersion(address(siloLens)), siloLens.VERSION(), "version should be the same");
     }
+    
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_SiloLens_getVersions
+    */
+    function test_SiloLens_getVersions() public view {
+        address[] memory contracts = new address[](2);
+        contracts[0] = address(siloLens);
+        contracts[1] = address(this);
+
+        string[] memory versions = siloLens.getVersions(contracts);
+        assertEq(versions[0], siloLens.VERSION(), "version should be the same");
+        assertEq(versions[1], "legacy", "version should be legacy");
+    }
 
     /*
     FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_SiloLens_getVersion_legacy

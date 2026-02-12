@@ -25,17 +25,18 @@ contract SiloLens is ISiloLens, IVersioned {
     uint256 internal constant _PRECISION_DECIMALS = 1e18;
 
     /// @notice version contains the contract name and release version
-    string public constant VERSION = "SiloLens 3.14.0";
+    string public constant VERSION = "SiloLens 4.0.0";
 
     /// @inheritdoc ISiloLens
     function getVersion(address _contract) external view returns (string memory version) {
-        if (_contract.code.length == 0) return "Not a contract";
+        version = SiloLensLib.getVersion(_contract);
+    }
 
-        try IVersioned(_contract).VERSION() returns (string memory v) {
-            return v;
-        } catch {
-            // handle error gracefully
-            return "legacy";
+    function getVersions(address[] calldata _contracts) external view returns (string[] memory versions) {
+        versions = new string[](_contracts.length);
+
+        for (uint256 i; i < _contracts.length; i++) {
+            versions[i] = SiloLensLib.getVersion(_contracts[i]);
         }
     }
 

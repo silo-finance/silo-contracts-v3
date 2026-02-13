@@ -22,15 +22,15 @@ import {SiloImplementationDeploy} from "silo-core/deploy/SiloImplementationDeplo
 /*
     FOUNDRY_PROFILE=core AGGREGATOR=1INCH \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_SONIC --verify --broadcast
+        --ffi --rpc-url $RPC_ARBITRUM --verify --broadcast
  */
 contract MainnetDeploy is CommonDeploy {
     function run() public {
         SiloFactoryDeploy siloFactoryDeploy = new SiloFactoryDeploy();
         SiloImplementationDeploy siloImplementationDeploy = new SiloImplementationDeploy();
-        InterestRateModelV2FactoryDeploy interestRateModelV2ConfigFactoryDeploy =
-            new InterestRateModelV2FactoryDeploy();
-        InterestRateModelV2Deploy interestRateModelV2Deploy = new InterestRateModelV2Deploy();
+        // InterestRateModelV2FactoryDeploy interestRateModelV2ConfigFactoryDeploy =
+        //     new InterestRateModelV2FactoryDeploy();
+        // InterestRateModelV2Deploy interestRateModelV2Deploy = new InterestRateModelV2Deploy();
         SiloHookV1Deploy siloHookV1Deploy = new SiloHookV1Deploy();
         SiloHookV2Deploy siloHookV2Deploy = new SiloHookV2Deploy();
         SiloHookV3Deploy siloHookV3Deploy = new SiloHookV3Deploy();

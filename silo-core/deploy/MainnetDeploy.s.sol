@@ -25,7 +25,7 @@ import {
 /*
     FOUNDRY_PROFILE=core AGGREGATOR=1INCH \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_BNB --broadcast --verify
+        --ffi --rpc-url $RPC_OKX --broadcast --verify
  */
 contract MainnetDeploy is CommonDeploy {
     function run() public {
@@ -70,6 +70,5 @@ contract MainnetDeploy is CommonDeploy {
 
         // execute deployer at the end, to make sure we est factories
         siloDeployerDeploy.run();
-
     }
 }

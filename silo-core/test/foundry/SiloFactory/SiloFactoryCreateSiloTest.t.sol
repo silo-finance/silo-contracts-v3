@@ -58,17 +58,18 @@ contract SiloFactoryCreateSiloTest is SiloLittleHelper, IntegrationTest {
     }
 
     /*
-    forge test -vv --ffi --mt test_createSilo
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_createSilo
     */
     function test_createSilo() public {
         (, ISiloConfig.InitData memory initData,) = siloData.getConfigData(SILO_TO_DEPLOY);
 
-        assertEq(siloFactory.getNextSiloId(), 101);
-        assertTrue(siloFactory.isSilo(address(silo0)));
-        assertTrue(siloFactory.isSilo(address(silo1)));
+        uint256 currentSiloId = 3000;
+        assertEq(siloFactory.getNextSiloId(), currentSiloId + 1, "getNextSiloId does not match");
+        assertTrue(siloFactory.isSilo(address(silo0)), "silo0 should exist in factory");
+        assertTrue(siloFactory.isSilo(address(silo1)), "silo1 should exist in factory");
 
-        address configFromFactory = siloFactory.idToSiloConfig(100);
-        assertEq(configFromFactory, address(siloConfig));
+        address configFromFactory = siloFactory.idToSiloConfig(currentSiloId);
+        assertEq(configFromFactory, address(siloConfig), "configFromFactory does not match");
         assertEq(configFromFactory, address(silo0.config()));
         assertEq(configFromFactory, address(silo1.config()));
 
@@ -134,7 +135,7 @@ contract SiloFactoryCreateSiloTest is SiloLittleHelper, IntegrationTest {
 
         assertEq(abi.encode(irmConfigUsed1), abi.encode(irmConfigExpected1));
 
-        assertEq(siloFactory.ownerOf(100), initData.deployer);
+        assertEq(siloFactory.ownerOf(currentSiloId), initData.deployer);
     }
 
     /*

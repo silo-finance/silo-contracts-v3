@@ -9,8 +9,6 @@ on:
 jobs:
   check-silo-id-change:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
 
     steps:
       - name: Checkout
@@ -58,24 +56,3 @@ jobs:
 
           echo "status=ok" >> "$GITHUB_OUTPUT"
 
-      - name: Prepare PR comment
-        if: always()
-        run: |
-          {
-            echo "### SiloFactory `_siloId` check"
-            echo
-            if [ "${{ steps.compare.outputs.status }}" = "ok" ]; then
-              echo "✅ `_siloId` was updated: \`${{ steps.compare.outputs.old }}\` -> \`${{ steps.compare.outputs.new }}\`."
-            else
-              echo "❌ `_siloId` was not updated (or could not be parsed)."
-              echo
-              echo "Requirement: when `SiloFactory.sol` changes, the initial `_siloId` value must also be updated."
-            fi
-          } > silo-id-check-comment.md
-
-      - name: Comment result on PR
-        if: always()
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: silo-factory-silo-id-check
-          path: silo-id-check-comment.md

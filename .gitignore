@@ -65,3 +65,4 @@ collect.json
 #scripts
 silo-core/scripts/airdrop/data.csv
 audits/scripts/out/
+audits/v2/scripts/out/

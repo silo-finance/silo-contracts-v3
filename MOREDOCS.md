@@ -1,6 +1,6 @@
-# Silo V2
+# Silo V3
 
-Monorepo for Silo protocol. v2
+Monorepo for Silo protocol v3
 
 ## Development setup
 

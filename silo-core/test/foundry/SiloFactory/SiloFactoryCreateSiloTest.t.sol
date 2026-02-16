@@ -58,12 +58,12 @@ contract SiloFactoryCreateSiloTest is SiloLittleHelper, IntegrationTest {
     }
 
     /*
-    forge test -vv --ffi --mt test_createSilo
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_createSilo
     */
     function test_createSilo() public {
         (, ISiloConfig.InitData memory initData,) = siloData.getConfigData(SILO_TO_DEPLOY);
 
-        assertEq(siloFactory.getNextSiloId(), 101);
+        assertEq(siloFactory.getNextSiloId(), 3001);
         assertTrue(siloFactory.isSilo(address(silo0)));
         assertTrue(siloFactory.isSilo(address(silo1)));
 

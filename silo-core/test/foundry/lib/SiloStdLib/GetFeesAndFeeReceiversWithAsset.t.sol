@@ -39,7 +39,7 @@ contract GetFeesAndFeeReceiversWithAssetTest is SiloLittleHelper, IntegrationTes
     }
 
     /*
-    forge test -vv --ffi --mt test_getFeesAndFeeReceiversWithAsset
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_getFeesAndFeeReceiversWithAsset
     */
     function test_getFeesAndFeeReceiversWithAsset(address _newDeployer) public {
         vm.assume(_newDeployer != address(0));
@@ -56,7 +56,7 @@ contract GetFeesAndFeeReceiversWithAssetTest is SiloLittleHelper, IntegrationTes
 
         (address daoFeeReceiver, address deployerFeeReceiver) = siloFactory.getFeeReceivers(silo0);
 
-        uint256 siloId = 100;
+        uint256 siloId = siloFactory.getNextSiloId() - 1;
         assertEq(daoFeeReceiver, siloFactory.daoFeeReceiver(), "daoFeeReceiver silo0");
         assertEq(deployerFeeReceiver, initData.deployer, "deployerFeeReceiver silo0");
         assertEq(deployerFeeReceiver, siloFactory.ownerOf(siloId), "ownerOf(siloId) silo0");

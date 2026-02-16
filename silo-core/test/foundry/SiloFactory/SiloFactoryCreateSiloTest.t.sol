@@ -64,12 +64,12 @@ contract SiloFactoryCreateSiloTest is SiloLittleHelper, IntegrationTest {
         (, ISiloConfig.InitData memory initData,) = siloData.getConfigData(SILO_TO_DEPLOY);
 
         uint256 currentSiloId = 3000;
-        assertEq(siloFactory.getNextSiloId(), currentSiloId + 1);
-        assertTrue(siloFactory.isSilo(address(silo0)));
-        assertTrue(siloFactory.isSilo(address(silo1)));
+        assertEq(siloFactory.getNextSiloId(), currentSiloId + 1, "getNextSiloId does not match");
+        assertTrue(siloFactory.isSilo(address(silo0)), "silo0 should exist in factory");
+        assertTrue(siloFactory.isSilo(address(silo1)), "silo1 should exist in factory");
 
-        address configFromFactory = siloFactory.idToSiloConfig(100);
-        assertEq(configFromFactory, address(siloConfig));
+        address configFromFactory = siloFactory.idToSiloConfig(currentSiloId);
+        assertEq(configFromFactory, address(siloConfig), "configFromFactory does not match");
         assertEq(configFromFactory, address(silo0.config()));
         assertEq(configFromFactory, address(silo1.config()));
 

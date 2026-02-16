@@ -105,7 +105,7 @@ contract DefaultingLiquidationInvalidConfigTest is Test {
         ISiloConfig.ConfigData memory config1;
         defaulting = _cloneHook(config0);
 
-        config0.lt = 1e18 - defaulting.LT_MARGIN_FOR_DEFAULTING();
+        config0.lt = 1e18 - defaulting.LT_MARGIN_FOR_DEFAULTING() + 1; // to be over 100%
         _mockSiloConfig(config0, config1);
 
         vm.expectRevert(IPartialLiquidationByDefaulting.InvalidLTConfig0.selector);
@@ -113,7 +113,7 @@ contract DefaultingLiquidationInvalidConfigTest is Test {
 
         config0.lt = 0;
         config1.liquidationFee = 1;
-        config1.lt = 1e18 - defaulting.LT_MARGIN_FOR_DEFAULTING() - config1.liquidationFee;
+        config1.lt = 1e18 - defaulting.LT_MARGIN_FOR_DEFAULTING() - config1.liquidationFee + 1; // to be over 100%
         _mockSiloConfig(config0, config1);
 
         vm.expectRevert(IPartialLiquidationByDefaulting.InvalidLTConfig1.selector);
@@ -122,7 +122,7 @@ contract DefaultingLiquidationInvalidConfigTest is Test {
         // counterexample
         config0.lt = 0;
         config1.liquidationFee = 1;
-        config1.lt = 1e18 - defaulting.LT_MARGIN_FOR_DEFAULTING() - config1.liquidationFee - 1;
+        config1.lt = 1e18 - defaulting.LT_MARGIN_FOR_DEFAULTING() - config1.liquidationFee;
         _mockSiloConfig(config0, config1);
 
         // pass

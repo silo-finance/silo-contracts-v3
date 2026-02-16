@@ -322,34 +322,37 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
     FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_shareTokenName
     */
     function test_shareTokenName() public view {
+        uint256 siloId = siloConfig.SILO_ID();
+        string memory siloIdString = string.concat("SiloId: ", vm.toString(siloId));
         (address protected0, address collateral0, address debt0) = siloConfig.getShareTokens(address(silo0));
 
-        assertEq(IShareToken(protected0).name(), "Silo Finance Non-borrowable b Deposit, SiloId: 100");
-        assertEq(IShareToken(collateral0).name(), "Silo Finance Borrowable b Deposit, SiloId: 100");
-        assertEq(IShareToken(debt0).name(), "Silo Finance b Debt, SiloId: 100");
+        assertEq(IShareToken(protected0).name(), string.concat("Silo Finance Non-borrowable b Deposit, ", siloIdString));
+        assertEq(IShareToken(collateral0).name(), string.concat("Silo Finance Borrowable b Deposit, ", siloIdString));
+        assertEq(IShareToken(debt0).name(), string.concat("Silo Finance b Debt, ", siloIdString));
 
         (address protected1, address collateral1, address debt1) = siloConfig.getShareTokens(address(silo1));
 
-        assertEq(IShareToken(protected1).name(), "Silo Finance Non-borrowable b Deposit, SiloId: 100");
-        assertEq(IShareToken(collateral1).name(), "Silo Finance Borrowable b Deposit, SiloId: 100");
-        assertEq(IShareToken(debt1).name(), "Silo Finance b Debt, SiloId: 100");
+        assertEq(IShareToken(protected1).name(), string.concat("Silo Finance Non-borrowable b Deposit, ", siloIdString));
+        assertEq(IShareToken(collateral1).name(), string.concat("Silo Finance Borrowable b Deposit, ", siloIdString));
+        assertEq(IShareToken(debt1).name(), string.concat("Silo Finance b Debt, ", siloIdString));
     }
 
     /*
     FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_shareTokenSymbol
     */
     function test_shareTokenSymbol() public view {
+        uint256 siloId = siloConfig.SILO_ID();
         (address protected0, address collateral0, address debt0) = siloConfig.getShareTokens(address(silo0));
 
-        assertEq(IShareToken(protected0).symbol(), "nbb-100");
-        assertEq(IShareToken(collateral0).symbol(), "bb-100");
-        assertEq(IShareToken(debt0).symbol(), "db-100");
+        assertEq(IShareToken(protected0).symbol(), string.concat("nbb-", vm.toString(siloId)));
+        assertEq(IShareToken(collateral0).symbol(), string.concat("bb-", vm.toString(siloId)));
+        assertEq(IShareToken(debt0).symbol(), string.concat("db-", vm.toString(siloId)));
 
         (address protected1, address collateral1, address debt1) = siloConfig.getShareTokens(address(silo1));
 
-        assertEq(IShareToken(protected1).symbol(), "nbb-100");
-        assertEq(IShareToken(collateral1).symbol(), "bb-100");
-        assertEq(IShareToken(debt1).symbol(), "db-100");
+        assertEq(IShareToken(protected1).symbol(), string.concat("nbb-", vm.toString(siloId)));
+        assertEq(IShareToken(collateral1).symbol(), string.concat("bb-", vm.toString(siloId)));
+        assertEq(IShareToken(debt1).symbol(), string.concat("db-", vm.toString(siloId)));
     }
 
     /*

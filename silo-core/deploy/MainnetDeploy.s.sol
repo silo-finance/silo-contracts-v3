@@ -18,11 +18,14 @@ import {SiloIncentivesControllerFactoryDeploy} from "silo-core/deploy/SiloIncent
 import {ManualLiquidationHelperDeploy} from "silo-core/deploy/ManualLiquidationHelperDeploy.s.sol";
 import {DKinkIRMFactoryDeploy} from "silo-core/deploy/DKinkIRMFactoryDeploy.s.sol";
 import {SiloImplementationDeploy} from "silo-core/deploy/SiloImplementationDeploy.s.sol";
+import {
+    LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy
+} from "silo-core/deploy/LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy.s.sol";
 
 /*
     FOUNDRY_PROFILE=core AGGREGATOR=1INCH \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_AVALANCHE --verify --broadcast
+        --ffi --rpc-url $RPC_BNB --verify --broadcast
  */
 contract MainnetDeploy is CommonDeploy {
     function run() public {
@@ -45,11 +48,14 @@ contract MainnetDeploy is CommonDeploy {
         SiloIncentivesControllerFactoryDeploy siloIncentivesControllerFactoryDeploy =
             new SiloIncentivesControllerFactoryDeploy();
 
+        LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy leverageRouterDeploy =
+            new LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy();
+
         siloFactoryDeploy.run();
         siloImplementationDeploy.run();
-        // interestRateModelV2ConfigFactoryDeploy.run(); // not for V3
+        interestRateModelV2ConfigFactoryDeploy.run(); // not for V3
         dkinkIRMFactoryDeploy.run();
-        // interestRateModelV2Deploy.run(); // not for V3
+        interestRateModelV2Deploy.run(); // not for V3
         siloHookV1Deploy.run();
         siloHookV2Deploy.run();
         siloHookV3Deploy.run();
@@ -58,9 +64,9 @@ contract MainnetDeploy is CommonDeploy {
         siloLensDeploy.run();
         siloRouterV2Deploy.run();
         siloIncentivesControllerFactoryDeploy.run();
+        leverageRouterDeploy.run();
 
-
-        // manualLiquidationHelperDeploy.run();
+        manualLiquidationHelperDeploy.run();
         // towerDeploy.run();
     }
 }

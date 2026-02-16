@@ -6,7 +6,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:silo-finance/silo-contracts-v2.git"
+    "url": "git@github.com:silo-finance/silo-contracts-v3.git"
   },
   "license": "BUSL-1.1",
   "devDependencies": {

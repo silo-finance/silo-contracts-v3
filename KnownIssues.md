@@ -1,4 +1,4 @@
-## Known issues:
+## Known issues
 
 ### Decimals
 

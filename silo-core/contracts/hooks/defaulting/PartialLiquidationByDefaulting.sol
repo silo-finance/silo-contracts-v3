@@ -194,12 +194,13 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         if (config0.lt == 0) require(config0.liquidationFee == 0, UnnecessaryLiquidationFee());
         else require(config1.liquidationFee == 0, UnnecessaryLiquidationFee());
 
+        // to be consistent with validateSiloInitData, we using `<=` for lt check
         require(
-            config0.lt + LT_MARGIN_FOR_DEFAULTING + config0.liquidationFee < _DECIMALS_PRECISION, InvalidLTConfig0()
+            config0.lt + LT_MARGIN_FOR_DEFAULTING + config0.liquidationFee <= _DECIMALS_PRECISION, InvalidLTConfig0()
         );
         
         require(
-            config1.lt + LT_MARGIN_FOR_DEFAULTING + config1.liquidationFee < _DECIMALS_PRECISION, InvalidLTConfig1()
+            config1.lt + LT_MARGIN_FOR_DEFAULTING + config1.liquidationFee <= _DECIMALS_PRECISION, InvalidLTConfig1()
         );
     }
 

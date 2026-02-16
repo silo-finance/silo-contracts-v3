@@ -22,7 +22,7 @@ import {SiloImplementationDeploy} from "silo-core/deploy/SiloImplementationDeplo
 /*
     FOUNDRY_PROFILE=core AGGREGATOR=1INCH \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_ARBITRUM --verify --broadcast
+        --ffi --rpc-url $RPC_AVALANCHE --verify --broadcast
  */
 contract MainnetDeploy is CommonDeploy {
     function run() public {

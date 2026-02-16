@@ -59,7 +59,6 @@ contract MainnetDeploy is CommonDeploy {
         siloHookV1Deploy.run();
         siloHookV2Deploy.run();
         siloHookV3Deploy.run();
-        siloDeployerDeploy.run();
         liquidationHelperDeploy.run();
         siloLensDeploy.run();
         siloRouterV2Deploy.run();
@@ -68,5 +67,9 @@ contract MainnetDeploy is CommonDeploy {
 
         manualLiquidationHelperDeploy.run();
         // towerDeploy.run();
+
+        // execute deployer at the end, to make sure we est factories
+        siloDeployerDeploy.run();
+
     }
 }

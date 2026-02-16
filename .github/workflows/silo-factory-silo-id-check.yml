@@ -1,0 +1,81 @@
+name: SiloFactory Silo ID Check
+
+on:
+  pull_request:
+    paths:
+      - 'silo-core/contracts/SiloFactory.sol'
+      - '.github/workflows/silo-factory-silo-id-check.yml'
+
+jobs:
+  check-silo-id-change:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compare _siloId initializer
+        id: compare
+        run: |
+          set -euo pipefail
+
+          FILE="silo-core/contracts/SiloFactory.sol"
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+
+          OLD_LINE="$(git show "${BASE_SHA}:${FILE}" 2>/dev/null | grep -E '^[[:space:]]*_siloId[[:space:]]*=[[:space:]]*[0-9_]+[[:space:]]*;' | head -n1 || true)"
+          NEW_LINE="$(grep -E '^[[:space:]]*_siloId[[:space:]]*=[[:space:]]*[0-9_]+[[:space:]]*;' "${FILE}" | head -n1 || true)"
+
+          if [ -z "${OLD_LINE}" ] || [ -z "${NEW_LINE}" ]; then
+            echo "::error title=Cannot parse _siloId::Nie znaleziono linii '_siloId = <number>;' w wersji bazowej albo aktualnej."
+            {
+              echo "status=fail"
+              echo "old=unknown"
+              echo "new=unknown"
+            } >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+          OLD_ID="$(echo "${OLD_LINE}" | sed -E 's/.*=[[:space:]]*([0-9_]+)[[:space:]]*;.*/\1/' | tr -d '_')"
+          NEW_ID="$(echo "${NEW_LINE}" | sed -E 's/.*=[[:space:]]*([0-9_]+)[[:space:]]*;.*/\1/' | tr -d '_')"
+
+          echo "Old _siloId: ${OLD_ID}"
+          echo "New _siloId: ${NEW_ID}"
+
+          {
+            echo "old=${OLD_ID}"
+            echo "new=${NEW_ID}"
+          } >> "$GITHUB_OUTPUT"
+
+          if [ "${OLD_ID}" = "${NEW_ID}" ]; then
+            echo "::error title=Silo ID unchanged::Zmieniłeś SiloFactory, ale inicjalny _siloId nie uległ zmianie (${OLD_ID})."
+            echo "status=fail" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+          echo "status=ok" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare PR comment
+        if: always()
+        run: |
+          {
+            echo "### SiloFactory `_siloId` check"
+            echo
+            if [ "${{ steps.compare.outputs.status }}" = "ok" ]; then
+              echo "✅ Zmieniono `_siloId`: \`${{ steps.compare.outputs.old }}\` -> \`${{ steps.compare.outputs.new }}\`."
+            else
+              echo "❌ `_siloId` nie został zmieniony (albo nie udało się go odczytać)."
+              echo
+              echo "Wymagane: przy zmianach `SiloFactory.sol` zaktualizować inicjalną wartość `_siloId`."
+            fi
+          } > silo-id-check-comment.md
+
+      - name: Comment result on PR
+        if: always()
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: silo-factory-silo-id-check
+          path: silo-id-check-comment.md

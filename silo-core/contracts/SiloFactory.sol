@@ -52,7 +52,6 @@ contract SiloFactory is ISiloFactory, ERC721, Ownable2Step, IVersioned {
         ERC721("Silo Finance Fee Receiver", "feeSILO")
         Ownable(msg.sender)
     {
-        // start IDs from 100
         _siloId = 100;
 
         baseURI = "https://v2.app.silo.finance/markets/";

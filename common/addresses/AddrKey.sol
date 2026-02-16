@@ -36,6 +36,7 @@ library AddrKey {
     string constant public WAVAX = "WAVAX";
     string constant public WETH = "WETH";
     string constant public WBNB = "WBNB";
+    string constant public WOKB = "WOKB";
     string constant public WUSD_PLUS = "wUSD+";
     string constant public WRAPPER_LPT_eUSDe_14AUG25 = "Wrapper-LPT-sUSDe-25SEP25";
     string constant public wS = "wS";

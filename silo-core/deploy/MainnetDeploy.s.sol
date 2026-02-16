@@ -25,7 +25,7 @@ import {
 /*
     FOUNDRY_PROFILE=core AGGREGATOR=1INCH \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_BNB --verify --broadcast
+        --ffi --rpc-url $RPC_OKX --broadcast
  */
 contract MainnetDeploy is CommonDeploy {
     function run() public {

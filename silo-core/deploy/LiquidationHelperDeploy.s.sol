@@ -40,6 +40,7 @@ contract LiquidationHelperDeploy is CommonDeploy {
     address payable constant GNOSIS_SAFE_SONIC = payable(0x7461d8c0fDF376c847b651D882DEa4C73fad2e4B);
     address payable constant GNOSIS_SAFE_INK = payable(0xE8e8041cB5E3158A0829A19E014CA1cf91098554);
     address payable constant GNOSIS_SAFE_BNB = payable(0xE8e8041cB5E3158A0829A19E014CA1cf91098554);
+    address payable constant GNOSIS_SAFE_OKX = payable(0xE8e8041cB5E3158A0829A19E014CA1cf91098554);
 
     function run() public virtual returns (address liquidationHelper) {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
@@ -121,6 +122,7 @@ contract LiquidationHelperDeploy is CommonDeploy {
         if (chainId == ChainsLib.MAINNET_CHAIN_ID) return GNOSIS_SAFE_MAINNET;
         if (chainId == ChainsLib.AVALANCHE_CHAIN_ID) return GNOSIS_SAFE_AVALANCHE;
         if (chainId == ChainsLib.BNB_CHAIN_ID) return GNOSIS_SAFE_BNB;
+        if (chainId == ChainsLib.OKX_CHAIN_ID) return GNOSIS_SAFE_OKX;
 
         revert(string.concat("tokenReceiver not set for ", ChainsLib.chainAlias()));
     }

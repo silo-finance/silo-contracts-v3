@@ -30,7 +30,7 @@ jobs:
           NEW_LINE="$(grep -E '^[[:space:]]*_siloId[[:space:]]*=[[:space:]]*[0-9_]+[[:space:]]*;' "${FILE}" | head -n1 || true)"
 
           if [ -z "${OLD_LINE}" ] || [ -z "${NEW_LINE}" ]; then
-            echo "::error title=Cannot parse _siloId::Nie znaleziono linii '_siloId = <number>;' w wersji bazowej albo aktualnej."
+            echo "::error title=Cannot parse _siloId::Could not find '_siloId = <number>;' in either the base or current version."
             {
               echo "status=fail"
               echo "old=unknown"
@@ -51,7 +51,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
           if [ "${OLD_ID}" = "${NEW_ID}" ]; then
-            echo "::error title=Silo ID unchanged::Zmieniłeś SiloFactory, ale inicjalny _siloId nie uległ zmianie (${OLD_ID})."
+            echo "::error title=Silo ID unchanged::SiloFactory was changed, but the initial _siloId remained unchanged (${OLD_ID})."
             echo "status=fail" >> "$GITHUB_OUTPUT"
             exit 1
           fi
@@ -65,11 +65,11 @@ jobs:
             echo "### SiloFactory `_siloId` check"
             echo
             if [ "${{ steps.compare.outputs.status }}" = "ok" ]; then
-              echo "✅ Zmieniono `_siloId`: \`${{ steps.compare.outputs.old }}\` -> \`${{ steps.compare.outputs.new }}\`."
+              echo "✅ `_siloId` was updated: \`${{ steps.compare.outputs.old }}\` -> \`${{ steps.compare.outputs.new }}\`."
             else
-              echo "❌ `_siloId` nie został zmieniony (albo nie udało się go odczytać)."
+              echo "❌ `_siloId` was not updated (or could not be parsed)."
               echo
-              echo "Wymagane: przy zmianach `SiloFactory.sol` zaktualizować inicjalną wartość `_siloId`."
+              echo "Requirement: when `SiloFactory.sol` changes, the initial `_siloId` value must also be updated."
             fi
           } > silo-id-check-comment.md
 

@@ -35,7 +35,7 @@ contract SiloIncentivesControllerCL is IIncentivesClaimingLogic {
 
             VAULT_INCENTIVES_CONTROLLER.immediateDistribution(
                 accruedRewards[i].rewardToken,
-                uint104(accruedRewards[i].amount)
+                accruedRewards[i].amount
             );
         }
     }

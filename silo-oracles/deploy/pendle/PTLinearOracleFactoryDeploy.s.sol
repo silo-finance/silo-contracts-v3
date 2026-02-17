@@ -16,6 +16,8 @@ import {SiloOraclesFactoriesContracts} from "../SiloOraclesFactoriesContracts.so
 FOUNDRY_PROFILE=oracles \
     forge script silo-oracles/deploy/pendle/PTLinearOracleFactoryDeploy.s.sol \
     --ffi --rpc-url $RPC_SONIC --broadcast --verify
+
+https://github.com/pendle-finance/pendle-core-v2-public/blob/main/deployments/1-core.json
  */
 contract PTLinearOracleFactoryDeploy is CommonDeploy {
     function run() public returns (address factory) {

@@ -113,7 +113,7 @@ contract WithdrawWhenNoDebtTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_withdraw_scenario_manyUsers
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_withdraw_scenario_manyUsers
     */
     function test_withdraw_scenario_manyUsers() public {
         _deposit(address(5555), 1, ISilo.CollateralType.Protected);
@@ -177,26 +177,28 @@ contract WithdrawWhenNoDebtTest is SiloLittleHelper, Test {
         (address protectedShareToken, address collateralShareToken, address debtShareToken) =
             siloConfig.getShareTokens(address(silo0));
 
-        assertEq(silo0.maxWithdraw(address(this)), 2e18, "available collateral #1");
+        // +/-1 are here because we underestimated for fractions in maxWithdraw function and in test we compensate for it
+
+        assertEq(silo0.maxWithdraw(address(this)), 2e18 - 1, "available collateral #1");
 
         uint256 gotShares = _withdraw(address(this), 0.1e18, ISilo.CollateralType.Protected);
         assertEq(gotShares, 0.1e18 * SiloMathLib._DECIMALS_OFFSET_POW, "withdraw 0.1e18");
-        assertEq(silo0.maxWithdraw(address(this)), 2e18, "available collateral #2");
+        assertEq(silo0.maxWithdraw(address(this)), 2e18 - 1, "available collateral #2");
 
         gotShares = _withdraw(address(this), 0.1e18, ISilo.CollateralType.Collateral);
         assertEq(gotShares, 0.1e18 * SiloMathLib._DECIMALS_OFFSET_POW, "withdraw 0.1e18");
-        assertEq(silo0.maxWithdraw(address(this)), 1.9e18, "available collateral #3");
+        assertEq(silo0.maxWithdraw(address(this)), 1.9e18 - 1, "available collateral #3");
 
         gotShares = _withdraw(address(this), 123456781234567893, ISilo.CollateralType.Protected);
         assertEq(gotShares, 123456781234567893 * SiloMathLib._DECIMALS_OFFSET_POW, "withdraw 123456781234567893 P");
-        assertEq(silo0.maxWithdraw(address(this)), 1.9e18, "available collateral #4");
+        assertEq(silo0.maxWithdraw(address(this)), 1.9e18 - 1, "available collateral #4");
 
         gotShares = _withdraw(address(this), 123456781234567893, ISilo.CollateralType.Collateral);
         assertEq(gotShares, 123456781234567893 * SiloMathLib._DECIMALS_OFFSET_POW, "withdraw 123456781234567893 C");
-        assertEq(silo0.maxWithdraw(address(this)), 1.9e18 - 123456781234567893, "available collateral #5");
+        assertEq(silo0.maxWithdraw(address(this)), 1.9e18 - 123456781234567893 - 1, "available collateral #5");
 
-        gotShares = _withdraw(address(this), silo0.maxWithdraw(address(this)), ISilo.CollateralType.Collateral);
-        assertEq(gotShares, (1.9e18 - 123456781234567893) * SiloMathLib._DECIMALS_OFFSET_POW, "max withdraw");
+        gotShares = _withdraw(address(this), silo0.maxWithdraw(address(this)) + 1, ISilo.CollateralType.Collateral);
+        assertEq(gotShares, (1.9e18 - 123456781234567893) * SiloMathLib._DECIMALS_OFFSET_POW, "max withdraw C");
         assertEq(silo0.maxWithdraw(address(this)), 0, "available collateral #6");
 
         gotShares = _withdraw(address(this), 1e18 - 0.1e18 - 123456781234567893, ISilo.CollateralType.Protected);
@@ -204,7 +206,7 @@ contract WithdrawWhenNoDebtTest is SiloLittleHelper, Test {
 
         assertEq(IShareToken(debtShareToken).balanceOf(address(this)), 0, "debtShareToken");
         assertEq(IShareToken(protectedShareToken).balanceOf(address(this)), 0, "protectedShareToken stays the same");
-        assertEq(IShareToken(collateralShareToken).balanceOf(address(this)), 0, "collateral burned");
+        assertEq(IShareToken(collateralShareToken).balanceOf(address(this)), 0, "collateral shares are burned");
     }
 
     function _userWithdrawing_oneUser() internal {

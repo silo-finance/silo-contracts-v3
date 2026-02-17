@@ -1,0 +1,2122 @@
+[
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x000000007b91f5c2937100ec91eb2000e292148d",
+    "asset_symbol": "USDC.e",
+    "assets": 7,
+    "assets_normalized": "0.000007",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x000066320a467de62b1548f46465abbb82662331",
+    "asset_symbol": "USDC.e",
+    "assets": 98776,
+    "assets_normalized": "0.098776",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x00399286d466ebc3c38daf0152d475ecd68ced7f",
+    "asset_symbol": "USDC.e",
+    "assets": 1088707337,
+    "assets_normalized": "1088.707337",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x009d13e9bec94bf16791098ce4e5c168d27a9f07",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x02443d1fcb2a76c99bf9bdf89de7f048d26eadba",
+    "asset_symbol": "USDC.e",
+    "assets": 13504766,
+    "assets_normalized": "13.504766",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x024c3d1f574cdcdd42374394df96b747460096a3",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x0302f3434dbdee9d3faf680cba8a2bae6b34a83c",
+    "asset_symbol": "USDC.e",
+    "assets": 1027404175,
+    "assets_normalized": "1027.404175",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x041a09a6220c9c08a0cc9bfcc31deaf9799412b2",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x046ab1a1adc63a9cc81a4db68f7a7623ad1ab092",
+    "asset_symbol": "USDC.e",
+    "assets": 47190,
+    "assets_normalized": "0.04719",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x04c7b939b0df23ce1349bdacc76815f684a1750c",
+    "asset_symbol": "USDC.e",
+    "assets": 5065,
+    "assets_normalized": "0.005065",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x05631891643a2e9dd5cc44293f14caa4b4cd98b2",
+    "asset_symbol": "USDC.e",
+    "assets": 36142965,
+    "assets_normalized": "36.142965",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x068f46e8f592350b40b05a5c440c4ee949d91209",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x08750db546b5186861835d15cb38ba5e96525688",
+    "asset_symbol": "USDC.e",
+    "assets": 48881387203,
+    "assets_normalized": "48881.387203",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x09388452fc1c1958eece7884ed161a666735d1ec",
+    "asset_symbol": "USDC.e",
+    "assets": 1027664334,
+    "assets_normalized": "1027.664334",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x09616650f991411556a0a75663dc866d648e1ef5",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x09661aa31f8772e393ae3c7ade37b8a2f4e8db0f",
+    "asset_symbol": "USDC.e",
+    "assets": 476634255,
+    "assets_normalized": "476.634255",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x09fa38eba245bb68354b8950fa2fe71f02863393",
+    "asset_symbol": "USDC.e",
+    "assets": 7,
+    "assets_normalized": "0.000007",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x0bd7e05e55658571a7d75e38182314d9152339a0",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x0d7720df68cfc04534d02c2669e51652b0e77791",
+    "asset_symbol": "USDC.e",
+    "assets": 351,
+    "assets_normalized": "0.000351",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x0e76fc601fb5a670e2a492196074b29da6b403c2",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x0e8a00ae00a153a087bccd1b89efcc78209b3ab8",
+    "asset_symbol": "USDC.e",
+    "assets": 457,
+    "assets_normalized": "0.000457",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x0edd6eced51b0f0ee830d891ba230ac39ff6f5b3",
+    "asset_symbol": "USDC.e",
+    "assets": 4,
+    "assets_normalized": "0.000004",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x0fc587968c33acda9a16c5fa6e66258ff8aa2f61",
+    "asset_symbol": "USDC.e",
+    "assets": 30,
+    "assets_normalized": "0.00003",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x10054d39aa173807d3f23427923e1b44f5dc3290",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x11475691c2caa465e19f99c445abb31a4a64955c",
+    "asset_symbol": "USDC.e",
+    "assets": 237635793,
+    "assets_normalized": "237.635793",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x120623e790cc17e47848a2dce36df7a2346ba095",
+    "asset_symbol": "USDC.e",
+    "assets": 10,
+    "assets_normalized": "0.00001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x1206e9bf28eae56b9144f8d74d3accb4f566b0b2",
+    "asset_symbol": "USDC.e",
+    "assets": 3937835007,
+    "assets_normalized": "3937.835007",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x136d4b342d415d5cf2fed3fb8af15d7d4efd4849",
+    "asset_symbol": "USDC.e",
+    "assets": 2077149,
+    "assets_normalized": "2.077149",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x168d73e52f8a0bc3d28d31c4c21a3b7781330cc4",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x1721d47e29f3f1b0398b6889fb34c2b6981aa0c5",
+    "asset_symbol": "USDC.e",
+    "assets": 914724830,
+    "assets_normalized": "914.72483",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x18074ae62cee786ccd713aa12430338f08512b89",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x18668c448a12714b0422e71f63943f764c721faa",
+    "asset_symbol": "USDC.e",
+    "assets": 9,
+    "assets_normalized": "0.000009",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x1b35727072435bb97fbe8cc378eb6973c98faab3",
+    "asset_symbol": "USDC.e",
+    "assets": 250014838,
+    "assets_normalized": "250.014838",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x1d3a7c45e1ada41ba23f071867c369d000ddc4eb",
+    "asset_symbol": "USDC.e",
+    "assets": 644233834,
+    "assets_normalized": "644.233834",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x1e4e112b8807b8883f537c91c17dafcce13946f6",
+    "asset_symbol": "USDC.e",
+    "assets": 338034,
+    "assets_normalized": "0.338034",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x1ecdd9c3f1e6772112078ae155a3557e72600f3b",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x1fbcc8e4b289389ea7beaaa101868da0bf6e233c",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x1fccc097db89a86bfc474a1028f93958295b1fb7",
+    "asset_symbol": "USDC.e",
+    "assets": 1042797,
+    "assets_normalized": "1.042797",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x20fb0ce14c11277b07849a184472a5ebd149eb54",
+    "asset_symbol": "USDC.e",
+    "assets": 975617136,
+    "assets_normalized": "975.617136",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x216244113869e6aabf706831fa079496db452901",
+    "asset_symbol": "USDC.e",
+    "assets": 3232157232,
+    "assets_normalized": "3232.157232",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x2165cc15c59527b05f70c9ab504f47bf8e7ac31d",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x216be7c987b81a71bc0198b98752bb4a51be18ec",
+    "asset_symbol": "USDC.e",
+    "assets": 3,
+    "assets_normalized": "0.000003",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x21885e45d0773a2c48a8be32e6ca2cdb3e64cc26",
+    "asset_symbol": "USDC.e",
+    "assets": 16913189,
+    "assets_normalized": "16.913189",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x22138a0cff84952c018cbcbf5650149017d6b292",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x22a8b7a9e1027e645a65e5559ce288c32c3e3d6a",
+    "asset_symbol": "USDC.e",
+    "assets": 61,
+    "assets_normalized": "0.000061",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x23cd671c5fb77251579ae915dc3581bf099338ee",
+    "asset_symbol": "USDC.e",
+    "assets": 37025,
+    "assets_normalized": "0.037025",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x2493b7809f8ed73224a6867a8b82b7329fa598a7",
+    "asset_symbol": "USDC.e",
+    "assets": 2030,
+    "assets_normalized": "0.00203",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x256455b367f1dd4438aa53cdbfd40782a2ced64e",
+    "asset_symbol": "USDC.e",
+    "assets": 2,
+    "assets_normalized": "0.000002",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x26ae58f1b215e776539f465cf3aebbda877489f6",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x26de647d5d28583395418e3718b72d55e95fa977",
+    "asset_symbol": "USDC.e",
+    "assets": 29,
+    "assets_normalized": "0.000029",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x27152c3135d83a0b5d0f6d0a2cdc1bf0bfab985c",
+    "asset_symbol": "USDC.e",
+    "assets": 41620561,
+    "assets_normalized": "41.620561",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x2920c5b42d53a99f28a9803dd38e35fd60f8f22a",
+    "asset_symbol": "USDC.e",
+    "assets": 37571,
+    "assets_normalized": "0.037571",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x2aca189767cecf31087aafc0c50a59a7d83b6376",
+    "asset_symbol": "USDC.e",
+    "assets": 2074517,
+    "assets_normalized": "2.074517",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x2be250612790d1df5ebfea46c2346654cd7a0afa",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x2e1531c10054b22d2564e020dc3a95dcc0d940cc",
+    "asset_symbol": "USDC.e",
+    "assets": 170279557,
+    "assets_normalized": "170.279557",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x2f50ffd44daca5f4b420d89b9f609d5bb30e4b53",
+    "asset_symbol": "USDC.e",
+    "assets": 400,
+    "assets_normalized": "0.0004",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x301a111d510702defb8498ba4a2d5c012bcc784c",
+    "asset_symbol": "USDC.e",
+    "assets": 8373600,
+    "assets_normalized": "8.3736",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x31929c035af08eec220a41d0668212b9cac371fe",
+    "asset_symbol": "USDC.e",
+    "assets": 25690107,
+    "assets_normalized": "25.690107",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x31c798ac8159568d44c7f0c8678bf6fdc4caf57c",
+    "asset_symbol": "USDC.e",
+    "assets": 320383,
+    "assets_normalized": "0.320383",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x331708a21f88c6d6b412ec76e530972226bbf739",
+    "asset_symbol": "USDC.e",
+    "assets": 264468883999,
+    "assets_normalized": "264468.883999",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x34f6ea796d06870db4dd5775d9e665539bc6bba0",
+    "asset_symbol": "USDC.e",
+    "assets": 7306387942,
+    "assets_normalized": "7306.387942",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x3530bbfde08a331c1ed798630876b56d04df9bc1",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x357ae2fea8aeac0f55dea43fe70ce15f4af06c64",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x3662b00cf8b66fd4714da3cdae29ada652d75630",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x37558979b0b4f7941c57be476983c564c82be96b",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x38aecf05ca8aff33ff472542f87065bfa7d04e9b",
+    "asset_symbol": "USDC.e",
+    "assets": 5259,
+    "assets_normalized": "0.005259",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x39041f1b366fe33f9a5a79de5120f2aee2577ebc",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x3a23f943181408eac424116af7b7790c94cb97a5",
+    "asset_symbol": "USDC.e",
+    "assets": 3,
+    "assets_normalized": "0.000003",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x3a9dc0b33ab3b6e6ce1ead61909f59acd7682036",
+    "asset_symbol": "USDC.e",
+    "assets": 91016888999,
+    "assets_normalized": "91016.888999",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x3b79035a5d6ccd565abbe24732c8c4843da78b26",
+    "asset_symbol": "USDC.e",
+    "assets": 513339,
+    "assets_normalized": "0.513339",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x3d72be763acf12e98c8972c0aba1335bf9455ed5",
+    "asset_symbol": "USDC.e",
+    "assets": 37733067,
+    "assets_normalized": "37.733067",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x3e7d81b7b1fae155201d1a2a6f73b66c97dede76",
+    "asset_symbol": "USDC.e",
+    "assets": 505384664,
+    "assets_normalized": "505.384664",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x3eab64866128800247f82a2fa1bff3b5a44f15e3",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x3edb7d5b494ccb9bb84d11ca25f320af2bb15f40",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x415669455d93b755efe7f20ef6f1dbdce7f68f7d",
+    "asset_symbol": "USDC.e",
+    "assets": 33,
+    "assets_normalized": "0.000033",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x4319621855a68af66e6df811bbc38d3bc747d568",
+    "asset_symbol": "USDC.e",
+    "assets": 10352520,
+    "assets_normalized": "10.35252",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x43882a4049e26179942006baba5d41af70e05e9c",
+    "asset_symbol": "USDC.e",
+    "assets": 2619729094,
+    "assets_normalized": "2619.729094",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x4403b424ea406b9fbb8bf1169e8447f658cd776b",
+    "asset_symbol": "USDC.e",
+    "assets": 335874,
+    "assets_normalized": "0.335874",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x48f15be32e417ef481fe4e6826dd90914408a1be",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x4966c5e5c1f55e0f2cc06e14e148b67bc3be1dc3",
+    "asset_symbol": "USDC.e",
+    "assets": 10446794198,
+    "assets_normalized": "10446.794198",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x4b1a5f1f92c852dca40ab1aaa1b74e7bee7c0eef",
+    "asset_symbol": "USDC.e",
+    "assets": 3219007593,
+    "assets_normalized": "3219.007593",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x4e57e6eef6e19ea3fb24cb5e77430f3c6218ea7d",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x4f82e73edb06d29ff62c91ec8f5ff06571bdeb29",
+    "asset_symbol": "USDC.e",
+    "assets": 3194172,
+    "assets_normalized": "3.194172",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x4f8efb4cc83a83e908029db0a4c782b651a3bb83",
+    "asset_symbol": "USDC.e",
+    "assets": 3250,
+    "assets_normalized": "0.00325",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x51080797994171fb43be0a034e1aa8c2c3a73c66",
+    "asset_symbol": "USDC.e",
+    "assets": 103803623,
+    "assets_normalized": "103.803623",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x517466955bc3f9194df6028796ade8b8d6c36204",
+    "asset_symbol": "USDC.e",
+    "assets": 1368267929,
+    "assets_normalized": "1368.267929",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x51f9fae0199f65445c9c3d2429c1a5672ce5b226",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x58663acb260eaa3c2c9813609fcd873db63aca23",
+    "asset_symbol": "USDC.e",
+    "assets": 105256,
+    "assets_normalized": "0.105256",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x5955ccaefff5304915eaf99d5c5312e15c1bf667",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x599b29809bc7c401a19c09a3f90daa2ede14bba0",
+    "asset_symbol": "USDC.e",
+    "assets": 1152300,
+    "assets_normalized": "1.1523",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x59fe42af041a240ecc7fd2d6e72b3ad6c08711c0",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x5a4fe7459620692b4b2f67e6eb8828006a5d2de6",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x5a8f0e61b503d958d0c9996268b373555295402d",
+    "asset_symbol": "USDC.e",
+    "assets": 5151606,
+    "assets_normalized": "5.151606",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x5be66f4095f89bd18abe4ae9d2acd5021ec433bc",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x5e2ac326365bebb490e5fdccde3b0dab35e2abe1",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x5f83f5950e2389d2f4c5cf32c7e3df39447dc60e",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x63242a4ea82847b20e506b63b0e2e2eff0cc6cb0",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x6446092a04e7f7bcda5a3440455079343afc2937",
+    "asset_symbol": "USDC.e",
+    "assets": 5,
+    "assets_normalized": "0.000005",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x6456d7fb53ff0272cb612be5c57fe4fec32a1012",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x651556576d92f62f5d0d2a0b91d7ccfd0d923498",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x663e56f5bf16872ac842ab4e24830eec22de7305",
+    "asset_symbol": "USDC.e",
+    "assets": 9740963256,
+    "assets_normalized": "9740.963256",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x664fe2accb8096bd612639eb1e05a81121a9ea9a",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x66e359ec96093235f41c9bb4dca96a8fed872402",
+    "asset_symbol": "USDC.e",
+    "assets": 2413963702,
+    "assets_normalized": "2413.963702",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x6967c1bbacce1eb79f92db11b28169c6bb635ed6",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x69b235c1c3f16f828b2394193a7abea79ee40c07",
+    "asset_symbol": "USDC.e",
+    "assets": 3,
+    "assets_normalized": "0.000003",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x69e3c891450161b7bf27f181ee85e7bae69e5b07",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x6bfe1830046d92877bb11229cede23e8590dc2c4",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x6c0bec2c64fee581d1f31d33d329f21a5223c378",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x6e4141d33021b52c91c28608403db4a0ffb50ec6",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x700fc8a184ae0cfca9044065d1cb13d3e32d018c",
+    "asset_symbol": "USDC.e",
+    "assets": 5839,
+    "assets_normalized": "0.005839",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x70c2829361a83b7a0e38cb51db4015c32f44d890",
+    "asset_symbol": "USDC.e",
+    "assets": 17,
+    "assets_normalized": "0.000017",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x72718b587bb239d5c8ce1278412768c414e44113",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x75389aa0446f098a529ac07c1af4682292a3132b",
+    "asset_symbol": "USDC.e",
+    "assets": 1046137,
+    "assets_normalized": "1.046137",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x753d8879c517caf75806c6987ab6a1700832bfb0",
+    "asset_symbol": "USDC.e",
+    "assets": 19483714172,
+    "assets_normalized": "19483.714172",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x775730162b4afc9528b86d09e76c56de2c17c320",
+    "asset_symbol": "USDC.e",
+    "assets": 6287099150,
+    "assets_normalized": "6287.09915",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x783b642755e3afc2dcb5ad96fb1271e01c6ce4a9",
+    "asset_symbol": "USDC.e",
+    "assets": 54,
+    "assets_normalized": "0.000054",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x7b8e047dfa4b27314c6a7ea5067e356f38666089",
+    "asset_symbol": "USDC.e",
+    "assets": 948790303,
+    "assets_normalized": "948.790303",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x7c21aaccd7b0cd749a06352ecce515e64e6a39fd",
+    "asset_symbol": "USDC.e",
+    "assets": 20100722256,
+    "assets_normalized": "20100.722256",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x7dff272fc395dec4a0963bf48c13a840002788ee",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x81e14e07493bd2a3ad29bb7dab1f26de9c98151b",
+    "asset_symbol": "USDC.e",
+    "assets": 401681438,
+    "assets_normalized": "401.681438",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x8325aff2ccc014468cdf20f2538d8534db7a100f",
+    "asset_symbol": "USDC.e",
+    "assets": 2584472195,
+    "assets_normalized": "2584.472195",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x88c1fa0806970af949d4d555aeb8397e88fed23e",
+    "asset_symbol": "USDC.e",
+    "assets": 1322314,
+    "assets_normalized": "1.322314",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x8b1fb4937bab5d02248a0825bf2564863237b00f",
+    "asset_symbol": "USDC.e",
+    "assets": 19,
+    "assets_normalized": "0.000019",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x8b6b44804451c26e62a70420deb03b82be6d0396",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x8d478398fe9db84ea78b7e9476cdaf2410c5e853",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x8e9a87e2ec35bafafb8a93d81b589eca92577054",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x8f14f3a923761a5983ccbb5e306e4ce1ebc7fba1",
+    "asset_symbol": "USDC.e",
+    "assets": 5921978,
+    "assets_normalized": "5.921978",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x8fe83dab1d17185f091569b440b9e3c7ead1453d",
+    "asset_symbol": "USDC.e",
+    "assets": 23,
+    "assets_normalized": "0.000023",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x917f717f521403b1d127dc12fbcecb8d26d0ec60",
+    "asset_symbol": "USDC.e",
+    "assets": 300140586,
+    "assets_normalized": "300.140586",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x922164bbbd36acf9e854acbbf32facc949fcaeef",
+    "asset_symbol": "USDC.e",
+    "assets": 128681,
+    "assets_normalized": "0.128681",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x952002e1f0cc3057bd09524cc02b4b919e266b9a",
+    "asset_symbol": "USDC.e",
+    "assets": 29266657,
+    "assets_normalized": "29.266657",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x96099781e0dab8d934c4f2b5bd696c3bb5583fa4",
+    "asset_symbol": "USDC.e",
+    "assets": 1034166481,
+    "assets_normalized": "1034.166481",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x96d77bac5749ea39263bd9bd1b400b3f9d8c91b6",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x97793872ae3b17b4c67d671fdcde3c74b3955df4",
+    "asset_symbol": "USDC.e",
+    "assets": 398805049,
+    "assets_normalized": "398.805049",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x9a669097cdf69c79d10968d0accf913fa0a4a8c1",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x9b350b26b82f3c088e1c0c345a904ee5eb655e15",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x9c0f95ac51f8a560ef8fa4b66d76cdc8d76c6b26",
+    "asset_symbol": "USDC.e",
+    "assets": 6175055610,
+    "assets_normalized": "6175.05561",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x9d0c89938f6dbf56277eae570b7d94519581b906",
+    "asset_symbol": "USDC.e",
+    "assets": 18846756,
+    "assets_normalized": "18.846756",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0x9d9c5a0901fc8d6371037cce55b60c0af4e5ad35",
+    "asset_symbol": "USDC.e",
+    "assets": 10,
+    "assets_normalized": "0.00001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xa09bc385421f18d5d5072924f9d3709bb2b76281",
+    "asset_symbol": "USDC.e",
+    "assets": 50420331,
+    "assets_normalized": "50.420331",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xa0f5c7bc86f66ce75e42e8c9bb43e0d6c9225a4e",
+    "asset_symbol": "USDC.e",
+    "assets": 56948213,
+    "assets_normalized": "56.948213",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xa0f642c42ebf0c7a71e6c49a72688c089330c709",
+    "asset_symbol": "USDC.e",
+    "assets": 2,
+    "assets_normalized": "0.000002",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xa1546b13826bc90f0a3316b4dd608c72d4fd0dbf",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xa26d789a2773e024c1bc3f95e7c6fc2794a6aa4a",
+    "asset_symbol": "USDC.e",
+    "assets": 153139774,
+    "assets_normalized": "153.139774",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xa41a6869dd74f30fa01e7e98bc058e261403e559",
+    "asset_symbol": "USDC.e",
+    "assets": 10473579,
+    "assets_normalized": "10.473579",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xa6ca824a073f22bdf4841312e69c08f6325925c1",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xa731c23d7c95436baaae9d52782f966e1ed07cc8",
+    "asset_symbol": "USDC.e",
+    "assets": 2973427,
+    "assets_normalized": "2.973427",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xa9e9e0414d52658515eb9db6dcdc6055396a031a",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xaad23a77205429720b50972c2d74f9cc8b757e25",
+    "asset_symbol": "USDC.e",
+    "assets": 676,
+    "assets_normalized": "0.000676",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xab9cde6b97fc31278fe1e496bcc96c157692c17f",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xac041df48df9791b0654f1dbbf2cc8450c5f2e9d",
+    "asset_symbol": "USDC.e",
+    "assets": 63882,
+    "assets_normalized": "0.063882",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xb0fec2b1087dbe3c269f5997bfbbc431c3715157",
+    "asset_symbol": "USDC.e",
+    "assets": 355304,
+    "assets_normalized": "0.355304",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xb3380c108fb6a494f0a60ea0b7aefaa0d3c703a9",
+    "asset_symbol": "USDC.e",
+    "assets": 1155599360,
+    "assets_normalized": "1155.59936",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xb539bdcbabd7ab95fd1fad26a3abc7d467d77777",
+    "asset_symbol": "USDC.e",
+    "assets": 23510,
+    "assets_normalized": "0.02351",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xb53a09f0754edb45abdba52d6cf538589ecabee4",
+    "asset_symbol": "USDC.e",
+    "assets": 538735,
+    "assets_normalized": "0.538735",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xb5e6b895734409df411a052195eb4ee7e40d8696",
+    "asset_symbol": "USDC.e",
+    "assets": 1454402,
+    "assets_normalized": "1.454402",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xb5ecb41eb1f96b183619b43911eb4236cd1a7117",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xb854742a0d9aa0754765a834f0eafe6d67fe2d90",
+    "asset_symbol": "USDC.e",
+    "assets": 23259157,
+    "assets_normalized": "23.259157",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xb943e779c11321230ab0df59dea32b9e2e2a5da3",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xb95d4785bb6db6653903f5c4c23fa6feb4cb8b4f",
+    "asset_symbol": "USDC.e",
+    "assets": 2072806193,
+    "assets_normalized": "2072.806193",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xb9954e78109112f93ca11860f13f4487f1909ef8",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xba1333333333a1ba1108e8412f11850a5c319ba9",
+    "asset_symbol": "USDC.e",
+    "assets": 24173765951,
+    "assets_normalized": "24173.765951",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xba645c54688462878d00214a3dc500b048d01f80",
+    "asset_symbol": "USDC.e",
+    "assets": 1054316509,
+    "assets_normalized": "1054.316509",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xbfc293b9078a899b595726798149f01735165e36",
+    "asset_symbol": "USDC.e",
+    "assets": 283554542,
+    "assets_normalized": "283.554542",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xbfca6a375a344b6d3dd514e74f343868849b9e99",
+    "asset_symbol": "USDC.e",
+    "assets": 4048682,
+    "assets_normalized": "4.048682",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xc02d68b1287534d8d12a9be01a5b4ef5a1771ba3",
+    "asset_symbol": "USDC.e",
+    "assets": 30728994,
+    "assets_normalized": "30.728994",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xc36d7dd864b1705db69a06bb50610497f78faf23",
+    "asset_symbol": "USDC.e",
+    "assets": 105049,
+    "assets_normalized": "0.105049",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xc3ce22bcbe87bf7bd0976b370065027e869cfbfd",
+    "asset_symbol": "USDC.e",
+    "assets": 10332423480,
+    "assets_normalized": "10332.42348",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xc5042f9d9a18e95547864438455c8f05b4987399",
+    "asset_symbol": "USDC.e",
+    "assets": 7320,
+    "assets_normalized": "0.00732",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xc683299fe876b1d80092979691f380bf948f4ba6",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xc82e26f38df2c3ab2eb6a9af92744cba413257c9",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xc9715ef92824eddae905409bd97a3dad529fe1b9",
+    "asset_symbol": "USDC.e",
+    "assets": 206918275,
+    "assets_normalized": "206.918275",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xc9b7f062a8fd06ca0af3055a82692d6d55f64232",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xcb397b4e2612ee99a1591cb40db3c837bc1b2c35",
+    "asset_symbol": "USDC.e",
+    "assets": 39818519888,
+    "assets_normalized": "39818.519888",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xce57c04483ea2ff43bb4a8412cd9350cf2c169bd",
+    "asset_symbol": "USDC.e",
+    "assets": 218572,
+    "assets_normalized": "0.218572",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xd0e1d313661a45366feb20442031db7e22eb86a5",
+    "asset_symbol": "USDC.e",
+    "assets": 115238297,
+    "assets_normalized": "115.238297",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xd1c47a324e0bd04d7420896bf10f7966335295f7",
+    "asset_symbol": "USDC.e",
+    "assets": 2521284388,
+    "assets_normalized": "2521.284388",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xd39b2a01d4dca42f32ff52244a1b28811e40045f",
+    "asset_symbol": "USDC.e",
+    "assets": 23419,
+    "assets_normalized": "0.023419",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xd3a1c86410c0600e358894451da1009b534b43b9",
+    "asset_symbol": "USDC.e",
+    "assets": 1042984,
+    "assets_normalized": "1.042984",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xd855459bbeecd8e19346122f2b3519695b048249",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xda17792426279c05738811726c76bb025715dd5f",
+    "asset_symbol": "USDC.e",
+    "assets": 838512,
+    "assets_normalized": "0.838512",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xdc7c5b169e17aef7dbc51e0a19eb9223a96b0193",
+    "asset_symbol": "USDC.e",
+    "assets": 2093506003,
+    "assets_normalized": "2093.506003",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xdd66522e580d95517205f1f74791a7132e2873df",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xde3a1f3d46c5f5ea434cf9cbc6242423d5c55e6a",
+    "asset_symbol": "USDC.e",
+    "assets": 10573949,
+    "assets_normalized": "10.573949",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xde6d22b7b9ff1b05ad580e073bfc6fcc00ceb561",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xdedcf5806c4968c6397eee97e68047bda339d0c1",
+    "asset_symbol": "USDC.e",
+    "assets": 1018273,
+    "assets_normalized": "1.018273",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xdee9034869f929e21272ffdd0d1500994b23672e",
+    "asset_symbol": "USDC.e",
+    "assets": 16848419,
+    "assets_normalized": "16.848419",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xdf67d976307886ec39573eb979b1af790aea6787",
+    "asset_symbol": "USDC.e",
+    "assets": 1051776,
+    "assets_normalized": "1.051776",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xe23afa66d48755b82f4e3b3d762803ed38af6d02",
+    "asset_symbol": "USDC.e",
+    "assets": 435053179,
+    "assets_normalized": "435.053179",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xe25e95f75432a79d31256cc3026e24aaa5540882",
+    "asset_symbol": "USDC.e",
+    "assets": 5126,
+    "assets_normalized": "0.005126",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xe2cbb3353013fb8dcf7098ed925a9c442a674080",
+    "asset_symbol": "USDC.e",
+    "assets": 103469093,
+    "assets_normalized": "103.469093",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xe482f04253e7b45fb69064e99dcf36a723c27d1f",
+    "asset_symbol": "USDC.e",
+    "assets": 6,
+    "assets_normalized": "0.000006",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xe5817a6832a649d97aa8d1c87ed0499112b03d13",
+    "asset_symbol": "USDC.e",
+    "assets": 1017764,
+    "assets_normalized": "1.017764",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xe818c7b2b5739482f5d1bb044408d640a9fdabb3",
+    "asset_symbol": "USDC.e",
+    "assets": 346167533,
+    "assets_normalized": "346.167533",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xe8b8f2467d096740f9f71a3a98b3e424fbc98531",
+    "asset_symbol": "USDC.e",
+    "assets": 90884,
+    "assets_normalized": "0.090884",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xea869669210a69b035b382e0f2a498b87dc6a45c",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xeda49bce2f38d284f839be1f4f2e23e6c7cc7dbd",
+    "asset_symbol": "USDC.e",
+    "assets": 66252,
+    "assets_normalized": "0.066252",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xee25a745cea4e061c7a163396e79ae90ba804040",
+    "asset_symbol": "USDC.e",
+    "assets": 2047,
+    "assets_normalized": "0.002047",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xefb37bd3a9ed2f768bf6f79d0379fe7f9be50f49",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": true,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xf09bef01836dabbcb8075b42fc9bb172d7d1141e",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xf177414566d855fdc106f73815cdbece6379c1d0",
+    "asset_symbol": "USDC.e",
+    "assets": 1624743,
+    "assets_normalized": "1.624743",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xf3b8d66a259e3f2adfdf51913b553ae4d4215e06",
+    "asset_symbol": "USDC.e",
+    "assets": 4,
+    "assets_normalized": "0.000004",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xf4a3adf696838d8f8035cdb4fcfa9403e3a16863",
+    "asset_symbol": "USDC.e",
+    "assets": 1,
+    "assets_normalized": "0.000001",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xf7b68b15c52d4ee5380f6dc8c5281fe10c9c410d",
+    "asset_symbol": "USDC.e",
+    "assets": 195591557,
+    "assets_normalized": "195.591557",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xf88c303d383ac9053841531fb64720cf92a8d8d6",
+    "asset_symbol": "USDC.e",
+    "assets": 10439170,
+    "assets_normalized": "10.43917",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xf93a5f0a4925eec32cd585641c88a498523f383c",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xf9a5a730a684eb6f32189a991efb79573042b8f2",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xfbe713879a1de3338752f2d9689b33b930ee579c",
+    "asset_symbol": "USDC.e",
+    "assets": 3770239816,
+    "assets_normalized": "3770.239816",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xfbef07ac09f48a8fa43fa86919fa7eec6c853539",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xfcf995e9b204d71287bc9d7e511bec7794c52458",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xfd7429b10b6678b5755decf52c21b289fcbdb3b9",
+    "asset_symbol": "USDC.e",
+    "assets": 567000957,
+    "assets_normalized": "567.000957",
+    "is_contract": false,
+    "block_number": 54144258
+  },
+  {
+    "network_id": 146,
+    "market": "0xf6bc16b79c469b94cdd25f3e2334dd4fee47a581",
+    "account": "0xffcf88f306a794cadd44675a1da50a5842f0ec2e",
+    "asset_symbol": "USDC.e",
+    "assets": 0,
+    "assets_normalized": "0",
+    "is_contract": false,
+    "block_number": 54144258
+  }
+]

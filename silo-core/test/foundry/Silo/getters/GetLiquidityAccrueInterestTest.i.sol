@@ -88,11 +88,7 @@ contract GetLiquidityAccrueInterestTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_liquidity_whenDepositAndBorrow
     */
-    function test_liquidity_whenDepositAndBorrow_1token(uint128 _toDeposit, uint128 _toBorrow) public {
-        _liquidity_whenDepositAndBorrow(_toDeposit, _toBorrow);
-    }
-
-    function _liquidity_whenDepositAndBorrow(uint128 _toDeposit, uint128 _toBorrow) private {
+    function test_liquidity_whenDepositAndBorrow(uint128 _toDeposit, uint128 _toBorrow) public {
         vm.assume(_toDeposit > 0);
         vm.assume(_toBorrow > 0);
         vm.assume(_toBorrow < _toDeposit / 2);
@@ -119,11 +115,7 @@ contract GetLiquidityAccrueInterestTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_liquidity_whenDepositAndBorrowWithInterest
     */
-    function test_liquidity_whenDepositAndBorrowWithInterest_1token(uint128 _toDeposit, uint128 _toBorrow) public {
-        _liquidity_whenDepositAndBorrowWithInterest(_toDeposit, _toBorrow);
-    }
-
-    function _liquidity_whenDepositAndBorrowWithInterest(uint128 _toDeposit, uint128 _toBorrow) private {
+    function test_liquidity_whenDepositAndBorrowWithInterest(uint128 _toDeposit, uint128 _toBorrow) public {
         vm.assume(_toDeposit > 0);
         vm.assume(_toBorrow > 0);
         vm.assume(_toBorrow < _toDeposit / 2);

@@ -145,10 +145,9 @@ contract PreviewWithdrawTest is SiloLittleHelper, Test {
     }
 
     function _depositForTestPreview(uint256 _assets) internal {
-        _depositCollateral({
+        _depositForBorrow({
             _assets: _assets,
             _depositor: depositor,
-            _toSilo1: true,
             _collateralType: _collateralType()
         });
     }
@@ -156,8 +155,8 @@ contract PreviewWithdrawTest is SiloLittleHelper, Test {
     function _createSiloUsage() internal {
         _depositForBorrow(type(uint128).max, depositor);
 
-        _depositCollateral(type(uint128).max, borrower, _sameAsset(), _collateralType());
-        _borrow(type(uint64).max, borrower, _sameAsset());
+        _deposit(type(uint128).max, borrower, _collateralType());
+        _borrow(type(uint64).max, borrower);
     }
 
     function _applyInterest() internal {
@@ -217,10 +216,6 @@ contract PreviewWithdrawTest is SiloLittleHelper, Test {
 
     function _collateralType() internal pure virtual returns (ISilo.CollateralType) {
         return ISilo.CollateralType.Collateral;
-    }
-
-    function _sameAsset() internal pure virtual returns (bool) {
-        return false;
     }
 
     function _assertEqPrevAmountInSharesWhenNoInterest(uint256 _preview, uint256 _amountIn) private pure {

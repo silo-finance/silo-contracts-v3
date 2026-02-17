@@ -7,10 +7,9 @@ import {IERC3156FlashLender} from "silo-core/contracts/interfaces/IERC3156FlashL
 import {ISilo} from "silo-core/contracts/Silo.sol";
 
 // Libraries
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 // Test Contracts
-import {Actor} from "../../utils/Actor.sol";
 import {BaseHandler} from "../../base/BaseHandler.t.sol";
 
 /// @title FlashLoanHandler

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
+
 pragma solidity 0.8.28;
 
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
@@ -6,6 +7,7 @@ import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
 import {ISilo, IERC4626, IERC3156FlashLender} from "./interfaces/ISilo.sol";
 import {IShareToken} from "./interfaces/IShareToken.sol";
+import {IVersioned} from "./interfaces/IVersioned.sol";
 
 import {IERC3156FlashBorrower} from "./interfaces/IERC3156FlashBorrower.sol";
 import {ISiloConfig} from "./interfaces/ISiloConfig.sol";
@@ -49,6 +51,12 @@ contract Silo is ISilo, ShareCollateralToken {
     /// @inheritdoc IShareToken
     function silo() external view virtual override returns (ISilo) {
         return this;
+    }
+
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure virtual override returns (string memory) {
+        return "Silo 4.0.0";
     }
 
     /// @inheritdoc ISilo
@@ -408,7 +416,7 @@ contract Silo is ISilo, ShareCollateralToken {
 
     /// @inheritdoc ISilo
     function maxBorrow(address _borrower) external view virtual returns (uint256 maxAssets) {
-        (maxAssets,) = Views.maxBorrow({_borrower: _borrower, _sameAsset: false});
+        (maxAssets,) = Views.maxBorrow({_borrower: _borrower});
     }
 
     /// @inheritdoc ISilo
@@ -447,7 +455,7 @@ contract Silo is ISilo, ShareCollateralToken {
 
     /// @inheritdoc ISilo
     function maxBorrowShares(address _borrower) external view virtual returns (uint256 maxShares) {
-        (,maxShares) = Views.maxBorrow({_borrower: _borrower, _sameAsset: false});
+        (,maxShares) = Views.maxBorrow({_borrower: _borrower});
     }
 
     /// @inheritdoc ISilo
@@ -485,31 +493,13 @@ contract Silo is ISilo, ShareCollateralToken {
     }
 
     /// @inheritdoc ISilo
-    function maxBorrowSameAsset(address _borrower) external view virtual returns (uint256 maxAssets) {
-        (maxAssets,) = Views.maxBorrow({_borrower: _borrower, _sameAsset: true});
+    function maxBorrowSameAsset(address) external pure virtual returns (uint256) {
+        return 0;
     }
 
     /// @inheritdoc ISilo
-    function borrowSameAsset(uint256 _assets, address _receiver, address _borrower)
-        external
-        virtual
-        returns (uint256 shares)
-    {
-        uint256 assets;
-        bool collateralTypeChanged;
-
-        (assets, shares, collateralTypeChanged) = Actions.borrowSameAsset(
-            BorrowArgs({
-                assets: _assets,
-                shares: 0,
-                receiver: _receiver,
-                borrower: _borrower
-            })
-        );
-
-        emit Borrow(msg.sender, _receiver, _borrower, assets, shares);
-
-        if (collateralTypeChanged) emit CollateralTypeChanged(msg.sender);
+    function borrowSameAsset(uint256, address, address) external virtual returns (uint256) {
+        revert Deprecated();
     }
 
     /// @inheritdoc ISilo
@@ -543,8 +533,7 @@ contract Silo is ISilo, ShareCollateralToken {
 
     /// @inheritdoc ISilo
     function switchCollateralToThisSilo() external virtual {
-        Actions.switchCollateralToThisSilo();
-        emit CollateralTypeChanged(msg.sender);
+        revert Deprecated();
     }
 
     /// @inheritdoc ISilo

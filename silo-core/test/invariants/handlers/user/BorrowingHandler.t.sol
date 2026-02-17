@@ -6,10 +6,9 @@ import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ISilo} from "silo-core/contracts/Silo.sol";
 
 // Libraries
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 // Test Contracts
-import {Actor} from "../../utils/Actor.sol";
 import {BaseHandler} from "../../base/BaseHandler.t.sol";
 import {TestERC20} from "../../utils/mocks/TestERC20.sol";
 
@@ -62,36 +61,6 @@ contract BorrowingHandler is BaseHandler {
         }
     }
 
-    function borrowSameAsset(uint256 _assets, uint8 i, uint8 j) external setupRandomActor(i) {
-        bool success;
-        bytes memory returnData;
-
-        // Get one of the three actors randomly
-        address receiver = _getRandomActor(i);
-
-        address target = _getRandomSilo(j);
-
-        _before();
-        (success, returnData) = actor.proxy(
-            target, abi.encodeWithSelector(ISilo.borrowSameAsset.selector, _assets, receiver, address(actor))
-        );
-
-        if (success) {
-            _after();
-
-            assertApproxEqAbs(
-                defaultVarsBefore[target].debtAssets + _assets,
-                defaultVarsAfter[target].debtAssets,
-                1,
-                BORROWING_HSPOST_M
-            );
-
-            assertEq(
-                defaultVarsAfter[target].balance + _assets, defaultVarsBefore[target].balance, BORROWING_HSPOST_O
-            );
-        }
-    }
-
     function borrowShares(uint256 _shares, uint8 i, uint8 j) external setupRandomActor(i) {
         bool success;
         bytes memory returnData;
@@ -110,14 +79,10 @@ contract BorrowingHandler is BaseHandler {
             _after();
 
             assertGe(
-                defaultVarsAfter[target].userDebtShares,
-                defaultVarsBefore[target].userDebtShares,
-                BORROWING_HSPOST_Q
+                defaultVarsAfter[target].userDebtShares, defaultVarsBefore[target].userDebtShares, BORROWING_HSPOST_Q
             );
 
-            assertGe(
-                defaultVarsAfter[target].userBalance, defaultVarsBefore[target].userBalance, BORROWING_HSPOST_R
-            );
+            assertGe(defaultVarsAfter[target].userBalance, defaultVarsBefore[target].userBalance, BORROWING_HSPOST_R);
         }
     }
 
@@ -171,21 +136,6 @@ contract BorrowingHandler is BaseHandler {
                 assertEq(IERC20(_getRandomDebtToken(j)).balanceOf(borrower), 0, BORROWING_HSPOST_B);
             }
             assertLe(defaultVarsAfter[target].userDebt, defaultVarsBefore[target].userDebt, BORROWING_HSPOST_H);
-        }
-    }
-
-    function switchCollateralToThisSilo(uint8 i) external setupRandomActor(0) {
-        bool success;
-        bytes memory returnData;
-
-        address target = _getRandomSilo(i);
-
-        _before();
-        (success, returnData) =
-            actor.proxy(target, abi.encodeWithSelector(ISilo.switchCollateralToThisSilo.selector));
-
-        if (success) {
-            _after();
         }
     }
 

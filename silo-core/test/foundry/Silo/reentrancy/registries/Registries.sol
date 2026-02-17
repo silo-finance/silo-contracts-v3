@@ -7,6 +7,7 @@ import {SiloConfigMethodsRegistry} from "./SiloConfigMethodsRegistry.sol";
 import {CollateralShareTokenMethodsRegistry} from "./CollateralShareTokenMethodsRegistry.sol";
 import {DebtShareTokenMethodsRegistry} from "./DebtShareTokenMethodsRegistry.sol";
 import {SiloHookV1MethodsRegistry} from "./SiloHookV1MethodsRegistry.sol";
+import {SiloHookV2MethodsRegistry} from "./SiloHookV2MethodsRegistry.sol";
 import {LeverageMethodsRegistry} from "./LeverageMethodsRegistry.sol";
 
 contract Registries {
@@ -18,6 +19,7 @@ contract Registries {
         registry.push(IMethodsRegistry(address(new CollateralShareTokenMethodsRegistry())));
         registry.push(IMethodsRegistry(address(new DebtShareTokenMethodsRegistry())));
         registry.push(IMethodsRegistry(address(new SiloHookV1MethodsRegistry())));
+        registry.push(IMethodsRegistry(address(new SiloHookV2MethodsRegistry())));
         registry.push(IMethodsRegistry(address(new LeverageMethodsRegistry())));
     }
 

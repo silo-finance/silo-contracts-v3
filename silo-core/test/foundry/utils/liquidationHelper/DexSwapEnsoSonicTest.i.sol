@@ -3,25 +3,26 @@ pragma solidity ^0.8.0;
 
 import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
+import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
 import {DexSwap} from "silo-core/contracts/utils/liquidationHelper/DexSwap.sol";
 
 /*
- FOUNDRY_PROFILE=core_test forge test --gas-price 1 -vv --mc DexSwapEnsoSonicTest
+ FOUNDRY_PROFILE=core_test forge test --gas-price 1 --ffi -vv --mc DexSwapEnsoSonicTest
 */
 contract DexSwapEnsoSonicTest is IntegrationTest {
     DexSwap dex; // solhint-disable-line var-name-mixedcase
 
-    function _setUp() public {
+    function setUp() public {
         uint256 blockToFork = 36036102;
         vm.createSelectFork(vm.envString("RPC_SONIC"), blockToFork);
+        AddrLib.init();
         dex = new DexSwap(getAddress(AddrKey.ENSO_ROUTER));
     }
 
-    function test_skip_fillQuote_PT() public {
-        _setUp();
+    function test_fillQuote_PT() public {
         emit log_named_address("DexSwap", address(dex));
 
         address whale = 0xbdA08253cdC574FD1B48BaD82256b09D6ea1aa2E;

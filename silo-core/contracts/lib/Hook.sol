@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+
 pragma solidity ^0.8.28;
 
 import {ISilo} from "../interfaces/ISilo.sol";
@@ -185,12 +186,12 @@ library Hook {
     uint256 internal constant NONE = 0;
     uint256 internal constant DEPOSIT = 2 ** 1;
     uint256 internal constant BORROW = 2 ** 2;
-    uint256 internal constant BORROW_SAME_ASSET = 2 ** 3;
+    uint256 internal constant BORROW_SAME_ASSET = 2 ** 3; // deprecated
     uint256 internal constant REPAY = 2 ** 4;
     uint256 internal constant WITHDRAW = 2 ** 5;
     uint256 internal constant FLASH_LOAN = 2 ** 6;
     uint256 internal constant TRANSITION_COLLATERAL = 2 ** 7;
-    uint256 internal constant SWITCH_COLLATERAL = 2 ** 8;
+    uint256 internal constant SWITCH_COLLATERAL = 2 ** 8; // deprecated
     uint256 internal constant SHARE_TOKEN_TRANSFER = 2 ** 10;
     uint256 internal constant COLLATERAL_TOKEN = 2 ** 11;
     uint256 internal constant PROTECTED_TOKEN = 2 ** 12;

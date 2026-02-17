@@ -1,0 +1,96 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "silo-core/contracts/utils/Tower.sol": {
+      "content": "// SPDX-License-Identifier: BUSL-1.1\npragma solidity 0.8.28;\n\nimport \"openzeppelin5/access/Ownable.sol\";\n\n/// @title Tower\n/// @notice Utility contract that stores addresses of any contracts\ncontract Tower is Ownable {\n    mapping(bytes32 => address) private _coordinates;\n\n    event NewCoordinates(string key, address indexed newContract);\n    event UpdateCoordinates(string key, address indexed newContract);\n    event RemovedCoordinates(string key);\n\n    error AddressZero();\n    error KeyIsTaken();\n    error EmptyCoordinates();\n\n    constructor() Ownable(msg.sender) {}\n\n    /// @dev Registering new contract\n    /// @param _key key under which contract will be stored\n    /// @param _contract contract address\n    function register(string calldata _key, address _contract) external virtual onlyOwner {\n        bytes32 key = makeKey(_key);\n        if (_coordinates[key] != address(0)) revert KeyIsTaken();\n        if (_contract == address(0)) revert AddressZero();\n\n        _coordinates[key] = _contract;\n        emit NewCoordinates(_key, _contract);\n    }\n\n    /// @dev Removing coordinates\n    /// @param _key key to remove\n    function unregister(string calldata _key) external virtual onlyOwner {\n        bytes32 key = makeKey(_key);\n        if (_coordinates[key] == address(0)) revert EmptyCoordinates();\n\n        _coordinates[key] = address(0);\n        emit RemovedCoordinates(_key);\n    }\n\n    /// @dev Update key with new contract address\n    /// @param _key key under which new contract will be stored\n    /// @param _contract contract address\n    function update(string calldata _key, address _contract) external virtual onlyOwner {\n        bytes32 key = makeKey(_key);\n        if (_coordinates[key] == address(0)) revert EmptyCoordinates();\n        if (_contract == address(0)) revert AddressZero();\n\n        _coordinates[key] = _contract;\n        emit UpdateCoordinates(_key, _contract);\n    }\n\n    /// @param _key string key\n    /// @return address coordinates for the `_key`\n    function coordinates(string calldata _key) external view virtual returns (address) {\n        return _coordinates[makeKey(_key)];\n    }\n\n    /// @param _key raw bytes32 key\n    /// @return address coordinates for the raw `_key`\n    function rawCoordinates(bytes32 _key) external view virtual returns (address) {\n        return _coordinates[_key];\n    }\n\n    /// @dev generating mapping key based on string\n    /// @param _key string key\n    /// @return bytes32 representation of the `_key`\n    function makeKey(string calldata _key) public pure virtual returns (bytes32) {\n        return keccak256(abi.encodePacked(_key));\n    }\n}\n"
+    },
+    "gitmodules/openzeppelin-contracts-5/contracts/access/Ownable.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts (last updated v5.0.0) (access/Ownable.sol)\n\npragma solidity ^0.8.20;\n\nimport {Context} from \"../utils/Context.sol\";\n\n/**\n * @dev Contract module which provides a basic access control mechanism, where\n * there is an account (an owner) that can be granted exclusive access to\n * specific functions.\n *\n * The initial owner is set to the address provided by the deployer. This can\n * later be changed with {transferOwnership}.\n *\n * This module is used through inheritance. It will make available the modifier\n * `onlyOwner`, which can be applied to your functions to restrict their use to\n * the owner.\n */\nabstract contract Ownable is Context {\n    address private _owner;\n\n    /**\n     * @dev The caller account is not authorized to perform an operation.\n     */\n    error OwnableUnauthorizedAccount(address account);\n\n    /**\n     * @dev The owner is not a valid owner account. (eg. `address(0)`)\n     */\n    error OwnableInvalidOwner(address owner);\n\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\n\n    /**\n     * @dev Initializes the contract setting the address provided by the deployer as the initial owner.\n     */\n    constructor(address initialOwner) {\n        if (initialOwner == address(0)) {\n            revert OwnableInvalidOwner(address(0));\n        }\n        _transferOwnership(initialOwner);\n    }\n\n    /**\n     * @dev Throws if called by any account other than the owner.\n     */\n    modifier onlyOwner() {\n        _checkOwner();\n        _;\n    }\n\n    /**\n     * @dev Returns the address of the current owner.\n     */\n    function owner() public view virtual returns (address) {\n        return _owner;\n    }\n\n    /**\n     * @dev Throws if the sender is not the owner.\n     */\n    function _checkOwner() internal view virtual {\n        if (owner() != _msgSender()) {\n            revert OwnableUnauthorizedAccount(_msgSender());\n        }\n    }\n\n    /**\n     * @dev Leaves the contract without owner. It will not be possible to call\n     * `onlyOwner` functions. Can only be called by the current owner.\n     *\n     * NOTE: Renouncing ownership will leave the contract without an owner,\n     * thereby disabling any functionality that is only available to the owner.\n     */\n    function renounceOwnership() public virtual onlyOwner {\n        _transferOwnership(address(0));\n    }\n\n    /**\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\n     * Can only be called by the current owner.\n     */\n    function transferOwnership(address newOwner) public virtual onlyOwner {\n        if (newOwner == address(0)) {\n            revert OwnableInvalidOwner(address(0));\n        }\n        _transferOwnership(newOwner);\n    }\n\n    /**\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\n     * Internal function without access restriction.\n     */\n    function _transferOwnership(address newOwner) internal virtual {\n        address oldOwner = _owner;\n        _owner = newOwner;\n        emit OwnershipTransferred(oldOwner, newOwner);\n    }\n}\n"
+    },
+    "gitmodules/openzeppelin-contracts-5/contracts/utils/Context.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n// OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)\n\npragma solidity ^0.8.20;\n\n/**\n * @dev Provides information about the current execution context, including the\n * sender of the transaction and its data. While these are generally available\n * via msg.sender and msg.data, they should not be accessed in such a direct\n * manner, since when dealing with meta-transactions the account sending and\n * paying for execution may not be the actual sender (as far as an application\n * is concerned).\n *\n * This contract is only required for intermediate, library-like contracts.\n */\nabstract contract Context {\n    function _msgSender() internal view virtual returns (address) {\n        return msg.sender;\n    }\n\n    function _msgData() internal view virtual returns (bytes calldata) {\n        return msg.data;\n    }\n\n    function _contextSuffixLength() internal view virtual returns (uint256) {\n        return 0;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "remappings": [
+      "forge-std/=gitmodules/forge-std/src/",
+      "silo-foundry-utils/=gitmodules/silo-foundry-utils/contracts/",
+      "properties/=gitmodules/crytic/properties/contracts/",
+      "silo-core/=silo-core/",
+      "silo-oracles/=silo-oracles/",
+      "silo-vaults/=silo-vaults/",
+      "ve-silo/=ve-silo/",
+      "@openzeppelin/=gitmodules/openzeppelin-contracts-5/",
+      "morpho-blue/=gitmodules/morpho-blue/src/",
+      "openzeppelin5/=gitmodules/openzeppelin-contracts-5/contracts/",
+      "openzeppelin5-upgradeable/=gitmodules/openzeppelin-contracts-upgradeable-5/contracts/",
+      "chainlink/=gitmodules/chainlink/contracts/src/",
+      "chainlink-ccip/=gitmodules/chainlink-ccip/contracts/src/",
+      "uniswap/=gitmodules/uniswap/",
+      "@uniswap/v3-core/=gitmodules/uniswap/v3-core/",
+      "balancer-labs/v2-solidity-utils/=external/balancer-v2-monorepo/pkg/solidity-utils/contracts/",
+      "balancer-labs/v2-interfaces/=external/balancer-v2-monorepo/pkg/interfaces/contracts/",
+      "balancer-labs/v2-liquidity-mining/=external/balancer-v2-monorepo/pkg/liquidity-mining/contracts/",
+      "pyth-sdk-solidity/=gitmodules/pyth-sdk-solidity/target_chains/ethereum/sdk/solidity/",
+      "a16z-erc4626-tests/=gitmodules/a16z-erc4626-tests/",
+      "ERC4626/=gitmodules/crytic/properties/lib/ERC4626/contracts/",
+      "createx/=gitmodules/pyth-sdk-solidity/lazer/contracts/evm/lib/createx/src/",
+      "crytic/=gitmodules/crytic/",
+      "ds-test/=gitmodules/openzeppelin-contracts-5/lib/forge-std/lib/ds-test/src/",
+      "erc4626-tests/=gitmodules/openzeppelin-contracts-5/lib/erc4626-tests/",
+      "halmos-cheatcodes/=gitmodules/morpho-blue/lib/halmos-cheatcodes/src/",
+      "openzeppelin-contracts-5/=gitmodules/openzeppelin-contracts-5/",
+      "openzeppelin-contracts-upgradeable-5/=gitmodules/openzeppelin-contracts-upgradeable-5/",
+      "openzeppelin-contracts-upgradeable/=gitmodules/pyth-sdk-solidity/lazer/contracts/evm/lib/openzeppelin-contracts-upgradeable/",
+      "openzeppelin-contracts/=gitmodules/openzeppelin-contracts-upgradeable-5/lib/openzeppelin-contracts/",
+      "solady/=gitmodules/pyth-sdk-solidity/lazer/contracts/evm/lib/createx/lib/solady/",
+      "solmate/=gitmodules/crytic/properties/lib/solmate/src/"
+    ],
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "metadata": {
+      "useLiteralContent": false,
+      "bytecodeHash": "ipfs",
+      "appendCBOR": true
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "devdoc",
+          "userdoc",
+          "metadata",
+          "abi"
+        ]
+      }
+    },
+    "evmVersion": "cancun",
+    "viaIR": false,
+    "libraries": {
+      "silo-core/contracts/hooks/liquidation/lib/PartialLiquidationExecLib.sol": {
+        "PartialLiquidationExecLib": "0x8C2f5a2025dE9c28Bbf57D4Fc4dB5C234833B808"
+      },
+      "silo-core/contracts/lib/Actions.sol": {
+        "Actions": "0xF1B19D34370498F5665deE7d92b9f2664B8442c2"
+      },
+      "silo-core/contracts/lib/ShareCollateralTokenLib.sol": {
+        "ShareCollateralTokenLib": "0x92f17eca2556E3c30aff8255d0A756B589A56729"
+      },
+      "silo-core/contracts/lib/ShareTokenLib.sol": {
+        "ShareTokenLib": "0xf9E2c291a4094B65feb9e94F0F0237Df887888F8"
+      },
+      "silo-core/contracts/lib/SiloLendingLib.sol": {
+        "SiloLendingLib": "0x1f35E08C1F60551b65eD28CB8fC2aBC45b4757B9"
+      },
+      "silo-core/contracts/lib/SiloLensLib.sol": {
+        "SiloLensLib": "0xA28bbCf24306cef5DCfF3529FE0f6074b1236193"
+      },
+      "silo-core/contracts/lib/Views.sol": {
+        "Views": "0xEEC50718ebe37FD7511BCB80e3669a8ffc83Bf2D"
+      }
+    }
+  }
+}

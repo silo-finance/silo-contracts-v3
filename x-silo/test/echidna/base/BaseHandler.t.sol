@@ -5,7 +5,7 @@ pragma solidity ^0.8.19;
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 
 // Libraries
-import {TestERC20} from "../utils/mocks/TestERC20.sol";
+import {TestERC20} from "silo-core/test/invariants/utils/mocks/TestERC20.sol";
 
 // Contracts
 import {Actor} from "../utils/Actor.sol";

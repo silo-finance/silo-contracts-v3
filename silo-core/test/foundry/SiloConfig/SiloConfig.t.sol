@@ -408,74 +408,17 @@ contract SiloConfigTest is Test {
     */
     function test_setCollateralSilo_revertOnOnlySilo() public {
         vm.expectRevert(ISiloConfig.OnlySilo.selector);
-        _siloConfig.setThisSiloAsCollateralSilo(makeAddr("borrower"));
-
-        vm.expectRevert(ISiloConfig.OnlySilo.selector);
         _siloConfig.setOtherSiloAsCollateralSilo(makeAddr("borrower"));
-    }
-
-    /*
-    forge test -vv --mt test_setThisSiloAsCollateralSilo
-    */
-    function test_setThisSiloAsCollateralSilo() public {
-        address borrower = makeAddr("borrower");
-
-        vm.prank(_silo0Default);
-        _siloConfig.setThisSiloAsCollateralSilo(borrower);
-
-        address configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
-
-        assertEq(address(_silo0Default), configuredSilo);
-
-        vm.prank(_silo1Default);
-        _siloConfig.setThisSiloAsCollateralSilo(borrower);
-
-        configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
-
-        assertEq(address(_silo1Default), configuredSilo);
     }
 
     /*
     forge test -vv --mt test_setThisSiloAsCollateralSilo_returnValue
     */
-    function test_setThisSiloAsCollateralSilo_returnValue() public {
+    function test_setThisSiloAsCollateralSilo_deprecated() public {
         address borrower = makeAddr("borrower");
 
-        vm.startPrank(_silo0Default);
-
-        assertTrue(_siloConfig.setThisSiloAsCollateralSilo(borrower), "change on initial set");
-        assertFalse(_siloConfig.setThisSiloAsCollateralSilo(borrower), "NO change on same value");
-        assertTrue(_siloConfig.setOtherSiloAsCollateralSilo(borrower), "change on changing to other silo");
-        assertFalse(_siloConfig.setOtherSiloAsCollateralSilo(borrower), "NO change on changing again");
-        assertTrue(_siloConfig.setThisSiloAsCollateralSilo(borrower), "change on switch back to this silo set");
-
-        vm.stopPrank();
-    }
-
-    /*
-    forge test -vv --mt test_setThisSiloAsCollateralSilo_MultipleTimes
-    */
-    function test_setThisSiloAsCollateralSilo_MultipleTimes() public {
-        address borrower = makeAddr("borrower");
-        address configuredSilo;
-
-        for (uint256 i; i < 3; i++) {
-            vm.prank(_silo0Default);
-            _siloConfig.setThisSiloAsCollateralSilo(borrower);
-
-            configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
-
-            assertEq(address(_silo0Default), configuredSilo);
-        }
-
-        for (uint256 i; i < 3; i++) {
-            vm.prank(_silo1Default);
-            _siloConfig.setThisSiloAsCollateralSilo(borrower);
-
-            configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
-
-            assertEq(address(_silo1Default), configuredSilo);
-        }
+        vm.expectRevert(ISiloConfig.Deprecated.selector);
+        _siloConfig.setThisSiloAsCollateralSilo(borrower);
     }
 
     /*
@@ -541,13 +484,6 @@ contract SiloConfigTest is Test {
         configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
 
         assertEq(address(_silo1Default), configuredSilo);
-
-        vm.prank(_silo0Default);
-        _siloConfig.setThisSiloAsCollateralSilo(borrower);
-
-        configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
-
-        assertEq(address(_silo0Default), configuredSilo);
     }
 
     /*
@@ -559,12 +495,6 @@ contract SiloConfigTest is Test {
 
         _mockShareTokensBlances(borrower1, 1, 0);
         _mockShareTokensBlances(borrower2, 1, 0);
-
-        vm.prank(_silo0Default);
-        _siloConfig.setThisSiloAsCollateralSilo(borrower1);
-
-        vm.prank(_silo1Default);
-        _siloConfig.setThisSiloAsCollateralSilo(borrower2);
 
         vm.prank(_silo0Default);
         _siloConfig.setOtherSiloAsCollateralSilo(borrower1);
@@ -586,27 +516,6 @@ contract SiloConfigTest is Test {
 
         assertEq(collateralConfig.silo, address(0), "User has no debt - config should be empty");
         assertEq(debtConfig.silo, address(0), "User has no debt - config should be empty");
-    }
-
-    /*
-    forge test -vv --mt test_openDebt_debtInThisSilo
-    */
-    function test_openDebt_debtInThisSilo() public {
-        address borrower = makeAddr("borrower");
-
-        _mockShareTokensBlances(borrower, 1, 0);
-
-        vm.prank(_silo0Default);
-        _siloConfig.setThisSiloAsCollateralSilo(borrower);
-
-        ISiloConfig.ConfigData memory collateralConfig;
-        ISiloConfig.ConfigData memory debtConfig;
-
-        (collateralConfig, debtConfig) = _siloConfig.getConfigsForSolvency(borrower);
-
-        assertTrue(debtConfig.silo != address(0));
-        assertTrue(debtConfig.silo == collateralConfig.silo);
-        assertTrue(debtConfig.silo == _silo0Default);
     }
 
     /*
@@ -642,7 +551,7 @@ contract SiloConfigTest is Test {
     forge test -vv --mt test_onDebtTransfer_clone
     */
     /// forge-config: core_test.fuzz.runs = 10
-    function test_onDebtTransfer_clone(bool _silo0, bool sameAsset) public {
+    function test_onDebtTransfer_clone_fuzz(bool _silo0) public {
         address silo = _silo0 ? _silo0Default : _silo1Default;
 
         address from = makeAddr("from");
@@ -655,11 +564,7 @@ contract SiloConfigTest is Test {
 
         vm.prank(silo);
 
-        if (sameAsset) {
-            _siloConfig.setThisSiloAsCollateralSilo(from);
-        } else {
-            _siloConfig.setOtherSiloAsCollateralSilo(from);
-        }
+        _siloConfig.setOtherSiloAsCollateralSilo(from);
 
         _mockShareTokensBlances(to, 0, 0);
 
@@ -749,12 +654,12 @@ contract SiloConfigTest is Test {
         _mockShareTokensBlances(from, 1, 0);
 
         vm.prank(_silo0Default);
-        _siloConfig.setThisSiloAsCollateralSilo(from);
+        _siloConfig.setOtherSiloAsCollateralSilo(to);
 
         _mockShareTokensBlances(to, 0, 1);
 
         vm.prank(_silo1Default);
-        _siloConfig.setThisSiloAsCollateralSilo(to);
+        _siloConfig.setOtherSiloAsCollateralSilo(from);
 
         vm.expectRevert(ISiloConfig.DebtExistInOtherSilo.selector);
         vm.prank(_configDataDefault0.debtShareToken);
@@ -774,12 +679,12 @@ contract SiloConfigTest is Test {
         _mockShareTokensBlances(to, 0, 0);
 
         vm.prank(_silo0Default);
-        _siloConfig.setThisSiloAsCollateralSilo(from);
+        _siloConfig.setOtherSiloAsCollateralSilo(to);
 
         _mockShareTokensBlances(from, 1, 0);
 
         vm.prank(_silo0Default);
-        _siloConfig.setOtherSiloAsCollateralSilo(to);
+        _siloConfig.setOtherSiloAsCollateralSilo(from);
 
         _mockShareTokensBlances(to, 1, 0);
 
@@ -1003,9 +908,9 @@ contract SiloConfigTest is Test {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test -vv --mt test_reentrancyGuardEntered
+    FOUNDRY_PROFILE=core_test forge test -vv --mt test_siloConfig_reentrancyGuardEntered
     */
-    function test_reentrancyGuardEntered() public {
+    function test_siloConfig_reentrancyGuardEntered() public {
         assertFalse(_siloConfig.reentrancyGuardEntered(), "reentrancyGuardEntered should return false");
 
         vm.prank(_silo0Default);

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import {console2} from "forge-std/console2.sol";
+
 import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
@@ -11,6 +13,7 @@ import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ILiquidationHelper} from "silo-core/contracts/interfaces/ILiquidationHelper.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
+import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {LiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/LiquidationHelper.sol";
 
 import {SiloConfigOverride} from "../../_common/fixtures/SiloFixture.sol";
@@ -22,7 +25,7 @@ import {MintableToken} from "../../_common/MintableToken.sol";
 import {AggregatorV3Interface} from "chainlink/v0.8/interfaces/AggregatorV3Interface.sol";
 
 /*
- forge test --ffi --mc LiquidationHelperOdosTest -vv
+AGGREGATOR=ODOS FOUNDRY_PROFILE=core_test forge test --ffi --mc LiquidationHelperOdosTest -vv
 */
 contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
     LiquidationHelper liquidationHelper;
@@ -33,15 +36,17 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
     address payable public constant REWARD_COLLECTOR = payable(address(123456789));
 
     function setUp() public {
-        uint256 blockToFork = 3087867;
+        uint256 blockToFork = 56376270;
         vm.createSelectFork(vm.envString("RPC_SONIC"), blockToFork);
 
         SiloFixture siloFixture = new SiloFixture();
 
+        AddrLib.init();
+
         SiloConfigOverride memory configOverride;
         configOverride.token0 = AddrLib.getAddress(AddrKey.stS);
         configOverride.token1 = AddrLib.getAddress(AddrKey.wS);
-        configOverride.configName = "stS_S_Silo";
+        configOverride.configName = "Silo_stS_S";
 
         (, silo0, silo1,,, hookReceiver) = siloFixture.deploy_local(configOverride);
 
@@ -63,9 +68,9 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
     }
 
     /*
-         TODO this can must be skip because foundry do not support Sonic network yet
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_odos_liquidationCall_partial -vv
     */
-    function test_skip_odos_liquidationCall_partial() public {
+    function test_odos_liquidationCall_partial() public {
         _createPositionToliquidate();
         _mockOracleCall(false);
 
@@ -93,11 +98,9 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
     }
 
     /*
-     forge test --ffi --mt test_skip_odos_liquidationCall_full -vv
-
-     TODO this can must be skip because foundry do not support Sonic network yet
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_odos_liquidationCall_full -vv
     */
-    function test_skip_odos_liquidationCall_full() public {
+    function test_odos_liquidationCall_full() public {
         _createPositionToliquidate();
         _mockOracleCall(true);
 
@@ -167,22 +170,14 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
     }
 
     function _createPositionToliquidate() internal {
-        address stsWhale = 0xBB435A52EC1ED3945a636A8f0058ea3CB1e027E8;
-        address wsWhale = 0x92928Fe008Ed635aA822A5CAdf0Cba340D754A66;
-        vm.label(stsWhale, "stsWhale");
-        vm.label(wsWhale, "wsWhale");
-
         // deposit wS, borrow WETH
         address borrower = makeAddr("borrower");
         address depositor = makeAddr("depositor");
         uint256 assets = 50e18;
         uint256 deposit = 37.5e18;
 
-        vm.prank(stsWhale);
-        IERC20(AddrLib.getAddress(AddrKey.stS)).transfer(borrower, assets);
-
-        vm.prank(wsWhale);
-        IERC20(AddrLib.getAddress(AddrKey.wS)).transfer(depositor, deposit);
+        deal(AddrLib.getAddress(AddrKey.stS), borrower, assets);
+        deal(AddrLib.getAddress(AddrKey.wS), depositor, deposit);
 
         vm.startPrank(depositor);
         IERC20(AddrLib.getAddress(AddrKey.wS)).approve(address(silo1), deposit);
@@ -203,8 +198,7 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
         amountToRepay += flashLoanFrom.flashFee(AddrLib.getAddress(AddrKey.wS), amountToRepay);
         emit log_named_decimal_uint("repay + flash fee", amountToRepay, 18);
 
-        vm.prank(wsWhale);
-        IERC20(AddrLib.getAddress(AddrKey.wS)).transfer(depositor, amountToRepay);
+        deal(AddrLib.getAddress(AddrKey.wS), depositor, amountToRepay);
 
         vm.startPrank(depositor);
         IERC20(AddrLib.getAddress(AddrKey.wS)).approve(address(flashLoanFrom), amountToRepay);

@@ -6,6 +6,8 @@ import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 
 library SiloConfigsNames {
     string public constant SILO_LOCAL_NO_ORACLE_SILO = "Silo_Local_noOracle";
+    string public constant SILO_LOCAL_NO_ORACLE_DEFAULTING0 = "Silo_Local_noOracleDefaulting0";
+    string public constant SILO_LOCAL_NO_ORACLE_DEFAULTING1 = "Silo_Local_noOracleDefaulting1";
     string public constant SILO_LOCAL_NO_ORACLE_NO_LTV_SILO = "Silo_Local_noOracleNoLtv";
     string public constant SILO_LOCAL_NOT_BORROWABLE = "Silo_Local_notBorrowable";
     string public constant SILO_LOCAL_BEFORE_CALL = "Silo_Local_beforeCall";

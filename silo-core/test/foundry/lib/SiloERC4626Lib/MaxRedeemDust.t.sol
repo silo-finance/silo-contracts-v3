@@ -2,6 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
+import {console2} from "forge-std/console2.sol";
 
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
@@ -56,19 +57,21 @@ contract MaxRedeemDustTest is SiloLittleHelper, Test {
 
         address shareToken = _type == ISilo.CollateralType.Protected ? protectedShareToken : collateralShareToken;
 
+        uint256 notwithrawableShares = silo0.convertToShares(1, ISilo.AssetType(uint8(_type))) - 1;
+        console2.log("notwithrawableShares", notwithrawableShares);
         vm.prank(depositor);
-        IShareToken(shareToken).transfer(owner, 999);
+        IShareToken(shareToken).transfer(owner, notwithrawableShares);
 
         uint256 maxRedeem = silo0.maxRedeem(owner, _type);
-        assertEq(maxRedeem, 0, "max redeem should return 0 on dust shares");
+        assertEq(maxRedeem, 0, "max redeem should return 0 because of rounding and fractions");
 
         vm.expectRevert();
-        silo0.redeem(maxRedeem, owner, owner);
+        silo0.redeem(notwithrawableShares, owner, owner);
 
         vm.prank(depositor);
         IShareToken(shareToken).transfer(owner, 1);
 
-        silo0.redeem(silo0.maxRedeem(owner, _type), owner, owner, _type);
+        silo0.redeem(IShareToken(shareToken).balanceOf(owner), owner, owner, _type);
     }
 
     function _maxWithdraw_dust_withDebt(ISilo.CollateralType _type) internal {

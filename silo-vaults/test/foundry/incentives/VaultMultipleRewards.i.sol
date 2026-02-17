@@ -8,7 +8,7 @@ import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 
 import {DistributionTypes} from "silo-core/contracts/incentives/lib/DistributionTypes.sol";
-import {SiloIncentivesController} from "silo-core/contracts/incentives/SiloIncentivesController.sol";
+import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
@@ -36,8 +36,8 @@ contract VaultMultipleRewardsTest is IntegrationTest {
     MintableToken reward1 = new MintableToken(18);
     MintableToken reward2 = new MintableToken(18);
 
-    SiloIncentivesController siloIncentivesController;
-    SiloIncentivesController vaultIncentivesController;
+    ISiloIncentivesController siloIncentivesController;
+    ISiloIncentivesController vaultIncentivesController;
     IVaultIncentivesModule vaultIncentivesModule;
 
     address siloWithIncentives;
@@ -57,11 +57,11 @@ contract VaultMultipleRewardsTest is IntegrationTest {
 
         siloWithIncentives = _overrideTestAddresses();
 
-        vaultIncentivesController = new SiloIncentivesController(address(this), address(vault), address(vault));
+        vaultIncentivesController = new SiloIncentivesControllerCompatible(address(this), address(vault), address(vault));
         vm.label(address(vaultIncentivesController), "VaultIncentivesController");
 
         // SiloIncentivesController is per silo
-        siloIncentivesController = new SiloIncentivesController(
+        siloIncentivesController = new SiloIncentivesControllerCompatible(
             address(this), address(partialLiquidation), siloWithIncentives
         );
 

@@ -288,13 +288,6 @@ contract EchidnaE2E is Deployers, PropertiesAsserts {
         assets = actor.transitionCollateral(_vaultZero, shares, withdrawType);
     }
 
-    function switchCollateralToThisSilo(uint8 _actorIndex, bool _vaultZero) public {
-        emit LogUint256("[switchCollateralToThisSilo] block.timestamp:", block.timestamp);
-
-        Actor actor = _selectActor(_actorIndex);
-        actor.switchCollateralToThisSilo(_vaultZero);
-    }
-
     function flashLoan(uint8 _actorIndex, bool _vaultZero, uint256 _amount) public {
         emit LogUint256("[flashLoan] block.timestamp:", block.timestamp);
 

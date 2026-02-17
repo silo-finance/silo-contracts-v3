@@ -16,7 +16,7 @@ library SiloLendingLibWithReentrancyIssue {
 
     // deposit fn with reentrancy issue
     // original code can be found here:
-    // https://github.com/silo-finance/silo-contracts-v2/blob/06378822519ad8f164e7c18a4d3f8954d773ce60/silo-core/contracts/lib/SiloLendingLib.sol#L133
+    // https://github.com/silo-finance/silo-contracts-v3/blob/06378822519ad8f164e7c18a4d3f8954d773ce60/silo-core/contracts/lib/SiloLendingLib.sol#L133
     function repay(
         ISiloConfig.ConfigData memory _configData,
         uint256 _assets,

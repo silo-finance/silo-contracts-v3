@@ -31,19 +31,14 @@ abstract contract MaxLiquidationCommon is SiloLittleHelper, Test {
         token1.setOnDemand(true);
     }
 
-    function _createDebtForBorrower(uint128 _collateral, bool _sameAsset) internal {
+    function _createDebtForBorrower(uint128 _collateral) internal {
         vm.assume(_collateral > 0);
 
         ISiloConfig.ConfigData memory collateralConfig;
         ISiloConfig.ConfigData memory debtConfig;
 
-        if (_sameAsset) {
-            collateralConfig = siloConfig.getConfig(address(silo1));
-            debtConfig = collateralConfig;
-        } else {
-            collateralConfig = siloConfig.getConfig(address(silo0));
-            debtConfig = siloConfig.getConfig(address(silo1));
-        }
+        collateralConfig = siloConfig.getConfig(address(silo0));
+        debtConfig = siloConfig.getConfig(address(silo1));
 
         uint256 maxLtv = collateralConfig.maxLtv / 1e16; // to avoid overflow on high numbers
         vm.assume(_collateral < type(uint128).max / maxLtv); // to avoid overflow
@@ -54,22 +49,8 @@ abstract contract MaxLiquidationCommon is SiloLittleHelper, Test {
 
         _depositForBorrow(_collateral, depositor);
 
-        if (!_sameAsset) {
-            _depositCollateral(_collateral, borrower, false /* to silo 1 */ );
-            _borrow(toBorrow, borrower);
-        } else {
-            vm.prank(borrower);
-            token1.mint(borrower, _collateral);
-
-            vm.prank(borrower);
-            token1.approve(address(silo1), _collateral);
-
-            vm.prank(borrower);
-            silo1.deposit(_collateral, borrower);
-
-            vm.prank(borrower);
-            silo1.borrowSameAsset(toBorrow, borrower, borrower);
-        }
+        _deposit(_collateral, borrower);
+        _borrow(toBorrow, borrower);
 
         _ensureBorrowerHasDebt();
     }
@@ -226,73 +207,45 @@ abstract contract MaxLiquidationCommon is SiloLittleHelper, Test {
         else assertLe(a, b, _msg);
     }
 
-    function _executeLiquidationAndRunChecks(bool _sameToken, bool _receiveSToken) internal {
+    function _executeLiquidationAndRunChecks(bool _receiveSToken) internal {
         uint256 siloBalanceBefore0 = token0.balanceOf(address(silo0));
         uint256 siloBalanceBefore1 = token1.balanceOf(address(silo1));
 
         uint256 liquidatorBalanceBefore0 = token0.balanceOf(address(this));
 
-        (uint256 withdrawCollateral, uint256 repayDebtAssets) = _executeLiquidation(_sameToken, _receiveSToken);
+        (uint256 withdrawCollateral, uint256 repayDebtAssets) = _executeLiquidation(_receiveSToken);
 
         _assertLiquidationHookHasNoBalance();
 
-        if (_sameToken) {
+        if (_receiveSToken) {
             assertEq(
                 siloBalanceBefore0,
                 token0.balanceOf(address(silo0)),
-                "silo0 did not changed, because it is a case for same asset"
+                "collateral was NOT moved from silo, because we using sToken"
             );
 
             assertEq(
                 liquidatorBalanceBefore0,
                 token0.balanceOf(address(this)),
-                "liquidator balance for token0 did not changed, because it is a case for same asset"
+                "collateral was NOT moved to liquidator, because we using sToken"
             );
-
-            if (_receiveSToken) {
-                assertEq(
-                    siloBalanceBefore1 + repayDebtAssets,
-                    token1.balanceOf(address(silo1)),
-                    "debt was repay to silo but collateral NOT withdrawn"
-                );
-            } else {
-                assertEq(
-                    siloBalanceBefore1 + repayDebtAssets - withdrawCollateral,
-                    token1.balanceOf(address(silo1)),
-                    "debt was repay to silo and collateral withdrawn from silo"
-                );
-            }
         } else {
-            if (_receiveSToken) {
-                assertEq(
-                    siloBalanceBefore0,
-                    token0.balanceOf(address(silo0)),
-                    "collateral was NOT moved from silo, because we using sToken"
-                );
-
-                assertEq(
-                    liquidatorBalanceBefore0,
-                    token0.balanceOf(address(this)),
-                    "collateral was NOT moved to liquidator, because we using sToken"
-                );
-            } else {
-                assertEq(
-                    siloBalanceBefore0 - withdrawCollateral,
-                    token0.balanceOf(address(silo0)),
-                    "collateral was moved from silo"
-                );
-
-                assertEq(
-                    token0.balanceOf(address(this)),
-                    liquidatorBalanceBefore0 + withdrawCollateral,
-                    "collateral was moved to liquidator"
-                );
-            }
+            assertEq(
+                siloBalanceBefore0 - withdrawCollateral,
+                token0.balanceOf(address(silo0)),
+                "collateral was moved from silo"
+            );
 
             assertEq(
-                siloBalanceBefore1 + repayDebtAssets, token1.balanceOf(address(silo1)), "debt was repay to silo"
+                token0.balanceOf(address(this)),
+                liquidatorBalanceBefore0 + withdrawCollateral,
+                "collateral was moved to liquidator"
             );
         }
+
+        assertEq(
+            siloBalanceBefore1 + repayDebtAssets, token1.balanceOf(address(silo1)), "debt was repay to silo"
+        );
     }
 
     function _calculateChunk(uint256 _maxDebtToCover, uint256 _i) internal view returns (uint256 _chunk) {
@@ -328,24 +281,31 @@ abstract contract MaxLiquidationCommon is SiloLittleHelper, Test {
         }
     }
 
-    function _liquidationCall(uint256 _maxDebtToCover, bool _sameToken, bool _receiveSToken)
+    function _liquidationCall(uint256 _maxDebtToCover, bool _receiveSToken)
         internal
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
     {
         try partialLiquidation.liquidationCall(
-            address(_sameToken ? token1 : token0), address(token1), borrower, _maxDebtToCover, _receiveSToken
+            address(token0), address(token1), borrower, _maxDebtToCover, _receiveSToken
         ) returns (uint256 collateral, uint256 debt) {
             return (collateral, debt);
         } catch (bytes memory data) {
             bytes4 errorType = bytes4(data);
 
-            bytes4 expectedError = bytes4(keccak256(abi.encodePacked("ReturnZeroAssets()")));
+            bytes4 returnZeroAssets = bytes4(keccak256(abi.encodePacked("ReturnZeroAssets()")));
+            bytes4 noCollateralToLiquidate = bytes4(keccak256(abi.encodePacked("NoCollateralToLiquidate()")));
 
-            assertEq(errorType, expectedError, "only ReturnZeroAssets error is expected");
+            if (errorType == returnZeroAssets) {
+                return (0, 0);
+            } else if (errorType == noCollateralToLiquidate) {
+                return (0, 0);
+            }
+
+            revert(string.concat("[_liquidationCall] unexpected error: ", string(data)));
         }
     }
 
-    function _executeLiquidation(bool _sameToken, bool _receiveSToken)
+    function _executeLiquidation(bool _receiveSToken)
         internal
         virtual
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets);

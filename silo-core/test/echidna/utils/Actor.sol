@@ -136,11 +136,6 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
         _accountForOpenedPosition(withdrawType, _vaultZero, assets, _shares);
     }
 
-    function switchCollateralToThisSilo(bool _vaultZero) external {
-        Silo vault = _vaultZero ? vault0 : vault1;
-        vault.switchCollateralToThisSilo();
-    }
-
     function flashLoan(bool _vaultZero, uint256 _amount) public returns (bool success) {
         Silo vault = _vaultZero ? vault0 : vault1;
         return vault.flashLoan(this, address(_vaultZero ? token0 : token1), _amount, "");

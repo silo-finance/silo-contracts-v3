@@ -71,55 +71,32 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_amountZero
+    FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_transfer_amountZero_withSenderDebt
     */
-    function test_transfer_amountZero_withSenderDebt_1token() public {
-        _transfer_amountZero_withSenderDebt(SAME_ASSET);
-    }
-
-    function test_transfer_amountZero_withSenderDebt_2tokens() public {
-        _transfer_amountZero_withSenderDebt(SAME_ASSET);
-    }
-
-    function _transfer_amountZero_withSenderDebt(bool _sameAsset) private {
-        _depositCollateral(20, address(this), _sameAsset);
+    function test_transfer_amountZero_withSenderDebt() public {
+        _deposit(20, address(this));
         _depositForBorrow(2, makeAddr("depositor"));
-        _borrow(2, address(this), _sameAsset);
+        _borrow(2, address(this));
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
         shareDebtToken.transfer(receiver, 0);
     }
 
-    function test_transfer_amountZero_withReceiverDebt_1token() public {
-        _transfer_amountZero_withReceiverDebt(SAME_ASSET);
-    }
-
-    function test_transfer_amountZero_withReceiverDebt_2tokens() public {
-        _transfer_amountZero_withReceiverDebt(TWO_ASSETS);
-    }
-
-    function _transfer_amountZero_withReceiverDebt(bool _sameAsset) private {
-        _depositCollateral(20, receiver, _sameAsset);
+    function test_transfer_amountZero_withReceiverDebt() public {
+        _deposit(20, receiver);
         _depositForBorrow(2, makeAddr("depositor"));
-        _borrow(2, receiver, _sameAsset);
+        _borrow(2, receiver);
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
         shareDebtToken.transfer(receiver, 0);
     }
 
     function test_transfer_amountZero_withSenderReceiverDebt() public {
-        _transfer_amountZero_withSenderReceiverDebt(SAME_ASSET, SAME_ASSET);
-        _transfer_amountZero_withSenderReceiverDebt(SAME_ASSET, TWO_ASSETS);
-        _transfer_amountZero_withSenderReceiverDebt(TWO_ASSETS, SAME_ASSET);
-        _transfer_amountZero_withSenderReceiverDebt(TWO_ASSETS, TWO_ASSETS);
-    }
-
-    function _transfer_amountZero_withSenderReceiverDebt(bool _senderSameAsset, bool _receiverSameAsset) private {
-        _depositCollateral(20, address(this), _senderSameAsset);
-        _depositCollateral(20, receiver, _receiverSameAsset);
+        _deposit(20, address(this));
+        _deposit(20, receiver);
         _depositForBorrow(20, makeAddr("depositor"));
-        _borrow(2, address(this), _senderSameAsset);
-        _borrow(2, receiver, _receiverSameAsset);
+        _borrow(2, address(this));
+        _borrow(2, receiver);
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
         shareDebtToken.transfer(receiver, 0);
@@ -129,7 +106,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_noAllowance
     */
     function test_debtToken_transfer_noAllowance() public {
-        _depositCollateral(2, address(this), false);
+        _deposit(2, address(this));
         _depositForBorrow(2, makeAddr("depositor"));
         _borrow(1, address(this));
 
@@ -141,7 +118,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_withLowAllowance
     */
     function test_debtToken_transfer_withLowAllowance() public {
-        _depositCollateral(20, address(this), TWO_ASSETS);
+        _deposit(20, address(this));
         _depositForBorrow(2, makeAddr("depositor"));
         _borrow(2, address(this));
 
@@ -155,18 +132,10 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_withAllowance_noCollateral
     */
-    function test_debtToken_transfer_withAllowance_noCollateral_1token() public {
-        _transfer_withAllowance_noCollateral(SAME_ASSET);
-    }
-
-    function test_debtToken_transfer_withAllowance_noCollateral_2tokens() public {
-        _transfer_withAllowance_noCollateral(TWO_ASSETS);
-    }
-
-    function _transfer_withAllowance_noCollateral(bool _sameAsset) private {
-        _depositCollateral(20, address(this), _sameAsset);
+    function test_debtToken_transfer_withAllowance_noCollateral() public {
+        _deposit(20, address(this));
         _depositForBorrow(2, makeAddr("depositor"));
-        _borrow(2, address(this), _sameAsset);
+        _borrow(2, address(this));
 
         vm.prank(receiver);
         shareDebtToken.setReceiveApproval(address(this), 1);
@@ -178,19 +147,11 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_withAllowance_notSolvent
     */
-    function test_debtToken_transfer_withAllowance_notSolvent_1token() public {
-        _transfer_withAllowance_notSolvent(SAME_ASSET);
-    }
-
-    function test_debtToken_transfer_withAllowance_notSolvent_2tokens() public {
-        _transfer_withAllowance_notSolvent(TWO_ASSETS);
-    }
-
-    function _transfer_withAllowance_notSolvent(bool _sameAsset) public {
-        _depositCollateral(20, address(this), _sameAsset);
-        _depositCollateral(1, receiver, _sameAsset);
+    function test_debtToken_transfer_withAllowance_notSolvent() public {
+        _deposit(20, address(this));
+        _deposit(1, receiver);
         _depositForBorrow(2, makeAddr("depositor"));
-        _borrow(2, address(this), _sameAsset);
+        _borrow(2, address(this));
 
         vm.prank(receiver);
         shareDebtToken.setReceiveApproval(address(this), 1);
@@ -202,19 +163,11 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_withAllowance_differentCollateral
     */
-    function test_debtToken_transfer_withAllowance_differentCollateral_1token() public {
-        _transfer_withAllowance_differentCollateral(SAME_ASSET);
-    }
-
-    function test_debtToken_transfer_withAllowance_differentCollateral_2tokens() public {
-        _transfer_withAllowance_differentCollateral(TWO_ASSETS);
-    }
-
-    function _transfer_withAllowance_differentCollateral(bool _sameAsset) private {
-        _depositCollateral(20, address(this), _sameAsset);
-        _depositCollateral(20, receiver, !_sameAsset);
+    function test_debtToken_transfer_withAllowance_differentCollateral() public {
+        _deposit(20, address(this));
+        _depositForBorrow(20, receiver);
         _depositForBorrow(10, makeAddr("depositor"));
-        _borrow(2, address(this), _sameAsset);
+        _borrow(2, address(this));
 
         vm.prank(receiver);
         shareDebtToken.setReceiveApproval(address(this), 1);
@@ -226,19 +179,11 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_withAllowance_sameCollateral
     */
-    function test_debtToken_transfer_withAllowance_sameCollateral_1token() public {
-        _transfer_withAllowance_sameCollateral(SAME_ASSET);
-    }
-
-    function test_debtToken_transfer_withAllowance_sameCollateral_2tokens() public {
-        _transfer_withAllowance_sameCollateral(TWO_ASSETS);
-    }
-
-    function _transfer_withAllowance_sameCollateral(bool _sameAsset) private {
-        _depositCollateral(20, address(this), _sameAsset);
-        _depositCollateral(20, receiver, _sameAsset);
+    function test_debtToken_transfer_withAllowance_sameCollateral() public {
+        _deposit(20, address(this));
+        _deposit(20, receiver);
         _depositForBorrow(20, makeAddr("depositor"));
-        _borrow(2, address(this), _sameAsset);
+        _borrow(2, address(this));
 
         vm.prank(receiver);
         shareDebtToken.setReceiveApproval(address(this), 1);
@@ -252,23 +197,15 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_withAllowance_withSameDebt_1token
+    FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_withAllowance_withSameDebt
     */
-    function test_debtToken_transfer_withAllowance_withSameDebt_1token() public {
-        _transfer_withAllowance_withSameDebt(SAME_ASSET);
-    }
-
-    function test_debtToken_transfer_withAllowance_withSameDebt_2tokens() public {
-        _transfer_withAllowance_withSameDebt(TWO_ASSETS);
-    }
-
-    function _transfer_withAllowance_withSameDebt(bool _sameAsset) private {
-        _depositCollateral(20, address(this), _sameAsset);
-        _depositCollateral(20, receiver, _sameAsset);
+    function test_debtToken_transfer_withAllowance_withSameDebt() public {
+        _deposit(20, address(this));
+        _deposit(20, receiver);
         _depositForBorrow(20, makeAddr("depositor"));
 
-        _borrow(2, address(this), _sameAsset);
-        _borrow(1, receiver, _sameAsset);
+        _borrow(2, address(this));
+        _borrow(1, receiver);
 
         vm.prank(receiver);
         shareDebtToken.setReceiveApproval(address(this), 1);
@@ -279,52 +216,19 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
 
         _assertCollateralSiloWasCopiedFromSenderToReceiver(collateralSenderBefore);
         _assertReceiverIsNotBlockedByAnything();
-    }
-
-    /*
-    FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_withAllowance_withDifferentDebt_
-    */
-    function test_debtToken_transfer_withAllowance_withDifferentDebt_1token() public {
-        _transfer_withAllowance_withDifferentDebt(SAME_ASSET);
-    }
-
-    function test_debtToken_transfer_withAllowance_withDifferentDebt_2tokens() public {
-        _transfer_withAllowance_withDifferentDebt(TWO_ASSETS);
-    }
-
-    function _transfer_withAllowance_withDifferentDebt(bool _sameAsset) private {
-        _depositCollateral(20, address(this), _sameAsset);
-        _depositCollateral(20, receiver, !_sameAsset);
-        _depositForBorrow(20, makeAddr("depositor"));
-
-        _borrow(2, address(this), _sameAsset);
-        _borrow(1, receiver, !_sameAsset);
-
-        vm.prank(receiver);
-        shareDebtToken.setReceiveApproval(address(this), 1);
-
-        shareDebtToken.transfer(receiver, 1);
     }
 
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transferAll
     */
-    function test_debtToken_transferAll_1token() public {
-        _transferAll(SAME_ASSET);
-    }
-
-    function test_debtToken_transferAll_2tokens() public {
-        _transferAll(TWO_ASSETS);
-    }
-
-    function _transferAll(bool _sameAsset) public {
+    function test_debtToken_transferAll() public {
         uint256 toBorrow = 2;
 
-        _depositCollateral(20, address(this), _sameAsset);
-        _depositCollateral(20, receiver, _sameAsset);
+        _deposit(20, address(this));
+        _deposit(20, receiver);
         _depositForBorrow(2, makeAddr("depositor"));
         _printStats(siloConfig, address(this));
-        _borrow(toBorrow, address(this), _sameAsset);
+        _borrow(toBorrow, address(this));
 
         vm.prank(receiver);
         shareDebtToken.setReceiveApproval(address(this), toBorrow);
@@ -345,26 +249,18 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transfer_debtExistInOtherSilo_
     */
-    function test_debtToken_transfer_debtExistInOtherSilo_1token() public {
-        _transferAll(SAME_ASSET);
-    }
-
-    function test_debtToken_transfer_debtExistInOtherSilo_2tokens() public {
-        _transferAll(TWO_ASSETS);
-    }
-
-    function _transfer_debtExistInOtherSilo(bool _sameAsset) public {
+    function test_debtToken_transfer_debtExistInOtherSilo() public {
         uint256 toBorrow = 2;
 
-        _depositCollateral(20, address(this), _sameAsset);
-        _depositCollateral(20, receiver, !_sameAsset);
+        _deposit(20, address(this));
+        _depositForBorrow(20, receiver);
         _depositForBorrow(2, makeAddr("depositor"));
         _printStats(siloConfig, address(this));
 
-        _borrow(toBorrow, address(this), _sameAsset);
+        _borrow(toBorrow, address(this));
 
         vm.prank(receiver);
-        _sameAsset ? silo0.borrow(1, receiver, receiver) : silo0.borrowSameAsset(1, receiver, receiver);
+        silo0.borrow(1, receiver, receiver);
 
         vm.prank(receiver);
         shareDebtToken.setReceiveApproval(address(this), toBorrow);
@@ -435,30 +331,22 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transferFrom_
+    FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt test_debtToken_transferFrom
     */
-    function test_debtToken_transferFrom_1token() public {
-        _debtToken_transferFrom(SAME_ASSET);
-    }
-
-    function test_debtToken_transferFrom_2tokens() public {
-        _debtToken_transferFrom(TWO_ASSETS);
-    }
-
-    function _debtToken_transferFrom(bool _sameAsset) public {
+    function test_debtToken_transferFrom() public {
         address depositor = makeAddr("Depositor");
         address spender = makeAddr("Spender");
         uint256 amount = 100e18;
 
-        _depositCollateral(amount, depositor, _sameAsset, ISilo.CollateralType.Collateral);
-        _depositCollateral(amount, depositor, _sameAsset, ISilo.CollateralType.Protected);
+        _deposit(amount, depositor, ISilo.CollateralType.Collateral);
+        _deposit(amount, depositor, ISilo.CollateralType.Protected);
 
-        _depositCollateral(amount * 2, makeAddr("any"), true, /* toSilo1 */ ISilo.CollateralType.Collateral);
+        _depositForBorrow(amount * 2, makeAddr("any"), ISilo.CollateralType.Collateral);
 
         uint256 borrowAmount = 150e18;
         address borrower = depositor;
 
-        _borrow(borrowAmount, borrower, _sameAsset);
+        _borrow(borrowAmount, borrower);
 
         vm.prank(borrower);
         shareDebtToken.approve(spender, borrowAmount);
@@ -470,7 +358,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
         shareDebtToken.transferFrom(borrower, receiver, borrowAmount);
 
-        _depositCollateral(amount * 3, receiver, _sameAsset, ISilo.CollateralType.Collateral);
+        _deposit(amount * 3, receiver, ISilo.CollateralType.Collateral);
 
         uint256 balance = shareDebtToken.balanceOf(receiver);
 
@@ -506,13 +394,10 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     }
 
     function _assertReceiverIsNotBlockedByAnything() private {
-        _depositCollateral(100, receiver, SAME_ASSET);
-        _depositCollateral(100, receiver, TWO_ASSETS);
+        _depositForBorrow(100, receiver);
+        _deposit(100, receiver);
         _depositForBorrow(100, makeAddr("depositor"));
         _borrow(2, receiver);
-
-        vm.prank(receiver);
-        silo1.switchCollateralToThisSilo();
 
         _repay(2, receiver);
 

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
+import {console2} from "forge-std/console2.sol";
 
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
@@ -37,7 +38,7 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
         address depositor2 = makeAddr("depositor2");
         address depositor3 = makeAddr("depositor3");
 
-        _depositCollateral(1e18, borrower, TWO_ASSETS);
+        _deposit(1e18, borrower);
         _depositForBorrow(1e18, depositor);
 
         // when there are other users, results to change ratio is MUCH harder
@@ -125,16 +126,14 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_debt_ratio --gas-limit 40000000000
-
-
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_debt_ratio --gas-limit 40000000000
     */
     function test_debt_ratio() public {
         _depositForBorrow(3e18, makeAddr("depositor"));
 
-        _depositCollateral(1e18, makeAddr("borrower"), TWO_ASSETS);
-        _depositCollateral(1e18, makeAddr("borrower2"), TWO_ASSETS);
-        _depositCollateral(100, makeAddr("borrower3"), TWO_ASSETS);
+        _deposit(1e18, makeAddr("borrower"));
+        _deposit(1e18, makeAddr("borrower2"));
+        _deposit(100, makeAddr("borrower3"));
 
         _borrow(0.75e18, makeAddr("borrower2"));
         _borrow(70, makeAddr("borrower3"));
@@ -223,8 +222,9 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
 
     function _borrow1wei() internal {
         address user = address(2);
-        _depositCollateral(100, user, SAME_ASSET);
-        _borrow(1, address(2), SAME_ASSET);
+        _depositForBorrow(100, user);
+        _deposit(3, user);
+        _borrow(1, user);
 
         (,, address debtShare) = siloConfig.getShareTokens(address(silo1));
         emit log_named_decimal_uint("1 wei == shares:", IShareToken(debtShare).balanceOf(user), 18);

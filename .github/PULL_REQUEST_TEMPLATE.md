@@ -1,4 +1,4 @@
-Fixes SILO-<!-- ticket ID -->
+Fixes: SILO-<!-- ticket ID -->
 
 ## Problem
 

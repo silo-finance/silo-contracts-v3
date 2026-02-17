@@ -11,38 +11,22 @@ import {MaxLiquidationCommon} from "./MaxLiquidationCommon.sol";
 */
 contract MaxLiquidationLTV100PartialTest is MaxLiquidationCommon {
     /*
-    forge test -vv --ffi --mt test_maxLiquidation_LTV100_partial_1token_sTokens_fuzz
+    forge test -vv --ffi --mt test_maxLiquidation_LTV100_partial_sToken_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 100
-    function test_maxLiquidation_LTV100_partial_1token_sTokens() public {
+    function test_maxLiquidation_LTV100_partial_sToken() public {
         // I did not found cases for this scenario
     }
 
     /*
-    forge test -vv --ffi --mt test_maxLiquidation_LTV100_partial_1token_tokens_fuzz
+    forge test -vv --ffi --mt test_maxLiquidation_LTV100_partial_token_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 100
-    function test_maxLiquidation_LTV100_partial_1token_tokens() public {
+    function test_maxLiquidation_LTV100_partial_token() public {
         // I did not found cases for this scenario
     }
 
-    /*
-    forge test -vv --ffi --mt test_maxLiquidation_LTV100_partial_2tokens_sToken_fuzz
-    */
-    /// forge-config: core_test.fuzz.runs = 100
-    function test_maxLiquidation_LTV100_partial_2tokens_sToken() public {
-        // I did not found cases for this scenario
-    }
-
-    /*
-    forge test -vv --ffi --mt test_maxLiquidation_LTV100_partial_2tokens_token_fuzz
-    */
-    /// forge-config: core_test.fuzz.runs = 100
-    function test_maxLiquidation_LTV100_partial_2tokens_token() public {
-        // I did not found cases for this scenario
-    }
-
-    function _executeLiquidation(bool, bool) internal pure override returns (uint256, uint256) {
+    function _executeLiquidation(bool) internal pure override returns (uint256, uint256) {
         // not in use
         return (0, 0);
     }

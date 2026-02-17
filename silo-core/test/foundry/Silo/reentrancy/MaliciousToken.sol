@@ -2,10 +2,13 @@
 pragma solidity ^0.8.24;
 
 import {Test} from "forge-std/Test.sol";
+import {console2} from "forge-std/console2.sol";
+
 import {ERC20} from "openzeppelin5/token/ERC20/ERC20.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
+import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {TransientReentrancy} from "silo-core/contracts/hooks/_common/TransientReentrancy.sol";
 import {Registries} from "./registries/Registries.sol";
 import {LeverageMethodsRegistry} from "./registries/LeverageMethodsRegistry.sol";
@@ -13,8 +16,9 @@ import {IMethodsRegistry} from "./interfaces/IMethodsRegistry.sol";
 import {IMethodReentrancyTest} from "./interfaces/IMethodReentrancyTest.sol";
 import {TestStateLib} from "./TestState.sol";
 import {MintableToken} from "../../_common/MintableToken.sol";
+import {Tabs} from "../../_common/Tabs.sol";
 
-contract MaliciousToken is MintableToken, Test {
+contract MaliciousToken is MintableToken, Test, Tabs {
     IMethodsRegistry[] internal _methodRegistries;
     LeverageMethodsRegistry internal _leverageMethodsRegistry;
 
@@ -27,7 +31,11 @@ contract MaliciousToken is MintableToken, Test {
     function transfer(address recipient, uint256 amount) public override returns (bool) {
         _tryToReenter();
 
+        onDemand = true; // to fight with ERC20InsufficientBalance
+
         super.transfer(recipient, amount);
+
+        onDemand = false;
 
         return true;
     }
@@ -35,7 +43,9 @@ contract MaliciousToken is MintableToken, Test {
     function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
         _tryToReenter();
 
+        onDemand = true; // to fight with ERC20InsufficientBalance
         super.transferFrom(sender, recipient, amount);
+        onDemand = false;
 
         return true;
     }
@@ -44,7 +54,7 @@ contract MaliciousToken is MintableToken, Test {
         if (!TestStateLib.reenter() && !TestStateLib.leverageReenter()) return;
 
         // reenter before transfer
-        emit log_string("\tTrying to reenter:");
+        console2.log(_tabs(1), "Trying to reenter:");
 
         ISiloConfig config = TestStateLib.siloConfig();
 
@@ -57,6 +67,8 @@ contract MaliciousToken is MintableToken, Test {
             TestStateLib.enableReentrancy();
         }
 
+        console2.log(_tabs(1), "Trying to reenter: leverage");
+
         if (TestStateLib.leverageReenter()) {
             // address leverageRouter = TestStateLib.leverageRouter();
 
@@ -67,14 +79,18 @@ contract MaliciousToken is MintableToken, Test {
             _callOnlyLeverageMethods();
             TestStateLib.enableLeverageReentrancy();
         }
+
+        console2.log(_tabs(1), "Trying to reenter - done\n");
     }
 
     function _callAllMethods() internal {
-        emit log_string("[MaliciousToken] calling all methods");
+        console2.log(_tabs(2), "[MaliciousToken] calling all methods");
 
         uint256 stateBeforeReentrancyTest = vm.snapshotState();
 
         for (uint256 j = 0; j < _methodRegistries.length; j++) {
+            console2.log(_tabs(3, "[_callAllMethods] calling [%s] %s"), j, _methodRegistries[j].abiFile());
+
             if (Strings.equal(_methodRegistries[j].abiFile(), _leverageMethodsRegistry.abiFile())) continue;
 
             uint256 totalMethods = _methodRegistries[j].supportedMethodsLength();
@@ -83,17 +99,21 @@ contract MaliciousToken is MintableToken, Test {
                 bytes4 methodSig = _methodRegistries[j].supportedMethods(i);
                 IMethodReentrancyTest method = _methodRegistries[j].methods(methodSig);
 
-                emit log_string(string.concat("\t  ", method.methodDescription()));
+                // console2.log(_tabs(4, "[_callAllMethods] loop [%s] %s"), i, method.methodDescription());
 
                 method.verifyReentrancy();
 
                 vm.revertToState(stateBeforeReentrancyTest);
             }
+
+            console2.log(_tabs(3, "[_callAllMethods] calling abi done"));
         }
+
+        console2.log(_tabs(2), "[MaliciousToken] calling all methods - done\n");
     }
 
     function _callOnlyLeverageMethods() internal {
-        emit log_string("[MaliciousToken] calling only leverage methods");
+        console2.log(_tabs(2), "[MaliciousToken] calling only leverage methods");
 
         uint256 stateBeforeReentrancyTest = vm.snapshotState();
 
@@ -103,11 +123,13 @@ contract MaliciousToken is MintableToken, Test {
             bytes4 methodSig = _leverageMethodsRegistry.supportedMethods(i);
             IMethodReentrancyTest method = _leverageMethodsRegistry.methods(methodSig);
 
-            emit log_string(string.concat("\t  ", method.methodDescription()));
+            // console2.log(_tabs(3), method.methodDescription());
 
             method.verifyReentrancy();
 
             vm.revertToState(stateBeforeReentrancyTest);
         }
+
+        console2.log(_tabs(2), "[MaliciousToken] calling only leverage methods - done\n");
     }
 }

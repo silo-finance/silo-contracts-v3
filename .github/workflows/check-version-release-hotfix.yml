@@ -15,8 +15,8 @@ jobs:
     
     # Only run if PR is from release/* or hotfix/* branch
     if: |
-      github.event.pull_request.head.ref startsWith 'release/' ||
-      github.event.pull_request.head.ref startsWith 'hotfix/'
+      startsWith(github.event.pull_request.head.ref, 'release/') ||
+      startsWith(github.event.pull_request.head.ref, 'hotfix/')
     
     steps:
       - name: Checkout code

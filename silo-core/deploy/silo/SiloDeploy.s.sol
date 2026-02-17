@@ -38,12 +38,22 @@ import {PTLinearOracleTxLib} from "../lib/PTLinearOracleTxLib.sol";
 
 /// @dev use `SiloDeployWithDeployerOwner` or `SiloDeployWithHookReceiverOwner`
 abstract contract SiloDeploy is CommonDeploy {
+    string public constant SUCCESS_SYMBOL = unicode"✅";
+    string public constant FAIL_SYMBOL = unicode"❌";
+    string public constant WARNING_SYMBOL = unicode"🚨";
+
     uint256 private constant _BYTES32_SIZE = 32;
 
     string public configName;
     uint256 public privateKey;
 
     string[] public verificationIssues;
+
+    enum HookVersion {
+        UNKNOWN,
+        V1,
+        V2
+    }
 
     error UnknownInterestRateModelFactory();
 
@@ -108,13 +118,13 @@ abstract contract SiloDeploy is CommonDeploy {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        siloConfig = siloDeployer.deploy(
-            oracles,
-            irmConfigData0,
-            irmConfigData1,
-            hookReceiver,
-            siloInitData
-        );
+        siloConfig = siloDeployer.deploy({
+            _oracles: oracles,
+            _irmConfigData0: irmConfigData0,
+            _irmConfigData1: irmConfigData1,
+            _clonableHookReceiver: hookReceiver,
+            _siloInitData: siloInitData
+        });
 
         vm.stopBroadcast();
 
@@ -258,8 +268,16 @@ abstract contract SiloDeploy is CommonDeploy {
         }
 
         require(txData.deployed == address(0), "[_getOracleTxData] expect tx data, not deployed address");
-        require(txData.factory != address(0), string.concat("[_getOracleTxData] empty factory for oracle: ", _oracleConfigName));
-        require(txData.txInput.length != 0, string.concat("[_getOracleTxData] missing tx data for oracle: ", _oracleConfigName));
+
+        require(
+            txData.factory != address(0),
+            string.concat("[_getOracleTxData] empty factory for oracle: ", _oracleConfigName)
+        );
+        
+        require(
+            txData.txInput.length != 0,
+            string.concat("[_getOracleTxData] missing tx data for oracle: ", _oracleConfigName)
+        );
     }
 
     function _uniswapV3TxData(string memory _oracleConfigName)
@@ -403,7 +421,46 @@ abstract contract SiloDeploy is CommonDeploy {
     function _getClonableHookReceiverConfig(address _implementation)
         internal
         virtual
-        returns (ISiloDeployer.ClonableHookReceiver memory hookReceiver);
+        returns (ISiloDeployer.ClonableHookReceiver memory hookReceiver)
+    {
+        bytes memory initializationData;
+        HookVersion hookVersion = _resolveHookVersion(_implementation);
+
+        if (hookVersion == HookVersion.V1) {
+            initializationData = _generateHookReceiverInitializationData();
+        } else if (hookVersion == HookVersion.V2) {
+            initializationData = _generateHookReceiverInitializationData();
+        }
+
+        hookReceiver = ISiloDeployer.ClonableHookReceiver({
+            implementation: _implementation,
+            initializationData: initializationData
+        });
+    }
+
+    function _getClonableHookReceiverOwner() internal view virtual returns (address owner);
+
+    function _generateHookReceiverInitializationData() internal view returns (bytes memory) {
+        return abi.encode(_getClonableHookReceiverOwner());
+    }
+
+    function _resolveHookVersion(address _implementation) internal returns (HookVersion hookVersion) {
+        if (_implementation == getDeployedAddress(SiloCoreContracts.SILO_HOOK_V2)) {
+            return HookVersion.V2;
+        } else if (_implementation == getDeployedAddress(SiloCoreContracts.SILO_HOOK_V1)) {
+            return HookVersion.V1;
+        } else if (_implementation == getDeployedAddress(SiloCoreContracts.PENDLE_REWARDS_CLAIMER)) {
+            return HookVersion.V2;
+        }
+
+        console2.log(string.concat(
+            "\n", 
+            WARNING_SYMBOL, "[_resolveHookVersion] unknown hook implementation: ", vm.toString(_implementation), 
+            "\n"
+        ));
+
+        return HookVersion.UNKNOWN;
+    }
 
     function _getDKinkIRMInitialOwner() internal virtual returns (address);
 

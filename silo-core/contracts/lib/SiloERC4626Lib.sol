@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
+
 pragma solidity ^0.8.28;
 
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
@@ -175,7 +176,7 @@ library SiloERC4626Lib {
 
             if (liquidity != 0) {
                 // We need to count for fractions. When fractions are applied, liquidity may be decreased.
-                unchecked { liquidity -= 1; }
+                unchecked { liquidity -= 1; _totalAssets -= 1; }
             }
         } else {
             shareTokenTotalSupply = IShareToken(depositConfig.protectedShareToken).totalSupply();

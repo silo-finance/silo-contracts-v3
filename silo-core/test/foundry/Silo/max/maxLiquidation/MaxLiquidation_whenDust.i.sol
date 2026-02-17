@@ -17,74 +17,37 @@ contract MaxLiquidationDustTest is MaxLiquidationCommon {
     bool private constant _BAD_DEBT = false;
 
     /*
-    forge test -vv --ffi --mt test_maxLiquidation_dust_1token_sTokens_fuzz
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxLiquidation_dust_sTokens_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 100
-    function test_maxLiquidation_dust_1token_sTokens_fuzz(uint8 _collateral) public {
-        _maxLiquidation_dust_1token(_collateral, _RECEIVE_STOKENS);
+    function test_maxLiquidation_dust_sTokens_fuzz(uint8 _collateral) public {
+        _maxLiquidation_dust(_collateral, _RECEIVE_STOKENS);
     }
 
     /*
-    forge test -vv --ffi --mt test_maxLiquidation_dust_1token_tokens_fuzz
+    forge test -vv --ffi --mt test_maxLiquidation_dust_tokens_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 100
-    function test_maxLiquidation_dust_1token_tokens_fuzz(uint8 _collateral) public {
-        _maxLiquidation_dust_1token(_collateral, !_RECEIVE_STOKENS);
+    function test_maxLiquidation_dust_tokens_fuzz(uint8 _collateral) public {
+        _maxLiquidation_dust(_collateral, !_RECEIVE_STOKENS);
     }
 
-    function _maxLiquidation_dust_1token(uint8 _collateral, bool _receiveSToken) internal {
-        bool sameAsset = true;
-
-        // this value found by fuzzing tests, is high enough to have partial liquidation possible for this test setup
-        vm.assume((_collateral >= 29 && _collateral <= 38) || (_collateral >= 52 && _collateral <= 57));
-
-        _createDebtForBorrower(_collateral, sameAsset);
-
-        vm.warp(block.timestamp + 1050 days); // initial time movement to speed up _moveTimeUntilInsolvent
-        _moveTimeUntilInsolvent();
-
-        _assertBorrowerIsNotSolvent(_BAD_DEBT);
-
-        _executeLiquidationAndRunChecks(sameAsset, _receiveSToken);
-
-        _assertBorrowerIsSolvent();
-        _ensureBorrowerHasNoDebt();
-    }
-
-    /*
-    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxLiquidation_dust_2tokens_sTokens_fuzz
-    */
-    /// forge-config: core_test.fuzz.runs = 100
-    function test_maxLiquidation_dust_2tokens_sTokens_fuzz(uint8 _collateral) public {
-        _maxLiquidation_dust_2tokens(_collateral, _RECEIVE_STOKENS);
-    }
-
-    /*
-    forge test -vv --ffi --mt test_maxLiquidation_dust_2tokens_tokens_fuzz
-    */
-    /// forge-config: core_test.fuzz.runs = 100
-    function test_maxLiquidation_dust_2tokens_tokens_fuzz(uint8 _collateral) public {
-        _maxLiquidation_dust_2tokens(_collateral, !_RECEIVE_STOKENS);
-    }
-
-    function _maxLiquidation_dust_2tokens(uint8 _collateral, bool _receiveSToken) internal {
-        bool sameAsset = false;
-
+    function _maxLiquidation_dust(uint8 _collateral, bool _receiveSToken) internal {
         vm.assume(_collateral == 19 || _collateral == 33);
 
-        _createDebtForBorrower(_collateral, sameAsset);
+        _createDebtForBorrower(_collateral);
 
         _moveTimeUntilInsolvent();
 
         _assertBorrowerIsNotSolvent(_BAD_DEBT);
 
-        _executeLiquidationAndRunChecks(sameAsset, _receiveSToken);
+        _executeLiquidationAndRunChecks(_receiveSToken);
 
         _assertBorrowerIsSolvent();
         _ensureBorrowerHasNoDebt();
     }
 
-    function _executeLiquidation(bool _sameToken, bool _receiveSToken)
+    function _executeLiquidation(bool _receiveSToken)
         internal
         virtual
         override
@@ -104,7 +67,7 @@ contract MaxLiquidationDustTest is MaxLiquidationCommon {
         uint256 maxDebtToCover = debtToRepay % 2 == 0 ? type(uint256).max : debtToRepay;
 
         (withdrawCollateral, repayDebtAssets) = partialLiquidation.liquidationCall(
-            address(_sameToken ? token1 : token0), address(token1), borrower, maxDebtToCover, _receiveSToken
+            address(token0), address(token1), borrower, maxDebtToCover, _receiveSToken
         );
 
         emit log_named_uint("[DustLiquidation] withdrawCollateral", withdrawCollateral);

@@ -14,7 +14,7 @@ import {Actor} from "../utils/Actor.sol";
 import {BaseTest} from "./BaseTest.t.sol";
 
 // Mock Contracts
-import {TestERC20} from "../utils/mocks/TestERC20.sol";
+import {TestERC20} from "silo-core/test/invariants/utils/mocks/TestERC20.sol";
 
 
 /// @notice Setup contract for the invariant test Suite, inherited by Tester

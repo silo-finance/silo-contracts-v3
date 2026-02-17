@@ -7,6 +7,7 @@ import {NonReentrantLib} from "../lib/NonReentrantLib.sol";
 import {ShareTokenLib} from "../lib/ShareTokenLib.sol";
 import {ERC20RStorageLib} from "../lib/ERC20RStorageLib.sol";
 import {IShareTokenInitializable} from "../interfaces/IShareTokenInitializable.sol";
+import {IVersioned} from "../interfaces/IVersioned.sol";
 
 /// @title ShareDebtToken
 /// @notice ERC20 compatible token representing debt in Silo
@@ -53,6 +54,16 @@ contract ShareDebtToken is IERC20R, ShareToken, IShareTokenInitializable {
         NonReentrantLib.nonReentrant(ShareTokenLib.getShareTokenStorage().siloConfig);
 
         _setReceiveApproval(owner, _msgSender(), _amount);
+    }
+
+    /// @inheritdoc IShareToken
+    function decimalsOffset() external view virtual override returns (uint256) {
+        return 0;
+    }
+
+    /// @inheritdoc IVersioned
+    function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
+        return "ShareDebtToken 4.0.0";
     }
 
     /// @inheritdoc IERC20R

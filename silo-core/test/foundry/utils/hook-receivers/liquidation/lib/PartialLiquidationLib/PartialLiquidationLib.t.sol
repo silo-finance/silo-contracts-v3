@@ -237,9 +237,9 @@ contract PartialLiquidationLibTest is Test, MaxRepayRawMath {
     }
 
     /*
-    forge test -vv --mt test_PartialLiquidationLib_calculateCollateralToLiquidate_math_fuzz
+    FOUNDRY_PROFILE=core_test forge test -vv --mt test_PartialLiquidationLib_calculateCollateralToLiquidate_math_fuzz
     */
-    /// forge-config: core_test.fuzz.runs = 1000
+    /// forge-config: core_test.fuzz.runs = 10000
     function test_PartialLiquidationLib_calculateCollateralToLiquidate_math_fuzz(
         uint256 _maxDebtToCover,
         uint128 _totalBorrowerDebtAssets,
@@ -350,7 +350,7 @@ contract PartialLiquidationLibTest is Test, MaxRepayRawMath {
     }
 
     /*
-    forge test -vv --mt test_gas_PartialLiquidationLib_calculateCollateralToLiquidate_not_reverts
+    FOUNDRY_PROFILE=core_test forge test -vv --mt test_gas_PartialLiquidationLib_calculateCollateralToLiquidate_not_reverts
     */
     function test_gas_PartialLiquidationLib_calculateCollateralToLiquidate_not_reverts() public view {
         uint256 debtValueToCover = 2e18;
@@ -364,7 +364,7 @@ contract PartialLiquidationLibTest is Test, MaxRepayRawMath {
         );
         uint256 gasEnd = gasleft();
 
-        assertLe(gasStart - gasEnd, 675, "optimise calculateCollateralToLiquidate()");
+        assertLe(gasStart - gasEnd, 1057, "optimise calculateCollateralToLiquidate()");
     }
 
     /*
@@ -436,49 +436,27 @@ contract PartialLiquidationLibTest is Test, MaxRepayRawMath {
     }
 
     /*
-    forge test -vv --mt test_valueToAssetsByRatio
+    FOUNDRY_PROFILE=core_test forge test -vv --mt test_valueToAssetsByRatio
     */
     function test_valueToAssetsByRatio() public pure {
-        uint256 value;
-        uint256 totalAssets;
-        uint256 totalValue = 1; // can not be 0
+        // NOTE: totalValue can not be 0
 
-        assertEq(PartialLiquidationLib.valueToAssetsByRatio(value, totalAssets, totalValue), 0);
+        assertEq(PartialLiquidationLib.valueToAssetsByRatio({_value: 0, _totalAssets: 0, _totalValue: 1}), 0, "#1");
 
-        value;
-        totalAssets = 1;
-        totalValue = 1;
-        assertEq(PartialLiquidationLib.valueToAssetsByRatio(value, totalAssets, totalValue), 0);
+        assertEq(PartialLiquidationLib.valueToAssetsByRatio({_value: 0, _totalAssets: 1, _totalValue: 1}), 0, "#2");
 
-        value = 1;
-        totalAssets = 1;
-        totalValue = 1;
-        assertEq(PartialLiquidationLib.valueToAssetsByRatio(value, totalAssets, totalValue), 1);
+        assertEq(PartialLiquidationLib.valueToAssetsByRatio({_value: 1, _totalAssets: 1, _totalValue: 1}), 1, "#3");
 
-        value = 1;
-        totalAssets = 100;
-        totalValue = 1;
-        assertEq(PartialLiquidationLib.valueToAssetsByRatio(value, totalAssets, totalValue), 100);
+        assertEq(PartialLiquidationLib.valueToAssetsByRatio({_value: 1, _totalAssets: 100, _totalValue: 1}), 100, "#4");
 
-        value = 1;
-        totalAssets = 100;
-        totalValue = 10;
-        assertEq(PartialLiquidationLib.valueToAssetsByRatio(value, totalAssets, totalValue), 10);
+        assertEq(PartialLiquidationLib.valueToAssetsByRatio({_value: 1, _totalAssets: 100, _totalValue: 10}), 10, "#5");
 
-        value = 1;
-        totalAssets = 100;
-        totalValue = 100;
-        assertEq(PartialLiquidationLib.valueToAssetsByRatio(value, totalAssets, totalValue), 1);
+        assertEq(PartialLiquidationLib.valueToAssetsByRatio({_value: 1, _totalAssets: 100, _totalValue: 100}), 1, "#6");
 
-        value = 2;
-        totalAssets = 10;
-        totalValue = 100;
-        assertEq(PartialLiquidationLib.valueToAssetsByRatio(value, totalAssets, totalValue), 0);
+        assertEq(PartialLiquidationLib.valueToAssetsByRatio({_value: 1, _totalAssets: 10, _totalValue: 100}), 0, "#7");
+        assertEq(PartialLiquidationLib.valueToAssetsByRatio({_value: 2, _totalAssets: 10, _totalValue: 100}), 0, "#8");
 
-        value = 2;
-        totalAssets = 1000;
-        totalValue = 100;
-        assertEq(PartialLiquidationLib.valueToAssetsByRatio(value, totalAssets, totalValue), 20);
+        assertEq(PartialLiquidationLib.valueToAssetsByRatio({_value: 2, _totalAssets: 1000, _totalValue: 100}), 20, "#9");
     }
 
     function _assetsChunk(uint256 _totalValue, uint256 _totalAssets, uint256 _chunkValue)

@@ -19,8 +19,7 @@ import {RenounceOwnershipReentrancyTest} from "../methods/silo-hook-v1/RenounceO
 import {SetGaugeReentrancyTest} from "../methods/silo-hook-v1/SetGaugeReentrancyTest.sol";
 import {SiloConfigReentrancyTest} from "../methods/silo-hook-v1/SiloConfigReentrancyTest.sol";
 import {TransferOwnershipReentrancyTest} from "../methods/silo-hook-v1/TransferOwnershipReentrancyTest.sol";
-import {TransferOwnership1StepReentrancyTest} from
-    "../methods/silo-hook-v1/TransferOwnership1StepReentrancyTest.sol";
+import {TransferOwnership1StepReentrancyTest} from "../methods/silo-hook-v1/TransferOwnership1StepReentrancyTest.sol";
 
 contract SiloHookV1MethodsRegistry is IMethodsRegistry {
     mapping(bytes4 methodSig => IMethodReentrancyTest) public methods;
@@ -49,7 +48,7 @@ contract SiloHookV1MethodsRegistry is IMethodsRegistry {
         return supportedMethods.length;
     }
 
-    function abiFile() external pure returns (string memory) {
+    function abiFile() external pure virtual returns (string memory) {
         return "/cache/foundry/out/silo-core/SiloHookV1.sol/SiloHookV1.json";
     }
 

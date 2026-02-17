@@ -127,8 +127,8 @@ contract SiloIncentivesControllerCLTest is Test {
             amount2
         );
 
-        vm.mockCall(_vaultIncentivesController, immediateDistributionInput1, "0x");
-        vm.mockCall(_vaultIncentivesController, immediateDistributionInput2, "0x");
+        vm.mockCall(_vaultIncentivesController, immediateDistributionInput1, abi.encode(accruedReward1.programId));
+        vm.mockCall(_vaultIncentivesController, immediateDistributionInput2, abi.encode(accruedReward2.programId));
 
         vm.expectCall(_vaultIncentivesController, immediateDistributionInput1);
         vm.expectCall(_vaultIncentivesController, immediateDistributionInput2);

@@ -1,5 +1,5 @@
-# Silo V2
-Monorepository for Silo V2.
+# Silo V3
+Monorepository for Silo V3.
 
 ### Bug bounty
 Immunefi bug bounty program is live, more details at https://immunefi.com/bug-bounty/silofinance-v2/information/
@@ -16,10 +16,10 @@ Immunefi bug bounty program is live, more details at https://immunefi.com/bug-bo
 # https://book.getfoundry.sh/getting-started/installation
 
 # 2. Clone repository
-$ git clone https://github.com/silo-finance/silo-contracts-v2.git
+$ git clone https://github.com/silo-finance/silo-contracts-v3.git
 
 # 3. Open folder
-$ cd silo-contracts-v2
+$ cd silo-contracts-v3
 
 # 4. Initialize submodules
 $ git submodule update --init --recursive
@@ -81,11 +81,11 @@ forge script silo-core/deploy/silo/SiloDeployWithDeployerOwner.s.sol \
 ```
 
 ### More docs
-Follow to [MOREDOCS.md](https://github.com/silo-finance/silo-contracts-v2/blob/develop/MOREDOCS.md) for more details about integration with Silo V2.
+Follow to [MOREDOCS.md](https://github.com/silo-finance/silo-contracts-v3/blob/develop/MOREDOCS.md) for more details about integration with Silo V3.
 
 ## LICENSE
 
-The primary license for Silo V2 Core is the Business Source License 1.1 (`BUSL-1.1`), see [LICENSE](https://github.com/silo-finance/silo-contracts-v2/blob/master/LICENSE). Minus the following exceptions:
+The primary license for Silo V3 Core is the Business Source License 1.1 (`BUSL-1.1`), see [LICENSE](https://github.com/silo-finance/silo-contracts-v3/blob/master/LICENSE). Minus the following exceptions:
 
 - Some libraries have a GPL license
 - Hook.sol library and some of its tests have a GPL License

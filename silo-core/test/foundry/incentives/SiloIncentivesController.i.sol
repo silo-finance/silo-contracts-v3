@@ -6,7 +6,7 @@ import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {ERC20Mock} from "openzeppelin5/mocks/token/ERC20Mock.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
 
-import {SiloIncentivesController} from "silo-core/contracts/incentives/SiloIncentivesController.sol";
+import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 import {DistributionTypes} from "silo-core/contracts/incentives/lib/DistributionTypes.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {IDistributionManager} from "silo-core/contracts/incentives/interfaces/IDistributionManager.sol";
@@ -20,10 +20,10 @@ import {MintableToken} from "../_common/MintableToken.sol";
 import {SiloLittleHelper} from "../_common/SiloLittleHelper.sol";
 
 contract HookContract {
-    SiloIncentivesController controller;
+    SiloIncentivesControllerCompatible controller;
     MintableToken notifierToken;
 
-    function setup(SiloIncentivesController _controller, MintableToken _notifierToken) public {
+    function setup(SiloIncentivesControllerCompatible _controller, MintableToken _notifierToken) public {
         controller = _controller;
         notifierToken = _notifierToken;
     }
@@ -61,7 +61,7 @@ contract HookContract {
  FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc SiloIncentivesControllerTest
 */
 contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
-    SiloIncentivesController internal _controller;
+    SiloIncentivesControllerCompatible internal _controller;
 
     address internal _notifier;
     MintableToken internal _rewardToken;
@@ -107,7 +107,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
 
         __init(token0, token1, silo0, silo1);
 
-        _controller = new SiloIncentivesController(address(this), address(hook), address(silo0));
+        _controller = new SiloIncentivesControllerCompatible(address(this), address(hook), address(silo0));
         hook.setup(_controller, MintableToken(address(silo0)));
 
         silo0.updateHooks();
@@ -144,7 +144,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         assertEq(_controller.getRewardsBalance(user2, _PROGRAM_NAME), 0, "[user2] no rewards without deposit");
 
         bytes memory data = abi.encodeWithSelector(
-            SiloIncentivesController.afterTokenTransfer.selector,
+            ISiloIncentivesController.afterTokenTransfer.selector,
             address(0),
             0,
             user1,

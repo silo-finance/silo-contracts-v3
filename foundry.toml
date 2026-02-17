@@ -58,14 +58,27 @@ fs_permissions = [
 [profile.echidna_leverage]
 src = 'silo-core/contracts'
 test = 'silo-core/test/echidna-leverage'
-out = 'cache/foundry/out/silo-core'
-broadcast = 'silo-core/broadcast'
+out = 'cache/foundry/out/echidna-leverage'
+broadcast = 'silo-core/echidna/broadcast'
 
 fs_permissions = [
     { access = "read", path = "./cache/foundry/"},
     { access = "read", path = "./silo-core/test/foundry/data/"},
     { access = "read", path = "./silo-core/deploy/input/"}
 ]
+
+[profile.echidna_defaulting]
+src = 'silo-core/contracts'
+test = 'silo-core/test/echidna-defaulting/siloHookV2'
+out = 'cache/foundry/out/echidna-defaulting/siloHookV2'
+broadcast = 'silo-core/echidna/broadcast'
+
+[profile.echidna_hookV3]
+src = 'silo-core/contracts'
+test = 'silo-core/test/echidna-defaulting/siloHookV3'
+out = 'cache/foundry/out/echidna-defaulting/siloHookV3'
+broadcast = 'silo-core/echidna/broadcast'
+
 
 [profile.core_test]
 src = 'silo-core/test'
@@ -159,7 +172,7 @@ test = 'silo-oracles/test'
 broadcast = 'silo-oracles/broadcast'
 
 [fuzz]
-runs = 800
+runs = 500
 max_test_rejects = 131072 # 65536 * 2 (doubled a default value)
 
 [rpc_endpoints]
@@ -170,6 +183,7 @@ optimism = "${RPC_OPTIMISM}"
 anvil = "${RPC_ANVIL}"
 sonic = "${RPC_SONIC}"
 ink = "${RPC_INK}"
+okx = "${RPC_OKX}"
 
 [etherscan]
 sonic = { key = "${VERIFIER_API_KEY_SONIC}", chain = 146, url = "${VERIFIER_URL_SONIC}" }

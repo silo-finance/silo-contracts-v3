@@ -1,23 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
+import {console2} from "forge-std/console2.sol";
+
 // Utils
 import {Actor} from "./utils/Actor.sol";
+import {Clones} from "openzeppelin5/proxy/Clones.sol";
 
 // Contracts
 import {SiloFactory} from "silo-core/contracts/SiloFactory.sol";
 import {Silo} from "silo-core/contracts/Silo.sol";
 import {ShareProtectedCollateralToken} from "silo-core/contracts/utils/ShareProtectedCollateralToken.sol";
 import {ShareDebtToken} from "silo-core/contracts/utils/ShareDebtToken.sol";
-import {
-    IInterestRateModelV2,
-    InterestRateModelV2
-} from "silo-core/contracts/interestRateModel/InterestRateModelV2.sol";
+import {IInterestRateModelV2} from "silo-core/contracts/interestRateModel/InterestRateModelV2.sol";
 import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
 import {SiloHookV1} from "silo-core/contracts/hooks/SiloHookV1.sol";
 import {ISiloDeployer, SiloDeployer} from "silo-core/contracts/SiloDeployer.sol";
 import {CloneDeterministic} from "silo-core/contracts/lib/CloneDeterministic.sol";
 import {Views} from "silo-core/contracts/lib/Views.sol";
+import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 
 // Test Contracts
 import {BaseTest} from "./base/BaseTest.t.sol";
@@ -34,16 +35,10 @@ import {
     IInterestRateModelV2Factory,
     InterestRateModelV2Factory
 } from "silo-core/contracts/interestRateModel/InterestRateModelV2Factory.sol";
-import {
-    IInterestRateModelV2Config,
-    InterestRateModelV2Config
-} from "silo-core/contracts/interestRateModel/InterestRateModelV2Config.sol";
 import {ISilo} from "silo-core/contracts/Silo.sol";
 import {DynamicKinkModelFactory} from "silo-core/contracts/interestRateModel/kink/DynamicKinkModelFactory.sol";
 import {IDynamicKinkModelFactory} from "silo-core/contracts/interfaces/IDynamicKinkModelFactory.sol";
 import {DynamicKinkModel} from "silo-core/contracts/interestRateModel/kink/DynamicKinkModel.sol";
-
-import "forge-std/console.sol";
 
 /// @notice Setup contract for the invariant test Suite, inherited by Tester
 contract Setup is BaseTest {
@@ -60,6 +55,9 @@ contract Setup is BaseTest {
         // Deploy Silos
         _deploySilos();
 
+        // Initialize hook
+        _initHook();
+
         // Deploy External contracts
         _deployExternalContracts();
     }
@@ -69,6 +67,7 @@ contract Setup is BaseTest {
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     function _deployAssets() internal virtual {
+        console2.log("/_deployAssets/");
         _asset0 = new TestERC20("Test Token0", "TT0", 18);
         _asset1 = new TestERC20("Test Token1", "TT1", 6);
         baseAssets.push(address(_asset0));
@@ -76,6 +75,7 @@ contract Setup is BaseTest {
     }
 
     function _deployCoreProtocol(address feeReceiver) internal {
+        console2.log("/_deployCoreProtocol/");
         core_deploySiloLiquidation();
         core_deploySiloFactory(feeReceiver);
         core_deployInterestRateConfigFactory();
@@ -84,17 +84,20 @@ contract Setup is BaseTest {
     }
 
     function _deployOracles() internal {
+        console2.log("/_deployOracles/");
         oracle0 = address(new MockSiloOracle(address(_asset0), 1 ether, QUOTE_TOKEN_ADDRESS, 18));
         oracle1 = address(new MockSiloOracle(address(_asset1), 1 ether, QUOTE_TOKEN_ADDRESS, 18));
     }
 
     function _deploySilos() internal {
+        console2.log("/_deploySilos/");
         // Setup initData
         _initData(address(_asset0), address(_asset1));
 
         // Deploy silo config
-        siloConfig =
-            _deploySiloConfig(siloData["MOCK"], siloImpl, shareProtectedCollateralTokenImpl, shareDebtTokenImpl);
+        siloConfig = _deploySiloConfig(
+            siloData[_siloInitDataIdentifier()], siloImpl, shareProtectedCollateralTokenImpl, shareDebtTokenImpl
+        );
 
         // Deploy silos
         siloFactory.createSilo(
@@ -102,7 +105,7 @@ contract Setup is BaseTest {
             siloImpl,
             shareProtectedCollateralTokenImpl,
             shareDebtTokenImpl,
-            siloData["MOCK"].deployer,
+            siloData[_siloInitDataIdentifier()].deployer,
             msg.sender
         );
 
@@ -135,26 +138,49 @@ contract Setup is BaseTest {
         protectedTokens.push(protectedCollateralToken1);
     }
 
+    function _initHook() internal virtual {
+        console2.log("/_initHook/");
+        liquidationModule.initialize(siloConfig, abi.encode(address(this)));
+    }
+
+    function _siloInitDataIdentifier() internal pure virtual returns (string memory) {
+        return "MOCK";
+    }
+
     /// @notice Setup liquidation module and flashLoan receiver
     function _deployExternalContracts() internal {
+        console2.log("/_deployExternalContracts/");
         flashLoanReceiver = address(new MockFlashLoanReceiver());
+
+        siloLens = new SiloLens();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     //                                   SILO-CORE SETUP FUNCTIONS                               //
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    function core_deploySiloLiquidation() internal {
-        liquidationModule = PartialLiquidation(address(new SiloHookV1()));
+    function core_deploySiloLiquidation() internal virtual {
+        console2.log("/core_deploySiloLiquidation (SiloHookV1)/");
+        liquidationModule = PartialLiquidation(_cloneHook());
+    }
+
+    function _cloneHook() internal virtual returns (address hook) {
+        hook = Clones.clone(_hookImplementation());
+    }
+
+    function _hookImplementation() internal virtual returns (address hook) {
+        hook = address(new SiloHookV1());
     }
 
     function core_deploySiloFactory(address feeReceiver) internal {
+        console2.log("/core_deploySiloFactory/");
         address daoFeeReceiver = feeReceiver == address(0) ? address(0) : feeReceiver;
 
         siloFactory = ISiloFactory(address(new SiloFactory(daoFeeReceiver)));
     }
 
     function core_deployInterestRateConfigFactory() internal {
+        console2.log("/core_deployInterestRateConfigFactory/");
         interestRateModelV2ConfigFactory = IInterestRateModelV2Factory(address(new InterestRateModelV2Factory()));
     }
 
@@ -180,6 +206,7 @@ contract Setup is BaseTest {
     }
 
     function core_deploySiloDeployer() internal {
+        console2.log("/core_deploySiloDeployer/");
         address dkinkIRMConfigFactory = address(new DynamicKinkModelFactory(new DynamicKinkModel()));
         siloImpl = address(new Silo(siloFactory));
         shareProtectedCollateralTokenImpl = address(new ShareProtectedCollateralToken());
@@ -209,6 +236,7 @@ contract Setup is BaseTest {
         address _shareProtectedCollateralTokenImpl,
         address _shareDebtTokenImpl
     ) internal returns (ISiloConfig siloConfig_) {
+        console2.log("/_deploySiloConfig/");
         uint256 nextSiloId = siloFactory.getNextSiloId();
         uint256 creatorSiloCounter = siloFactory.creatorSiloCounter(msg.sender);
 
@@ -251,7 +279,7 @@ contract Setup is BaseTest {
         siloConfig_ = ISiloConfig(address(new SiloConfig(nextSiloId, configData0, configData1)));
     }
 
-    function _initData(address mock0, address mock1) internal {
+    function _initData(address mock0, address mock1) internal virtual {
         // The FULL data relies on addresses set in _setupBasicData()
         siloData["FULL"] = ISiloConfig.InitData({
             deployer: address(this),
@@ -298,6 +326,7 @@ contract Setup is BaseTest {
 
     /// @notice Deploy protocol actors and initialize their balances
     function _setUpActors() internal virtual {
+        console2.log("/_setUpActors/");
         // Initialize the three actors of the fuzzers
         address[] memory addresses = new address[](3);
         addresses[0] = USER1;

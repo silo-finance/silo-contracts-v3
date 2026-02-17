@@ -2,8 +2,17 @@
 pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
+import {console2} from "forge-std/console2.sol";
+
+import {Ownable} from "openzeppelin5/access/Ownable.sol";
+
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
+
+import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
+import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
+import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
+import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 
 import {AddrKey} from "common/addresses/AddrKey.sol";
 import {Registries} from "./registries/Registries.sol";
@@ -26,7 +35,11 @@ FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc SiloReentrancyTest
 contract SiloReentrancyTest is Test {
     ISiloConfig public siloConfig;
 
-    // FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_coverage_for_reentrancy
+    mapping(string abiFile => string[] methods) public methodsNotFound;
+
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_coverage_for_reentrancy
+    */
     function test_coverage_for_reentrancy() public {
         Registries registries = new Registries();
         IMethodsRegistry[] memory methodRegistries = registries.list();
@@ -47,16 +60,36 @@ contract SiloReentrancyTest is Test {
                 if (method == address(0)) {
                     allCovered = false;
 
-                    emit log_string(string.concat("\nABI: ", methodRegistries[j].abiFile()));
+                    emit log_string(string.concat("\nABI: ", abiPath));
                     emit log_string(string.concat("Method not found: ", keys[i]));
+                    methodsNotFound[abiPath].push(keys[i]);
                 }
+            }
+        }
+
+        if (!allCovered) {
+            console2.log("\n----------- All methods should be covered, not found: -------------\n");
+        }
+
+        for (uint256 j = 0; j < methodRegistries.length; j++) {
+            string memory abiPath = string.concat(root, methodRegistries[j].abiFile());
+
+            string[] memory methods = methodsNotFound[abiPath];
+            if (methods.length == 0) continue;
+
+            console2.log("\nABI: %s\nMethods not found:", abiPath);
+
+            for (uint256 i = 0; i < methods.length; i++) {
+                console2.log("- ", methods[i]);
             }
         }
 
         assertTrue(allCovered, "All methods should be covered");
     }
 
-    // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_reentrancy
+    /*
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_reentrancy -vv
+    */
     function test_reentrancy() public {
         _deploySiloWithOverrides();
         Registries registries = new Registries();
@@ -69,13 +102,13 @@ contract SiloReentrancyTest is Test {
         for (uint256 j = 0; j < methodRegistries.length; j++) {
             uint256 totalMethods = methodRegistries[j].supportedMethodsLength();
 
-            emit log_string(string.concat("\nVerifying ", methodRegistries[j].abiFile()));
+            console2.log("\nVerifying [%s] %s", j, methodRegistries[j].abiFile());
 
             for (uint256 i = 0; i < totalMethods; i++) {
                 bytes4 methodSig = methodRegistries[j].supportedMethods(i);
                 IMethodReentrancyTest method = methodRegistries[j].methods(methodSig);
 
-                emit log_string(string.concat("\nExecute ", method.methodDescription()));
+                console2.log("\nExecute [%s/%s] %s", j, i, method.methodDescription());
 
                 bool entered = siloConfig.reentrancyGuardEntered();
                 assertTrue(!entered, "Reentrancy should be disabled before calling the method");
@@ -86,7 +119,10 @@ contract SiloReentrancyTest is Test {
                 assertTrue(!entered, "Reentrancy should be disabled after calling the method");
 
                 vm.revertToState(stateBeforeTest);
+                console2.log("Execute [%s/%s] %s - done\n", j, i, method.methodDescription());
             }
+
+            console2.log("Verifying [%s] %s - done\n", j, methodRegistries[j].abiFile());
         }
     }
 
@@ -97,7 +133,7 @@ contract SiloReentrancyTest is Test {
 
         configOverride.token0 = address(new MaliciousToken());
         configOverride.token1 = address(new MaliciousToken());
-        configOverride.configName = SiloConfigsNames.SILO_LOCAL_GAUGE_HOOK_RECEIVER;
+        configOverride.configName = SiloConfigsNames.SILO_LOCAL_NOT_BORROWABLE;
         ISilo silo0;
         ISilo silo1;
         address hookReceiver;
@@ -112,6 +148,8 @@ contract SiloReentrancyTest is Test {
         leverageDeploy.disableDeploymentsSync();
         address leverageRouter = address(leverageDeploy.run());
 
+        _createIncentiveController(hookReceiver, address(silo0));
+
         TestStateLib.init(
             address(siloConfig),
             address(silo0),
@@ -121,5 +159,13 @@ contract SiloReentrancyTest is Test {
             hookReceiver,
             leverageRouter
         );
+    }
+
+    function _createIncentiveController(address _hookReceiver, address _debtSilo) internal {
+        ISiloIncentivesController gauge = new SiloIncentivesControllerCompatible(makeAddr("DAO"), _hookReceiver, _debtSilo);
+
+        address owner = Ownable(_hookReceiver).owner();
+        vm.prank(owner);
+        IGaugeHookReceiver(_hookReceiver).setGauge(gauge, IShareToken(_debtSilo));
     }
 }

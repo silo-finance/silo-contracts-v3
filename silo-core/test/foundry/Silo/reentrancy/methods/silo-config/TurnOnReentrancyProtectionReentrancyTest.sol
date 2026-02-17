@@ -7,7 +7,7 @@ import {TestStateLib} from "../../TestState.sol";
 
 contract TurnOnReentrancyProtectionReentrancyTest is MethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will revert (permissions test)");
+        emit log_string(_tabs(1, "Ensure it will revert (permissions test)"));
         ISiloConfig config = TestStateLib.siloConfig();
 
         vm.expectRevert(ISiloConfig.OnlySiloOrTokenOrHookReceiver.selector);

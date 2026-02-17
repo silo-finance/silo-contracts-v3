@@ -21,7 +21,7 @@ contract PermitReentrancyTest is MethodReentrancyTest {
     bytes32 internal constant _HASHED_VERSION = keccak256(bytes("1"));
 
     function callMethod() external {
-        emit log_string("\tEnsure it will not revert");
+        emit log_string(_tabs(1, "Ensure it will not revert"));
         _ensureItWillNotRevert(address(TestStateLib.silo0()));
         _ensureItWillNotRevert(address(TestStateLib.silo1()));
     }

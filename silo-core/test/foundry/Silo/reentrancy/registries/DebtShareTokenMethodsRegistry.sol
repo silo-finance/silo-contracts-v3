@@ -13,7 +13,7 @@ import {IncreaseReceiveAllowanceReentrancyTest} from
 import {ReceiveAllowanceReentrancyTest} from "../methods/debt-share-token/ReceiveAllowanceReentrancyTest.sol";
 
 contract DebtShareTokenMethodsRegistry is ShareTokenMethodsRegistry {
-    constructor() ShareTokenMethodsRegistry() {
+    constructor() {
         _registerMethod(new TransferReentrancyTest());
         _registerMethod(new TransferFromReentrancyTest());
         _registerMethod(new SetReceiverApprovalReentrancyTest());

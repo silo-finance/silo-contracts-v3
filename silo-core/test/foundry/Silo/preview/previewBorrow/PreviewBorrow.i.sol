@@ -92,7 +92,7 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
 
         uint256 maxInput = _borrowShares()
             ? silo1.maxBorrowShares(borrower)
-            : _sameAsset() ? silo1.maxBorrowSameAsset(borrower) : silo1.maxBorrow(borrower);
+            : silo1.maxBorrow(borrower);
 
         uint256 maxPreview = _getBorrowPreview(maxInput);
 
@@ -114,13 +114,13 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
         if (_creteDebt) {
             address otherBorrower = makeAddr("otherBorrower");
 
-            _depositCollateral(type(uint64).max, otherBorrower, _sameAsset(), _collateralType());
-            _borrow(uint256(type(uint64).max) * 3 / 4, otherBorrower, _sameAsset());
+            _deposit(type(uint64).max, otherBorrower, _collateralType());
+            _borrow(uint256(type(uint64).max) * 3 / 4, otherBorrower);
 
             if (_interest) _applyInterest();
         }
 
-        _depositCollateral(_borrowerInput, borrower, _sameAsset(), _collateralType());
+        _deposit(_borrowerInput, borrower, _collateralType());
         _depositForBorrow(type(uint128).max - type(uint64).max, depositor);
     }
 
@@ -134,7 +134,7 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
             return;
         }
 
-        uint256 warpTime = _sameAsset() ? 20 days : 10 days;
+        uint256 warpTime = 10 days;
         vm.warp(block.timestamp + warpTime);
 
         uint256 ltvAfter = siloLens.getLtv(silo1, otherBorrower);
@@ -155,12 +155,9 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
     function _assertPreviewBorrow(uint256 _preview, uint256 _assetsOrShares) internal {
         vm.assume(_preview > 0);
 
-        // we do not have method for borrowing with shares for same asset
-        vm.assume(!(_borrowShares() && _sameAsset()));
-
         uint256 results = _borrowShares()
             ? _borrowShares(_assetsOrShares, borrower)
-            : _borrow(_assetsOrShares, borrower, _sameAsset());
+            : _borrow(_assetsOrShares, borrower);
 
         uint256 conversionResults = _borrowShares()
             ? silo1.convertToAssets(_assetsOrShares, ISilo.AssetType.Debt)
@@ -186,9 +183,5 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
 
     function _collateralType() internal pure virtual returns (ISilo.CollateralType) {
         return ISilo.CollateralType.Collateral;
-    }
-
-    function _sameAsset() internal pure virtual returns (bool) {
-        return false;
     }
 }

@@ -56,11 +56,7 @@ contract RepayTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_repay_throwZeroShares
     */
-    function test_repay_throwZeroShares_1token() public {
-        _repay_throwZeroShares();
-    }
-
-    function _repay_throwZeroShares() private {
+    function test_repay_throwZeroShares() public {
         uint128 assets = 1; // after interest this is to small to convert to shares
         address borrower = makeAddr("Borrower");
 
@@ -74,11 +70,7 @@ contract RepayTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_repay_tinyAmount
     */
-    function test_repay_tinyAmount_1token() public {
-        _repay_tinyAmount();
-    }
-
-    function _repay_tinyAmount() private {
+    function test_repay_tinyAmount() public {
         uint128 assets = 1;
         address borrower = makeAddr("Borrower");
 
@@ -90,11 +82,7 @@ contract RepayTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_repay_partialWithInterest
     */
-    function test_repay_partialWithInterest_1token() public {
-        _repay_partialWithInterest();
-    }
-
-    function _repay_partialWithInterest() private {
+    function test_repay_partialWithInterest() public {
         uint128 assets = 10;
         address borrower = makeAddr("Borrower");
 
@@ -107,11 +95,7 @@ contract RepayTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_repay_tooMuch
     */
-    function test_repay_tooMuch_1token() public {
-        _repay_tooMuch();
-    }
-
-    function _repay_tooMuch() private {
+    function test_repay_tooMuch() public {
         uint128 assets = 1e18;
         uint256 assetsToRepay = type(uint256).max;
         address borrower = address(this);
@@ -138,11 +122,7 @@ contract RepayTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_repayShares_fullNoInterest_noDust
     */
-    function test_repayShares_fullNoInterest_noDust_1token() public {
-        _repayShares_fullNoInterest_noDust();
-    }
-
-    function _repayShares_fullNoInterest_noDust() public {
+    function test_repayShares_fullNoInterest_noDust() public {
         uint128 assets = 1e18;
         address borrower = makeAddr("Borrower");
 
@@ -162,11 +142,7 @@ contract RepayTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_repayShares_fullWithInterest_noDust
     */
-    function test_repayShares_fullWithInterest_noDust_1token() public {
-        _repayShares_fullWithInterest_noDust();
-    }
-
-    function _repayShares_fullWithInterest_noDust() private {
+    function test_repayShares_fullWithInterest_noDust() public {
         uint128 assets = 1e18;
         address borrower = makeAddr("Borrower");
 
@@ -188,11 +164,7 @@ contract RepayTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_repayShares_insufficientAllowance
     */
-    function test_repayShares_insufficientAllowance_1token() public {
-        _repayShares_insufficientAllowance();
-    }
-
-    function _repayShares_insufficientAllowance() private {
+    function test_repayShares_insufficientAllowance() public {
         uint128 assets = 1e18;
         address borrower = makeAddr("Borrower");
 
@@ -219,11 +191,7 @@ contract RepayTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_repayShares_notFullWithInterest_withDust
     */
-    function test_repayShares_notFullWithInterest_withDust_1token() public {
-        _repayShares_notFullWithInterest_withDust();
-    }
-
-    function _repayShares_notFullWithInterest_withDust() private {
+    function test_repayShares_notFullWithInterest_withDust() public {
         uint128 assets = 1e18;
         address borrower = makeAddr("Borrower");
 
@@ -249,11 +217,7 @@ contract RepayTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_repay_twice
     */
-    function test_repay_twice_1token() public {
-        _repay_twice();
-    }
-
-    function _repay_twice() private {
+    function test_repay_twice() public {
         uint128 assets = 1e18;
         address borrower = makeAddr("Borrower");
 

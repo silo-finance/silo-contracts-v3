@@ -147,13 +147,7 @@ contract PendleRewardsClaimer is GaugeHookReceiver, PartialLiquidation, IPendleR
             uint256 rewardAmount = rewards[i];
             if (rewardAmount == 0) continue;
 
-            // Rewards amount for distribution is capped to 2^104 to avoid overflows.
-            // Also, to avoid code over complication we do not distribute rewards amounts above 2^104.
-            // In the case if we will receive for any reason abnormal amount of rewards
-            // all rewards will be sent to the incentives controller and can be rescued if needed
-            // and redistributed by the incentives controller owner.
-            uint256 amountToDistribute = Math.min(rewardAmount, type(uint104).max);
-            controller.immediateDistribution(rewardTokens[i], uint104(amountToDistribute));
+            controller.immediateDistribution(rewardTokens[i], rewardAmount);
         }
 
         _rewardsClaimed = true;

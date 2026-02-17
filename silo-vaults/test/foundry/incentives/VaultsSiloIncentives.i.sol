@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.28;
 
-import {SiloIncentivesController} from "silo-core/contracts/incentives/SiloIncentivesController.sol";
+import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 import {DistributionTypes} from "silo-core/contracts/incentives/lib/DistributionTypes.sol";
 
 import {INotificationReceiver} from "../../../contracts/interfaces/INotificationReceiver.sol";
 import {IVaultIncentivesModule} from "../../../contracts/interfaces/IVaultIncentivesModule.sol";
 import {IVaultIncentivesModule} from "silo-vaults/contracts/interfaces/IVaultIncentivesModule.sol";
+import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 
 import {IntegrationTest} from "../helpers/IntegrationTest.sol";
 import {CAP} from "../helpers/BaseTest.sol";
@@ -19,7 +20,7 @@ import {CAP} from "../helpers/BaseTest.sol";
 contract VaultsSiloIncentivesTest is IntegrationTest {
     MintableToken reward1 = new MintableToken(18);
 
-    SiloIncentivesController vaultIncentivesController;
+    ISiloIncentivesController vaultIncentivesController;
     IVaultIncentivesModule vaultIncentivesModule;
 
     function setUp() public override {
@@ -34,7 +35,7 @@ contract VaultsSiloIncentivesTest is IntegrationTest {
 
         reward1.setOnDemand(true);
 
-        vaultIncentivesController = new SiloIncentivesController(address(this), address(vault), address(vault));
+        vaultIncentivesController = new SiloIncentivesControllerCompatible(address(this), address(vault), address(vault));
     }
 
     /*

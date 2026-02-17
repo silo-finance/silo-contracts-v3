@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.28;
 
-import {SiloIncentivesController} from "silo-core/contracts/incentives/SiloIncentivesController.sol";
+import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 
@@ -15,7 +15,7 @@ import {CantinaTicket} from "./CantinaTicket.sol";
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc CantinaTicket236
 */
 contract CantinaTicket236 is CantinaTicket {
-    SiloIncentivesController internal _controller;
+    SiloIncentivesControllerCompatible internal _controller;
 
     address internal _owner = makeAddr("Owner");
     address internal _notifier;

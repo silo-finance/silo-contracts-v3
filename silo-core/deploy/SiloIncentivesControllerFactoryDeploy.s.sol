@@ -5,6 +5,7 @@ import {CommonDeploy} from "./_CommonDeploy.sol";
 import {SiloCoreContracts} from "silo-core/common/SiloCoreContracts.sol";
 
 import {SiloIncentivesControllerFactory} from "silo-core/contracts/incentives/SiloIncentivesControllerFactory.sol";
+import {ISiloIncentivesControllerFactory} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
 
 /*
     FOUNDRY_PROFILE=core \
@@ -21,12 +22,12 @@ import {SiloIncentivesControllerFactory} from "silo-core/contracts/incentives/Si
         --resume
  */
 contract SiloIncentivesControllerFactoryDeploy is CommonDeploy {
-    function run() public returns (SiloIncentivesControllerFactory factory) {
+    function run() public returns (ISiloIncentivesControllerFactory factory) {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
 
         vm.startBroadcast(deployerPrivateKey);
 
-        factory = SiloIncentivesControllerFactory(address(new SiloIncentivesControllerFactory()));
+        factory = new SiloIncentivesControllerFactory();
 
         vm.stopBroadcast();
 

@@ -2,12 +2,8 @@
 pragma solidity ^0.8.19;
 
 // Contracts
-import {Silo, ISilo} from "silo-core/contracts/Silo.sol";
+import {Silo} from "silo-core/contracts/Silo.sol";
 import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
-import {
-    IInterestRateModelV2Config,
-    InterestRateModelV2Config
-} from "silo-core/contracts/interestRateModel/InterestRateModelV2Config.sol";
 
 // Mock Contracts
 import {TestERC20} from "../utils/mocks/TestERC20.sol";
@@ -20,28 +16,23 @@ import {Actor} from "../utils/Actor.sol";
 // Interfaces
 import {ISiloConfig} from "silo-core/contracts/SiloConfig.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
-import {
-    IInterestRateModelV2Config,
-    InterestRateModelV2Config
-} from "silo-core/contracts/interestRateModel/InterestRateModelV2Config.sol";
-import {
-    IInterestRateModelV2Factory,
-    InterestRateModelV2Factory
-} from "silo-core/contracts/interestRateModel/InterestRateModelV2Factory.sol";
-
-import {
-    IInterestRateModelV2,
-    InterestRateModelV2
-} from "silo-core/contracts/interestRateModel/InterestRateModelV2.sol";
-import {ISiloDeployer, SiloDeployer} from "silo-core/contracts/SiloDeployer.sol";
+import {IInterestRateModelV2Config} from "silo-core/contracts/interestRateModel/InterestRateModelV2Config.sol";
+import {IInterestRateModelV2Factory} from "silo-core/contracts/interestRateModel/InterestRateModelV2Factory.sol";
+import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
+import {IInterestRateModelV2} from "silo-core/contracts/interestRateModel/InterestRateModelV2.sol";
+import {ISiloDeployer} from "silo-core/contracts/SiloDeployer.sol";
 import {LeverageRouter} from "silo-core/contracts/leverage/LeverageRouter.sol";
 import {SwapRouterMock} from "silo-core/test/foundry/leverage/mocks/SwapRouterMock.sol";
+import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 
 /// @notice BaseStorage contract for all test contracts, works in tandem with BaseTest
 abstract contract BaseStorage {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     //                                       CONSTANTS                                           //
     ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    uint256 public constant DEFAULT_TIMESTAMP = 337812;
+    uint256 public constant DEFAULT_BLOCK = 4239;
 
     uint256 constant MAX_TOKEN_AMOUNT = 1e29;
 
@@ -64,6 +55,9 @@ abstract contract BaseStorage {
 
     /// @notice Mapping of fuzzer user addresses to actors
     mapping(address => Actor) internal actors;
+
+    /// @notice used for defalting - stores rewards balance before defaulting liquidation
+    mapping(address user => uint256 gaugeBalance) rewardsBalanceBefore;
 
     /// @notice Array of all actor addresses
     address[] internal actorAddresses;
@@ -98,7 +92,10 @@ abstract contract BaseStorage {
     ISiloDeployer siloDeployer;
     PartialLiquidation liquidationModule;
     LeverageRouter leverageRouter;
+    // PartialLiquidationByDefaulting liquidationByDefaultingModule;
     SwapRouterMock swapRouterMock;
+    ISiloIncentivesController gauge;
+    SiloLens siloLens;
 
     /// @notice Implementations
     address siloImpl;

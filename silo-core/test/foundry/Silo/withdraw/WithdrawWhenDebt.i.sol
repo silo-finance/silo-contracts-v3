@@ -32,13 +32,6 @@ contract WithdrawWhenDebtTest is SiloLittleHelper, Test {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_withdraw_all_possible_Collateral_1token
-    */
-    function test_withdraw_all_possible_Collateral_1token() public {
-        _withdraw_all_possible_Collateral();
-    }
-
-    /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_withdraw_whenDebt_fuzz
     */
     function test_withdraw_whenDebt_fuzz(uint256 _depositAmount) public {
@@ -77,7 +70,10 @@ contract WithdrawWhenDebtTest is SiloLittleHelper, Test {
         silo0.withdraw(1, borrower, borrower, ISilo.CollateralType.Protected);
     }
 
-    function _withdraw_all_possible_Collateral() private {
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_withdraw_all_possible_Collateral
+    */
+    function test_withdraw_all_possible_Collateral() public {    
         address borrower = address(this);
 
         ISilo collateralSilo = silo0;
@@ -88,7 +84,7 @@ contract WithdrawWhenDebtTest is SiloLittleHelper, Test {
 
         // collateral
 
-        uint256 maxWithdraw = collateralSilo.maxWithdraw(address(this));
+        uint256 maxWithdraw = collateralSilo.maxWithdraw(address(this)) + 1; // +1 for underestimation
         assertEq(maxWithdraw, 2e18 - 1, "maxWithdraw, because we have protected (-1 for underestimation)");
 
         uint256 previewWithdraw = collateralSilo.previewWithdraw(maxWithdraw);

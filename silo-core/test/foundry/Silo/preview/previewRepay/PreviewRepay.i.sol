@@ -100,14 +100,14 @@ contract PreviewRepayTest is SiloLittleHelper, Test {
     {
         _depositForBorrow(uint256(type(uint112).max) * 2, depositor);
 
-        _depositCollateral(_borrowerInput, borrower, _sameAsset());
-        _borrow(uint256(_borrowerInput) * 3 / 4, borrower, _sameAsset());
+        _deposit(_borrowerInput, borrower);
+        _borrow(uint256(_borrowerInput) * 3 / 4, borrower);
 
         if (_otherBorrower) {
             address otherBorrower = makeAddr("otherBorrower");
 
-            _depositCollateral(type(uint96).max, otherBorrower, _sameAsset());
-            _borrow(uint256(type(uint96).max) * 3 / 4, otherBorrower, _sameAsset());
+            _deposit(type(uint96).max, otherBorrower);
+            _borrow(uint256(type(uint96).max) * 3 / 4, otherBorrower);
         }
 
         if (_interest) _applyInterest();
@@ -123,7 +123,7 @@ contract PreviewRepayTest is SiloLittleHelper, Test {
             return;
         }
 
-        uint256 warpTime = _sameAsset() ? 50 days : 20 days;
+        uint256 warpTime = 20 days;
         vm.warp(block.timestamp + warpTime);
 
         uint256 ltvAfter = siloLens.getLtv(silo1, borrower);
@@ -161,10 +161,6 @@ contract PreviewRepayTest is SiloLittleHelper, Test {
     }
 
     function _useShares() internal pure virtual returns (bool) {
-        return false;
-    }
-
-    function _sameAsset() internal pure virtual returns (bool) {
         return false;
     }
 }

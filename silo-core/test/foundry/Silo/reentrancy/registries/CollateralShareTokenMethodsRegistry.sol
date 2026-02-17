@@ -7,7 +7,7 @@ import {TransferReentrancyTest} from "../methods/collateral-share-token/Transfer
 import {TransferFromReentrancyTest} from "../methods/collateral-share-token/TransferFromReentrancyTest.sol";
 
 contract CollateralShareTokenMethodsRegistry is ShareTokenMethodsRegistry {
-    constructor() ShareTokenMethodsRegistry() {
+    constructor() {
         _registerMethod(new TransferReentrancyTest());
         _registerMethod(new TransferFromReentrancyTest());
     }

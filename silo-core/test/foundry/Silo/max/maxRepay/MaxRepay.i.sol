@@ -41,14 +41,10 @@ contract MaxRepayTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_maxRepay_withDebt_
+    forge test -vv --ffi --mt test_maxRepay_withDebt_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_maxRepay_withDebt_1token_fuzz(uint128 _collateral) public {
-        _maxRepay_withDebt(_collateral);
-    }
-
-    function _maxRepay_withDebt(uint128 _collateral) private {
+    function test_maxRepay_withDebt_fuzz(uint128 _collateral) public {
         uint256 toBorrow = _collateral / 3;
         _createDebt(_collateral, toBorrow);
 
@@ -63,11 +59,7 @@ contract MaxRepayTest is SiloLittleHelper, Test {
     forge test -vv --ffi --mt test_maxRepay_withInterest_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_maxRepay_withInterest_1token_fuzz(uint128 _collateral) public {
-        _maxRepay_withInterest(_collateral);
-    }
-
-    function _maxRepay_withInterest(uint128 _collateral) public {
+    function test_maxRepay_withInterest_fuzz(uint128 _collateral) public {
         uint256 toBorrow = _collateral / 3;
         _createDebt(_collateral, toBorrow);
 

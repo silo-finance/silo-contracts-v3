@@ -7,7 +7,7 @@ import {Strings} from "openzeppelin5/utils/Strings.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 
 import {DistributionTypes} from "silo-core/contracts/incentives/lib/DistributionTypes.sol";
-import {SiloIncentivesController} from "silo-core/contracts/incentives/SiloIncentivesController.sol";
+import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
@@ -29,8 +29,8 @@ import {CAP} from "../helpers/BaseTest.sol";
 contract VaultRewardsIntegrationSetup is IntegrationTest {
     MintableToken reward1 = new MintableToken(18);
 
-    SiloIncentivesController siloIncentivesController;
-    SiloIncentivesController vaultIncentivesController;
+    ISiloIncentivesController siloIncentivesController;
+    ISiloIncentivesController vaultIncentivesController;
     IVaultIncentivesModule vaultIncentivesModule;
 
     function setUp() public virtual override {
@@ -45,11 +45,11 @@ contract VaultRewardsIntegrationSetup is IntegrationTest {
 
         reward1.setOnDemand(true);
 
-        vaultIncentivesController = new SiloIncentivesController(address(this), address(vault), address(vault));
+        vaultIncentivesController = new SiloIncentivesControllerCompatible(address(this), address(vault), address(vault));
         vm.label(address(vaultIncentivesController), "VaultIncentivesController");
 
         // SiloIncentivesController is per silo
-        siloIncentivesController = new SiloIncentivesController(
+        siloIncentivesController = new SiloIncentivesControllerCompatible(
             address(this), address(partialLiquidation), address(silo1)
         );
 

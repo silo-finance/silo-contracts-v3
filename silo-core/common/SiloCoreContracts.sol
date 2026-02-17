@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity >=0.7.6 <0.9.0;
 
 import {Deployments} from "silo-foundry-utils/lib/Deployments.sol";
@@ -12,6 +13,8 @@ library SiloCoreContracts {
     string public constant DYNAMIC_KINK_MODEL_FACTORY = "DynamicKinkModelFactory.sol";
     string public constant DYNAMIC_KINK_MODEL = "DynamicKinkModel.sol";
     string public constant SILO_HOOK_V1 = "SiloHookV1.sol";
+    string public constant SILO_HOOK_V2 = "SiloHookV2.sol";
+    string public constant SILO_HOOK_V3 = "SiloHookV3.sol";
     string public constant SILO_DEPLOYER = "SiloDeployer.sol";
     string public constant SILO = "Silo.sol";
     string public constant PARTIAL_LIQUIDATION = "PartialLiquidation.sol";

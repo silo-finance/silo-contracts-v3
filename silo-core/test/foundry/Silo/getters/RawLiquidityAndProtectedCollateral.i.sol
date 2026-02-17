@@ -33,7 +33,9 @@ contract RawLiquidityAndProtectedCollateralTest is SiloLittleHelper, Test {
         partialLiquidation = IPartialLiquidation(hook);
     }
 
-    // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testLiquidityAndProtectedAssets
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testLiquidityAndProtectedAssets
+    */
     function testLiquidityAndProtectedAssets() public {
         address user0 = makeAddr("user0");
         address user1 = makeAddr("user1");

@@ -7,7 +7,7 @@ interface IDistributionManager {
     struct IncentivesProgram {
         uint256 index;
         address rewardToken; // can't be updated after creation
-        uint104 emissionPerSecond; // configured by owner
+        uint256 emissionPerSecond; // configured by owner
         uint40 lastUpdateTimestamp;
         uint40 distributionEnd; // configured by owner
         mapping(address user => uint256 userIndex) users;
@@ -16,7 +16,7 @@ interface IDistributionManager {
     struct IncentiveProgramDetails {
         uint256 index;
         address rewardToken;
-        uint104 emissionPerSecond;
+        uint256 emissionPerSecond;
         uint40 lastUpdateTimestamp;
         uint40 distributionEnd;
     }
@@ -38,6 +38,10 @@ interface IDistributionManager {
     error InvalidIncentivesProgramName();
     error OnlyNotifierOrOwner();
     error ZeroAddress();
+
+    error EmissionForTimeDeltaOverflow();
+    error IndexOverflow();
+    error NewIndexOverflow();
 
     /**
      * @dev Sets the end date for the distribution
@@ -78,12 +82,21 @@ interface IDistributionManager {
     function getAllProgramsNames() external view returns (string[] memory programsNames);
 
     /**
-     * @dev returns the name of an incentives program
-     * @param _programName the name (bytes32) of the incentives program
+     * @dev Returns the name of an incentives program (converts bytes32 to string)
+     * @notice This function has a bug and can't do it in proper way when _programId is for 
+     * immediate distribution (token address) that was not created yet. 
+     * It works for programs that already exists.
+     *
+     * @param _programId the id (bytes32) of the incentives program
      * @return programName the name (string) of the incentives program
      */
-    function getProgramName(bytes32 _programName) external view returns (string memory programName);
+    function getProgramName(bytes32 _programId) external view returns (string memory programName);
 
+
+    /// @dev NOTIFIER is contract that is allowed to notify controller about token transfers.
+    /// In original Aave implementation it was share token, but in Silo implementation it is usually hook contract.
+    function NOTIFIER() external view returns (address); // solhint-disable-line func-name-mixedcase
+    
     /**
      * @dev Returns the program id for the given program name.
      * This method TRUNCATES the program name to 32 bytes.

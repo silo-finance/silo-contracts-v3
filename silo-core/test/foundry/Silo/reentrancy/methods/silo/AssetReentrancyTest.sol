@@ -7,7 +7,7 @@ import {TestStateLib} from "../../TestState.sol";
 
 contract AssetReentrancyTest is MethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will not revert");
+        emit log_string(_tabs(1, "Ensure it will not revert"));
         _ensureItWillNotRevert();
     }
 

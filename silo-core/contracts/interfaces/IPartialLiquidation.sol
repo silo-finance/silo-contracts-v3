@@ -19,7 +19,9 @@ interface IPartialLiquidation {
     /// @param withdrawCollateral Total (collateral + protected) withdraw amount, in case `receiveSToken` is TRUE
     /// then this is estimated withdraw, and representation of this amount in sToken was transferred
     /// @param receiveSToken True if the liquidators wants to receive the collateral sTokens, `false` if he wants
-    /// to receive the underlying collateral asset directly
+    /// to receive the underlying collateral asset directly. This flag is ignored in case when it's not possible 
+    /// to convert shares to assets, eg 999 shares => 0 assets, in that case liquidator will receive this dust shares 
+    /// directly, shares that can be withdawable as assets will be transferred to liquidator as usual.
     event LiquidationCall(
         address indexed liquidator,
         address indexed silo,
@@ -36,6 +38,7 @@ interface IPartialLiquidation {
     error UserIsSolvent();
     error UnknownRatio();
     error NoRepayAssets();
+    error NoCollateralToLiquidate();
 
     /// @notice Function to liquidate insolvent position
     /// - The caller (liquidator) covers `debtToCover` amount of debt of the user getting liquidated, and receives
@@ -55,7 +58,9 @@ interface IPartialLiquidation {
     /// @param _maxDebtToCover The maximum debt amount of borrowed `asset` the liquidator wants to cover,
     /// in case this amount is too big, it will be reduced to maximum allowed liquidation amount
     /// @param _receiveSToken True if the liquidators wants to receive the collateral sTokens, `false` if he wants
-    /// to receive the underlying collateral asset directly
+    /// to receive the underlying collateral asset directly. 
+    /// `_receiveSToken` is ignored in case when it's not possible to convert shares to assets, 
+    /// eg 999 shares => 0 assets.
     /// @return withdrawCollateral collateral that was send to `msg.sender`, in case of `_receiveSToken` is TRUE,
     /// `withdrawCollateral` will be estimated, on redeem one can expect this value to be rounded down
     /// @return repayDebtAssets actual debt value that was repaid by `msg.sender`

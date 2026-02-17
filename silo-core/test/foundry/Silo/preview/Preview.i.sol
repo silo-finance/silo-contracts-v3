@@ -36,14 +36,10 @@ contract PreviewTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_previewBorrow_beforeInterest_
+    forge test -vv --ffi --mt test_previewBorrow_beforeInterest
     */
     /// forge-config: core_test.fuzz.runs = 10000
-    function test_previewBorrow_beforeInterest_1token_fuzz(uint128 _assets, bool _useShares) public {
-        _previewBorrow_beforeInterest(_assets, _useShares);
-    }
-
-    function _previewBorrow_beforeInterest(uint128 _assets, bool _useShares) private {
+    function test_previewBorrow_beforeInterest_fuzz(uint128 _assets, bool _useShares) public {
         uint256 assetsOrSharesToBorrow = _assets / 10 + (_assets % 2); // keep even/odd
         vm.assume(assetsOrSharesToBorrow < _assets);
 
@@ -70,11 +66,7 @@ contract PreviewTest is SiloLittleHelper, Test {
     forge test -vv --ffi --mt test_previewBorrow_withInterest
     */
     /// forge-config: core_test.fuzz.runs = 10000
-    function test_previewBorrow_withInterest_1token_fuzz(uint128 _assets, bool _useShares) public {
-        _previewBorrow_withInterest(_assets, _useShares);
-    }
-
-    function _previewBorrow_withInterest(uint128 _assets, bool _useShares) private {
+    function test_previewBorrow_withInterest_fuzz(uint128 _assets, bool _useShares) public {
         uint256 assetsOrSharesToBorrow = _assets / 10 + (_assets % 2); // keep even/odd
         vm.assume(assetsOrSharesToBorrow < _assets);
 
@@ -104,15 +96,11 @@ contract PreviewTest is SiloLittleHelper, Test {
     forge test -vv --ffi --mt test_previewRepay_noInterestNoDebt_
     */
     /// forge-config: core_test.fuzz.runs = 10000
-    function test_previewRepay_noInterestNoDebt_1token_fuzz(
+    function test_previewRepay_noInterestNoDebt_fuzz(
         uint128 _assetsOrShares,
         bool _useShares,
         bool _repayFull
     ) public {
-        _previewRepay_noInterestNoDebt(_assetsOrShares, _useShares, _repayFull);
-    }
-
-    function _previewRepay_noInterestNoDebt(uint128 _assetsOrShares, bool _useShares, bool _repayFull) private {
         uint128 amountToUse = _repayFull ? _assetsOrShares : uint128(uint256(_assetsOrShares) * 37 / 100);
         vm.assume(amountToUse > 0);
 
@@ -127,16 +115,12 @@ contract PreviewTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_previewRepayShares_noInterest_fuzz
+    forge test -vv --ffi --mt test_previewRepay_noInterest_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 10000
-    function test_previewRepay_noInterest_1token_fuzz(uint128 _assetsOrShares, bool _useShares, bool _repayFull)
+    function test_previewRepay_noInterest_fuzz(uint128 _assetsOrShares, bool _useShares, bool _repayFull)
         public
     {
-        _previewRepay_noInterest(_assetsOrShares, _useShares, _repayFull);
-    }
-
-    function _previewRepay_noInterest(uint128 _assetsOrShares, bool _useShares, bool _repayFull) private {
         uint128 amountToUse = _repayFull ? _assetsOrShares : uint128(uint256(_assetsOrShares) * 37 / 100);
         vm.assume(amountToUse > 0);
 
@@ -150,18 +134,15 @@ contract PreviewTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_previewRepay_withInterest_
+    forge test -vv --ffi --mt test_previewRepay_withInterest
     */
     /// forge-config: core_test.fuzz.runs = 10000
-    function test_previewRepay_withInterest_1token_fuzz()
-        // uint128 _assetsOrShares, bool _useShares, bool _repayFull
+    function test_previewRepay_withInterest_fuzz(
+        uint128 _assetsOrShares, bool _useShares, bool _repayFull
+    )
         public
     {
-        (uint128 _assetsOrShares, bool _useShares, bool _repayFull) = (280, true, true);
-        _previewRepay_withInterest(_assetsOrShares, _useShares, _repayFull);
-    }
-
-    function _previewRepay_withInterest(uint128 _assetsOrShares, bool _useShares, bool _repayFull) private {
+        // (uint128 _assetsOrShares, bool _useShares, bool _repayFull) = (280, true, true);
         uint128 amountToUse = _repayFull ? _assetsOrShares : uint128(uint256(_assetsOrShares) * 37 / 100);
         vm.assume(amountToUse > 0);
 

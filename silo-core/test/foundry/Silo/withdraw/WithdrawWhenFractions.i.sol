@@ -3,6 +3,8 @@ pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 
+import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
+
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 
 /*
@@ -12,6 +14,7 @@ contract WithdrawWhenFractionsTest is SiloLittleHelper, Test {
     function setUp() public {
         _setUpLocalFixture();
 
+        token0.setOnDemand(true);
         token1.setOnDemand(true);
     }
 
@@ -19,31 +22,36 @@ contract WithdrawWhenFractionsTest is SiloLittleHelper, Test {
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_withdraw_when_fractions
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_withdraw_when_fractions_fuzz(uint256 _borrowSameAsset, bool _maxRedeem) public {
-        vm.assume(_borrowSameAsset < uint256(632707) * 80 / 100);
-        vm.assume(_borrowSameAsset > 0);
+    function test_withdraw_when_fractions_fuzz(uint256 _borrowAmount, bool _maxRedeem) public {
+        vm.assume(_borrowAmount < uint256(632707) * 80 / 100);
+        vm.assume(_borrowAmount > 0);
 
-        _withdraw_when_fractions(_borrowSameAsset, _maxRedeem);
+        _withdraw_when_fractions(_borrowAmount, _maxRedeem);
     }
 
     /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_withdraw_when_fractions
-    this test will fail for byt in maxWithdraw when we not count for interest fractions
+    this test will fail for maxWithdraw when we not count for interest fractions
     */
     function test_withdraw_when_fractions() public {
         _withdraw_when_fractions(44723, false);
     }
 
-    function _withdraw_when_fractions(uint256 _borrowSameAsset, bool _maxRedeem) public {
+    function _withdraw_when_fractions(uint256 _borrowAmount, bool _maxRedeem) public {
         vm.warp(337812);
+        vm.assume(_borrowAmount / 2 != 0);
 
         address borrower = address(this);
 
+        silo0.mint(632707868, borrower);
         silo1.mint(632707868, borrower);
-        silo1.borrowSameAsset(_borrowSameAsset, borrower, borrower);
+        _borrow(_borrowAmount / 2, borrower);
 
         vm.warp(block.timestamp + 195346);
         silo1.accrueInterest();
+        ISilo.Fractions memory fractions = silo1.getFractionsStorage();
+        vm.assume(fractions.interest != 0);
+
         vm.warp(block.timestamp + 130008);
 
         if (_maxRedeem) {

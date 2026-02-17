@@ -26,7 +26,7 @@ contract LiquidationAccrueInterestGasTest is Gas, Test {
     }
 
     /*
-    forge test -vvv --ffi --mt test_gas_liquidationCallWithInterest
+    FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_gas_liquidationCallWithInterest
     */
     function test_gas_liquidationCallWithInterest() public {
         vm.prank(DEPOSITOR);
@@ -39,7 +39,7 @@ contract LiquidationAccrueInterestGasTest is Gas, Test {
                 IPartialLiquidation.liquidationCall, (address(token0), address(token1), BORROWER, ASSETS / 2, false)
             ),
             "LiquidationCall with accrue interest",
-            465787,
+            465895,
             3000
         );
     }

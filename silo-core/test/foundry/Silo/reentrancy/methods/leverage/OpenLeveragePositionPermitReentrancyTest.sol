@@ -27,7 +27,7 @@ contract OpenLeveragePositionPermitReentrancyTest is OpenLeveragePositionReentra
         ) = _prepareLeverageArgs(flashloanAmount, depositAmount);
 
         // mock the swap: debt token -> collateral token, price is 1:1, lt's mock some fee
-        swap.setSwap(TestStateLib.token1(), flashloanAmount, TestStateLib.token0(), flashloanAmount * 99 / 100);
+        swap.setSwap(TestStateLib.token0(), flashloanAmount, TestStateLib.token1(), flashloanAmount * 99 / 100);
 
         TestStateLib.enableLeverageReentrancy();
 

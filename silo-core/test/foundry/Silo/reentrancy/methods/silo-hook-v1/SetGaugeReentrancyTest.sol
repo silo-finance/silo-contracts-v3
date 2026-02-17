@@ -12,7 +12,7 @@ import {MethodReentrancyTest} from "../MethodReentrancyTest.sol";
 
 contract SetGaugeReentrancyTest is MethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will revert (permissions)");
+        emit log_string(_tabs(1, "Ensure it will not revert (permissions)"));
         _ensureItWillRevert();
     }
 

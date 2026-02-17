@@ -7,7 +7,7 @@ import {TestStateLib} from "../../TestState.sol";
 
 contract AccrueInterestForSiloReentrancyTest is MethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will revert only for wrong silo");
+        emit log_string(_tabs(1, "Ensure it will revert only for wrong silo"));
         _ensureItWillRevertAsExpected();
     }
 

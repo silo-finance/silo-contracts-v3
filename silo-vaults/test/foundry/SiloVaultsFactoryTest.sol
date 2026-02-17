@@ -5,6 +5,8 @@ import {Clones} from "openzeppelin5/proxy/Clones.sol";
 import {Nonces} from "openzeppelin5/utils/Nonces.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 
+import {Create2Factory} from "common/utils/Create2Factory.sol";
+
 import {IIncentivesClaimingLogic} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogic.sol";
 import {IIncentivesClaimingLogicFactory} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogicFactory.sol";
 import {SiloVault} from "../../contracts/SiloVault.sol";
@@ -19,7 +21,7 @@ import {IntegrationTest} from "./helpers/IntegrationTest.sol";
 /*
  FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc SiloVaultsFactoryTest -vvv
 */
-contract SiloVaultsFactoryTest is IntegrationTest {
+contract SiloVaultsFactoryTest is IntegrationTest, Create2Factory {
     SiloVaultsFactory factory;
 
     function setUp() public override {
@@ -28,7 +30,10 @@ contract SiloVaultsFactoryTest is IntegrationTest {
         factory = new SiloVaultsFactory();
     }
 
-    function testCreateSiloVault(
+    /*
+    FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt testCreateSiloVaultOnce -vv
+    */
+    function testCreateSiloVaultOnce(
         address initialOwner,
         uint256 initialTimelock,
         string memory name,
@@ -36,6 +41,28 @@ contract SiloVaultsFactoryTest is IntegrationTest {
     ) public {
         vm.assume(address(initialOwner) != address(0));
         initialTimelock = bound(initialTimelock, ConstantsLib.MIN_TIMELOCK, ConstantsLib.MAX_TIMELOCK);
+
+        address predictedIncentivesModuleAddress = Clones.predictDeterministicAddress({
+            implementation: factory.VAULT_INCENTIVES_MODULE_IMPLEMENTATION(),
+            salt: _createSalt(address(this), bytes32(0)),
+            deployer: address(factory)
+        });
+
+        address predictedVault = factory.predictSiloVaultAddress({
+            _constructorArgs: abi.encode(
+                initialOwner,
+                initialTimelock,
+                address(predictedIncentivesModuleAddress),
+                address(loanToken),
+                name,
+                symbol
+            ),
+            _salt: _createSalt(address(this), bytes32(0)),
+            _deployer: address(factory)
+        });
+
+        vm.expectEmit(true, true, true, true);
+        emit EventsLib.VaultIncentiveModule(predictedVault, predictedIncentivesModuleAddress);
 
         ISiloVault siloVault = factory.createSiloVault(
             initialOwner,
@@ -127,11 +154,8 @@ contract SiloVaultsFactoryTest is IntegrationTest {
 
         bytes32 salt = keccak256(abi.encodePacked(devWallet, Nonces(address(factory)).nonces(devWallet), bytes32(0)));
 
-        address predictedIncentivesModuleAddress = Clones.predictDeterministicAddress(
-            implementation,
-            salt,
-            address(factory)
-        );
+        address predictedIncentivesModuleAddress =
+            Clones.predictDeterministicAddress(implementation, salt, address(factory));
 
         vm.prank(otherWallet);
         ISiloVault siloVault1 = factory.createSiloVault(

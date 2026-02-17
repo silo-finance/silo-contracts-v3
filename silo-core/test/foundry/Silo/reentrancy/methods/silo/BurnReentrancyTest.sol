@@ -8,7 +8,7 @@ import {TestStateLib} from "../../TestState.sol";
 
 contract BurnReentrancyTest is MethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will not revert (all share tokens)");
+        emit log_string(_tabs(1, "Ensure it will not revert (all share tokens)"));
         _ensureItWillRevertWithOnlySilo();
     }
 

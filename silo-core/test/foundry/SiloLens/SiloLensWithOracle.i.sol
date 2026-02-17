@@ -61,7 +61,7 @@ contract SiloLensWithOracleTest is SiloLittleHelper, Test {
     function test_SiloLensOracle_calculateProfitableLiquidation_priceDrop() public {
         _depositForBorrow(100e18, depositor);
 
-        _depositCollateral(100e18, borrower, false);
+        _deposit(100e18, borrower);
         _borrow(75e18, borrower);
 
         uint256 ltv = siloLens.getLtv(silo0, borrower);
@@ -90,7 +90,7 @@ contract SiloLensWithOracleTest is SiloLittleHelper, Test {
 
         _depositForBorrow(100_000e18, depositor);
 
-        _depositCollateral(100e18, borrower, false);
+        _deposit(100e18, borrower);
         _borrow(75e18, borrower);
 
         uint256 ltv = siloLens.getLtv(silo0, borrower);

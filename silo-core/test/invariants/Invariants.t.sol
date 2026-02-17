@@ -10,7 +10,7 @@ import {BaseInvariants} from "./invariants/BaseInvariants.t.sol";
 import {SiloMarketInvariants} from "./invariants/SiloMarketInvariants.t.sol";
 import {LendingBorrowingInvariants} from "./invariants/LendingBorrowingInvariants.t.sol";
 
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 /// @title Invariants
 /// @notice Wrappers for the protocol invariants implemented in each invariants contract

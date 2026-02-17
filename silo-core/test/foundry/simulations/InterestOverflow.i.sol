@@ -13,7 +13,7 @@ import {SiloFixture} from "../_common/fixtures/SiloFixture.sol";
 import {MintableToken} from "../_common/MintableToken.sol";
 
 /*
-    forge test -vv --ffi --mc InterestOverflowTest
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc InterestOverflowTest
 
     this test checks scenario, when we overflow interest, in that case we should be able to repay and exit silo
 */
@@ -55,11 +55,11 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
         uint256 shares2 = _depositForBorrow(1, makeAddr("user2"));
         uint256 shares3 = _depositForBorrow(one, makeAddr("user3"));
 
-        _depositCollateral(type(uint160).max, borrower, TWO_ASSETS);
-        _borrow(type(uint160).max / 100 * 75, borrower, TWO_ASSETS);
+        _deposit(type(uint160).max, borrower);
+        _borrow(type(uint160).max / 100 * 75, borrower);
 
-        _depositCollateral(type(uint160).max / 100 * 25 * 2, borrower2, TWO_ASSETS);
-        _borrow(type(uint160).max / 100 * 25, borrower2, TWO_ASSETS);
+        _deposit(type(uint160).max / 100 * 25 * 2, borrower2);
+        _borrow(type(uint160).max / 100 * 25, borrower2);
 
         vm.startPrank(makeAddr("user1"));
         shares1 -= silo1.withdraw(silo1.maxWithdraw(makeAddr("user1")), makeAddr("user1"), makeAddr("user1"));

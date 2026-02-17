@@ -8,6 +8,8 @@ import {IWrappedNativeToken} from "./IWrappedNativeToken.sol";
 import {IPendleWrapperLike} from "./IPendleWrapperLike.sol";
 
 interface ISiloRouterV2Implementation {
+    error Deprecated();
+    
     /// @notice Wrap native token to wrapped native token
     /// @dev Tokens are wrapped to the router's balance.
     /// Caller is responsible to transfer the wrapped tokens to the desired address.
@@ -133,10 +135,7 @@ interface ISiloRouterV2Implementation {
     /// @param _receiver The address of the receiver
     function borrow(ISilo _silo, uint256 _assets, address _receiver) external payable returns (uint256 shares);
 
-    /// @notice Borrow tokens from a silo using the same asset
-    /// @param _silo The address of the silo
-    /// @param _assets The amount of tokens to borrow
-    /// @param _receiver The address of the receiver
+    /// @notice deprecated
     function borrowSameAsset(
         ISilo _silo,
         uint256 _assets,

@@ -21,24 +21,22 @@ contract CloseLeveragePositionReentrancyTest is OpenLeveragePositionReentrancyTe
 
         address user = wallet.addr;
 
-        (
-            ILeverageUsingSiloFlashloan.CloseLeverageArgs memory closeArgs,
-            IGeneralSwapModule.SwapArgs memory swapArgs
-        ) = _closeLeverageArgs();
+        (ILeverageUsingSiloFlashloan.CloseLeverageArgs memory closeArgs, IGeneralSwapModule.SwapArgs memory swapArgs)
+        = _closeLeverageArgs();
 
-        uint256 flashAmount = TestStateLib.silo1().maxRepay(user);
+        uint256 flashAmount = TestStateLib.silo0().maxRepay(user);
 
         uint256 amountIn = flashAmount * 111 / 100;
-        swap.setSwap(TestStateLib.token0(), amountIn, TestStateLib.token1(), amountIn * 99 / 100);
+        swap.setSwap(TestStateLib.token1(), amountIn, TestStateLib.token0(), amountIn * 99 / 100);
 
         // Get user's leverage contract and approve it for collateral share token
         LeverageRouter router = _getLeverageRouter();
         address userLeverageContract = router.predictUserLeverageContract(user);
 
-        address silo0 = address(TestStateLib.silo0());
+        address silo1 = address(TestStateLib.silo1());
 
         vm.prank(user);
-        IERC20(silo0).approve(userLeverageContract, type(uint256).max);
+        IERC20(silo1).approve(userLeverageContract, type(uint256).max);
 
         TestStateLib.enableLeverageReentrancy();
 
@@ -54,10 +52,9 @@ contract CloseLeveragePositionReentrancyTest is OpenLeveragePositionReentrancyTe
 
         bytes memory swapArgs = "";
 
-        ILeverageUsingSiloFlashloan.CloseLeverageArgs memory closeArgs = ILeverageUsingSiloFlashloan
-            .CloseLeverageArgs({
-            flashloanTarget: address(TestStateLib.silo1()),
-            siloWithCollateral: TestStateLib.silo0(),
+        ILeverageUsingSiloFlashloan.CloseLeverageArgs memory closeArgs = ILeverageUsingSiloFlashloan.CloseLeverageArgs({
+            flashloanTarget: address(TestStateLib.silo0()),
+            siloWithCollateral: TestStateLib.silo1(),
             collateralType: ISilo.CollateralType.Collateral
         });
 
@@ -80,14 +77,14 @@ contract CloseLeveragePositionReentrancyTest is OpenLeveragePositionReentrancyTe
         )
     {
         closeArgs = ILeverageUsingSiloFlashloan.CloseLeverageArgs({
-            flashloanTarget: address(TestStateLib.silo1()),
-            siloWithCollateral: TestStateLib.silo0(),
+            flashloanTarget: address(TestStateLib.silo0()),
+            siloWithCollateral: TestStateLib.silo1(),
             collateralType: ISilo.CollateralType.Collateral
         });
 
         swapArgs = IGeneralSwapModule.SwapArgs({
-            sellToken: TestStateLib.token0(),
-            buyToken: TestStateLib.token1(),
+            sellToken: TestStateLib.token1(),
+            buyToken: TestStateLib.token0(),
             allowanceTarget: address(swap),
             exchangeProxy: address(swap),
             swapCallData: "mocked swap data"

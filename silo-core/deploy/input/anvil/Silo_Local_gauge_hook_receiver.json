@@ -1,7 +1,7 @@
 {
     "deployer": "0x0000000000000000000000000000000000de0101",
     "hookReceiver": "CLONE_IMPLEMENTATION",
-    "hookReceiverImplementation": "SiloHookV1.sol",
+    "hookReceiverImplementation": "SiloHookV2.sol",
     "daoFee": 1500,
     "deployerFee": 1000,
     "token0": "PLACEHOLDER",
@@ -20,10 +20,10 @@
     "maxLtvOracle1": "NO_ORACLE",
     "interestRateModel1": "InterestRateModelV2Factory.sol",
     "interestRateModelConfig1": "defaultAsset",
-    "maxLtv1": 8500,
-    "lt1": 9500,
-    "liquidationTargetLtv1": 8550,
-    "liquidationFee1": 250,
+    "maxLtv1": 0,
+    "lt1": 0,
+    "liquidationTargetLtv1": 0,
+    "liquidationFee1": 0,
     "flashloanFee1": 100,
     "callBeforeQuote1": false
 }

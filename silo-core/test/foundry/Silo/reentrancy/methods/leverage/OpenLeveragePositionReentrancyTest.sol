@@ -82,7 +82,7 @@ contract OpenLeveragePositionReentrancyTest is MethodReentrancyTest {
         ) = _prepareLeverageArgs(flashloanAmount, depositAmount);
 
         // mock the swap: debt token -> collateral token, price is 1:1, lt's mock some fee
-        swap.setSwap(TestStateLib.token1(), flashloanAmount, TestStateLib.token0(), flashloanAmount * 99 / 100);
+        swap.setSwap(TestStateLib.token0(), flashloanAmount, TestStateLib.token1(), flashloanAmount * 99 / 100);
 
         TestStateLib.enableLeverageReentrancy();
 
@@ -99,18 +99,18 @@ contract OpenLeveragePositionReentrancyTest is MethodReentrancyTest {
         address liquidityProvider = makeAddr("LiquidityProvider");
         uint256 liquidityAmount = 100e18;
 
-        ISilo silo1 = TestStateLib.silo1();
-        address token1 = TestStateLib.token1();
+        ISilo silo0 = TestStateLib.silo0();
+        address token0 = TestStateLib.token0();
 
         TestStateLib.disableReentrancy();
 
-        MaliciousToken(token1).mint(liquidityProvider, liquidityAmount);
+        MaliciousToken(token0).mint(liquidityProvider, liquidityAmount);
 
         vm.prank(liquidityProvider);
-        MaliciousToken(token1).approve(address(silo1), liquidityAmount);
+        MaliciousToken(token0).approve(address(silo0), liquidityAmount);
 
         vm.prank(liquidityProvider);
-        silo1.deposit(liquidityAmount, liquidityProvider, ISilo.CollateralType.Collateral);
+        silo0.deposit(liquidityAmount, liquidityProvider, ISilo.CollateralType.Collateral);
 
         TestStateLib.enableReentrancy();
     }
@@ -129,20 +129,20 @@ contract OpenLeveragePositionReentrancyTest is MethodReentrancyTest {
         // Mint tokens for user. Silo reentrancy test is disabled.
         TestStateLib.disableReentrancy();
 
-        MaliciousToken(TestStateLib.token0()).mint(_user, _depositAmount);
+        MaliciousToken(TestStateLib.token1()).mint(_user, _depositAmount);
 
         vm.startPrank(_user);
 
         if (_approveAssets) {
             // Approve user's leverage contract to pull deposit tokens
-            MaliciousToken(TestStateLib.token0()).approve(userLeverageContract, _depositAmount);
+            MaliciousToken(TestStateLib.token1()).approve(userLeverageContract, _depositAmount);
         }
 
-        // Get debt share token from silo1
-        ISiloConfig config = TestStateLib.silo1().config();
-        (,, address debtShareToken) = config.getShareTokens(address(TestStateLib.silo1()));
+        // Get debt share token from silo0
+        ISiloConfig config = TestStateLib.silo0().config();
+        (,, address debtShareToken) = config.getShareTokens(address(TestStateLib.silo0()));
 
-        uint256 debtReceiveApproval = router.calculateDebtReceiveApproval(TestStateLib.silo1(), _flashloanAmount);
+        uint256 debtReceiveApproval = router.calculateDebtReceiveApproval(TestStateLib.silo0(), _flashloanAmount);
 
         IERC20R(debtShareToken).setReceiveApproval(userLeverageContract, debtReceiveApproval);
 
@@ -207,20 +207,20 @@ contract OpenLeveragePositionReentrancyTest is MethodReentrancyTest {
     {
         // Prepare leverage arguments
         flashArgs = ILeverageUsingSiloFlashloan.FlashArgs({
-            flashloanTarget: address(TestStateLib.silo1()),
+            flashloanTarget: address(TestStateLib.silo0()),
             amount: _flashloanAmount
         });
 
         depositArgs = ILeverageUsingSiloFlashloan.DepositArgs({
-            silo: TestStateLib.silo0(),
+            silo: TestStateLib.silo1(),
             amount: _depositAmount,
             collateralType: ISilo.CollateralType.Collateral
         });
 
         // Mock swap module arguments
         swapArgs = IGeneralSwapModule.SwapArgs({
-            buyToken: TestStateLib.token0(),
-            sellToken: TestStateLib.token1(),
+            buyToken: TestStateLib.token1(),
+            sellToken: TestStateLib.token0(),
             allowanceTarget: address(swap),
             exchangeProxy: address(swap),
             swapCallData: "mocked swap data"

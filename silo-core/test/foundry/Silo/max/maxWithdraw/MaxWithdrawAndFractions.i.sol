@@ -14,9 +14,9 @@ import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
 import {SiloHarness} from "silo-core/test/foundry/_mocks/SiloHarness.sol";
 
 /*
-    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc MaxWithdrawAndFractions
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc MaxWithdrawAndFractionsTest
 */
-contract MaxWithdrawAndFractions is SiloLittleHelper, Test {
+contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
     uint256 public snapshot;
     address public borrower = address(this);
     address public otherUser = makeAddr("otherUser");
@@ -165,8 +165,8 @@ contract MaxWithdrawAndFractions is SiloLittleHelper, Test {
         _borrowAndUpdateSiloCode(_borrowAmount);
 
         if (_redeem) {
-            uint256 maxRedeem = silo0.maxRedeem(borrower);
             _changeTotalsScenario2();
+            uint256 maxRedeem = silo0.maxRedeem(borrower);
             vm.assume(maxRedeem != 0);
             silo0.redeem(maxRedeem, borrower, borrower);
         } else {

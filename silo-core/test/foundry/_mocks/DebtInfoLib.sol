@@ -15,11 +15,4 @@ library DebtInfoLib {
     function debtPresent(ISiloConfig.ConfigData memory _debtConfig) internal pure returns (bool debtStatus) {
         debtStatus = _debtConfig.silo != address(0);
     }
-
-    function debtWithSameAsset(
-        ISiloConfig.ConfigData memory _debtConfig,
-        ISiloConfig.ConfigData memory _collateralConfig
-    ) internal pure returns (bool sameAsset) {
-        sameAsset = _debtConfig.silo == _collateralConfig.silo;
-    }
 }

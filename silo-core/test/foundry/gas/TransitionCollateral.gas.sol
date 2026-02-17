@@ -16,9 +16,9 @@ contract TransitionCollateralTest is Gas, Test {
     function setUp() public {
         _gasTestsInit();
 
-        _depositCollateral(ASSETS * 2, BORROWER, TWO_ASSETS);
+        _deposit(ASSETS * 2, BORROWER);
         _depositForBorrow(ASSETS, DEPOSITOR);
-        _borrow(ASSETS, BORROWER, TWO_ASSETS);
+        _borrow(ASSETS, BORROWER);
 
         vm.warp(block.timestamp + 1);
     }
@@ -32,7 +32,7 @@ contract TransitionCollateralTest is Gas, Test {
             address(silo0),
             abi.encodeCall(ISilo.transitionCollateral, (ASSETS, BORROWER, ISilo.CollateralType.Collateral)),
             "transitionCollateral (when debt)",
-            292000 // 74K for interest
+            292350 // 74K for interest
         );
     }
 }

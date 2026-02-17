@@ -16,9 +16,9 @@ contract TransferCollateralTest is Gas, Test {
     function setUp() public {
         _gasTestsInit();
 
-        _depositCollateral(ASSETS * 2, BORROWER, TWO_ASSETS);
+        _deposit(ASSETS * 2, BORROWER);
         _depositForBorrow(ASSETS, DEPOSITOR);
-        _borrow(ASSETS, BORROWER, TWO_ASSETS);
+        _borrow(ASSETS, BORROWER);
     }
 
     /*
@@ -32,7 +32,7 @@ contract TransferCollateralTest is Gas, Test {
             address(collateralShareToken),
             abi.encodeCall(IERC20.transfer, (BORROWER, 1)),
             "TransferCollateral (when debt)",
-            111618
+            111816
         );
     }
 }

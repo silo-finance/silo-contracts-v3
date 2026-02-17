@@ -3,13 +3,14 @@ pragma solidity ^0.8.0;
 
 import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
+import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
 import {DexSwap} from "silo-core/contracts/utils/liquidationHelper/DexSwap.sol";
 
 /*
- forge test --gas-price 1 -vv --mc DexSwapOdosSonicTest
+FOUNDRY_PROFILE=core_test forge test --gas-price 1 --ffi -vv --mc DexSwapOdosSonicTest
 */
 contract DexSwapOdosSonicTest is IntegrationTest {
     DexSwap dex; // solhint-disable-line var-name-mixedcase
@@ -17,6 +18,7 @@ contract DexSwapOdosSonicTest is IntegrationTest {
     function setUp() public {
         uint256 blockToFork = 2838462;
         vm.createSelectFork(vm.envString("RPC_SONIC"), blockToFork);
+        AddrLib.init();
         dex = new DexSwap(getAddress(AddrKey.ODOS_ROUTER));
     }
 

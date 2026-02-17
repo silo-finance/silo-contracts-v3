@@ -24,7 +24,7 @@ import {TestWETH} from "./utils/mocks/TestWETH.sol";
 import {Setup} from "silo-core/test/invariants/Setup.t.sol";
 import {Actor} from "silo-core/test/invariants/utils/Actor.sol";
 
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 /// @notice Setup contract for the invariant test Suite, inherited by Tester
 contract SetupLeverage is Setup {

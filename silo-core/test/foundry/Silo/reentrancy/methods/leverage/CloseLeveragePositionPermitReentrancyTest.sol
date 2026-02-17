@@ -14,21 +14,19 @@ contract CloseLeveragePositionPermitReentrancyTest is CloseLeveragePositionReent
     function callMethod() external override {
         _openLeverage();
 
-        (
-            ILeverageUsingSiloFlashloan.CloseLeverageArgs memory closeArgs,
-            IGeneralSwapModule.SwapArgs memory swapArgs
-        ) = _closeLeverageArgs();
+        (ILeverageUsingSiloFlashloan.CloseLeverageArgs memory closeArgs, IGeneralSwapModule.SwapArgs memory swapArgs)
+        = _closeLeverageArgs();
 
-        uint256 flashAmount = TestStateLib.silo1().maxRepay(wallet.addr);
+        uint256 flashAmount = TestStateLib.silo0().maxRepay(wallet.addr);
 
         uint256 amountIn = flashAmount * 111 / 100;
-        swap.setSwap(TestStateLib.token0(), amountIn, TestStateLib.token1(), amountIn * 99 / 100);
+        swap.setSwap(TestStateLib.token1(), amountIn, TestStateLib.token0(), amountIn * 99 / 100);
 
         LeverageRouter router = _getLeverageRouter();
 
         TestStateLib.enableLeverageReentrancy();
 
-        ILeverageUsingSiloFlashloan.Permit memory permit = _generatePermit(address(TestStateLib.silo0()));
+        ILeverageUsingSiloFlashloan.Permit memory permit = _generatePermit(address(TestStateLib.silo1()));
 
         vm.prank(wallet.addr);
         router.closeLeveragePositionPermit(abi.encode(swapArgs), closeArgs, permit);
@@ -39,10 +37,8 @@ contract CloseLeveragePositionPermitReentrancyTest is CloseLeveragePositionReent
     function verifyReentrancy() external override {
         LeverageRouter router = _getLeverageRouter();
 
-        (
-            ILeverageUsingSiloFlashloan.CloseLeverageArgs memory closeArgs,
-            IGeneralSwapModule.SwapArgs memory swapArgs
-        ) = _closeLeverageArgs();
+        (ILeverageUsingSiloFlashloan.CloseLeverageArgs memory closeArgs, IGeneralSwapModule.SwapArgs memory swapArgs)
+        = _closeLeverageArgs();
 
         ILeverageUsingSiloFlashloan.Permit memory permit = _generatePermit(address(TestStateLib.silo0()));
 

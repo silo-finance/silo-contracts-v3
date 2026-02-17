@@ -11,7 +11,7 @@ import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
 // Contracts
 import {HandlerAggregator} from "../HandlerAggregator.t.sol";
 
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 /// @title LendingBorrowingInvariants
 /// @notice Implements Invariants for the protocol

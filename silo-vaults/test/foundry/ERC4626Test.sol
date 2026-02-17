@@ -80,9 +80,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
     /*
      FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt testRedeem -vvv
     */
-    function testRedeem(
-        uint256 deposited, uint256 redeemed
-    ) public {
+    function testRedeem(uint256 deposited, uint256 redeemed) public {
         // (uint256 deposited, uint256 redeemed) = (5274, 1000000);
 
         deposited = bound(deposited, MIN_TEST_ASSETS, MAX_TEST_ASSETS);
@@ -175,12 +173,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         uint256 maxAssetsToWithdraw = market.previewRedeem(balanceBefore);
         uint256 assets = maxAssetsToWithdraw / 2;
 
-        bytes memory data = abi.encodeWithSelector(
-            IERC4626.withdraw.selector,
-            assets,
-            address(vault),
-            address(vault)
-        );
+        bytes memory data = abi.encodeWithSelector(IERC4626.withdraw.selector, assets, address(vault), address(vault));
 
         vm.mockCall(address(market), data, abi.encode(maxAssetsToWithdraw)); // report wrong amount
         vm.expectCall(address(market), data);
@@ -329,12 +322,9 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         uint256 sharesRoundedDown = shares - 10 ** vaultDecimalsOffset;
 
         vm.prank(SUPPLIER);
-        vm.expectRevert(abi.encodeWithSelector(
-            IERC20Errors.ERC20InsufficientBalance.selector,
-            SUPPLIER,
-            0,
-            sharesRoundedDown
-        ));
+        vm.expectRevert(
+            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, SUPPLIER, 0, sharesRoundedDown)
+        );
 
         vault.redeem(sharesRoundedDown, SUPPLIER, SUPPLIER);
     }
@@ -353,12 +343,9 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         uint256 sharesRoundedDown = shares - 10 ** vaultDecimalsOffset;
 
         vm.prank(RECEIVER);
-        vm.expectRevert(abi.encodeWithSelector(
-            IERC20Errors.ERC20InsufficientAllowance.selector,
-            RECEIVER,
-            0,
-            sharesRoundedDown
-        ));
+        vm.expectRevert(
+            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, RECEIVER, 0, sharesRoundedDown)
+        );
 
         vault.redeem(sharesRoundedDown, RECEIVER, ONBEHALF);
     }
@@ -379,12 +366,9 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         uint256 sharesRoundedDown = shares - 10 ** vaultDecimalsOffset;
 
         vm.prank(RECEIVER);
-        vm.expectRevert(abi.encodeWithSelector(
-            IERC20Errors.ERC20InsufficientAllowance.selector,
-            RECEIVER,
-            0,
-            sharesRoundedDown
-        ));
+        vm.expectRevert(
+            abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, RECEIVER, 0, sharesRoundedDown)
+        );
 
         vault.withdraw(assets - 1, RECEIVER, ONBEHALF);
     }
@@ -449,10 +433,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
 
         vm.expectRevert(
             abi.encodeWithSelector(
-                IERC20Errors.ERC20InsufficientBalance.selector,
-                ONBEHALF,
-                shares,
-                expectedSharesBurnt
+                IERC20Errors.ERC20InsufficientBalance.selector, ONBEHALF, shares, expectedSharesBurnt
             )
         );
 
@@ -530,11 +511,15 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         silo0.deposit(type(uint128).max, BORROWER);
         silo1.borrow(borrowedAssets, BORROWER, BORROWER);
 
-        // -1 because of the underestimation in the Silo
         uint256 expectedMaxWithdraw = depositedAssets - borrowedAssets;
+        // -1 because of the rounding down in the maxWithdraw function
         if (expectedMaxWithdraw != 0) expectedMaxWithdraw--;
 
-        assertEq(vault.maxWithdraw(ONBEHALF), expectedMaxWithdraw, "maxWithdraw(ONBEHALF)");
+        assertLe(
+            expectedMaxWithdraw - vault.maxWithdraw(ONBEHALF),
+            1,
+            "maxWithdraw(ONBEHALF) can be off by 1 wei becaose of fractions"
+        );
     }
 
     /*
@@ -550,7 +535,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         vm.prank(SUPPLIER);
         vault.deposit(deposited, ONBEHALF);
 
-        assertEq(vault.maxWithdraw(ONBEHALF), deposited, "maxWithdraw");
+        assertLe(deposited - vault.maxWithdraw(ONBEHALF), 1, "maxWithdraw allow to be off by 1 wei");
         assertEq(loanToken.balanceOf(address(silo1)), supplied + deposited, "balanceOf");
 
         silo1.flashLoan(
@@ -588,16 +573,15 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         vault.deposit(vaultDepositAmount, ONBEHALF);
 
         assertEq(
-            vault.maxDeposit(address(0)),
-            cap - vaultDepositAmount,
-            "maxDeposit should be cap - vaultDepositAmount"
+            vault.maxDeposit(address(0)), cap - vaultDepositAmount, "maxDeposit should be cap - vaultDepositAmount"
         );
     }
 
     function onFlashLoan(address, address, uint256, uint256, bytes calldata) external view returns (bytes32) {
         // this is where silo implementation differs, on silo flashloan state of silo does not change
         // so liquidity stays the same (however not correct during flashloan)
-        assertGe(vault.maxWithdraw(ONBEHALF), MIN_TEST_ASSETS, "onFlashLoan assertion MIN_TEST_ASSETS");
+        // -1 because of the underestimation in maxWithdraw function
+        assertGe(vault.maxWithdraw(ONBEHALF), MIN_TEST_ASSETS - 1, "onFlashLoan assertion MIN_TEST_ASSETS");
         assertLe(vault.maxWithdraw(ONBEHALF), MAX_TEST_ASSETS, "onFlashLoan assertion MAX_TEST_ASSETS");
 
         return keccak256("ERC3156FlashBorrower.onFlashLoan");

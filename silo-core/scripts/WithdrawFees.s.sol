@@ -20,6 +20,9 @@ import {Rounding} from "silo-core/contracts/lib/Rounding.sol";
 import {PriceFormatter} from "silo-core/deploy/lib/PriceFormatter.sol";
 
 /*
+you can run it via:
+./silo-core/scripts/withdrawRevenue.sh
+
 # arbitrum
 
 FOUNDRY_PROFILE=core FACTORY=0x384DC7759d35313F0b567D42bf2f611B285B657C\

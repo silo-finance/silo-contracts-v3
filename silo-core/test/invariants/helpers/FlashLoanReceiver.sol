@@ -9,7 +9,7 @@ import {TestERC20} from "../utils/mocks/TestERC20.sol";
 import {PropertiesAsserts} from "../utils/PropertiesAsserts.sol";
 import {PostconditionsSpec} from "../specs/PostconditionsSpec.t.sol";
 
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 contract MockFlashLoanReceiver is IERC3156FlashBorrower, PropertiesAsserts, PostconditionsSpec {
     bytes32 internal constant _FLASHLOAN_CALLBACK = keccak256("ERC3156FlashBorrower.onFlashLoan");

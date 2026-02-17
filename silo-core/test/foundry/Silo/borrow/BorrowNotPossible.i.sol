@@ -11,7 +11,7 @@ import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 
 /*
-    forge test -vv --ffi --mc BorrowNotPossibleTest
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc BorrowNotPossibleTest
 */
 contract BorrowNotPossibleTest is SiloLittleHelper, Test {
     function setUp() public {

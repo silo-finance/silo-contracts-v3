@@ -59,7 +59,7 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
         assertEq(siloLens.getRawLiquidity(silo0), deposit0, "getRawLiquidity 0");
         assertEq(siloLens.getRawLiquidity(silo1), deposit1, "getRawLiquidity 1");
 
-        _depositCollateral(collateral, borrower, TWO_ASSETS);
+        _deposit(collateral, borrower);
 
         assertFalse(siloLens.inDebt(siloConfig, borrower), "borrower has no debt");
         assertEq(siloLens.getUserLT(silo0, borrower), 0, "LT is 0 when borrower has no debt");
@@ -214,9 +214,9 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_skip_siloLens_apr_fuzz -vv
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_siloLens_apr_fuzz -vv
     */
-    function test_skip_siloLens_apr_fuzz(uint8 _utilization) public {
+    function test_siloLens_apr_fuzz(uint8 _utilization) public {
         // 50 because `defaultAsset` config optimal utilization is 50
         vm.assume(_utilization > 0 && _utilization <= 50);
 
@@ -230,13 +230,13 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
 
         _deposit(deposit0, depositor);
         _depositForBorrow(deposit1, depositor);
-        _depositCollateral(collateral, borrower, TWO_ASSETS);
+        _deposit(collateral, borrower);
 
         uint256 toBorrow = collateral * _utilization / 1e18;
         _borrow(toBorrow, borrower);
 
         assertEq(siloLens.getUtilization(silo0), 0, "getUtilization #0");
-        assertEq(siloLens.getUtilization(silo1), _utilization - 1, "getUtilization #1");
+        assertEq(siloLens.getUtilization(silo1), _utilization, "getUtilization #1");
 
         _assertInterest(toBorrow);
     }

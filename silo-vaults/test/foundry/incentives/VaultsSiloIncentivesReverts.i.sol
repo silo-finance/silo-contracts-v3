@@ -14,6 +14,7 @@ import {IVaultIncentivesModule} from "silo-vaults/contracts/interfaces/IVaultInc
 import {IIncentivesClaimingLogic} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogic.sol";
 import {IncentivesControllerWithRevert} from "../mocks/IncentivesControllerWithRevert.sol";
 import {IncentivesClaimingLogicWithRevert} from "../mocks/IncentivesClaimingLogicWithRevert.sol";
+import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 
 /*
  FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc VaultsSiloIncentivesTest -vvv
@@ -21,7 +22,7 @@ import {IncentivesClaimingLogicWithRevert} from "../mocks/IncentivesClaimingLogi
 contract VaultsSiloIncentivesTest is IntegrationTest {
     MintableToken internal reward1 = new MintableToken(18);
 
-    SiloIncentivesController vaultIncentivesController;
+    ISiloIncentivesController vaultIncentivesController;
     IVaultIncentivesModule vaultIncentivesModule;
 
     function setUp() public override {

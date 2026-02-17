@@ -9,7 +9,7 @@ import {IERC20} from "forge-std/interfaces/IERC20.sol";
 // Contracts
 import {HandlerAggregator} from "../HandlerAggregator.t.sol";
 
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 /// @title SiloMarketInvariants
 /// @notice Implements Invariants for the protocol

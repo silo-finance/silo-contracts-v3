@@ -92,8 +92,10 @@ jobs:
           if [ -n "${{ inputs.match_contracts }}" ]; then
             MATCH_CONTRACTS_ARG="--mc ${{ inputs.match_contracts }}"
           else
-            MATCH_CONTRACTS_ARG="--nmc SiloLensCompatibilityTest|NewMarketTest"
+            MATCH_CONTRACTS_ARG="--nmc SiloLensCompatibilityTest|NewMarketTest|SiloDeployerIntegrationTest"
           fi
+
+          echo "MATCH_CONTRACTS_ARG: $MATCH_CONTRACTS_ARG"
           
           AGGREGATOR=1INCH FOUNDRY_PROFILE=core_with_test forge coverage --report summary --report lcov --gas-price 1 --ffi --gas-limit 40000000000 --no-match-test "_skip_|_gas_|_anvil_" $MATCH_CONTRACTS_ARG > coverage/silo-core.log 2>&1 || true
 
@@ -203,7 +205,7 @@ jobs:
 
       - name: Generate job summary
         run: |
-          PAGES_URL="https://silo-finance.github.io/silo-contracts-v2/coverage/${{ steps.branch-name.outputs.branch }}/${{ inputs.workspace }}/"
+          PAGES_URL="https://silo-finance.github.io/silo-contracts-v3/coverage/${{ steps.branch-name.outputs.branch }}/${{ inputs.workspace }}/"
           echo "# Coverage Report Generated! 🎉" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Details" >> $GITHUB_STEP_SUMMARY

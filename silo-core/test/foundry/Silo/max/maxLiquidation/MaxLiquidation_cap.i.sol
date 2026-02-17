@@ -18,51 +18,10 @@ contract MaxLiquidationCapTest is MaxLiquidationCommon {
     bool private constant _BAD_DEBT = false;
 
     /*
-    forge test -vv --ffi --mt test_maxLiquidation_cap_1token
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxLiquidation_cap
     */
-    function test_maxLiquidation_cap_1token() public {
-        _createDebtForBorrower(1e18, true);
-
-        _moveTimeUntilInsolvent();
-        _assertBorrowerIsNotSolvent(false);
-
-        (uint256 collateralToLiquidate,, bool sTokenRequired) = partialLiquidation.maxLiquidation(borrower);
-
-        emit log_named_uint("            getLiquidity", silo1.getLiquidity());
-        emit log_named_uint("collateralToLiquidate #1", collateralToLiquidate);
-
-        assertTrue(!sTokenRequired, "sTokenRequired NOT required because it is partial liquidation");
-
-        _moveTimeUntilBadDebt();
-        _assertBorrowerIsNotSolvent(true);
-
-        (uint256 collateralToLiquidate2, uint256 maxDebtToCover2, bool sTokenRequired2) =
-            partialLiquidation.maxLiquidation(borrower);
-
-        emit log_named_uint("            getLiquidity", silo1.getLiquidity());
-        emit log_named_uint("collateralToLiquidate #2", collateralToLiquidate2);
-
-        assertTrue(sTokenRequired2, "sTokenRequired required because we in bad debt");
-
-        emit log_named_uint("maxDebtToCover2", maxDebtToCover2);
-        emit log_named_uint("balance silo", token1.balanceOf(address(silo1)));
-        emit log_named_uint("balance this", token1.balanceOf(address(this)));
-
-        // this execution will pass even when sTokenRequired2==true, because repay will cover missing liquidity
-        partialLiquidation.liquidationCall(
-            address(token1),
-            address(token1),
-            borrower,
-            maxDebtToCover2,
-            false // receiveStoken
-        );
-    }
-
-    /*
-    forge test -vv --ffi --mt test_maxLiquidation_cap_2tokens
-    */
-    function test_maxLiquidation_cap_2tokens() public {
-        _createDebtForBorrower(1e18, false);
+    function test_maxLiquidation_cap() public {
+        _createDebtForBorrower(1e18);
 
         _moveTimeUntilInsolvent();
         _assertBorrowerIsNotSolvent(false);
@@ -120,7 +79,7 @@ contract MaxLiquidationCapTest is MaxLiquidationCommon {
         revert("not in use");
     }
 
-    function _executeLiquidation(bool, bool) internal pure override returns (uint256, uint256) {
+    function _executeLiquidation(bool) internal pure override returns (uint256, uint256) {
         // revert("not in use");
         // revert causing warnings about unreachable code in _executeLiquidationAndRunChecks,
         // so we simply returs 1e18,1e18 to avoid warnings and make sure, that if this method wil be fired,

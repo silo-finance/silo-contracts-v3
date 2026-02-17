@@ -30,7 +30,7 @@ contract MaxBorrowSharesTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_maxBorrowShares_noCollateral
     */
-    function test_maxBorrowShares_noCollateral_1token() public {
+    function test_maxBorrowShares_noCollateral() public {
         _assertMaxBorrowSharesIsZeroAtTheEnd();
     }
 
@@ -42,15 +42,11 @@ contract MaxBorrowSharesTest is SiloLittleHelper, Test {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxBorrowShares_withCollateral_1token_fuzz
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxBorrowShares_withCollateral_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_maxBorrowShares_withCollateral_1token_fuzz(uint128 _collateral, uint128 _liquidity) public {
+    function test_maxBorrowShares_withCollateral_fuzz(uint128 _collateral, uint128 _liquidity) public {
         // (uint128 _collateral, uint128 _liquidity) = (3, 2);
-        _maxBorrowShares_withCollateral_fuzz(_collateral, _liquidity);
-    }
-
-    function _maxBorrowShares_withCollateral_fuzz(uint128 _collateral, uint128 _liquidity) private {
         vm.assume(_liquidity > 0);
         vm.assume(_collateral > 0);
 
@@ -69,12 +65,8 @@ contract MaxBorrowSharesTest is SiloLittleHelper, Test {
     forge test -vv --ffi --mt test_maxBorrowShares_collateralButNoLiquidity
     */
     /// forge-config: core_test.fuzz.runs = 100
-    function test_maxBorrowShares_collateralButNoLiquidity_1token_fuzz(uint128 _collateral) public {
+    function test_maxBorrowShares_collateralButNoLiquidity_fuzz(uint128 _collateral) public {
         // uint128 _collateral = 2;
-        _maxBorrowShares_collateralButNoLiquidity_fuzz(_collateral);
-    }
-
-    function _maxBorrowShares_collateralButNoLiquidity_fuzz(uint128 _collateral) private {
         vm.assume(_collateral > uint128(3)); // to allow any borrowShares twice
 
         _deposit(_collateral, borrower);
@@ -91,11 +83,7 @@ contract MaxBorrowSharesTest is SiloLittleHelper, Test {
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxBorrowShares_withDebt
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_maxBorrowShares_withDebt_1token_fuzz(uint128 _collateral, uint128 _liquidity) public {
-        _maxBorrowShares_withDebt_fuzz(_collateral, _liquidity);
-    }
-
-    function _maxBorrowShares_withDebt_fuzz(uint128 _collateral, uint128 _liquidity) private {
+    function test_maxBorrowShares_withDebt_fuzz(uint128 _collateral, uint128 _liquidity) public {
         vm.assume(_collateral > 0);
         vm.assume(_liquidity > 0);
 
@@ -120,15 +108,15 @@ contract MaxBorrowSharesTest is SiloLittleHelper, Test {
     forge test -vv --ffi --mt test_maxBorrowShares_withInterest_
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_maxBorrowShares_withInterest_1token_fuzz(uint128 _collateral, uint128 _liquidity) public {
+    function test_maxBorrowShares_withInterest_fuzz(uint128 _collateral, uint128 _liquidity) public {
         _maxBorrowShares_withInterest_fuzz(_collateral, _liquidity, ISilo.CollateralType.Collateral);
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxBorrowShares_withInterest_1token_protected_fuzz
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxBorrowShares_withInterest_protected_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_maxBorrowShares_withInterest_1token_protected_fuzz(uint128 _collateral, uint128 _liquidity)
+    function test_maxBorrowShares_withInterest_protected_fuzz(uint128 _collateral, uint128 _liquidity)
         public
     {
         _maxBorrowShares_withInterest_fuzz(_collateral, _liquidity, ISilo.CollateralType.Protected);
@@ -163,19 +151,19 @@ contract MaxBorrowSharesTest is SiloLittleHelper, Test {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxBorrowShares_repayWithInterest_1token_fuzz
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxBorrowShares_repayWithInterest_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 5000
-    function test_maxBorrowShares_repayWithInterest_1token_fuzz(uint64 _collateral, uint128 _liquidity) public {
+    function test_maxBorrowShares_repayWithInterest_fuzz(uint64 _collateral, uint128 _liquidity) public {
         // (uint64 _collateral, uint128 _liquidity) = (59, 10247839164);
         _maxBorrowShares_repayWithInterest_fuzz(_collateral, _liquidity, ISilo.CollateralType.Collateral);
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxBorrowShares_repayWithInterest_1token_protected_fuzz
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxBorrowShares_repayWithInterest_protected_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 5000
-    function test_maxBorrowShares_repayWithInterest_1token_protected_fuzz(uint64 _collateral, uint128 _liquidity)
+    function test_maxBorrowShares_repayWithInterest_protected_fuzz(uint64 _collateral, uint128 _liquidity)
         public
     {
         _maxBorrowShares_repayWithInterest_fuzz(_collateral, _liquidity, ISilo.CollateralType.Protected);

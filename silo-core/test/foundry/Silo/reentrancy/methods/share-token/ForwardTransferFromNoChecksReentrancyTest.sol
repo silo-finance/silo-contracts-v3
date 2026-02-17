@@ -9,7 +9,7 @@ import {TestStateLib} from "../../TestState.sol";
 
 contract ForwardTransferFromNoChecksReentrancyTest is ShareTokenMethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure will revert as expected (all share tokens)");
+        emit log_string(_tabs(1, "Ensure will revert as expected (all share tokens)"));
         _executeForAllShareTokens(_ensureItWillRevertOnlySilo);
     }
 

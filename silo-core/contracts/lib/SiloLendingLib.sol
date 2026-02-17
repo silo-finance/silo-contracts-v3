@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
+
 pragma solidity ^0.8.28;
 
 // solhint-disable ordering
@@ -295,7 +296,7 @@ library SiloLendingLib {
         }
     }
 
-    function maxBorrow(address _borrower, bool _sameAsset)
+    function maxBorrow(address _borrower)
         internal
         view
         returns (uint256 maxAssets, uint256 maxShares)
@@ -306,12 +307,7 @@ library SiloLendingLib {
         ISiloConfig.ConfigData memory collateralConfig;
         ISiloConfig.ConfigData memory debtConfig;
 
-        if (_sameAsset) {
-            debtConfig = siloConfig.getConfig(address(this));
-            collateralConfig = debtConfig;
-        } else {
-            (collateralConfig, debtConfig) = siloConfig.getConfigsForBorrow({_debtSilo: address(this)});
-        }
+        (collateralConfig, debtConfig) = siloConfig.getConfigsForBorrow({_debtSilo: address(this)});
 
         (uint256 totalDebtAssets, uint256 totalDebtShares) =
             SiloStdLib.getTotalAssetsAndTotalSharesWithInterest(debtConfig, ISilo.AssetType.Debt);

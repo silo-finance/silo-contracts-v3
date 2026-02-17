@@ -41,11 +41,11 @@ contract BorrowImmediateBadDebtTest is SiloLittleHelper, Test {
     /*
         forge test -vv --ffi --mt test_immediateBadDebt_1wei_
     */
-    function test__skip__immediateBadDebt_1wei_18_18_1token() public {
+    function test__skip__immediateBadDebt_1wei_18_18() public {
         _immediateBadDebt_1wei(18, 18);
     }
 
-    function test__skip__immediateBadDebt_1wei_6_6_1token() public {
+    function test__skip__immediateBadDebt_1wei_6_6() public {
         _immediateBadDebt_1wei(6, 6);
     }
 

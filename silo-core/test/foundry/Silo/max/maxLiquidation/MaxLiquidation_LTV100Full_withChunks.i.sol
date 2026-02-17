@@ -14,7 +14,7 @@ import {MaxLiquidationLTV100FullTest} from "./MaxLiquidation_LTV100Full.i.sol";
 contract MaxLiquidationLTV100FullWithChunksTest is MaxLiquidationLTV100FullTest {
     using SiloLensLib for ISilo;
 
-    function _executeLiquidation(bool _sameToken, bool _receiveSToken)
+    function _executeLiquidation(bool _receiveSToken)
         internal
         override
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
@@ -55,7 +55,7 @@ contract MaxLiquidationLTV100FullWithChunksTest is MaxLiquidationLTV100FullTest 
             emit log_named_uint("[LTV100FullWithChunks] testDebtToCover", testDebtToCover);
 
             (uint256 partialCollateral, uint256 partialDebt) =
-                _liquidationCall(testDebtToCover, _sameToken, _receiveSToken);
+                _liquidationCall(testDebtToCover, _receiveSToken);
 
             _assertLeDiff(partialCollateral, collateralToLiquidate, "partialCollateral");
 

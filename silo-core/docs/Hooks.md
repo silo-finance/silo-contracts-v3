@@ -72,9 +72,9 @@ function callOnBehalfOfShareToken(address _target, uint256 _value, ISilo.CallTyp
 ```
 
 See this function implementation in the
-- [Silo](https://github.com/silo-finance/silo-contracts-v2/blob/1.3.2/silo-core/contracts/Silo.sol#L55) contract.
-- [ShareDebtToken](https://github.com/silo-finance/silo-contracts-v2/blob/1.3.2/silo-core/contracts/utils/ShareDebtToken.sol#L22) contract.
-- [ShareProtectedCollateralToken](https://github.com/silo-finance/silo-contracts-v2/blob/1.3.2/silo-core/contracts/utils/ShareProtectedCollateralToken.sol#L11) contract.
+- [Silo](https://github.com/silo-finance/silo-contracts-v3/blob/1.3.2/silo-core/contracts/Silo.sol#L55) contract.
+- [ShareDebtToken](https://github.com/silo-finance/silo-contracts-v3/blob/1.3.2/silo-core/contracts/utils/ShareDebtToken.sol#L22) contract.
+- [ShareProtectedCollateralToken](https://github.com/silo-finance/silo-contracts-v3/blob/1.3.2/silo-core/contracts/utils/ShareProtectedCollateralToken.sol#L11) contract.
 
 # Deposit function hook actions
 

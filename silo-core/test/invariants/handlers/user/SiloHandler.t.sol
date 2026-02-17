@@ -2,14 +2,12 @@
 pragma solidity ^0.8.19;
 
 // Interfaces
-import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ISilo} from "silo-core/contracts/Silo.sol";
 
 // Libraries
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 // Test Contracts
-import {Actor} from "../../utils/Actor.sol";
 import {BaseHandler} from "../../base/BaseHandler.t.sol";
 
 /// @title SiloHandler

@@ -12,7 +12,7 @@ import {RescueModule} from "silo-core/contracts/leverage/modules/RescueModule.so
 
 contract OpenLeveragePositionPermitDirectReentrancyTest is MethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will revert with OnlyRouter");
+        emit log_string(_tabs(1, "Ensure it will revert with OnlyRouter"));
         _ensureItWillRevertWithOnlyRouter();
     }
 

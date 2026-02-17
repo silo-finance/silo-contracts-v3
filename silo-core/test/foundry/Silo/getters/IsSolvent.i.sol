@@ -26,11 +26,7 @@ contract IsSolventTest is SiloLittleHelper, Test {
     forge test -vv --ffi --mt test_isSolvent_onDebtTransfer
     this test covers the bug when wrong configs are fetched after debt transfer
     */
-    function test_isSolvent_onDebtTransfer_1token() public {
-        _isSolvent_onDebtTransfer();
-    }
-
-    function _isSolvent_onDebtTransfer() private {
+    function test_isSolvent_onDebtTransfer() public {
         uint256 assets = 1e18;
         address depositor = makeAddr("Depositor");
         address borrower = makeAddr("Borrower");
@@ -66,11 +62,7 @@ contract IsSolventTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_isSolvent_RecipientNotSolventAfterTransfer
     */
-    function test_isSolvent_RecipientNotSolventAfterTransfer_1token() public {
-        _isSolvent_RecipientNotSolventAfterTransfer();
-    }
-
-    function _isSolvent_RecipientNotSolventAfterTransfer() private {
+    function test_isSolvent_RecipientNotSolventAfterTransfer() public {
         uint256 assets = 1e18;
         address depositor = makeAddr("Depositor");
         address borrower = makeAddr("Borrower");

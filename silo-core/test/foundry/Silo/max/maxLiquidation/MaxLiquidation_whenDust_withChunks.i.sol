@@ -15,7 +15,7 @@ import {MaxLiquidationDustTest} from "./MaxLiquidation_whenDust.i.sol";
 contract MaxLiquidationDustWithChunksTest is MaxLiquidationDustTest {
     using SiloLensLib for ISilo;
 
-    function _executeLiquidation(bool _sameToken, bool _receiveSToken)
+    function _executeLiquidation(bool _receiveSToken)
         internal
         override
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
@@ -43,18 +43,18 @@ contract MaxLiquidationDustWithChunksTest is MaxLiquidationDustTest {
             uint256 testDebtToCover = _calculateChunk(maxDebtToCover, i);
             emit log_named_uint("[DustWithChunks] testDebtToCover", testDebtToCover);
 
-            _liquidationCallReverts(testDebtToCover, _sameToken, _receiveSToken);
+            _liquidationCallReverts(testDebtToCover, _receiveSToken);
         }
 
         // only full is possible
-        return _liquidationCall(maxDebtToCover, _sameToken, _receiveSToken);
+        return _liquidationCall(maxDebtToCover, _receiveSToken);
     }
 
-    function _liquidationCallReverts(uint256 _maxDebtToCover, bool _sameToken, bool _receiveSToken) private {
+    function _liquidationCallReverts(uint256 _maxDebtToCover, bool _receiveSToken) private {
         vm.expectRevert(IPartialLiquidation.FullLiquidationRequired.selector);
 
         partialLiquidation.liquidationCall(
-            address(_sameToken ? token1 : token0), address(token1), borrower, _maxDebtToCover, _receiveSToken
+            address(token0), address(token1), borrower, _maxDebtToCover, _receiveSToken
         );
     }
 

@@ -7,7 +7,7 @@ import {MethodReentrancyTest} from "../MethodReentrancyTest.sol";
 
 contract AfterActionReentrancyTest is MethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will revert (permissions check)");
+        emit log_string(_tabs(1, "Ensure it will revert (permissions check)"));
         _ensureItWilRevert();
     }
 

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+
 pragma solidity 0.8.28;
 
 import {IERC20} from "openzeppelin5/interfaces/IERC20.sol";
@@ -104,6 +105,9 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
 
         ISilo(debtConfig.silo).repay(repayDebtAssets, _borrower);
 
+        // without collateral this is not longer liquidation, it's repay
+        require(params.collateralShares != 0 || params.protectedShares != 0, NoCollateralToLiquidate());
+
         if (_receiveSToken) {
             if (params.collateralShares != 0) {
                 withdrawCollateral = ISilo(collateralConfig.silo).previewRedeem(
@@ -129,36 +133,27 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
             // if share token offset is more than 0, positive number of shares can generate 0 assets
             // so there is a need to check assets before we withdraw collateral/protected
 
-            if (params.collateralShares != 0) {
-                withdrawCollateral = ISilo(collateralConfig.silo).redeem({
-                    _shares: params.collateralShares,
-                    _receiver: msg.sender,
-                    _owner: address(this),
-                    _collateralType: ISilo.CollateralType.Collateral
-                });
-            }
+            withdrawCollateral = _tryRedeem({
+                _silo: collateralConfig.silo,
+                _shareToken: collateralConfig.collateralShareToken,
+                _shares: params.collateralShares,
+                _collateralType: ISilo.CollateralType.Collateral
+            });
 
-            if (params.protectedShares != 0) {
-                unchecked {
-                    // protected and collateral values were split from total collateral to withdraw,
-                    // so we will not overflow when we sum them back, especially that on redeem, we rounding down
-                    withdrawCollateral += ISilo(collateralConfig.silo).redeem({
-                        _shares: params.protectedShares,
-                        _receiver: msg.sender,
-                        _owner: address(this),
-                        _collateralType: ISilo.CollateralType.Protected
-                    });
-                }
+            unchecked {
+                // protected and collateral values were split from total collateral to withdraw,
+                // so we will not overflow when we sum them back, especially that on redeem, we rounding down
+                withdrawCollateral += _tryRedeem({
+                    _silo: collateralConfig.silo,
+                    _shareToken: collateralConfig.protectedShareToken,
+                    _shares: params.protectedShares,
+                    _collateralType: ISilo.CollateralType.Protected
+                });
             }
         }
 
         emit LiquidationCall(
-            msg.sender,
-            debtConfig.silo,
-            _borrower,
-            repayDebtAssets,
-            withdrawCollateral,
-            _receiveSToken
+            msg.sender, debtConfig.silo, _borrower, repayDebtAssets, withdrawCollateral, _receiveSToken
         );
     }
 
@@ -209,7 +204,7 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
         ISilo.AssetType _assetType
     ) internal virtual returns (uint256 shares) {
         if (_withdrawAssets == 0) return 0;
-        
+
         shares = SiloMathLib.convertToShares(
             _withdrawAssets,
             ISilo(_silo).getTotalAssetsStorage(_assetType),
@@ -221,5 +216,34 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
         if (shares == 0) return 0;
 
         IShareToken(_shareToken).forwardTransferFromNoChecks(_borrower, _receiver, shares);
+    }
+
+    function _tryRedeem(
+        address _silo,
+        address _shareToken,
+        uint256 _shares,
+        ISilo.CollateralType _collateralType
+    ) internal returns (uint256 withdrawCollateral) {
+        if (_shares == 0) return 0;
+
+        try ISilo(_silo).redeem({
+            _shares: _shares,
+            _receiver: msg.sender,
+            _owner: address(this),
+            _collateralType: _collateralType
+        }) returns (uint256 assets) {
+            withdrawCollateral = assets;
+        } catch (bytes memory e) {
+            if (_isToAssetsConvertionError(e)) {
+                IERC20(_shareToken).transfer(msg.sender, _shares);
+            } else {
+                RevertLib.revertBytes(e, string(""));
+            }
+        }
+    }
+
+    /// @dev this method detect if error is caused by unable to convert shares to assets eg 999 shares => 0 assets
+    function _isToAssetsConvertionError(bytes memory _error) internal pure returns (bool) {
+        return _error.length == 4 && bytes4(_error) == ISilo.ReturnZeroAssets.selector;
     }
 }

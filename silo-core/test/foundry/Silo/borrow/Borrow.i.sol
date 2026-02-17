@@ -101,13 +101,9 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_borrow_onWrongSilo_for_receiver_no_collateral_
+    forge test -vv --ffi --mt test_borrow_onWrongSilo_for_receiver_no_collateral
     */
-    function test_borrow_onWrongSilo_for_receiver_no_collateral_1token() public {
-        _borrow_onWrongSilo_for_receiver_no_collateral();
-    }
-
-    function _borrow_onWrongSilo_for_receiver_no_collateral() private {
+    function test_borrow_onWrongSilo_for_receiver_no_collateral() public {
         uint256 assets = 1e18;
         address borrower = makeAddr("borrower");
 
@@ -123,13 +119,9 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_borrow_onWrongSilo_for_receiver_with_collateral_
+    forge test -vv --ffi --mt test_borrow_onWrongSilo_for_receiver_with_collateral
     */
-    function test_borrow_onWrongSilo_for_receiver_with_collateral_1token() public {
-        _borrow_onWrongSilo_for_receiver_with_collateral();
-    }
-
-    function _borrow_onWrongSilo_for_receiver_with_collateral() private {
+    function test_borrow_onWrongSilo_for_receiver_with_collateral() public {
         uint256 assets = 1e18;
         address borrower = makeAddr("borrower");
         address receiver = makeAddr("receiver");
@@ -142,13 +134,9 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_borrow_revert_for_receiver_with_collateral_
+    forge test -vv --ffi --mt test_borrow_revert_for_receiver_with_collateral
     */
-    function test_borrow_revert_for_receiver_with_collateral_1token() public {
-        _borrow_revert_for_receiver_with_collateral();
-    }
-
-    function _borrow_revert_for_receiver_with_collateral() private {
+    function test_borrow_revert_for_receiver_with_collateral() public {
         uint256 assets = 1e18;
         address borrower = makeAddr("borrower");
         address receiver = makeAddr("receiver");
@@ -167,11 +155,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_borrow_onWrongSilo_for_borrower
     */
-    function test_borrow_onWrongSilo_for_borrower_1token() public {
-        _borrow_onWrongSilo_for_borrower();
-    }
-
-    function _borrow_onWrongSilo_for_borrower() private {
+    function test_borrow_onWrongSilo_for_borrower() public {
         uint256 assets = 1e18;
         address borrower = makeAddr("borrower");
 
@@ -188,11 +172,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_borrow_onWrongSilo_WithProtected
     */
-    function test_borrow_onWrongSilo_WithProtected_1token() public {
-        _borrow_onWrongSilo_WithProtected();
-    }
-
-    function _borrow_onWrongSilo_WithProtected() private {
+    function test_borrow_onWrongSilo_WithProtected() public {
         uint256 assets = 1e18;
         address borrower = address(this);
 
@@ -205,11 +185,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_borrow_onWrongSilo_WithCollateralAndProtected
     */
-    function test_borrow_onWrongSilo_WithCollateralAndProtected_1token() public {
-        _borrow_onWrongSilo_WithCollateralAndProtected();
-    }
-
-    function _borrow_onWrongSilo_WithCollateralAndProtected() private {
+    function test_borrow_onWrongSilo_WithCollateralAndProtected() public {
         uint256 assets = 1e18;
         address borrower = address(this);
 
@@ -223,11 +199,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_borrow_BorrowNotPossible_withDebt
     */
-    function test_borrow_BorrowNotPossible_withDebt_1token() public {
-        _borrow_BorrowNotPossible_withDebt();
-    }
-
-    function _borrow_BorrowNotPossible_withDebt() private {
+    function test_borrow_BorrowNotPossible_withDebt() public {
         uint256 assets = 1e18;
         address borrower = address(this);
 
@@ -242,11 +214,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_borrow_frontRun_pass
     */
-    function test_borrow_frontRun_pass_1token() public {
-        _borrow_frontRun_pass();
-    }
-
-    function _borrow_frontRun_pass() private {
+    function test_borrow_frontRun_pass() public {
         uint256 assets = 1e18;
         address borrower = address(this);
 
@@ -262,7 +230,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_borrow_frontRun_transferShare
     */
-    function test_borrow_frontRun_transferShare_1token() public {
+    function test_borrow_frontRun_transferShare() public {
         uint256 assets = 1e18;
         address borrower = makeAddr("borrower");
         address frontrunner = makeAddr("frontrunner");
@@ -272,8 +240,8 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
 
         (address protectedShareToken, address collateralShareToken,) = siloConfig.getShareTokens(address(silo1));
 
-        _depositCollateral(5, frontrunner, true);
-        _depositCollateral(3, frontrunner, true, ISilo.CollateralType.Protected);
+        _depositForBorrow(5, frontrunner);
+        _depositForBorrow(3, frontrunner, ISilo.CollateralType.Protected);
 
         vm.prank(frontrunner);
         IShareToken(collateralShareToken).transfer(borrower, 5);
@@ -286,11 +254,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_borrow_withTwoCollaterals
     */
-    function test_borrow_withTwoCollaterals_1token() public {
-        _borrow_withTwoCollaterals();
-    }
-
-    function _borrow_withTwoCollaterals() private {
+    function test_borrow_withTwoCollaterals() public {
         uint256 assets = 1e18;
         address borrower = address(this);
 
@@ -309,11 +273,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_borrow_pass
     */
-    function test_borrow_pass_1token() public {
-        _borrow_pass();
-    }
-
-    function _borrow_pass() private {
+    function test_borrow_pass() public {
         uint256 depositAssets = 1e18;
         address borrower = makeAddr("Borrower");
         address depositor = makeAddr("Depositor");
@@ -356,11 +316,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_borrow_twice
     */
-    function test_borrow_twice_1token() public {
-        _borrow_twice();
-    }
-
-    function _borrow_twice() private {
+    function test_borrow_twice() public {
         uint256 depositAssets = 1e18;
         address depositor = address(0x9876123);
         address borrower = address(0x22334455);
@@ -386,14 +342,14 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_borrow_scenarios
     */
-    function test_borrow_scenarios_1token() public {
+    function test_borrow_scenarios() public {
         _borrow_scenarios();
     }
 
     /*
-    forge test -vv --ffi --mt test_borrow_scenarios_1token_revertingIRM_standardRevert
+    forge test -vv --ffi --mt test_borrow_scenarios_revertingIRM_standardRevert
     */
-    function test_borrow_scenarios_1token_revertingIRM_standardRevert() public {
+    function test_borrow_scenarios_revertingIRM_standardRevert() public {
         address irm = address(new RevertingIRM(RevertingIRM.RevertReasons.StandardRevert));
         _mockIRM(silo0, irm);
         _mockIRM(silo1, irm);
@@ -401,9 +357,9 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_borrow_scenarios_1token_revertingIRM_zeroDiv
+    forge test -vv --ffi --mt test_borrow_scenarios_revertingIRM_zeroDiv
     */
-    function test_borrow_scenarios_1token_revertingIRM_zeroDiv() public {
+    function test_borrow_scenarios_revertingIRM_zeroDiv() public {
         address irm = address(new RevertingIRM(RevertingIRM.RevertReasons.ZeroDiv));
         _mockIRM(silo0, irm);
         _mockIRM(silo1, irm);
@@ -411,9 +367,9 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_borrow_scenarios_1token_revertingIRM_underflow
+    forge test -vv --ffi --mt test_borrow_scenarios_revertingIRM_underflow
     */
-    function test_borrow_scenarios_1token_revertingIRM_underflow() public {
+    function test_borrow_scenarios_revertingIRM_underflow() public {
         address irm = address(new RevertingIRM(RevertingIRM.RevertReasons.Underflow));
         _mockIRM(silo0, irm);
         _mockIRM(silo1, irm);
@@ -421,9 +377,9 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_borrow_scenarios_1token_revertingIRM_overflow
+    forge test -vv --ffi --mt test_borrow_scenarios_revertingIRM_overflow
     */
-    function test_borrow_scenarios_1token_revertingIRM_overflow() public {
+    function test_borrow_scenarios_revertingIRM_overflow() public {
         address irm = address(new RevertingIRM(RevertingIRM.RevertReasons.Overflow));
         _mockIRM(silo0, irm);
         _mockIRM(silo1, irm);
@@ -431,9 +387,9 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_borrow_scenarios_1token_revertingIRM_customError
+    forge test -vv --ffi --mt test_borrow_scenarios_revertingIRM_customError
     */
-    function test_borrow_scenarios_1token_revertingIRM_customError() public {
+    function test_borrow_scenarios_revertingIRM_customError() public {
         address irm = address(new RevertingIRM(RevertingIRM.RevertReasons.CustomError));
         _mockIRM(silo0, irm);
         _mockIRM(silo1, irm);
@@ -482,11 +438,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     forge test -vv --ffi --mt test_borrowShares_revertsOnZeroAssets
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_borrowShares_revertsOnZeroAssets_1token_fuzz(uint256 _depositAmount, uint256 _forBorrow) public {
-        _borrowShares_revertsOnZeroAssets(_depositAmount, _forBorrow);
-    }
-
-    function _borrowShares_revertsOnZeroAssets(uint256 _depositAmount, uint256 _forBorrow) private {
+    function test_borrowShares_revertsOnZeroAssets_fuzz(uint256 _depositAmount, uint256 _forBorrow) public {
         vm.assume(_depositAmount < type(uint128).max);
         vm.assume(_depositAmount > _forBorrow);
         vm.assume(_forBorrow > 0);

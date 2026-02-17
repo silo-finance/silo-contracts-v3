@@ -7,7 +7,7 @@ import {ShareTokenMethodReentrancyTest} from "./_ShareTokenMethodReentrancyTest.
 
 contract CallOnBehalfOfShareTokenReentrancyTest is ShareTokenMethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will revert as expected (protected and debt share tokens)");
+        emit log_string(_tabs(1, "Ensure it will not revert as expected (protected and debt share tokens)"));
         _executeForAllShareTokens(_ensureItWillRevertAsExpected);
     }
 

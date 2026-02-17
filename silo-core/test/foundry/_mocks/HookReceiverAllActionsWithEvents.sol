@@ -122,10 +122,6 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation {
 
     event TransitionCollateralHA(address silo, uint256 shares, address owner, uint256 assets, bool isBefore);
 
-    event SwitchCollateralBeforeHA(address user);
-
-    event SwitchCollateralAfterHA(address user);
-
     event FlashLoanBeforeHA(address silo, address receiver, address token, uint256 amount);
 
     event FlashLoanAfterHA(address silo, address receiver, address token, uint256 amount, uint256 fee);
@@ -202,8 +198,6 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation {
             _processRepay(_silo, _inputAndOutput, _isBefore);
         } else if (_action.matchAction(Hook.FLASH_LOAN)) {
             _processFlashLoan(_silo, _inputAndOutput, _isBefore);
-        } else if (_action.matchAction(Hook.SWITCH_COLLATERAL)) {
-            _processSwitchCollateral(_action, _inputAndOutput, _isBefore);
         } else if (_action.matchAction(Hook.TRANSITION_COLLATERAL)) {
             _processTransitionCollateral(_silo, _inputAndOutput, _isBefore);
         } else {
@@ -318,7 +312,7 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation {
     function _processBorrow(address _silo, uint256 _action, bytes calldata _inputAndOutput, bool _isBefore)
         internal
     {
-        if (_action.matchAction(Hook.BORROW) || _action.matchAction(Hook.BORROW_SAME_ASSET)) {
+        if (_action.matchAction(Hook.BORROW)) {
             _processBorrowAction(_silo, _inputAndOutput, _isBefore);
         } else {
             revert UnknownBorrowAction();
@@ -372,20 +366,6 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation {
         } else {
             Hook.AfterFlashLoanInput memory input = Hook.afterFlashLoanDecode(_inputAndOutput);
             emit FlashLoanAfterHA(_silo, input.receiver, input.token, input.amount, input.fee);
-        }
-    }
-
-    function _processSwitchCollateral(uint256 _action, bytes calldata _inputAndOutput, bool _isBefore) internal {
-        Hook.SwitchCollateralInput memory input = Hook.switchCollateralDecode(_inputAndOutput);
-
-        if (_action.matchAction(Hook.SWITCH_COLLATERAL)) {
-            if (_isBefore) {
-                emit SwitchCollateralBeforeHA(input.user);
-            } else {
-                emit SwitchCollateralAfterHA(input.user);
-            }
-        } else {
-            revert UnknownSwitchCollateralAction();
         }
     }
 

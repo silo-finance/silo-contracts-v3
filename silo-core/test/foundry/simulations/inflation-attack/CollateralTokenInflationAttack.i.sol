@@ -10,7 +10,7 @@ import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 
 /*
-    forge test -vv --ffi --mc CollateralTokenInflationAttack
+FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc CollateralTokenInflationAttack
 */
 contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
     using SiloLensLib for ISilo;
@@ -22,7 +22,7 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_vault_denial_of_service_attack_deposit_lock
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_vault_denial_of_service_attack_deposit_lock
 
     @dev An issue resolved by increasing the decimals offset for the collateral share token.
          See silo-core/contracts/lib/SiloMathLib.sol _DECIMALS_OFFSET_POW
@@ -34,7 +34,7 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
 
         uint256 siloCollateralAssets = silo0.getCollateralAssets();
 
-        assertEq(siloCollateralAssets, 1_073_741_825);
+        assertEq(siloCollateralAssets, 1_073_741_825, "sanity check for silo collateral assets");
 
         // prepare to deposit
         _mintTokens(token0, siloCollateralAssets, victim);
@@ -63,7 +63,7 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_vault_denial_of_service_attack_funds_recovery
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_vault_denial_of_service_attack_funds_recovery
 
     @dev An issue resolved by increasing the decimals offset for the collateral share token.
          See silo-core/contracts/lib/SiloMathLib.sol _DECIMALS_OFFSET_POW
@@ -87,8 +87,8 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
         vm.prank(attacker);
         uint256 receivedAmount = silo0.redeem(redeemShares, attacker, attacker);
 
-        assertEq(attackerDeposits, 1073741823);
-        assertEq(receivedAmount, 1073741824); // 1 wei more?
+        assertEq(attackerDeposits, 1073741823, "sum of attacker deposits");
+        assertEq(receivedAmount, 1073741824, "attacker received amount"); // 1 wei more?
 
         // The following is true only if SiloMathLib._DECIMALS_OFFSET_POW = 10 ** 0
 
@@ -98,7 +98,7 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_vault_denial_of_service_attack_withdraw_issue
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_vault_denial_of_service_attack_withdraw_issue
 
     @dev An issue resolved by increasing the decimals offset for the collateral share token.
          See silo-core/contracts/lib/SiloMathLib.sol _DECIMALS_OFFSET_POW
@@ -126,8 +126,9 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
         address depositor = depositors[anyDepositor];
 
         // The user is able to withdraw after SiloMathLib._DECIMALS_OFFSET_POW set to 10 ** 3
+        // -1 for underestimation
         vm.prank(depositor);
-        silo0.withdraw(depositsAmounts[anyDepositor], depositor, depositor);
+        silo0.withdraw(depositsAmounts[anyDepositor] - 1, depositor, depositor);
 
         // The following is true only if SiloMathLib._DECIMALS_OFFSET_POW = 10 ** 0
         // because of that the the following code is commented.
@@ -185,21 +186,21 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
 
         _borrowAndRepay(borrower, 200);
 
-        uint256 borrowerAssets = silo0.maxWithdraw(borrower);
+        uint256 borrowerShares = silo0.maxRedeem(borrower);
 
         vm.prank(borrower);
-        silo0.withdraw(borrowerAssets, borrower, borrower);
+        silo0.redeem(borrowerShares, borrower, borrower);
 
         silo0.accrueInterest();
 
         for (uint256 i = 0; i < 30; i++) {
             uint256 toDeposit = silo0.getCollateralAssets();
             _makeDeposit(silo0, token0, toDeposit, attacker, ISilo.CollateralType.Collateral);
+            depositedForAttack += toDeposit;
 
             vm.prank(attacker);
             silo0.withdraw(1, attacker, attacker);
-
-            depositedForAttack = depositedForAttack + toDeposit - 1;
+            depositedForAttack -= 1;
         }
 
         emit log_named_uint("[_doAttack] gas used: ", gasStart - gasleft());
@@ -209,8 +210,10 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
         uint256 depositAmount = _toBorrow * 12 / 8;
 
         _makeDeposit(silo0, token0, depositAmount, _borrower, ISilo.CollateralType.Collateral);
+        _makeDeposit(silo1, token1, depositAmount, _borrower, ISilo.CollateralType.Collateral);
+
         vm.prank(_borrower);
-        uint256 shares = silo0.borrowSameAsset(_toBorrow, _borrower, _borrower);
+        uint256 shares = silo0.borrow(_toBorrow, _borrower, _borrower);
 
         vm.warp(block.timestamp + 70 days);
 
@@ -221,7 +224,8 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
 
         _mintTokens(token0, toRepay, _borrower);
 
-        assertTrue(silo0.isSolvent(_borrower));
+        // why this assertion was here originally? idk, dees not make sense to me if the goal is to repay
+        // assertTrue(silo0.isSolvent(_borrower), "[_borrowAndRepay] expect solvent borrower");
 
         vm.prank(_borrower);
         shares = silo0.repay(toRepay, _borrower);

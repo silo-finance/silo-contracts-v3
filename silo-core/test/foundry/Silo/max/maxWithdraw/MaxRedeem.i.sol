@@ -28,7 +28,7 @@ contract MaxRedeemTest is MaxWithdrawCommon {
     }
 
     /*
-    forge test -vv --ffi --mt test_maxRedeem_deposit_fuzz
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxRedeem_deposit_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 1000
     function test_maxRedeem_deposit_fuzz(uint112 _assets, uint16 _assets2) public {
@@ -39,8 +39,12 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         _deposit(_assets2, address(1)); // any
 
         uint256 maxRedeem = silo0.maxRedeem(borrower);
-        assertEq(
-            maxRedeem, _assets * SiloMathLib._DECIMALS_OFFSET_POW, "max withdraw == _assets/shares if no interest"
+        uint256 oneAsset = silo0.convertToShares(1, ISilo.AssetType.Collateral);
+
+        assertLe(
+            (_assets) * SiloMathLib._DECIMALS_OFFSET_POW - maxRedeem,
+            oneAsset,
+            "max withdraw == _assets/shares if no interest (-1 for underestimation)"
         );
 
         _assertBorrowerCanNotRedeemMore(maxRedeem); // no borrow here, so flag does not matter
@@ -51,11 +55,7 @@ contract MaxRedeemTest is MaxWithdrawCommon {
     forge test -vv --ffi --mt test_maxRedeem_whenBorrow
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_maxRedeem_whenBorrow_1token_fuzz(uint128 _collateral, uint128 _toBorrow) public {
-        _maxRedeem_whenBorrow(_collateral, _toBorrow);
-    }
-
-    function _maxRedeem_whenBorrow(uint128 _collateral, uint128 _toBorrow) private {
+    function test_maxRedeem_whenBorrow_fuzz(uint128 _collateral, uint128 _toBorrow) public {
         _createDebtOnSilo1(_collateral, _toBorrow);
 
         ISilo collateralSilo = silo0;
@@ -72,15 +72,10 @@ contract MaxRedeemTest is MaxWithdrawCommon {
     }
 
     /*
-    forge test -vv --ffi --mt test_maxRedeem_whenInterest_
+    forge test -vv --ffi --mt test_maxRedeem_whenInterest
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_maxRedeem_whenInterest_1token_fuzz(uint128 _collateral, uint128 _toBorrow) public {
-        // (uint128 _collateral, uint128 _toBorrow) = (5407, 5028);
-        _maxRedeem_whenInterest(_collateral, _toBorrow);
-    }
-
-    function _maxRedeem_whenInterest(uint128 _collateral, uint128 _toBorrow) private {
+    function test_maxRedeem_whenInterest_fuzz(uint128 _collateral, uint128 _toBorrow) public {
         _createDebtOnSilo1(_collateral, _toBorrow);
 
         vm.warp(block.timestamp + 100 days);
@@ -99,14 +94,10 @@ contract MaxRedeemTest is MaxWithdrawCommon {
     }
 
     /*
-    forge test -vv --ffi --mt test_maxRedeem_bothSilosWithInterest_
+    forge test -vv --ffi --mt test_maxRedeem_bothSilosWithInterest
     */
     /// forge-config: core_test.fuzz.runs = 1000
-    function test_maxRedeem_bothSilosWithInterest_1token_fuzz(uint128 _collateral, uint128 _toBorrow) public {
-        _maxRedeem_bothSilosWithInterest(_collateral, _toBorrow);
-    }
-
-    function _maxRedeem_bothSilosWithInterest(uint128 _collateral, uint128 _toBorrow) private {
+    function test_maxRedeem_bothSilosWithInterest_fuzz(uint128 _collateral, uint128 _toBorrow) public {
         _createDebtOnSilo1(_collateral, _toBorrow);
         _createDebtOnSilo0(_collateral, _toBorrow);
 
@@ -129,7 +120,10 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         (, address collateralShareToken,) = silo0.config().getShareTokens(address(silo0));
 
         assertEq(silo0.maxRedeem(borrower), 0, "expect maxRedeem to be 0");
-        assertEq(IShareToken(collateralShareToken).balanceOf(borrower), 0, "expect share balance to be 0");
+        uint256 oneAsset = silo0.convertToShares(1, ISilo.AssetType.Collateral);
+        assertLe(
+            IShareToken(collateralShareToken).balanceOf(borrower), oneAsset, "expect share balance to be (almost) 0"
+        );
     }
 
     function _assertBorrowerCanNotRedeemMore(uint256 _maxRedeem) internal {
@@ -156,9 +150,7 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         }
 
         uint256 counterExample = isSolvent ? _underestimate : 1;
-        emit log_named_uint(
-            "=========== [counterexample] testing counterexample for maxRedeem with", counterExample
-        );
+        emit log_named_uint("=========== [counterexample] testing counterexample for maxRedeem with", counterExample);
 
         vm.prank(borrower);
         vm.expectRevert();
@@ -170,9 +162,7 @@ contract MaxRedeemTest is MaxWithdrawCommon {
     }
 
     function _assertMaxRedeemIsZeroAtTheEnd(uint256 _underestimate) internal {
-        emit log_named_uint(
-            "================= _assertMaxRedeemIsZeroAtTheEnd ================= +/-", _underestimate
-        );
+        emit log_named_uint("================= _assertMaxRedeemIsZeroAtTheEnd ================= +/-", _underestimate);
 
         uint256 maxRedeem = silo0.maxRedeem(borrower);
 

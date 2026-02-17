@@ -284,7 +284,9 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         assertEq(amount, 0, "Depositor should be able to withdraw when redeeming reverts");
     }
 
-    // FOUNDRY_PROFILE=core_test forge test --ffi --mt test_redeemRewards_above104max -vv
+    /*
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_redeemRewards_above104max -vv
+    */
     function test_redeemRewards_above104max() public {
         _depositProtected();
 
@@ -335,13 +337,13 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
 
         // -1wei because of the rounding error in the Silo incentives controller
         assertEq(
-            token.balanceOf(_depositor), type(uint104).max - 1, "Depositor should have receive type(uint104).max"
+            token.balanceOf(_depositor), someAmount - 1, "Depositor should have receive full amount"
         );
         // 1wei because of the rounding error in the Silo incentives controller
         assertEq(
             token.balanceOf(address(_incentivesController)),
-            someAmount - type(uint104).max + 1,
-            "Incentives controller should have have rewards above type(uint104).max"
+            1,
+            "Incentives controller should have have no rewards (1 is rounding error)"
         );
     }
 

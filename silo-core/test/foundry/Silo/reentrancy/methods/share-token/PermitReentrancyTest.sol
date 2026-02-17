@@ -18,7 +18,7 @@ contract PermitReentrancyTest is ShareTokenMethodReentrancyTest {
     bytes32 internal constant _HASHED_VERSION = keccak256(bytes("1"));
 
     function callMethod() external {
-        emit log_string("\tEnsure it will not revert (all share tokens)");
+        emit log_string(_tabs(1, "Ensure it will not revert (all share tokens)"));
         _executeForAllShareTokens(_ensureItWillNotRevert);
     }
 

@@ -97,8 +97,7 @@ abstract contract PostconditionsSpec {
         "BORROWING_HSPOST_B: A user has no debt after being repaid with max shares amount";
 
     /// @notice related to silo properties RA_silo_solvent_after_borrow & RA_silo_solvent_after_repaying
-    string constant BORROWING_GPOST_C =
-        "BORROWING_GPOST_C: No action except liquidations can leave a user unhealthy.";
+    string constant BORROWING_GPOST_C = "BORROWING_GPOST_C: No action except liquidations can leave a user unhealthy.";
 
     string constant BORROWING_HSPOST_D = "BORROWING_HSPOST_D: a user can always repay debt in full (+-1wei)";
 
@@ -122,8 +121,7 @@ abstract contract PostconditionsSpec {
 
     string constant BORROWING_HSPOST_M = "BORROWING_HSPOST_M: borrow should increase debtAssets by exactly _assets";
 
-    string constant BORROWING_HSPOST_O =
-        "BORROWING_HSPOST_O: borrow should decrease Silo balance by exactly _assets";
+    string constant BORROWING_HSPOST_O = "BORROWING_HSPOST_O: borrow should decrease Silo balance by exactly _assets";
 
     string constant BORROWING_HSPOST_P =
         "BORROWING_HSPOST_P: User should always have ltv below maxLTV after successful call to borrow()"; // TODO

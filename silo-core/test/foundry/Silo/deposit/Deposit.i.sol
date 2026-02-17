@@ -110,13 +110,9 @@ contract DepositTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_deposit_withDebt_1token
+    forge test -vv --ffi --mt test_deposit_withDebt
     */
-    function test_deposit_withDebt_1token() public {
-        _deposit_withDebt();
-    }
-
-    function _deposit_withDebt() internal {
+    function test_deposit_withDebt() public {
         uint256 assets = 1e18;
         address depositor = makeAddr("Depositor");
 

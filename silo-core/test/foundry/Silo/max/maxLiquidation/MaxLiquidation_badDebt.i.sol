@@ -12,27 +12,8 @@ import {MaxLiquidationTest} from "./MaxLiquidation.i.sol";
 contract MaxLiquidationBadDebtTest is MaxLiquidationTest {
     bool private constant _BAD_DEBT = true;
 
-    function _maxLiquidation_partial_1token(uint128 _collateral, bool _receiveSToken) internal virtual override {
-        bool sameAsset = true;
-
-        _createDebtForBorrower(_collateral, sameAsset);
-
-        vm.warp(block.timestamp + 1300 days); // initial time movement to speed up _moveTimeUntilInsolvent
-
-        _moveTimeUntilBadDebt();
-
-        _assertBorrowerIsNotSolvent(_BAD_DEBT);
-
-        _executeLiquidationAndRunChecks(sameAsset, _receiveSToken);
-
-        _assertBorrowerIsSolvent();
-        _ensureBorrowerHasNoDebt();
-    }
-
-    function _maxLiquidation_partial_2tokens(uint128 _collateral, bool _receiveSToken) internal virtual override {
-        bool sameAsset = false;
-
-        _createDebtForBorrower(_collateral, sameAsset);
+    function _maxLiquidation_partial(uint128 _collateral, bool _receiveSToken) internal virtual override {
+        _createDebtForBorrower(_collateral);
 
         vm.warp(block.timestamp + 50 days); // initial time movement to speed up _moveTimeUntilInsolvent
 
@@ -41,7 +22,7 @@ contract MaxLiquidationBadDebtTest is MaxLiquidationTest {
 
         _assertBorrowerIsNotSolvent(_BAD_DEBT);
 
-        _executeLiquidationAndRunChecks(sameAsset, _receiveSToken);
+        _executeLiquidationAndRunChecks(_receiveSToken);
 
         _assertBorrowerIsSolvent();
         _ensureBorrowerHasNoDebt();

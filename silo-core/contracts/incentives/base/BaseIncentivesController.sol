@@ -65,7 +65,7 @@ abstract contract BaseIncentivesController is DistributionManager, ISiloIncentiv
     function updateIncentivesProgram(
         string calldata _incentivesProgram,
         uint40 _distributionEnd,
-        uint104 _emissionPerSecond
+        uint256 _emissionPerSecond
     ) external virtual onlyOwner {
         require(_distributionEnd >= block.timestamp, InvalidDistributionEnd());
         require(_emissionPerSecond < MAX_EMISSION_PER_SECOND, EmissionPerSecondTooHigh());

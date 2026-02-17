@@ -9,7 +9,7 @@ import {TestStateLib} from "../../TestState.sol";
 
 contract ForwardTransferFromNoChecksTest is MethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will revert with OnlySilo");
+        emit log_string(_tabs(1, "Ensure it will not revert with OnlySilo"));
         _ensureItWillRevertWithOnlySilo();
     }
 

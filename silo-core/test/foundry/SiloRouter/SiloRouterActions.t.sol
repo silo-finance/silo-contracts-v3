@@ -450,35 +450,6 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         assertEq(borrower.balance, borrowAmount, "Account should have tokens");
     }
 
-    // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_siloRouterV2_borrowSameAssetFlow
-    function test_siloRouterV2_borrowSameAssetFlow() public {
-        vm.prank(borrower);
-        IERC20(token0).approve(address(silo0), _TOKEN0_AMOUNT);
-
-        vm.prank(borrower);
-        ISilo(silo0).deposit(_TOKEN0_AMOUNT, borrower);
-
-        uint256 borrowAmount = ISilo(silo0).maxBorrowSameAsset(borrower);
-
-        assertEq(IERC20(debtToken0).balanceOf(borrower), 0, "Account should not have any debt tokens");
-
-        uint256 balanceBefore = IERC20(token0).balanceOf(borrower);
-
-        vm.prank(borrower);
-        IERC20(debtToken0).approve(address(router), type(uint256).max);
-
-        bytes[] memory data = new bytes[](1);
-        data[0] = abi.encodeCall(
-            SiloRouterV2Implementation.borrowSameAsset, (ISilo(silo0), borrowAmount, address(borrower))
-        );
-
-        vm.prank(borrower);
-        router.multicall(data);
-
-        assertNotEq(IERC20(debtToken0).balanceOf(borrower), 0, "Account should have debt tokens");
-        assertEq(IERC20(token0).balanceOf(borrower), balanceBefore + borrowAmount, "Account should have tokens");
-    }
-
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_siloRouterV2_repayFlow
     function test_siloRouterV2_repayFlow() public {
         vm.prank(wethWhale);

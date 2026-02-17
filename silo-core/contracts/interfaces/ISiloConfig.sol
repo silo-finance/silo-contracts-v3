@@ -130,6 +130,7 @@ interface ISiloConfig is ICrossReentrancyGuard {
     error OnlyDebtShareToken();
     error DebtExistInOtherSilo();
     error FeeTooHigh();
+    error Deprecated();
 
     /// @dev It should be called on debt transfer (debt share token transfer).
     /// In the case if the`_recipient` doesn't have configured a collateral silo,
@@ -138,11 +139,7 @@ interface ISiloConfig is ICrossReentrancyGuard {
     /// @param _recipient recipient address
     function onDebtTransfer(address _sender, address _recipient) external;
 
-    /// @notice Set collateral silo.
-    /// @dev Revert if msg.sender is not a SILO_0 or SILO_1.
-    /// @dev Always set collateral silo the same as msg.sender.
-    /// @param _borrower borrower address
-    /// @return collateralSiloChanged TRUE if collateral silo changed
+    /// @notice deprecated
     function setThisSiloAsCollateralSilo(address _borrower) external returns (bool collateralSiloChanged);
 
     /// @notice Set collateral silo
@@ -169,14 +166,11 @@ interface ISiloConfig is ICrossReentrancyGuard {
     /// In the SiloConfig collateral silo is set by the following functions:
     /// `onDebtTransfer` - only if the recipient doesn't have collateral silo set (inherits it from the sender)
     /// This function is called on debt share token transfer (debt transfer).
-    /// `setThisSiloAsCollateralSilo` - sets the same silo as the one that calls the function.
     /// `setOtherSiloAsCollateralSilo` - sets the opposite silo as collateral from the one that calls the function.
     ///
     /// In the Silo collateral silo is set by the following functions:
     /// `borrow` - always sets opposite silo as collateral.
     /// If Silo0 borrows, then Silo1 will be collateral and vice versa.
-    /// `borrowSameAsset` - always sets the same silo as collateral.
-    /// `switchCollateralToThisSilo` - always sets the same silo as collateral.
     /// @param _borrower The address of the borrower for which the collateral silo is being retrieved
     /// @return collateralSilo The address of the collateral silo for the specified borrower
     function borrowerCollateralSilo(address _borrower) external view returns (address collateralSilo);

@@ -19,22 +19,15 @@ Resume verification:
         --resume
  */
 contract SiloDeployWithHookReceiverOwner is SiloDeploy {
-    function _getClonableHookReceiverConfig(address _implementation)
-        internal
-        override
-        returns (ISiloDeployer.ClonableHookReceiver memory hookReceiver)
-    {
-        string memory hookReceiverOwnerKey = vm.envString("HOOK_RECEIVER_OWNER");
-
-        address hookReceiverOwner = AddrLib.getAddress(hookReceiverOwnerKey);
-
-        hookReceiver = ISiloDeployer.ClonableHookReceiver({
-            implementation: _implementation,
-            initializationData: abi.encode(hookReceiverOwner)
-        });
+    function _getClonableHookReceiverOwner() internal view override returns (address owner) {
+        owner = _getHookReceiverOwner()
     }
 
     function _getDKinkIRMInitialOwner() internal override returns (address owner) {
+        owner = _getHookReceiverOwner()
+    }
+    
+    function _getHookReceiverOwner() private view returns (address owner) {
         string memory hookReceiverOwnerKey = vm.envString("HOOK_RECEIVER_OWNER");
         owner = AddrLib.getAddress(hookReceiverOwnerKey);
     }

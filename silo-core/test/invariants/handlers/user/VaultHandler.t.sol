@@ -2,14 +2,12 @@
 pragma solidity ^0.8.19;
 
 // Interfaces
-import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {ISilo} from "silo-core/contracts/Silo.sol";
 
 // Libraries
-import "forge-std/console.sol";
+import {console2} from "forge-std/console2.sol";
 
 // Test Contracts
-import {Actor} from "../../utils/Actor.sol";
 import {BaseHandler} from "../../base/BaseHandler.t.sol";
 
 /// @title VaultHandler
@@ -134,8 +132,7 @@ contract VaultHandler is BaseHandler {
 
         _before();
         (success, returnData) = actor.proxy(
-            target,
-            abi.encodeWithSelector(ISilo.redeem.selector, _shares, receiver, address(actor), _collateralType)
+            target, abi.encodeWithSelector(ISilo.redeem.selector, _shares, receiver, address(actor), _collateralType)
         );
 
         if (success) {
@@ -161,6 +158,11 @@ contract VaultHandler is BaseHandler {
         ISilo.CollateralType _collateralType = ISilo.CollateralType(j % 2);
 
         uint256 maxWithdraw = ISilo(target).maxWithdraw(address(actor), _collateralType);
+
+        console2.log("maxWithdraw", maxWithdraw);
+        console2.log("  liquidity", ISilo(target).getLiquidity());
+        console2.log("max redeem", ISilo(target).maxRedeem(address(actor), _collateralType));
+        console2.log("type", _collateralType == ISilo.CollateralType.Collateral ? "collateral" : "protected");
 
         _before();
         (success, returnData) = actor.proxy(

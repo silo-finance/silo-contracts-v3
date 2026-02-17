@@ -27,7 +27,7 @@ contract HackProtected is Test {
 
         assertGe(IERC20(_token).balanceOf(address(silo)), 1e18, "protected deposit left in silo");
 
-        assertEq(silo.maxWithdraw(address(this)), 1e18, "contract must have assets to withdraw");
+        assertEq(silo.maxWithdraw(address(this)), 1e18 - 1, "contract must have assets to withdraw (-1 for underestimation)");
 
         silo.withdraw(1, address(this), address(this));
 
@@ -49,7 +49,7 @@ contract FlashloanProtectedTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_flashLoanProtected
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_flashLoanProtected
     */
     function test_flashLoanProtected() public {
         HackProtected receiver = new HackProtected();

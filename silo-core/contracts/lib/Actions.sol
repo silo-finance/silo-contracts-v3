@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
+
 pragma solidity ^0.8.28;
 
 // solhint-disable ordering
@@ -185,42 +186,6 @@ library Actions {
         _hookCallAfterBorrow(_args, Hook.BORROW, assets, shares);
     }
 
-    /// @notice Allows an address to borrow a specified amount of assets that will be back up with deposit made with the
-    /// same asset
-    /// @param _args check ISilo.BorrowArgs for details
-    /// @return assets Amount of assets borrowed
-    /// @return shares Amount of shares minted for the borrowed assets
-    function borrowSameAsset(ISilo.BorrowArgs memory _args)
-        external
-        returns (uint256 assets, uint256 shares, bool collateralTypeChanged)
-    {
-        _hookCallBeforeBorrow(_args, Hook.BORROW_SAME_ASSET);
-
-        ISiloConfig siloConfig = ShareTokenLib.siloConfig();
-
-        require(!siloConfig.hasDebtInOtherSilo(address(this), _args.borrower), ISilo.BorrowNotPossible());
-
-        siloConfig.turnOnReentrancyProtection();
-        siloConfig.accrueInterestForSilo(address(this));
-        collateralTypeChanged = siloConfig.setThisSiloAsCollateralSilo(_args.borrower);
-
-        ISiloConfig.ConfigData memory collateralConfig = siloConfig.getConfig(address(this));
-        ISiloConfig.ConfigData memory debtConfig = collateralConfig;
-
-        (assets, shares) = SiloLendingLib.borrow({
-            _debtShareToken: debtConfig.debtShareToken,
-            _token: debtConfig.token,
-            _spender: msg.sender,
-            _args: _args
-        });
-
-        _checkLTVWithoutAccruingInterest(collateralConfig, debtConfig, _args.borrower);
-
-        siloConfig.turnOffReentrancyProtection();
-
-        _hookCallAfterBorrow(_args, Hook.BORROW_SAME_ASSET, assets, shares);
-    }
-
     /// @notice Repays a given asset amount and returns the equivalent number of shares
     /// @param _assets Amount of assets to be repaid
     /// @param _borrower Address of the borrower whose debt is being repaid
@@ -332,43 +297,6 @@ library Actions {
         siloConfig.turnOffReentrancyProtection();
 
         _hookCallAfterTransitionCollateral(_args, toShares, assets);
-    }
-
-    /// @notice Switches the collateral silo to this silo
-    /// @dev Revert if the collateral silo is already set
-    function switchCollateralToThisSilo() external {
-        IShareToken.ShareTokenStorage storage _shareStorage = ShareTokenLib.getShareTokenStorage();
-
-        uint256 action = Hook.SWITCH_COLLATERAL;
-
-        if (_shareStorage.hookSetup.hooksBefore.matchAction(action)) {
-            IHookReceiver(_shareStorage.hookSetup.hookReceiver).beforeAction(
-                address(this), action, abi.encodePacked(msg.sender)
-            );
-        }
-
-        ISiloConfig siloConfig = _shareStorage.siloConfig;
-
-        siloConfig.turnOnReentrancyProtection();
-        require(siloConfig.setThisSiloAsCollateralSilo(msg.sender), ISilo.CollateralSiloAlreadySet());
-
-        ISiloConfig.ConfigData memory collateralConfig;
-        ISiloConfig.ConfigData memory debtConfig;
-
-        (collateralConfig, debtConfig) = siloConfig.getConfigsForSolvency(msg.sender);
-
-        if (debtConfig.silo != address(0)) {
-            siloConfig.accrueInterestForBothSilos();
-            _checkSolvencyWithoutAccruingInterest(collateralConfig, debtConfig, msg.sender);
-        }
-
-        siloConfig.turnOffReentrancyProtection();
-
-        if (_shareStorage.hookSetup.hooksAfter.matchAction(action)) {
-            IHookReceiver(_shareStorage.hookSetup.hookReceiver).afterAction(
-                address(this), action, abi.encodePacked(msg.sender)
-            );
-        }
     }
 
     /// @notice Executes a flash loan, sending the requested amount to the receiver and expecting it back with a fee

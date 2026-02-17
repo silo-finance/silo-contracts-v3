@@ -62,15 +62,17 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
 
         address depositor = makeAddr("depositor");
         address borrower = makeAddr("borrower");
-        bool depositToSilo1 = true;
 
         // execute all possible actions
 
         emit log("-- _depositForBorrow --");
         _depositForBorrow(200e18, depositor);
 
+        emit log("-- _deposit collateral --");
+        _deposit(3, depositor);
+
         emit log("-- _depositCollateral --");
-        _depositCollateral(200e18, borrower, !depositToSilo1);
+        _deposit(200e18, borrower);
 
         emit log("-- _borrow --");
         _borrow(50e18, borrower);
@@ -92,21 +94,14 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
         vm.prank(borrower);
         silo0.transitionCollateral(100e18, borrower, ISilo.CollateralType.Collateral);
 
-        emit log("-- _depositCollateral --");
-        _depositCollateral(100e18, borrower, depositToSilo1);
-
-        emit log("-- switchCollateralToThisSilo --");
-        vm.prank(borrower);
-        silo1.switchCollateralToThisSilo();
+        emit log("-- _depositForBorrow --");
+        _depositForBorrow(100e18, borrower);
 
         vm.prank(borrower);
         silo1.deposit(10, borrower);
 
         vm.prank(borrower);
         silo1.deposit(10, borrower, ISilo.CollateralType.Protected);
-
-        vm.prank(borrower);
-        silo1.borrowSameAsset(1, borrower, borrower);
 
         (address protectedShareToken, address collateralShareToken, address debtShareToken) =
             siloConfig.getShareTokens(address(silo1));
@@ -139,11 +134,17 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
 
         emit log_named_decimal_uint("borrower LTV", silo0.getLtv(borrower), 16);
 
-        vm.warp(block.timestamp + 200 days);
+        uint256 maxWithdraw = silo1.maxWithdraw(borrower);
+        vm.prank(borrower);
+        emit log_named_uint("max withdraw", maxWithdraw);
+        silo1.withdraw(maxWithdraw, borrower, borrower);
+
+        vm.warp(block.timestamp + 20000 days);
+
         emit log_named_decimal_uint("borrower LTV", silo0.getLtv(borrower), 16);
 
         partialLiquidation.liquidationCall(
-            address(token1),
+            address(token0),
             address(token1),
             borrower,
             type(uint256).max,
@@ -222,14 +223,14 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
     }
 
     function _printAction(uint256 _action) internal {
-        if (_action.matchAction(Hook.BORROW_SAME_ASSET)) emit log("BORROW_SAME_ASSET");
+        if (_action.matchAction(Hook.BORROW_SAME_ASSET)) emit log("BORROW_SAME_ASSET (deprecated!)");
         if (_action.matchAction(Hook.DEPOSIT)) emit log("DEPOSIT");
         if (_action.matchAction(Hook.BORROW)) emit log("BORROW");
         if (_action.matchAction(Hook.REPAY)) emit log("REPAY");
         if (_action.matchAction(Hook.WITHDRAW)) emit log("WITHDRAW");
         if (_action.matchAction(Hook.FLASH_LOAN)) emit log("FLASH_LOAN");
         if (_action.matchAction(Hook.TRANSITION_COLLATERAL)) emit log("TRANSITION_COLLATERAL");
-        if (_action.matchAction(Hook.SWITCH_COLLATERAL)) emit log("SWITCH_COLLATERAL");
+        if (_action.matchAction(Hook.SWITCH_COLLATERAL)) emit log("SWITCH_COLLATERAL (deprecated!)");
         if (_action.matchAction(Hook.SHARE_TOKEN_TRANSFER)) emit log("SHARE_TOKEN_TRANSFER");
         if (_action.matchAction(Hook.COLLATERAL_TOKEN)) emit log("COLLATERAL_TOKEN");
         if (_action.matchAction(Hook.PROTECTED_TOKEN)) emit log("PROTECTED_TOKEN");

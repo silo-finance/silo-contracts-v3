@@ -41,7 +41,6 @@ contract NewMarketTest is Test {
         ISilo debtSilo;
         IERC20Metadata debtToken;
         uint256 warpTimeBeforeRepay;
-        bool sameAsset;
     }
 
     string public constant SUCCESS_SYMBOL = unicode"✅";
@@ -104,8 +103,7 @@ contract NewMarketTest is Test {
                 collateralToken: TOKEN0,
                 debtSilo: SILO1,
                 debtToken: TOKEN1,
-                warpTimeBeforeRepay: 0,
-                sameAsset: false
+                warpTimeBeforeRepay: 0
             })
         );
 
@@ -115,32 +113,7 @@ contract NewMarketTest is Test {
                 collateralToken: TOKEN0,
                 debtSilo: SILO1,
                 debtToken: TOKEN1,
-                warpTimeBeforeRepay: 10 days,
-                sameAsset: false
-            })
-        );
-    }
-
-    function test_newMarketTest_borrowSameAssetSilo1() public logSiloConfigName {
-        _borrowScenario(
-            BorrowScenario({
-                collateralSilo: SILO1,
-                collateralToken: TOKEN1,
-                debtSilo: SILO1,
-                debtToken: TOKEN1,
-                warpTimeBeforeRepay: 0,
-                sameAsset: true
-            })
-        );
-
-        _borrowScenario(
-            BorrowScenario({
-                collateralSilo: SILO1,
-                collateralToken: TOKEN1,
-                debtSilo: SILO1,
-                debtToken: TOKEN1,
-                warpTimeBeforeRepay: 10 days,
-                sameAsset: true
+                warpTimeBeforeRepay: 10 days
             })
         );
     }
@@ -152,8 +125,7 @@ contract NewMarketTest is Test {
                 collateralToken: TOKEN1,
                 debtSilo: SILO0,
                 debtToken: TOKEN0,
-                warpTimeBeforeRepay: 0,
-                sameAsset: false
+                warpTimeBeforeRepay: 0
             })
         );
 
@@ -163,32 +135,7 @@ contract NewMarketTest is Test {
                 collateralToken: TOKEN1,
                 debtSilo: SILO0,
                 debtToken: TOKEN0,
-                warpTimeBeforeRepay: 10 days,
-                sameAsset: false
-            })
-        );
-    }
-
-    function test_newMarketTest_borrowSameAssetSilo0() public logSiloConfigName {
-        _borrowScenario(
-            BorrowScenario({
-                collateralSilo: SILO0,
-                collateralToken: TOKEN0,
-                debtSilo: SILO0,
-                debtToken: TOKEN0,
-                warpTimeBeforeRepay: 0,
-                sameAsset: true
-            })
-        );
-
-        _borrowScenario(
-            BorrowScenario({
-                collateralSilo: SILO0,
-                collateralToken: TOKEN0,
-                debtSilo: SILO0,
-                debtToken: TOKEN0,
-                warpTimeBeforeRepay: 10 days,
-                sameAsset: true
+                warpTimeBeforeRepay: 10 days
             })
         );
     }
@@ -216,9 +163,7 @@ contract NewMarketTest is Test {
             console2.log("\twarp ", _scenario.warpTimeBeforeRepay);
         }
 
-        uint256 maxBorrow = _scenario.sameAsset
-            ? _scenario.debtSilo.maxBorrowSameAsset(borrower)
-            : _scenario.debtSilo.maxBorrow(borrower);
+        uint256 maxBorrow = _scenario.debtSilo.maxBorrow(borrower);
 
         console2.log("\t- check for maxBorrow", maxBorrow);
 
@@ -251,11 +196,7 @@ contract NewMarketTest is Test {
         assertGt(maxBorrow, 0, "expect to borrow at least some tokens");
 
         // 2. Borrow
-        if (_scenario.sameAsset) {
-            _scenario.debtSilo.borrowSameAsset(maxBorrow, borrower, borrower);
-        } else {
-            _scenario.debtSilo.borrow(maxBorrow, borrower, borrower);
-        }
+        _scenario.debtSilo.borrow(maxBorrow, borrower, borrower);
 
         uint256 borrowed = _scenario.debtToken.balanceOf(borrower);
         assertTrue(borrowed >= maxBorrow, "Borrowed more or equal to calculated maxBorrow based on prices");
@@ -265,7 +206,7 @@ contract NewMarketTest is Test {
             assertGt(maxRepayBefore, 0, "maxRepayBefore should be greater than 0");
 
             vm.warp(block.timestamp + _scenario.warpTimeBeforeRepay);
-            console2.log("\t- warp ", _scenario.warpTimeBeforeRepay);
+            console2.log("\t- warp %s days to get interest", _scenario.warpTimeBeforeRepay / 1 days);
 
             assertLt(maxRepayBefore, _scenario.debtSilo.maxRepay(borrower), "we have to generate interest");
         }

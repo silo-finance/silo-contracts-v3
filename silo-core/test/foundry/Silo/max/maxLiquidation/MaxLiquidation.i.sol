@@ -30,87 +30,27 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
     }
 
     /*
-    forge test -vv --ffi --mt test_maxLiquidation_partial_1token_sTokens_fuzz
+    forge test -vv --ffi --mt test_maxLiquidation_partial_sTokens_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 10000
-    function test_maxLiquidation_partial_1token_sTokens_fuzz(uint128 _collateral) public {
-        _maxLiquidation_partial_1token(_collateral, _RECEIVE_STOKENS);
+    function test_maxLiquidation_partial_sTokens_fuzz(uint128 _collateral) public {
+        _maxLiquidation_partial(_collateral, _RECEIVE_STOKENS);
     }
 
     /*
-    forge test -vv --ffi --mt test_maxLiquidation_partial_1token_tokens_fuzz
+    forge test -vv --ffi --mt test_maxLiquidation_partial_tokens_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 10000
-    function test_maxLiquidation_partial_1token_tokens_fuzz(uint128 _collateral) public {
-        _maxLiquidation_partial_1token(_collateral, !_RECEIVE_STOKENS);
+    function test_maxLiquidation_partial_tokens_fuzz(uint128 _collateral) public {
+        _maxLiquidation_partial(_collateral, !_RECEIVE_STOKENS);
     }
 
-    function _maxLiquidation_partial_1token(uint128 _collateral, bool _receiveSToken) internal virtual {
-        bool sameAsset = true;
-
-        vm.assume(_collateral != 29); // dust
-        vm.assume(_collateral != 30); // dust
-        vm.assume(_collateral != 31); // dust
-        vm.assume(_collateral != 32); // dust
-        vm.assume(_collateral != 33); // dust
-        vm.assume(_collateral != 34); // dust
-        vm.assume(_collateral != 35); // dust
-        vm.assume(_collateral != 36); // dust
-        vm.assume(_collateral != 37); // dust
-        vm.assume(_collateral != 38); // dust
-
-        vm.assume(_collateral != 52); // dust
-        vm.assume(_collateral != 53); // dust
-        vm.assume(_collateral != 54); // dust
-        vm.assume(_collateral != 55); // dust
-        vm.assume(_collateral != 56); // dust
-        vm.assume(_collateral != 57); // dust
-
-        // this value found by fuzzing tests, is high enough to have partial liquidation possible for this test setup
-        vm.assume(_collateral >= 20);
-
-        _createDebtForBorrower(_collateral, sameAsset);
-
-        vm.warp(block.timestamp + 1050 days); // initial time movement to speed up _moveTimeUntilInsolvent
-
-        _moveTimeUntilInsolvent();
-
-        _assertBorrowerIsNotSolvent(_BAD_DEBT);
-
-        (,,, bool fullLiquidation) = siloLens.maxLiquidation(silo1, partialLiquidation, borrower);
-        assertFalse(fullLiquidation, "[MaxLiquidation] fullLiquidation flag is DOWN on partial liquidation");
-
-        _executeLiquidationAndRunChecks(sameAsset, _receiveSToken);
-
-        _assertBorrowerIsSolvent();
-
-        _ensureBorrowerHasDebt(); // because we finish when user is solvent
-    }
-
-    /*
-    forge test -vv --ffi --mt test_maxLiquidation_partial_2tokens_sTokens_fuzz
-    */
-    /// forge-config: core_test.fuzz.runs = 10000
-    function test_maxLiquidation_partial_2tokens_sTokens_fuzz(uint128 _collateral) public {
-        _maxLiquidation_partial_2tokens(_collateral, _RECEIVE_STOKENS);
-    }
-
-    /*
-    forge test -vv --ffi --mt test_maxLiquidation_partial_2tokens_tokens_fuzz
-    */
-    /// forge-config: core_test.fuzz.runs = 10000
-    function test_maxLiquidation_partial_2tokens_tokens_fuzz(uint128 _collateral) public {
-        _maxLiquidation_partial_2tokens(_collateral, !_RECEIVE_STOKENS);
-    }
-
-    function _maxLiquidation_partial_2tokens(uint128 _collateral, bool _receiveSToken) internal virtual {
-        bool sameAsset = false;
-
+    function _maxLiquidation_partial(uint128 _collateral, bool _receiveSToken) internal virtual {
         vm.assume(_collateral != 19); // dust case
         vm.assume(_collateral != 33); // dust
         vm.assume(_collateral >= 7); // LTV100 cases
 
-        _createDebtForBorrower(_collateral, sameAsset);
+        _createDebtForBorrower(_collateral);
 
         // for same asset interest increasing slower, because borrower is also depositor, also LT is higher
         _moveTimeUntilInsolvent();
@@ -119,7 +59,7 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
 
         (,,, bool fullLiquidation) = siloLens.maxLiquidation(silo1, partialLiquidation, borrower);
 
-        _executeLiquidationAndRunChecks(sameAsset, _receiveSToken);
+        _executeLiquidationAndRunChecks(_receiveSToken);
 
         _assertBorrowerIsSolvent();
 
@@ -132,7 +72,7 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
         }
     }
 
-    function _executeLiquidation(bool _sameToken, bool _receiveSToken)
+    function _executeLiquidation(bool _receiveSToken)
         internal
         virtual
         override
@@ -148,7 +88,7 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
         emit log_named_decimal_uint("[MaxLiquidation] ltv before", silo0.getLtv(borrower), 16);
 
         (withdrawCollateral, repayDebtAssets) = partialLiquidation.liquidationCall(
-            address(_sameToken ? token1 : token0), address(token1), borrower, maxDebtToCover, _receiveSToken
+            address(token0), address(token1), borrower, maxDebtToCover, _receiveSToken
         );
 
         emit log_named_decimal_uint("[MaxLiquidation] ltv after", silo0.getLtv(borrower), 16);

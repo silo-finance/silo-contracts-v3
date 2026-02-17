@@ -37,11 +37,7 @@ contract RepayAllowanceTest is SiloLittleHelper, Test {
     /*
     forge test --ffi -vv --mt test_repay_WithoutAllowance
     */
-    function test_repay_WithoutAllowance_1token() public {
-        _repay_WithoutAllowance();
-    }
-
-    function _repay_WithoutAllowance() private {
+    function test_repay_WithoutAllowance() public {
         _setUp();
 
         (,, address debtShareToken) = siloConfig.getShareTokens(address(silo1));

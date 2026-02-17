@@ -29,7 +29,7 @@ contract ShareTokenHandler is BaseHandler {
     //                                          ACTIONS                                          //
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
-    function approve(uint256 _amount, uint8 i) external setupRandomActor {
+    function approve(uint256 _amount, uint8 i) external setup {
         bool success;
         bytes memory returnData;
 
@@ -46,7 +46,7 @@ contract ShareTokenHandler is BaseHandler {
         }
     }
 
-    function transfer(uint256 _amount, uint8 i) external setupRandomActor {
+    function transfer(uint256 _amount, uint8 i) external setup {
         bool success;
         bytes memory returnData;
 
@@ -69,7 +69,7 @@ contract ShareTokenHandler is BaseHandler {
         }
     }
 
-    function transferFrom(uint256 _amount, uint8 i, uint8 j) external setupRandomActor {
+    function transferFrom(uint256 _amount, uint8 i, uint8 j) external setup {
         bool success;
         bytes memory returnData;
 

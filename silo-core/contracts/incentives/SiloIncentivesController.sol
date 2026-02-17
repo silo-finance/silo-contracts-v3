@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
+
 pragma solidity 0.8.28;
 
 // solhint-disable ordering
@@ -11,19 +12,21 @@ import {Strings} from "openzeppelin5/utils/Strings.sol";
 import {ISiloIncentivesController} from "./interfaces/ISiloIncentivesController.sol";
 import {BaseIncentivesController} from "./base/BaseIncentivesController.sol";
 import {DistributionTypes} from "./lib/DistributionTypes.sol";
+import {IVersioned} from "../interfaces/IVersioned.sol";
 
 /**
  * @title SiloIncentivesController
+ * @dev THIS CONTRACT IS NOT BACKWARDS COMPATIBLE AND SHOULD NOT BE USED DIRECTLY
  * @notice Distributor contract for rewards to the Aave protocol, using a staked token as rewards asset.
  * The contract stakes the rewards before redistributing them to the Aave protocol participants.
  * The reference staked token implementation is at https://github.com/aave/aave-stake-v2
  * @author Aave
  */
-contract SiloIncentivesController is BaseIncentivesController {
+abstract contract SiloIncentivesController is BaseIncentivesController, IVersioned {
     using EnumerableSet for EnumerableSet.Bytes32Set;
     using SafeERC20 for IERC20;
 
-    /// @notice Silo share token
+    /// @inheritdoc ISiloIncentivesController
     address public immutable SHARE_TOKEN;
 
     /// @param _owner address of wallet that can manage the storage
@@ -35,6 +38,11 @@ contract SiloIncentivesController is BaseIncentivesController {
     {
         require(_shareTokenAddress != address(0), EmptyShareToken());
         SHARE_TOKEN = _shareTokenAddress;
+    }
+
+    /// @inheritdoc IVersioned
+    function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
+        return "SiloIncentivesController 4.0.0";
     }
 
     /// @inheritdoc ISiloIncentivesController
@@ -94,12 +102,17 @@ contract SiloIncentivesController is BaseIncentivesController {
     }
 
     /// @inheritdoc ISiloIncentivesController
-    function immediateDistribution(address _tokenToDistribute, uint104 _amount) external virtual onlyNotifier {
-        if (_amount == 0) return;
+    function immediateDistribution(address _tokenToDistribute, uint256 _amount)
+        external
+        virtual
+        onlyNotifier
+        returns (bytes32 programId) 
+    {
+        if (_amount == 0) return bytes32(0);
 
         uint256 totalStaked = _shareToken().totalSupply();
 
-        bytes32 programId = _getOrCreateImmediateDistributionProgram(_tokenToDistribute);
+        programId = _getOrCreateImmediateDistributionProgram(_tokenToDistribute);
 
         IncentivesProgram storage program = incentivesPrograms[programId];
 
@@ -107,13 +120,15 @@ contract SiloIncentivesController is BaseIncentivesController {
         _updateAssetStateInternal(programId, totalStaked);
 
         uint40 distributionEndBefore = program.distributionEnd;
-        uint104 emissionPerSecondBefore = program.emissionPerSecond;
+        uint256 emissionPerSecondBefore = program.emissionPerSecond;
 
         // Distributing `_amount` of rewards in one second allows the rewards to be added to users' balances
         // even to the active incentives program.
         program.distributionEnd = uint40(block.timestamp);  
         program.lastUpdateTimestamp = uint40(block.timestamp - 1);
         program.emissionPerSecond = _amount;
+
+        emit ImmediateDistribution(_tokenToDistribute, programId, _amount);
 
         _updateAssetStateInternal(programId, totalStaked);
 

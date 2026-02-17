@@ -65,20 +65,12 @@ contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
     /*
     forge test --ffi -vv --mt test_isBelowMax_whenSolvent
     */
-    function test_isBelowMax_whenSolvent_1() public {
-        _isBelowMax_whenSolvent(SAME_ASSET);
-    }
-
-    function test_isBelowMax_whenSolvent_2() public {
-        _isBelowMax_whenSolvent(TWO_ASSETS);
-    }
-
-    function _isBelowMax_whenSolvent(bool _sameAsset) private {
+    function test_isBelowMax_whenSolvent() public {
         address borrower = makeAddr("borrower");
 
-        _depositCollateral(100, borrower, _sameAsset);
+        _deposit(100, borrower);
         _depositForBorrow(100, address(1));
-        _borrow(_sameAsset ? silo1.maxBorrowSameAsset(borrower) : silo1.maxBorrow(borrower), borrower, _sameAsset);
+        _borrow(silo1.maxBorrow(borrower), borrower);
 
         (ISiloConfig.ConfigData memory collateralConfig, ISiloConfig.ConfigData memory debtConfig) =
             siloConfig.getConfigsForSolvency(borrower);
@@ -97,23 +89,15 @@ contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
     /*
     forge test --ffi -vv --mt test_isBelowMax_whenSolventButWithdraw
     */
-    function test_isBelowMax_whenSolventButWithdraw_1() public {
-        _isBelowMax_whenSolventButWithdraw(SAME_ASSET);
-    }
-
-    function test_isBelowMax_whenSolventButWithdraw_2() public {
-        _isBelowMax_whenSolventButWithdraw(TWO_ASSETS);
-    }
-
-    function _isBelowMax_whenSolventButWithdraw(bool _sameAsset) private {
+    function test_isBelowMax_whenSolventButWithdraw() public {
         address borrower = makeAddr("borrower");
 
-        _depositCollateral(100, borrower, _sameAsset);
+        _deposit(100, borrower);
         _depositForBorrow(100, address(1));
-        _borrow(_sameAsset ? silo1.maxBorrowSameAsset(borrower) : silo1.maxBorrow(borrower), borrower, _sameAsset);
+        _borrow(silo1.maxBorrow(borrower), borrower);
 
         vm.prank(borrower);
-        (_sameAsset ? silo1 : silo0).withdraw(2, borrower, borrower);
+        silo0.withdraw(2, borrower, borrower);
 
         (ISiloConfig.ConfigData memory collateralConfig, ISiloConfig.ConfigData memory debtConfig) =
             siloConfig.getConfigsForSolvency(borrower);

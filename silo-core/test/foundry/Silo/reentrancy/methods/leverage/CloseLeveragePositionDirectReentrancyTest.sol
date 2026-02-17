@@ -12,7 +12,7 @@ import {RescueModule} from "silo-core/contracts/leverage/modules/RescueModule.so
 
 contract CloseLeveragePositionDirectReentrancyTest is MethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will revert with OnlyRouter");
+        emit log_string(_tabs(1, "Ensure it will revert with OnlyRouter"));
         _ensureItWillRevertWithOnlyRouter();
     }
 
@@ -29,8 +29,7 @@ contract CloseLeveragePositionDirectReentrancyTest is MethodReentrancyTest {
 
         bytes memory swapArgs = "";
 
-        ILeverageUsingSiloFlashloan.CloseLeverageArgs memory closeArgs = ILeverageUsingSiloFlashloan
-            .CloseLeverageArgs({
+        ILeverageUsingSiloFlashloan.CloseLeverageArgs memory closeArgs = ILeverageUsingSiloFlashloan.CloseLeverageArgs({
             siloWithCollateral: TestStateLib.silo1(),
             flashloanTarget: address(TestStateLib.silo0()),
             collateralType: ISilo.CollateralType.Collateral

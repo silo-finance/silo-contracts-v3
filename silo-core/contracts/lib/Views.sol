@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
+
 pragma solidity ^0.8.28;
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
@@ -55,12 +56,12 @@ library Views {
         }
     }
 
-    function maxBorrow(address _borrower, bool _sameAsset)
+    function maxBorrow(address _borrower)
         external
         view
         returns (uint256 maxAssets, uint256 maxShares)
     {
-        return SiloLendingLib.maxBorrow(_borrower, _sameAsset);
+        return SiloLendingLib.maxBorrow(_borrower);
     }
 
     function maxWithdraw(address _owner, ISilo.CollateralType _collateralType)

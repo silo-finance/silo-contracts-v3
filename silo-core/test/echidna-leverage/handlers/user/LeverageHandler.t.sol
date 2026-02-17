@@ -30,7 +30,7 @@ import {MockSiloOracle} from "silo-core/test/invariants/utils/mocks/MockSiloOrac
 /// @title LeverageHandler
 /// @notice Handler test contract for a set of actions
 contract LeverageHandler is BaseHandlerLeverage {
-    function rescueTokens(IERC20 _token, uint256 _i) external payable setupRandomActor(_i) {
+    function rescueTokens(IERC20 _token, uint8 _i) external payable setupRandomActor(_i) {
         RescueModule rescueModule = RescueModule(leverageRouter.predictUserLeverageContract(targetActor));
 
         _before();

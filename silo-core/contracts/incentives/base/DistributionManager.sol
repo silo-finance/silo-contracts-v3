@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: agpl-3.0
+
 pragma solidity 0.8.28;
 
 // solhint-disable ordering
@@ -133,11 +134,7 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
         return bytes32(abi.encodePacked(_programName));
     }
 
-    /**
-     * @dev Returns the name of an incentives program (converts bytes32 to string)
-     * @param _programId The id of the incentives program
-     * @return The name of the incentives program
-     */
+    /// @inheritdoc IDistributionManager
     function getProgramName(bytes32 _programId) public view virtual returns (string memory) {
         if (_isImmediateDistributionProgram[_programId]) {
             return Strings.toHexString(uint256(_programId), 20);
@@ -337,7 +334,13 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
         uint256 currentTimestamp = block.timestamp > distributionEnd ? distributionEnd : block.timestamp;
         uint256 timeDelta = currentTimestamp - lastUpdateTimestamp;
 
-        newIndex = Math.mulDiv(emissionPerSecond * timeDelta, TEN_POW_PRECISION, totalBalance);
+        require(emissionPerSecond <= type(uint256).max / timeDelta, EmissionForTimeDeltaOverflow());
+        uint256 emissionForTimeDelta = emissionPerSecond * timeDelta;
+
+        require(emissionForTimeDelta / totalBalance <= type(uint256).max / TEN_POW_PRECISION, IndexOverflow());
+        newIndex = Math.mulDiv(emissionForTimeDelta, TEN_POW_PRECISION, totalBalance);
+
+        require(newIndex < type(uint256).max - currentIndex, NewIndexOverflow());
         newIndex += currentIndex;
     }
 

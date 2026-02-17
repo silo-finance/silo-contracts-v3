@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 // Interfaces
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
-import {TestERC20} from "../utils/mocks/TestERC20.sol";
+import {TestERC20} from "silo-core/test/invariants/utils/mocks/TestERC20.sol";
 
 /// @notice Proxy contract for invariant suite actors to avoid aTester calling contracts
 contract Actor {

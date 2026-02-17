@@ -1,7 +1,7 @@
 {
     "deployer": "0x7461d8c0fDF376c847b651D882DEa4C73fad2e4B",
     "hookReceiver": "CLONE_IMPLEMENTATION",
-    "hookReceiverImplementation": "SiloHookV1.sol",
+    "hookReceiverImplementation": "SiloHookV2.sol",
     "daoFee": 1500,
     "deployerFee": 0,
     "token0": "TOKEN0",

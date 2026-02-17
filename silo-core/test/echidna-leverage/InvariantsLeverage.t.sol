@@ -9,7 +9,7 @@ import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {Invariants} from "silo-core/test/invariants/Invariants.t.sol";
 import {LeverageHandler} from "./handlers/user/LeverageHandler.t.sol";
 
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 /// @title Invariants
 /// @notice Wrappers for the protocol invariants implemented in each invariants contract

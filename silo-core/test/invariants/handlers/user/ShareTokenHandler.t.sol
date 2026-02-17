@@ -5,10 +5,9 @@ pragma solidity ^0.8.19;
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 
 // Libraries
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 // Test Contracts
-import {Actor} from "../../utils/Actor.sol";
 import {BaseHandler} from "../../base/BaseHandler.t.sol";
 
 // Contracts
@@ -41,8 +40,7 @@ contract ShareTokenHandler is BaseHandler {
 
         address target = _getRandomShareToken(j);
 
-        (success, returnData) =
-            actor.proxy(target, abi.encodeWithSelector(IERC20.approve.selector, spender, _amount));
+        (success, returnData) = actor.proxy(target, abi.encodeWithSelector(IERC20.approve.selector, spender, _amount));
 
         if (success) {
             assert(true);
@@ -127,8 +125,7 @@ contract ShareTokenHandler is BaseHandler {
         address target = _getRandomDebtToken(j);
 
         (success, returnData) = actor.proxy(
-            target,
-            abi.encodeWithSelector(ShareDebtToken.decreaseReceiveAllowance.selector, owner, _subtractedValue)
+            target, abi.encodeWithSelector(ShareDebtToken.decreaseReceiveAllowance.selector, owner, _subtractedValue)
         );
 
         if (success) {

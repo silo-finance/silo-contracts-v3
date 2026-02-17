@@ -69,11 +69,7 @@ contract PreviewDepositTest is SiloLittleHelper, Test {
     forge test -vv --ffi --mt test_previewDeposit_withInterest
     */
     /// forge-config: core_test.fuzz.runs = 10000
-    function test_previewDeposit_withInterest_1token_fuzz(uint256 _assets, bool _protected) public {
-        _previewDeposit_withInterest(_assets, _protected);
-    }
-
-    function _previewDeposit_withInterest(uint256 _assets, bool _protected) private {
+    function test_previewDeposit_withInterest_fuzz(uint256 _assets, bool _protected) public {
         vm.assume(_assets < type(uint128).max);
         vm.assume(_assets > 0);
 

@@ -8,6 +8,7 @@ interface ISiloIncentivesController is IDistributionManager {
     event ClaimerSet(address indexed user, address indexed claimer);
     event IncentivesProgramCreated(string name);
     event IncentivesProgramUpdated(string name);
+    event ImmediateDistribution(address indexed rewardToken, bytes32 indexed programId, uint256 amount);
 
     event RewardsAccrued(
         address indexed user,
@@ -61,8 +62,9 @@ interface ISiloIncentivesController is IDistributionManager {
      * Expect an `_amount` to be transferred to the contract before calling this fn
      * @param _tokenToDistribute The token to distribute
      * @param _amount The amount of rewards to distribute
+     * @return programId The id of the created or existing program, or bytes32(0) if _amount is 0
      */
-    function immediateDistribution(address _tokenToDistribute, uint104 _amount) external;
+    function immediateDistribution(address _tokenToDistribute, uint256 _amount) external returns (bytes32 programId);
 
     /// @dev It will transfer all the reward token balance to the owner.
     /// @param _rewardToken The reward token to rescue
@@ -91,7 +93,7 @@ interface ISiloIncentivesController is IDistributionManager {
     function updateIncentivesProgram(
         string calldata _incentivesProgram,
         uint40 _distributionEnd,
-        uint104 _emissionPerSecond
+        uint256 _emissionPerSecond
     ) external;
 
     /**
@@ -162,7 +164,7 @@ interface ISiloIncentivesController is IDistributionManager {
      */
     function getUserUnclaimedRewards(address _user, string calldata _programName) external view returns (uint256);
 
-    /// @notice Returns the Silo share token address
-    /// @return shareToken Address of the Silo share token
+    /// @notice SHARE_TOKEN is contract with IERC20 interface with users balances, based based on which
+    /// rewards distribution is calculated. In Silo it is ususally collateral share token or debt share token.
     function SHARE_TOKEN() external view returns (address); // solhint-disable-line func-name-mixedcase
 }

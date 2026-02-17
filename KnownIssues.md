@@ -1,4 +1,4 @@
-## Known issues:
+## Known issues
 
 ### Decimals
 
@@ -36,7 +36,9 @@ For `SiloVault` and `Silo` `decimals()` fn return underlying asset decimals (USD
 ### `getProgramName()`
 
 Silo incentives controller with version < 3.6.0 has issue with `getProgramName` fn. It fails to convert the immediate 
-distribution program name into a proper string representation.
+distribution program name (which is token address) into a proper string representation.
+Eg. if token address has any zeros, they will be removed, so returned name will be incomplete.
+
 Silos incentives controller with this issue: Sonic 1 - 101, Arbitrum 100 - 111, Optimism - 100, Ink - 100 - 101.
 
 ### Debt share tokens approval for the leverage smart contract
@@ -47,12 +49,48 @@ Silos with id < 100 on Sonic use `approve`. All other versions use `setReceiveAp
 
 ### Liquidation collateral overestimation
 
-The `PartialLiquidationLib` uses a fixed `_UNDERESTIMATION` constant of 2 wei to account for rounding errors during liquidation conversions (assets → shares → assets). This underestimation becomes insufficient when the asset-to-share ratio is high.
+The `PartialLiquidationLib` uses a fixed `_UNDERESTIMATION` constant of 2 wei to account for rounding errors during liquidation conversions (assets → shares → assets). This underestimation becomes insufficient when the asset-to-share ratio is high and liquidation is for same asset position. We were not able to find such a case for two asset position.
 
 During liquidation, the protocol performs two conversions that both round down:
 1. Converting collateral assets to shares (rounds down)
 2. Converting shares back to assets for withdrawal (rounds down)
+3. Repay same asset also changes the ratio based on which `maxLiquidation` was calculated
 
-When the asset/share ratio is high, cumulative rounding errors can exceed 2 wei. The estimated value may be up to 2 × rounding error higher, because there are two conversions that round down. As a result, maxLiquidation() may overestimate the collateral to be liquidated in such cases.
+Because of all above factors, cumulative rounding errors can exceed 2 wei. As a result, `maxLiquidation()` may overestimate the collateral to be liquidated in such cases.
 
 **Recommendation**: Instead of comparing maxLiquidation directly with the actual liquidation result, just check whether the liquidation is profitable. This avoids failed transactions caused by a small wei-level overestimation.
+
+
+### Liquidation when we have share dust
+
+For version below 4.0.0, in an edge case where during liquidation we need to transfer shares that cannot be converted to a 1 wei of assets (e.g., 999 shares => 0 assets), liquidation will fail if `_receiveSToken` is `false`.  
+
+Workarounds for this case are:
+- deposit a dust amount of assets for the borrower for the collateral type that has dust
+- or transfer shares to the borrower if you already have some
+
+For example, with a deposit of 10 wei, it will give us ~10000 shares, so `999 + 10000 shares converts to ~ 1 assets` and liquidation will succeed.
+
+
+### IRM
+
+Future IRM models might be susceptible to gas exhaustion attacks
+Files:
+`silo-core/contracts/lib/SiloLendingLib.sol` method `getCompoundInterestRate()`
+
+
+Description:
+
+When `accrueInterest()` is invoked, it wraps the external call to the IRM using try-catch. This is
+done so that assets cannot be held hostage if the IRM is functioning as expected.
+
+If the call fails, the rcomp is going to be equal to 0.
+This will trigger the following block updating the timestand and return early.
+
+When an external call is made, 63/64 of the remaining gas is allocated for that call, if the call
+reverts due to OOG, the transaction has remaining 1/64, which may be enough to successfully
+finish the call.
+While current interest rate models do not consume enough gas for such attack to occur,
+implementing a new, more gas-expensive IRM may enable oportunity to forcefully revert the try
+block, due to OOG error, but carry on with the transaction, updating the interestRateTimestamp,
+without accruing interest.

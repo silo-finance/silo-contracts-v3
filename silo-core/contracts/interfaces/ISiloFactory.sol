@@ -26,6 +26,15 @@ interface ISiloFactory is IERC721 {
         address siloConfig
     );
 
+    /// @notice Emitted on the creation of a Silo, note that collateral share token == silo
+    event NewSiloShareTokens(
+        address indexed protectedShareToken, 
+        address indexed collateralShareToken,
+        address indexed debtShareToken
+    );
+
+    event NewSiloHook(address indexed silo, address indexed hook);
+
     event BaseURI(string newBaseURI);
 
     /// @notice Emitted on the update of DAO fee.

@@ -8,7 +8,7 @@ import {TestStateLib} from "../../TestState.sol";
 
 contract UpdateHooksReentrancyTest is MethodReentrancyTest {
     function callMethod() external {
-        emit log_string("\tEnsure it will not revert");
+        emit log_string(_tabs(1, "Ensure it will not revert"));
 
         TestStateLib.silo0().updateHooks();
         TestStateLib.silo1().updateHooks();

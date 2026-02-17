@@ -4,6 +4,7 @@ pragma solidity ^0.8.19;
 // Interfaces
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {IERC20R} from "silo-core/contracts/interfaces/IERC20R.sol";
+import {Strings} from "openzeppelin5/utils/Strings.sol";
 
 /// @notice Proxy contract for invariant suite actors to avoid aTester calling contracts
 contract Actor {
@@ -19,6 +20,11 @@ contract Actor {
         contracts = _contracts;
         for (uint256 i = 0; i < tokens.length; i++) {
             for (uint256 j = 0; j < contracts.length; j++) {
+                string memory sj = Strings.toString(j);
+                string memory sc = Strings.toString(contracts.length);
+
+                require(contracts[j] != address(0), string.concat("contracts[", sj, "/", sc, "] is zero"));
+
                 IERC20(tokens[i]).approve(contracts[j], type(uint256).max);
 
                 try IERC20R(tokens[i]).setReceiveApproval(contracts[j], type(uint256).max) {

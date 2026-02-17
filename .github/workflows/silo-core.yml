@@ -51,42 +51,29 @@ on:
             - .github/workflows/silo-core.yml
 
 jobs:
-    silo-size:
-        runs-on: ubuntu-latest
-        steps:
-            -   uses: actions/checkout@v3
-                with:
-                    submodules: recursive
-
-            -   name: Install Foundry
-                uses: foundry-rs/foundry-toolchain@v1
-                with:
-                    version: v1.2.3
-
-            -   name: Run submodule update
-                run: git submodule update --init --recursive
-
-            -   name: Build silo foundry utils
-                working-directory: ./gitmodules/silo-foundry-utils
-                run: |
-                    cargo build --release
-                    cp target/release/silo-foundry-utils ../../silo-foundry-utils
-                    ../../silo-foundry-utils --version
-
-            -   name: Run Forge build
-                run: |
-                    git submodule
-                    forge --version
-                    FOUNDRY_PROFILE=core forge build --sizes
-
     linters:
         runs-on: ubuntu-latest
 
         steps:
             -   name: Checkout sources
                 uses: actions/checkout@v3
+                
+            # Cache all git submodules (large gitmodules/* tree and .git/modules) to speed up CI.
+            # Keyed only by .gitmodules so cache can be reused across commits; git will fetch deltas if submodule refs change.
+            -   name: Cache git submodules
+                uses: actions/cache@v4
                 with:
-                    submodules: recursive
+                    path: |
+                        gitmodules
+                        .git/modules
+                    key: gitmodules-v1-${{ hashFiles('.gitmodules') }}
+                    restore-keys: |
+                        gitmodules-v1-
+
+            -   name: Init git submodules (uses cached clones when available)
+                run: |
+                    git submodule sync --recursive
+                    git submodule update --init --recursive
 
             -   name: Set up Node.js
                 uses: actions/setup-node@v3
@@ -113,8 +100,23 @@ jobs:
 
         steps:
             -   uses: actions/checkout@v3
+                
+            # Cache all git submodules (large gitmodules/* tree and .git/modules) to speed up CI.
+            # Keyed only by .gitmodules so cache can be reused across commits; git will fetch deltas if submodule refs change.
+            -   name: Cache git submodules
+                uses: actions/cache@v4
                 with:
-                    submodules: recursive
+                    path: |
+                        gitmodules
+                        .git/modules
+                    key: gitmodules-v1-${{ hashFiles('.gitmodules') }}
+                    restore-keys: |
+                        gitmodules-v1-
+
+            -   name: Init git submodules (uses cached clones when available)
+                run: |
+                    git submodule sync --recursive
+                    git submodule update --init --recursive
 
             -   name: Install Foundry
                 uses: foundry-rs/foundry-toolchain@v1
@@ -127,14 +129,36 @@ jobs:
                     cargo build --release
                     cp target/release/silo-foundry-utils ../../silo-foundry-utils
                     ../../silo-foundry-utils --version
+            
+            -   name: check contract sizes
+                run: |
+                    forge --version
+                    FOUNDRY_PROFILE=core forge build --sizes
+
+            # Foundry RPC cache path is NOT configurable (foundry.toml cache_path = build artifacts only).
+            # Forge always writes to $HOME/.foundry/cache/rpc. On ubuntu-latest HOME=/home/runner, so we cache that path explicitly.
+            -   name: Cache Foundry RPC (all chains and blocks)
+                uses: actions/cache@v4
+                with:
+                    path: ~/.foundry/cache/rpc
+                    key: foundry-rpc-${{ runner.os }}-v1
+                    restore-keys: |
+                        foundry-rpc-${{ runner.os }}-
+
+            -   name: Show Foundry RPC cache
+                run: |
+                    forge cache ls 2>&1 || echo "No cache yet (first fork test will create it)"
 
             -   name: all fast test
-                run: FOUNDRY_PROFILE=core_test forge test --no-match-test "_skip_" --nmc "MaxBorrow|MaxLiquidationTest|MaxLiquidationBadDebt|PreviewTest|PreviewDepositTest|PreviewMintTest|SiloLensCompatibilityTest|NewMarketTest|SiloDeployerIntegrationTest" --ffi -vv
+                run: FOUNDRY_PROFILE=core_test forge test --no-match-test "_skip_" --nmc "MaxBorrow|MaxLiquidationTest|MaxLiquidationBadDebt|PreviewTest|PreviewDepositTest|PreviewMintTest|SiloLensCompatibilityTest|NewMarketTest|SiloDeployerIntegrationTest|BackwardsCompatibleGaugeLikeTest|DefaultingLiquidation|CryticToFoundry|ERC4626ComplianceTest|PartialLiquidation1weiTest|InterestOverflowTest|MaxWithdrawAndFractionsTest|LiquidationHelperTest|MaxLiquidationWithChunksTest|MaxLiquidationDustWithChunksTest|MaxWithdrawTest|MaxLiquidationLTV100FullWithChunksTest" --ffi -vv
 
     slow-contracts-tests:
         strategy:
             matrix:
                 match-contract: [
+                    ERC4626ComplianceTest,
+                    PartialLiquidation1weiTest|InterestOverflowTest,
+                    MaxWithdrawAndFractionsTest|LiquidationHelperTest|MaxLiquidationWithChunksTest|MaxLiquidationDustWithChunksTest|MaxWithdrawTest|MaxLiquidationLTV100FullWithChunksTest,
                     MaxBorrow,
                     MaxDepositTest,
                     MaxLiquidationBadDebt,
@@ -146,8 +170,23 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
+                
+            # Cache all git submodules (large gitmodules/* tree and .git/modules) to speed up CI.
+            # Keyed only by .gitmodules so cache can be reused across commits; git will fetch deltas if submodule refs change.
+            -   name: Cache git submodules
+                uses: actions/cache@v4
                 with:
-                    submodules: recursive
+                    path: |
+                        gitmodules
+                        .git/modules
+                    key: gitmodules-v1-${{ hashFiles('.gitmodules') }}
+                    restore-keys: |
+                        gitmodules-v1-
+
+            -   name: Init git submodules (uses cached clones when available)
+                run: |
+                    git submodule sync --recursive
+                    git submodule update --init --recursive
 
             -   name: Install Foundry
                 uses: foundry-rs/foundry-toolchain@v1
@@ -161,25 +200,48 @@ jobs:
                     cp target/release/silo-foundry-utils ../../silo-foundry-utils
                     ../../silo-foundry-utils --version
 
+            # Foundry RPC cache path is NOT configurable (foundry.toml cache_path = build artifacts only).
+            # Forge always writes to $HOME/.foundry/cache/rpc. On ubuntu-latest HOME=/home/runner, so we cache that path explicitly.
+            -   name: Cache Foundry RPC (all chains and blocks)
+                uses: actions/cache@v4
+                with:
+                    path: ~/.foundry/cache/rpc
+                    key: foundry-rpc-${{ runner.os }}-v1
+                    restore-keys: |
+                        foundry-rpc-${{ runner.os }}-
+
             -   name: ${{ matrix.match-contract }}
-                run: FOUNDRY_PROFILE=core_test forge test --no-match-test "_skip_" --mc ${{ matrix.match-contract }} --ffi -vv
+                run: FOUNDRY_PROFILE=core_test forge test --no-match-test "_skip_" --mc "${{ matrix.match-contract }}" --ffi -vv
 
     MaxLiquidationTest:
         strategy:
             matrix:
                 match-test: [
                     test_maxLiquidation_noDebt,
-                    test_maxLiquidation_partial_1token_sTokens,
-                    test_maxLiquidation_partial_1token_tokens,
-                    test_maxLiquidation_partial_2tokens_sTokens,
-                    test_maxLiquidation_partial_2tokens_tokens
+                    test_maxLiquidation_partial_sTokens,
+                    test_maxLiquidation_partial_tokens
                ]
 
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
+                
+            # Cache all git submodules (large gitmodules/* tree and .git/modules) to speed up CI.
+            # Keyed only by .gitmodules so cache can be reused across commits; git will fetch deltas if submodule refs change.
+            -   name: Cache git submodules
+                uses: actions/cache@v4
                 with:
-                    submodules: recursive
+                    path: |
+                        gitmodules
+                        .git/modules
+                    key: gitmodules-v1-${{ hashFiles('.gitmodules') }}
+                    restore-keys: |
+                        gitmodules-v1-
+
+            -   name: Init git submodules (uses cached clones when available)
+                run: |
+                    git submodule sync --recursive
+                    git submodule update --init --recursive
 
             -   name: Install Foundry
                 uses: foundry-rs/foundry-toolchain@v1
@@ -193,19 +255,52 @@ jobs:
                     cp target/release/silo-foundry-utils ../../silo-foundry-utils
                     ../../silo-foundry-utils --version
 
+            # Foundry RPC cache path is NOT configurable (foundry.toml cache_path = build artifacts only).
+            # Forge always writes to $HOME/.foundry/cache/rpc. On ubuntu-latest HOME=/home/runner, so we cache that path explicitly.
+            -   name: Cache Foundry RPC (all chains and blocks)
+                uses: actions/cache@v4
+                with:
+                    path: ~/.foundry/cache/rpc
+                    key: foundry-rpc-${{ runner.os }}-v1
+                    restore-keys: |
+                        foundry-rpc-${{ runner.os }}-
+
             -   name: ${{ matrix.match-test }}
                 run: FOUNDRY_PROFILE=core_test forge test --no-match-test "_skip_" --mc MaxLiquidationTest --mt ${{ matrix.match-test }} --ffi -vv
-
-    SiloLensCompatibilityTest:
+            
+    DefaultingLiquidation:
         strategy:
             matrix:
-                match-contract: [ SiloLensCompatibilityTest ]
+                match-test: [
+                    DefaultingLiquidationBorrowable0Test --mt long_fuzz,
+                    DefaultingLiquidationBorrowable0Test --mt fuzz_limit --fuzz-runs 10,
+                    DefaultingLiquidationBorrowable0Test --nmt "long_fuzz|fuzz_limit",
+                    DefaultingLiquidationBorrowable1Test --mt long_fuzz,
+                    DefaultingLiquidationBorrowable1Test --mt fuzz_limit --fuzz-runs 10,
+                    DefaultingLiquidationBorrowable1Test --nmt "long_fuzz|fuzz_limit",
+                    DefaultingLiquidation --nmc DefaultingLiquidationBorrowable
+               ]
 
         runs-on: ubuntu-latest
         steps:
             -   uses: actions/checkout@v3
+                
+            # Cache all git submodules (large gitmodules/* tree and .git/modules) to speed up CI.
+            # Keyed only by .gitmodules so cache can be reused across commits; git will fetch deltas if submodule refs change.
+            -   name: Cache git submodules
+                uses: actions/cache@v4
                 with:
-                    submodules: recursive
+                    path: |
+                        gitmodules
+                        .git/modules
+                    key: gitmodules-v1-${{ hashFiles('.gitmodules') }}
+                    restore-keys: |
+                        gitmodules-v1-
+
+            -   name: Init git submodules (uses cached clones when available)
+                run: |
+                    git submodule sync --recursive
+                    git submodule update --init --recursive
 
             -   name: Install Foundry
                 uses: foundry-rs/foundry-toolchain@v1
@@ -219,5 +314,15 @@ jobs:
                     cp target/release/silo-foundry-utils ../../silo-foundry-utils
                     ../../silo-foundry-utils --version
 
-            -   name: ${{ matrix.match-contract }}
-                run: FOUNDRY_PROFILE=core_test forge test --no-match-test "_skip_" --mc ${{ matrix.match-contract }} --ffi -vv
+            # Foundry RPC cache path is NOT configurable (foundry.toml cache_path = build artifacts only).
+            # Forge always writes to $HOME/.foundry/cache/rpc. On ubuntu-latest HOME=/home/runner, so we cache that path explicitly.
+            -   name: Cache Foundry RPC (all chains and blocks)
+                uses: actions/cache@v4
+                with:
+                    path: ~/.foundry/cache/rpc
+                    key: foundry-rpc-${{ runner.os }}-v1
+                    restore-keys: |
+                        foundry-rpc-${{ runner.os }}-
+
+            -   name: ${{ matrix.match-test }}
+                run: FOUNDRY_PROFILE=core_test forge test --mc ${{ matrix.match-test }} --ffi -vv

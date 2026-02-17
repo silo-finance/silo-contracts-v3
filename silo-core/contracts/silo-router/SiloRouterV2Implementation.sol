@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity 0.8.28;
 
 import {Address} from "openzeppelin5/utils/Address.sol";
@@ -30,14 +31,6 @@ Supporting the following scenarios:
     SiloRouterV2.borrow(ISilo _silo, uint256 _assets, address _receiver)
 - borrow wrapped native token and unwrap in a single tx using SiloRouterV2.multicall
     SiloRouterV2.borrow(ISilo _silo, uint256 _assets, address _receiver)
-    SiloRouterV2.unwrap(IWrappedNativeToken _native, uint256 _amount)
-    SiloRouterV2.sendValue(address payable _to, uint256 _amount)
-
-## borrowSameAsset
-- borrow same asset Silo.borrowSameAsset
-    SiloRouterV2.borrowSameAsset(ISilo _silo, uint256 _assets, address _receiver)
-- borrowSameAsset wrapped native token and unwrap in a single tx using SiloRouterV2.multicall
-    SiloRouterV2.borrowSameAsset(ISilo _silo, uint256 _assets, address _receiver)
     SiloRouterV2.unwrap(IWrappedNativeToken _native, uint256 _amount)
     SiloRouterV2.sendValue(address payable _to, uint256 _amount)
 
@@ -211,11 +204,11 @@ contract SiloRouterV2Implementation is ISiloRouterV2Implementation {
 
     /// @inheritdoc ISiloRouterV2Implementation
     function borrowSameAsset(
-        ISilo _silo,
-        uint256 _assets,
-        address _receiver
-    ) external payable virtual returns (uint256 shares) {
-        shares = _silo.borrowSameAsset(_assets, _receiver, msg.sender);
+        ISilo,
+        uint256,
+        address
+    ) external payable virtual returns (uint256) {
+        revert Deprecated();
     }
 
     /// @inheritdoc ISiloRouterV2Implementation

@@ -29,7 +29,7 @@ TARGET_DIRS = [
 OUTPUT_FILE = ROOT / "LICENSES.md"
 
 LICENSE_RE = re.compile(r"SPDX-License-Identifier:\s*([^\s*]+)")
-CONTRACT_RE = re.compile(r"\b(?:abstract\s+)?contract\s+([A-Za-z_][A-Za-z0-9_]*)\b")
+CONTRACT_RE = re.compile(r"\b(?:abstract\s+)?contract\s+([A-Za-z_][A-Za-z0-9_]*)\s*(?:is\b|\{)")
 INTERFACE_RE = re.compile(r"\binterface\s+([A-Za-z_][A-Za-z0-9_]*)\b")
 LIBRARY_RE = re.compile(r"\blibrary\s+([A-Za-z_][A-Za-z0-9_]*)\b")
 BLOCK_COMMENT_RE = re.compile(r"/\*.*?\*/", re.DOTALL)
@@ -99,10 +99,11 @@ def generate() -> int:
     for solidity_file in list_solidity_files(target_dirs):
         content = solidity_file.read_text(encoding="utf-8")
         license_name = extract_license(content)
-        for contract_name in extract_contract_names(content):
-            records.append((contract_name, license_name))
+        relative_path = str(solidity_file.relative_to(ROOT))
+        if extract_contract_names(content):
+            records.append((relative_path, license_name))
 
-    records.sort(key=lambda x: x[0].lower())
+    records = sorted(set(records), key=lambda x: x[0].lower())
 
     lines = [
         "# Main Contracts and Licenses",
@@ -110,12 +111,12 @@ def generate() -> int:
         "Generated from:",
         *[f"- `{path.relative_to(ROOT)}`" for path in target_dirs],
         "",
-        "| Contract | License |",
+        "| Path | License |",
         "|---|---|",
     ]
 
     if records:
-        lines.extend(f"| {name} | {license_name} |" for name, license_name in records)
+        lines.extend(f"| `{contract_path}` | {license_name} |" for contract_path, license_name in records)
     else:
         lines.append("| (none found) | - |")
 

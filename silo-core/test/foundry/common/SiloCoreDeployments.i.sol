@@ -33,12 +33,12 @@ contract SiloCoreDeploymentsTest is SiloLittleHelper, Test {
 
     function test_get_exists_sonic() public {
         address addr = SiloCoreDeployments.get(SiloCoreContracts.SILO_FACTORY, ChainsLib.SONIC_ALIAS);
-        assertEq(addr, 0x4e9dE3a64c911A37f7EB2fCb06D1e68c3cBe9203, "expect valid address Sonic");
+        assertEq(addr, 0x55C5b74BC138C42dCb0deb206AE325a828Cd1372, "expect valid address Sonic");
     }
 
     function test_get_exists_arbitrum_one() public {
         address addr = SiloCoreDeployments.get(SiloCoreContracts.SILO_FACTORY, ChainsLib.ARBITRUM_ONE_ALIAS);
-        assertEq(addr, 0x384DC7759d35313F0b567D42bf2f611B285B657C, "expect valid address on Arbitrum");
+        assertEq(addr, 0x504B8ca9C664AFe72324388122caBAFb72F9269f, "expect valid address on Arbitrum");
     }
 
     function test_get_contractNotExists() public {

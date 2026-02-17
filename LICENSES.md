@@ -5,19 +5,19 @@ Generated from:
 - `silo-core/contracts`
 - `silo-vaults/contracts`
 
-| Path | License |
-|---|---|
-| `silo-core/contracts/hooks/_common/BaseHookReceiver.sol` | GPL-2.0-or-later |
-| `silo-core/contracts/hooks/_common/TransientReentrancy.sol` | GPL-2.0-or-later |
-| `silo-core/contracts/hooks/_common/Whitelist.sol` | BUSL-1.1 |
+| Path | License | Propose |
+|---|---|----|
+| `silo-core/contracts/hooks/_common/BaseHookReceiver.sol` | GPL-2.0-or-later | |
+| `silo-core/contracts/hooks/_common/TransientReentrancy.sol` | GPL-2.0-or-later | |
+| `silo-core/contracts/hooks/_common/Whitelist.sol` | BUSL-1.1 | ? |
 | `silo-core/contracts/hooks/defaulting/DefaultingSiloLogic.sol` | BUSL-1.1 |
 | `silo-core/contracts/hooks/defaulting/PartialLiquidationByDefaulting.sol` | BUSL-1.1 |
 | `silo-core/contracts/hooks/gauge/GaugeHookReceiver.sol` | GPL-2.0-or-later |
 | `silo-core/contracts/hooks/liquidation/PartialLiquidation.sol` | GPL-2.0-or-later |
 | `silo-core/contracts/hooks/PendleRewardsClaimer.sol` | GPL-2.0-or-later |
 | `silo-core/contracts/hooks/SiloHookV1.sol` | GPL-2.0-or-later |
-| `silo-core/contracts/hooks/SiloHookV2.sol` | BUSL-1.1 |
-| `silo-core/contracts/hooks/SiloHookV3.sol` | BUSL-1.1 |
+| `silo-core/contracts/hooks/SiloHookV2.sol` | BUSL-1.1 | GPU |
+| `silo-core/contracts/hooks/SiloHookV3.sol` | BUSL-1.1 | GPU |
 | `silo-core/contracts/incentives/base/BaseIncentivesController.sol` | agpl-3.0 |
 | `silo-core/contracts/incentives/base/DistributionManager.sol` | agpl-3.0 |
 | `silo-core/contracts/incentives/SiloIncentivesController.sol` | BUSL-1.1 |
@@ -29,14 +29,14 @@ Generated from:
 | `silo-core/contracts/interestRateModel/kink/DynamicKinkModel.sol` | BUSL-1.1 |
 | `silo-core/contracts/interestRateModel/kink/DynamicKinkModelConfig.sol` | BUSL-1.1 |
 | `silo-core/contracts/interestRateModel/kink/DynamicKinkModelFactory.sol` | BUSL-1.1 |
-| `silo-core/contracts/leverage/LeverageRouter.sol` | BUSL-1.1 |
+| `silo-core/contracts/leverage/LeverageRouter.sol` | BUSL-1.1 | ? |
 | `silo-core/contracts/leverage/LeverageUsingSiloFlashloan.sol` | BUSL-1.1 |
 | `silo-core/contracts/leverage/LeverageUsingSiloFlashloanWithGeneralSwap.sol` | BUSL-1.1 |
 | `silo-core/contracts/leverage/modules/GeneralSwapModule.sol` | MIT |
 | `silo-core/contracts/leverage/modules/LeverageTxState.sol` | UNLICENSED |
 | `silo-core/contracts/leverage/modules/RescueModule.sol` | MIT |
 | `silo-core/contracts/leverage/modules/RevenueModule.sol` | MIT |
-| `silo-core/contracts/silo-router/SiloRouterV2.sol` | MIT |
+| `silo-core/contracts/silo-router/SiloRouterV2.sol` | MIT | ? 
 | `silo-core/contracts/silo-router/SiloRouterV2Implementation.sol` | MIT |
 | `silo-core/contracts/Silo.sol` | BUSL-1.1 |
 | `silo-core/contracts/SiloConfig.sol` | BUSL-1.1 |
@@ -52,8 +52,8 @@ Generated from:
 | `silo-core/contracts/utils/ShareDebtToken.sol` | BUSL-1.1 |
 | `silo-core/contracts/utils/ShareProtectedCollateralToken.sol` | BUSL-1.1 |
 | `silo-core/contracts/utils/ShareToken.sol` | BUSL-1.1 |
-| `silo-core/contracts/utils/TokenRescuer.sol` | UNLICENSED |
-| `silo-core/contracts/utils/Tower.sol` | BUSL-1.1 |
+| `silo-core/contracts/utils/TokenRescuer.sol` | UNLICENSED | MIT
+| `silo-core/contracts/utils/Tower.sol` | BUSL-1.1 | MIT
 | `silo-oracles/contracts/_common/Create2Factory.sol` | BUSL-1.1 |
 | `silo-oracles/contracts/_common/Layer1OracleConfig.sol` | MIT |
 | `silo-oracles/contracts/_common/MadeByFactory.sol` | BUSL-1.1 |

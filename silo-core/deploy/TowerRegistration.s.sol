@@ -15,7 +15,7 @@ import {CommonDeploy} from "./_CommonDeploy.sol";
 /*
     FOUNDRY_PROFILE=core \
     forge script silo-core/deploy/TowerRegistration.s.sol:TowerRegistration \
-    --ffi --rpc-url $RPC_SONIC --broadcast
+    --ffi --rpc-url $RPC_BNB --broadcast
  */
 contract TowerRegistration is CommonDeploy {
     function run() public {
@@ -29,7 +29,7 @@ contract TowerRegistration is CommonDeploy {
         _register("ManualLiquidationHelper", getDeployedAddress(SiloCoreContracts.MANUAL_LIQUIDATION_HELPER));
 
         _register("SiloLens", getDeployedAddress(SiloCoreContracts.SILO_LENS));
-        _register("SiloLeverageUsingSilo", getDeployedAddress(SiloCoreContracts.SILO_LEVERAGE_USING_SILO));
+        _register("SiloLeverageRouterUsingSilo", getDeployedAddress(SiloCoreContracts.LEVERAGE_ROUTER));
     }
 
     function _registerLiquidationHelper(string memory _aggregator) internal {

@@ -225,6 +225,8 @@ cd foundry
 foundryup -p . 
 ```
 
+It is recommended to use dedicated scripts instead of mainnet deploy for injective.
+
 
 ## Flat Standard JSON script
 

@@ -201,6 +201,15 @@ forge script silo-core/deploy/MainnetDeploy.s.sol \
 --ffi --broadcast --rpc-url https://arbitrum-mainnet.infura.io/v3/<key>
 ```
 
+## Flat Standard JSON script
+
+We have a Flat Standard JSON download script: `scripts/get_standard_json.py` (internally referred to as `script-get-standard-json`), created for OKX blockchain needs. It lets us fetch Standard JSON from Arbitrum and use it to verify the contract on another chain.
+
+Example:
+```bash
+python3 scripts/get_standard_json.py --network arbitrum_one --address 0xA8C5eb9ae9c7a8fab4116d1e9c1FCfc8A478b390
+```
+
 ### New Silo deployer with Silo, ProtectedShareToken, and DebtShareToken implementations
 
 - run `silo-core/deploy/SiloDeployerDeploy.s.sol` script

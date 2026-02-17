@@ -24,7 +24,7 @@ import {PTLinearOracleFactoryDeploy} from "./pendle/PTLinearOracleFactoryDeploy.
 /*
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_OKX --broadcast --verify
+        --ffi --rpc-url $RPC_SONIC --broadcast --verify
 
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
@@ -74,7 +74,7 @@ contract MainnetDeploy is CommonDeploy {
         // pendleLPTToAssetOracleFactoryDeploy.run();
         // pendleWrapperLPTToAssetOracleFactoryDeploy.run();
         // pendleWrapperLPTToSyOracleFactoryDeploy.run();
-        // ptLinearOracleFactoryDeploy.run();
+        ptLinearOracleFactoryDeploy.run();
 
         // UniswapV3 oracle deploy scripts are pinned to solc 0.7.6 and must be run separately.
     }

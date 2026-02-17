@@ -9,7 +9,7 @@ import {ISiloHookV1} from "silo-core/contracts/interfaces/ISiloHookV1.sol";
 /*
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloHookV1Deploy.s.sol \
-        --ffi --rpc-url $RPC_INK --broadcast --verify
+        --ffi --rpc-url $RPC_INJECTIVE --broadcast --verify
 
     Resume verification:
     FOUNDRY_PROFILE=core \

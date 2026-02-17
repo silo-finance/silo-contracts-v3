@@ -72,8 +72,8 @@ contract MainnetDeploy is CommonDeploy {
         siloFactoryDeploy.run();
         siloImplementationDeploy.run();
         interestRateModelV2ConfigFactoryDeploy.run(); // not for V3
-        dkinkIRMFactoryDeploy.run();
         interestRateModelV2Deploy.run(); // not for V3
+        dkinkIRMFactoryDeploy.run();
         siloHookV1Deploy.run();
         siloHookV2Deploy.run();
         siloHookV3Deploy.run();

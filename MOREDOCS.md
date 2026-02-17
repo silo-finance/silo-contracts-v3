@@ -216,6 +216,16 @@ SiloDeployer is deployed using `MainnetDeploy` script. In case you need to redep
 ### Oracles
 Choose oracle you want to deploy and ruch each deployer individually.
 
+### Injective
+
+- we need custom build foundry from INJ repo
+```
+git clone https://github.com/InjectiveLabs/foundry.git
+cd foundry
+foundryup -p . 
+```
+
+
 ## Flat Standard JSON script
 
 We have a Flat Standard JSON download script: `scripts/get_standard_json.py` (internally referred to as `script-get-standard-json`), created for OKX blockchain needs. It lets us fetch Standard JSON from Arbitrum and use it to verify the contract on another chain.

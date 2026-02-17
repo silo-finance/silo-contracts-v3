@@ -13,7 +13,7 @@ import {LiquidationHelperDeploy} from "./LiquidationHelperDeploy.s.sol";
 /*
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/ManualLiquidationHelperDeploy.s.sol:ManualLiquidationHelperDeploy \
-        --ffi --rpc-url $RPC_SONIC \
+        --ffi --rpc-url $RPC_INJECTIVE \
         --broadcast --verify
 
     Resume verification:

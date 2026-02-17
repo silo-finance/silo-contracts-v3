@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
+
 pragma solidity 0.8.28;
 
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
@@ -6,6 +7,7 @@ import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
 import {ISilo, IERC4626, IERC3156FlashLender} from "./interfaces/ISilo.sol";
 import {IShareToken} from "./interfaces/IShareToken.sol";
+import {IVersioned} from "./interfaces/IVersioned.sol";
 
 import {IERC3156FlashBorrower} from "./interfaces/IERC3156FlashBorrower.sol";
 import {ISiloConfig} from "./interfaces/ISiloConfig.sol";
@@ -49,6 +51,12 @@ contract Silo is ISilo, ShareCollateralToken {
     /// @inheritdoc IShareToken
     function silo() external view virtual override returns (ISilo) {
         return this;
+    }
+
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure virtual override returns (string memory) {
+        return "Silo 4.0.0";
     }
 
     /// @inheritdoc ISilo

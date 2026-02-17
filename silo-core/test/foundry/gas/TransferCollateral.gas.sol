@@ -32,7 +32,7 @@ contract TransferCollateralTest is Gas, Test {
             address(collateralShareToken),
             abi.encodeCall(IERC20.transfer, (BORROWER, 1)),
             "TransferCollateral (when debt)",
-            111618
+            111816
         );
     }
 }

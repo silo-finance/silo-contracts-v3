@@ -39,7 +39,7 @@ Potential risks:
 contract DefaultingHandler is BaseHandlerDefaulting {
     uint256 borrowerLtvBeforeLastLiquidation;
 
-    function liquidationCallByDefaulting(uint256 _maxDebtToCover, RandomGenerator memory _random)
+    function liquidationCallByDefaulting(RandomGenerator memory _random)
         external
         setupRandomActor(_random.i)
     {
@@ -60,7 +60,7 @@ contract DefaultingHandler is BaseHandlerDefaulting {
 
         (success, returnData) = actor.proxy(
             address(liquidationModule),
-            abi.encodeWithSignature("liquidationCallByDefaulting(address,uint256)", borrower, _maxDebtToCover)
+            abi.encodeWithSignature("liquidationCallByDefaulting(address)", borrower)
         );
 
         _after();

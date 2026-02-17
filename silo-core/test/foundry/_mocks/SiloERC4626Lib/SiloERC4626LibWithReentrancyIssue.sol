@@ -17,7 +17,7 @@ library SiloERC4626LibWithReentrancyIssue {
 
     // deposit fn with reentrancy issue
     // original code can be found here:
-    // https://github.com/silo-finance/silo-contracts-v2/blob/06378822519ad8f164e7c18a4d3f8954d773ce60/silo-core/contracts/lib/SiloERC4626Lib.sol#L134
+    // https://github.com/silo-finance/silo-contracts-v3/blob/06378822519ad8f164e7c18a4d3f8954d773ce60/silo-core/contracts/lib/SiloERC4626Lib.sol#L134
     function deposit(
         address _token,
         address _depositor,

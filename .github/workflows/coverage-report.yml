@@ -205,7 +205,7 @@ jobs:
 
       - name: Generate job summary
         run: |
-          PAGES_URL="https://silo-finance.github.io/silo-contracts-v2/coverage/${{ steps.branch-name.outputs.branch }}/${{ inputs.workspace }}/"
+          PAGES_URL="https://silo-finance.github.io/silo-contracts-v3/coverage/${{ steps.branch-name.outputs.branch }}/${{ inputs.workspace }}/"
           echo "# Coverage Report Generated! 🎉" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Details" >> $GITHUB_STEP_SUMMARY

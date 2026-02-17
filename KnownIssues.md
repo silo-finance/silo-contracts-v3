@@ -1,4 +1,4 @@
-## Known issues:
+## Known issues
 
 ### Decimals
 
@@ -63,10 +63,34 @@ Because of all above factors, cumulative rounding errors can exceed 2 wei. As a 
 
 ### Liquidation when we have share dust
 
-In an edge case where during liquidation we need to transfer shares that cannot be converted to a full asset amount (e.g., 999 shares => 0 assets), liquidation will fail if `_receiveSToken` is `false`.  
+For version below 4.0.0, in an edge case where during liquidation we need to transfer shares that cannot be converted to a 1 wei of assets (e.g., 999 shares => 0 assets), liquidation will fail if `_receiveSToken` is `false`.  
 
 Workarounds for this case are:
 - deposit a dust amount of assets for the borrower for the collateral type that has dust
 - or transfer shares to the borrower if you already have some
 
 For example, with a deposit of 10 wei, it will give us ~10000 shares, so `999 + 10000 shares converts to ~ 1 assets` and liquidation will succeed.
+
+
+### IRM
+
+Future IRM models might be susceptible to gas exhaustion attacks
+Files:
+`silo-core/contracts/lib/SiloLendingLib.sol` method `getCompoundInterestRate()`
+
+
+Description:
+
+When `accrueInterest()` is invoked, it wraps the external call to the IRM using try-catch. This is
+done so that assets cannot be held hostage if the IRM is functioning as expected.
+
+If the call fails, the rcomp is going to be equal to 0.
+This will trigger the following block updating the timestand and return early.
+
+When an external call is made, 63/64 of the remaining gas is allocated for that call, if the call
+reverts due to OOG, the transaction has remaining 1/64, which may be enough to successfully
+finish the call.
+While current interest rate models do not consume enough gas for such attack to occur,
+implementing a new, more gas-expensive IRM may enable oportunity to forcefully revert the try
+block, due to OOG error, but carry on with the transaction, updating the interestRateTimestamp,
+without accruing interest.

@@ -19,7 +19,9 @@ interface IPartialLiquidation {
     /// @param withdrawCollateral Total (collateral + protected) withdraw amount, in case `receiveSToken` is TRUE
     /// then this is estimated withdraw, and representation of this amount in sToken was transferred
     /// @param receiveSToken True if the liquidators wants to receive the collateral sTokens, `false` if he wants
-    /// to receive the underlying collateral asset directly
+    /// to receive the underlying collateral asset directly. This flag is ignored in case when it's not possible 
+    /// to convert shares to assets, eg 999 shares => 0 assets, in that case liquidator will receive this dust shares 
+    /// directly, shares that can be withdawable as assets will be transferred to liquidator as usual.
     event LiquidationCall(
         address indexed liquidator,
         address indexed silo,

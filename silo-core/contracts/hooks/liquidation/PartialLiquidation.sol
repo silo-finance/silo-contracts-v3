@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+
 pragma solidity 0.8.28;
 
 import {IERC20} from "openzeppelin5/interfaces/IERC20.sol";
@@ -243,6 +244,6 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
 
     /// @dev this method detect if error is caused by unable to convert shares to assets eg 999 shares => 0 assets
     function _isToAssetsConvertionError(bytes memory _error) internal pure returns (bool) {
-        return bytes4(_error) == ISilo.ReturnZeroAssets.selector;
+        return _error.length == 4 && bytes4(_error) == ISilo.ReturnZeroAssets.selector;
     }
 }

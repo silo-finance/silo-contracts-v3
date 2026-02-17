@@ -85,4 +85,11 @@ interface IShareToken is IERC20Metadata {
 
     /// @notice Returns hook receiver address
     function hookReceiver() external view returns (address);
+
+    /// @dev offset value uses by vaults to calculate the conversion rate between assets and shares
+    /// it determines how many shares are minted for 1 asset eg. with offset 3, 1 asset = 1000 shares
+    /// notice, that 1:1000 ratio can change for collateral shares when shares value changes eg due to interest accrual.
+    /// see openzeppelin contract: contracts/token/ERC20/extensions/ERC4626.sol for more details about offset
+    /// @notice this method is available since Silo Core v4.0.0
+    function decimalsOffset() external view returns (uint256);
 }

@@ -32,6 +32,7 @@ interface IPartialLiquidationByDefaulting {
     error NoControllerForCollateral();
     error CollateralNotSupportedForDefaulting();
     error TwoWayMarketNotAllowed();
+    error UnnecessaryLiquidationFee();
     error EmptyCollateralShareToken();
     error DeductDefaultedDebtFromCollateralFailed();
     error RepayDebtByDefaultingFailed();
@@ -50,20 +51,12 @@ interface IPartialLiquidationByDefaulting {
     /// - oracle is throwing (might be also because of tiny position eg 1wei)
     /// - `_borrower` is solvent in terms of defaulting (might be insolvent for standard liquidation)
     /// - on ReturnZeroShares error
-    /// - when asset:share ratio is changes so much 
-    ///   that `convertToShares` returns more shares to liquidate than totalShares in system, eg: 
-    ///   totalAssets = 100, totalShares = 10, assetsToLiquidate = 1
+    /// - when asset:share ratio is such that 1 asset does not equal at least 1 share eg: 
+    ///    totalAssets = 100, totalShares = 10, assetsToLiquidate = 1
     /// @param _user The address of the borrower getting liquidated
-    /// @param _maxDebtToCover The maximum debt amount of borrowed `asset` the liquidator wants to cover. 
-    /// This cap not work when full liquidation is required. In that case defaulting will do full liquidation anyway.
     /// @return withdrawCollateral collateral that was send to `msg.sender`, in case of `_receiveSToken` is TRUE,
     /// `withdrawCollateral` will be estimated, on redeem one can expect this value to be rounded down
     /// @return repayDebtAssets actual debt value that was repaid by `msg.sender`
-    function liquidationCallByDefaulting(address _user, uint256 _maxDebtToCover)
-        external
-        returns (uint256 withdrawCollateral, uint256 repayDebtAssets);
-    
-    /// @notice check `liquidationCallByDefaulting(address _user, uint256 _maxDebtToCover)` for details
     function liquidationCallByDefaulting(address _user)
         external
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets);
@@ -85,12 +78,18 @@ interface IPartialLiquidationByDefaulting {
         view
         returns (ISiloIncentivesController controllerCollateral);
 
+    /// @dev Additional liquidation threshold (LT) margin applied during defaulting liquidations
+    /// to give priority to traditional liquidations over defaulting ones. Expressed in 18 decimals.
     // solhint-disable-next-line func-name-mixedcase
     function LT_MARGIN_FOR_DEFAULTING() external view returns (uint256);
 
+    /// @dev Address of the DefaultingSiloLogic contract used by Silo for delegate calls
     // solhint-disable-next-line func-name-mixedcase
     function LIQUIDATION_LOGIC() external view returns (address);
 
+    /// @dev The portion of total liquidation fee proceeds allocated to the keeper. Expressed in 18 decimals.
+    /// For example, liquidation fee is 10% (0.1e18), and keeper fee is 20% (0.2e18),
+    /// then 2% liquidation fee goes to the keeper and 8% goes to the protocol.
     // solhint-disable-next-line func-name-mixedcase
     function KEEPER_FEE() external view returns (uint256);   
 }

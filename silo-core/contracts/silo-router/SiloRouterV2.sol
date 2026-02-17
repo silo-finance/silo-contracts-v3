@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.28;
 
 import {Address} from "openzeppelin5/utils/Address.sol";
@@ -7,6 +7,7 @@ import {Ownable2Step, Ownable} from "openzeppelin5/access/Ownable2Step.sol";
 import {ReentrancyGuard} from "openzeppelin5/utils/ReentrancyGuard.sol";
 
 import {ISiloRouterV2} from "../interfaces/ISiloRouterV2.sol";
+import {IVersioned} from "../interfaces/IVersioned.sol";
 
 /// @title SiloRouterV2
 /// @custom:security-contact security@silo.finance
@@ -14,7 +15,7 @@ import {ISiloRouterV2} from "../interfaces/ISiloRouterV2.sol";
 /// of actions (Deposit, Withdraw, Borrow, Repay) and execute them in a single transaction.
 /// @dev SiloRouterV2 requires only first action asset to be approved
 /// @dev Caller should ensure that the router balance is empty after multicall.
-contract SiloRouterV2 is Pausable, Ownable2Step, ReentrancyGuard, ISiloRouterV2 {
+contract SiloRouterV2 is Pausable, Ownable2Step, ReentrancyGuard, ISiloRouterV2, IVersioned {
     /// @notice The address of the implementation contract
     address public immutable IMPLEMENTATION;
 
@@ -59,5 +60,10 @@ contract SiloRouterV2 is Pausable, Ownable2Step, ReentrancyGuard, ISiloRouterV2 
     /// @inheritdoc ISiloRouterV2
     function unpause() external virtual onlyOwner {
         _unpause();
+    }
+
+    /// @inheritdoc IVersioned
+    function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
+        return "SiloRouterV2 4.0.0";
     }
 }

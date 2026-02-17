@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
+
 pragma solidity 0.8.28;
 
 import {Strings} from "openzeppelin5/utils/Strings.sol";
@@ -51,8 +52,7 @@ contract SiloFactory is ISiloFactory, ERC721, Ownable2Step, IVersioned {
         ERC721("Silo Finance Fee Receiver", "feeSILO")
         Ownable(msg.sender)
     {
-        // start IDs from 100
-        _siloId = 100;
+        _siloId = 3000;
 
         baseURI = "https://v2.app.silo.finance/markets/";
         emit BaseURI(baseURI);

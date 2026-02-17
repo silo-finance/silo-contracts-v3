@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: BUSL-1.1
+
 pragma solidity 0.8.28;
 
 import {Math} from "openzeppelin5/utils/math/Math.sol";
@@ -31,16 +32,13 @@ import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefaulting, PartialLiquidation, Whitelist {
     using CallBeforeQuoteLib for ISiloConfig.ConfigData;
 
-    /// @dev The portion of total liquidation fee proceeds allocated to the keeper. Expressed in 18 decimals.
-    /// For example, liquidation fee is 10% (0.1e18), and keeper fee is 20% (0.2e18),
-    /// then 2% liquidation fee goes to the keeper and 8% goes to the protocol.
+    /// @inheritdoc IPartialLiquidationByDefaulting
     uint256 public constant KEEPER_FEE = 0.2e18;
 
-    /// @dev Address of the DefaultingSiloLogic contract used by Silo for delegate calls
+    /// @inheritdoc IPartialLiquidationByDefaulting
     address public immutable LIQUIDATION_LOGIC;
 
-    /// @dev Additional liquidation threshold (LT) margin applied during defaulting liquidations
-    /// to give priority to traditional liquidations over defaulting ones. Expressed in 18 decimals.
+    /// @inheritdoc IPartialLiquidationByDefaulting
     uint256 public constant LT_MARGIN_FOR_DEFAULTING = 0.025e18;
 
     uint256 internal constant _DECIMALS_PRECISION = 1e18;
@@ -51,27 +49,18 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
 
     function __PartialLiquidationByDefaulting_init(address _owner) // solhint-disable-line func-name-mixedcase
         internal
-        onlyInitializing
         virtual
+        onlyInitializing
     {
         __Whitelist_init(_owner);
 
         validateDefaultingCollateral();
     }
-    
-    /// @inheritdoc IPartialLiquidationByDefaulting
-    function liquidationCallByDefaulting(address _borrower) 
-        external 
-        virtual
-        returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
-    {
-        (withdrawCollateral, repayDebtAssets) = liquidationCallByDefaulting(_borrower, type(uint256).max);
-    }
 
     /// @inheritdoc IPartialLiquidationByDefaulting
     // solhint-disable-next-line function-max-lines, code-complexity
-    function liquidationCallByDefaulting(address _borrower, uint256 _maxDebtToCover)
-        public
+    function liquidationCallByDefaulting(address _borrower)
+        external
         virtual
         nonReentrant
         onlyAllowedOrPublic
@@ -96,7 +85,7 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
             _collateralConfig: collateralConfig,
             _debtConfig: debtConfig,
             _user: _borrower,
-            _maxDebtToCover: _maxDebtToCover,
+            _maxDebtToCover: type(uint256).max,
             _liquidationFee: collateralConfig.liquidationFee
         });
 
@@ -201,9 +190,18 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         ISiloConfig.ConfigData memory config1 = siloConfig.getConfig(silo1);
 
         require(config0.lt == 0 || config1.lt == 0, TwoWayMarketNotAllowed());
+
+        if (config0.lt == 0) require(config0.liquidationFee == 0, UnnecessaryLiquidationFee());
+        else require(config1.liquidationFee == 0, UnnecessaryLiquidationFee());
+
+        // to be consistent with validateSiloInitData, we using `<=` for lt check
+        require(
+            config0.lt + LT_MARGIN_FOR_DEFAULTING + config0.liquidationFee <= _DECIMALS_PRECISION, InvalidLTConfig0()
+        );
         
-        require(config0.lt + LT_MARGIN_FOR_DEFAULTING < _DECIMALS_PRECISION, InvalidLTConfig0());
-        require(config1.lt + LT_MARGIN_FOR_DEFAULTING < _DECIMALS_PRECISION, InvalidLTConfig1());
+        require(
+            config1.lt + LT_MARGIN_FOR_DEFAULTING + config1.liquidationFee <= _DECIMALS_PRECISION, InvalidLTConfig1()
+        );
     }
 
     function _deductDefaultedDebtFromCollateral(address _silo, uint256 _assetsToRepay) internal virtual {
@@ -304,9 +302,9 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
 
         uint256 totalAssets = ISilo(_silo).getTotalAssetsStorage(ISilo.AssetType(uint8(_collateralType)));
         uint256 totalShares = IShareToken(_shareToken).totalSupply();
-            
+
         // assets were calculating with rounding down for withdraw,
-        // if we want to go back to shares, we can round up, 
+        // if we want to go back to shares, we can round up,
         // however we choose to have exact results as we get via original liquidation, so we are using same direction
         totalSharesToLiquidate = SiloMathLib.convertToShares({
             _assets: _assetsToLiquidate,
@@ -337,8 +335,8 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         // R - rounding, we want to round down for keeper
         keeperShares = Math.mulDiv(
             _liquidationFee * KEEPER_FEE,
-            totalSharesToLiquidate, 
-            PartialLiquidationLib._PRECISION_DECIMALS, 
+            totalSharesToLiquidate,
+            PartialLiquidationLib._PRECISION_DECIMALS,
             Math.Rounding.Floor
         ) / (PartialLiquidationLib._PRECISION_DECIMALS + _liquidationFee);
 

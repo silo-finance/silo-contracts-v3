@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 
 // solhint-disable ordering
@@ -29,13 +29,14 @@ contract SiloLens is ISiloLens, IVersioned {
 
     /// @inheritdoc ISiloLens
     function getVersion(address _contract) external view returns (string memory version) {
-        if (_contract.code.length == 0) return "Not a contract";
+        version = SiloLensLib.getVersion(_contract);
+    }
 
-        try IVersioned(_contract).VERSION() returns (string memory v) {
-            return v;
-        } catch {
-            // handle error gracefully
-            return "legacy";
+    function getVersions(address[] calldata _contracts) external view returns (string[] memory versions) {
+        versions = new string[](_contracts.length);
+
+        for (uint256 i; i < _contracts.length; i++) {
+            versions[i] = SiloLensLib.getVersion(_contracts[i]);
         }
     }
 

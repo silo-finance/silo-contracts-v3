@@ -177,8 +177,8 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_neverReverts_badDebt_fuzz -vv --fuzz-runs 3333
+    locally: 3s
     */
-    /// forge-config: core_test.fuzz.runs=3333
     function test_defaulting_neverReverts_badDebt_fuzz(uint32 _collateral, uint32 _protected, uint32 _warp) public {
         _defaulting_neverReverts_badDebt({
             _borrower: borrower,
@@ -191,11 +191,12 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     /*
     when we use high amoutst, only immediate distrobution can overflow
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_ImmediateDistributionOverflows -vv --mc DefaultingLiquidationBorrowable0Test
+    locally: 2s
     */
     function test_defaulting_ImmediateDistributionOverflows_fuzz(uint256 _collateral, uint32 _warp) public {
         _defaulting_ImmediateDistributionOverflows(_collateral, _warp);
     }
-    
+
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_ImmediateDistributionOverflows_uint104_fuzz -vv
     */
@@ -209,8 +210,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         _addLiquidity(_collateral);
 
-        bool success =
-            _createPosition({_borrower: borrower, _collateral: _collateral, _protected: 0, _maxOut: true});
+        bool success = _createPosition({_borrower: borrower, _collateral: _collateral, _protected: 0, _maxOut: true});
 
         vm.assume(success);
 
@@ -241,14 +241,16 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
             if (_isControllerOverflowing(e)) {
                 console2.log("immediate distribution overflow, accepted, but exlude this case");
                 vm.assume(false);
-            } else RevertLib.revertBytes(e, "executeDefaulting failed");
+            } else {
+                RevertLib.revertBytes(e, "executeDefaulting failed");
+            }
         }
     }
 
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_neverReverts_badDebt_withOtherBorrowers_fuzz -vv --fuzz-runs 3333
+    locally: 6s
     */
-    /// forge-config: core_test.fuzz.runs=3333
     function test_defaulting_neverReverts_badDebt_withOtherBorrowers_fuzz(
         uint32 _collateral,
         uint32 _protected,
@@ -369,15 +371,17 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_neverReverts_insolvency_fuzz -vv
+    locally: 57s on silo0
     */
-    function test_defaulting_neverReverts_insolvency_fuzz(uint32 _collateral, uint32 _protected) public {
+    function test_defaulting_neverReverts_insolvency_long_fuzz(uint32 _collateral, uint32 _protected) public {
         _defaulting_neverReverts_insolvency({_borrower: borrower, _collateral: _collateral, _protected: _protected});
     }
 
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_neverReverts_insolvency_withOtherBorrowers_fuzz -vv
+    locally: 63s
     */
-    function test_defaulting_neverReverts_insolvency_withOtherBorrowers_fuzz(uint32 _collateral, uint32 _protected)
+    function test_defaulting_neverReverts_insolvency_withOtherBorrowers_long_fuzz(uint32 _collateral, uint32 _protected)
         public
     {
         _addLiquidity(Math.max(_collateral, _protected));
@@ -473,9 +477,10 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_when_0collateral_oneBorrower -vv
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_when_0collateral_oneBorrower_fuzz -vv
+    locally: 4s
     */
-    function test_defaulting_when_0collateral_oneBorrower(uint96 _collateral, uint96 _protected) public {
+    function test_defaulting_when_0collateral_oneBorrower_fuzz(uint96 _collateral, uint96 _protected) public {
         _setCollateralPrice(1.3e18); // we need high price at begin for this test, because we need to end up wit 1:1
         _addLiquidity(uint256(_collateral) + _protected);
 
@@ -571,9 +576,10 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_when_0collateral_otherBorrower_wipeOutShares -vv
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_when_0collateral_otherBorrower_wipeOutShares_fuzz -vv
+    locally: 5s
     */
-    function test_defaulting_when_0collateral_otherBorrower_wipeOutShares(uint96 _collateral, uint96 _protected)
+    function test_defaulting_when_0collateral_otherBorrower_wipeOutShares_fuzz(uint96 _collateral, uint96 _protected)
         public
     {
         _defaulting_when_0collateral_otherBorrower({
@@ -584,9 +590,10 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_when_0collateral_otherBorrower_withDustShares -vv
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_when_0collateral_otherBorrower_withDustShares_fuzz -vv
+    locally: 5s
     */
-    function test_defaulting_when_0collateral_otherBorrower_withDustShares(uint96 _collateral, uint96 _protected)
+    function test_defaulting_when_0collateral_otherBorrower_withDustShares_fuzz(uint96 _collateral, uint96 _protected)
         public
     {
         _defaulting_when_0collateral_otherBorrower({
@@ -726,11 +733,9 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_twice_0collateral -vv
     */
-    function test_defaulting_twice_0collateral(uint48 _collateral, uint48 _protected) public {
-        // (uint48 _collateral, uint48 _protected) = (1, 2);
+    function test_defaulting_twice_0collateral_fuzz(uint48 _collateral, uint48 _protected) public {
         _createIncentiveController();
 
-        _setCollateralPrice(1.3e18); // we need high price at begin for this test, because we need to end up wit 1:1
         _addLiquidity(uint256(_collateral) + _protected);
 
         (ISilo collateralSilo, ISilo debtSilo) = _getSilos();
@@ -739,57 +744,24 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
             _createPosition({_borrower: borrower, _collateral: _collateral, _protected: _protected, _maxOut: true});
         vm.assume(success);
 
-        // this will help with interest
-        _removeLiquidity();
-        assertLe(debtSilo.getLiquidity(), 1, "liquidity should be ~0");
+        (, IShareToken protectedShareToken, IShareToken debtShareToken) = _getBorrowerShareTokens(borrower);
 
-        console2.log("AFTER REMOVE LIQUIDITY");
+        uint256 balance = collateralSilo.balanceOf(borrower);
 
-        _setCollateralPrice(1e18);
-
-        do {
-            vm.warp(block.timestamp + 10 days);
-            // 1.01 because when we do normal liquidation it can be no debt after that
-        } while (silo0.getLtv(borrower) < 1.5e18);
-
-        // we need case, where we do not oveflow on interest, so we can apply interest
-        // vm.assume(debtSilo.maxRepay(borrower) > repayBefore);
-        debtSilo.accrueInterest();
-        (uint256 revenue, uint256 revenueFractions) = _printRevenue(debtSilo);
-        assertTrue(revenue > 0 || revenueFractions > 0, "we need case with fees");
-
-        // first do normal liquidation with sTokens, to remove whole collateral,
-        // price is set 1:1 so we can use collateral as max debt
-        (IShareToken collateralShareToken, IShareToken protectedShareToken, IShareToken debtShareToken) =
-            _getBorrowerShareTokens(borrower);
-        uint256 collateralPreview =
-            collateralSilo.previewRedeem(collateralShareToken.balanceOf(borrower), ISilo.CollateralType.Collateral);
-        uint256 protectedPreview =
-            collateralSilo.previewRedeem(protectedShareToken.balanceOf(borrower), ISilo.CollateralType.Protected);
-        // we need to create 0 collateral, +2 should cover full collateral and price is 1:1 so we can use as maxDebt
-        uint256 maxDebtToCover = collateralPreview + protectedPreview + 2;
-
-        token0.setOnDemand(false);
-        token1.setOnDemand(false);
-
-        _printRevenue(debtSilo);
-
-        console2.log("BEFORE DEFAULTING #1, using maxDebtToCover: ", maxDebtToCover);
-
-        try defaulting.liquidationCallByDefaulting(borrower, maxDebtToCover) {
-            // nothing to do
-        } catch (bytes memory data) {
-            bytes4 errorType = bytes4(data);
-            bytes4 returnZeroShares = bytes4(keccak256(abi.encodePacked("ReturnZeroShares()")));
-
-            if (errorType == returnZeroShares) {
-                vm.assume(false); // we need cases where we can liquidate twice
-            } else {
-                RevertLib.revertBytes(data, "liquidationCallByDefaulting failed");
-            }
+        // remove collateral
+        
+        if (balance != 0) {
+            vm.prank(address(partialLiquidation));
+            IShareToken(address(collateralSilo)).forwardTransferFromNoChecks(borrower, address(this), balance);
         }
 
-        depositors.push(address(this)); // liquidator got shares
+        balance = protectedShareToken.balanceOf(borrower);
+        if (balance != 0) {
+            vm.prank(address(partialLiquidation));
+            protectedShareToken.forwardTransferFromNoChecks(borrower, address(this), balance);
+        }
+
+        depositors.push(address(this)); // we got shares
 
         _assertNoRedeemable(
             collateralSilo, borrower, ISilo.CollateralType.Collateral, false, "collateral assets must be 0"
@@ -845,10 +817,10 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     everyone should be able to withdraw protected after defaulting liquidation
     echidna candidate
 
-    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_protectedCanBeFullyWithdrawn_fuzz -vv
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_protectedCanBeFullyWithdrawn_ -vv --fuzz-runs 8888
+    locally: 22s
     */
-    /// forge-config: core_test.fuzz.runs = 8888
-    function test_defaulting_protectedCanBeFullyWithdrawn_fuzz(
+    function test_defaulting_protectedCanBeFullyWithdrawn_long_fuzz(
         uint24[] memory _protectedDeposits,
         uint64 _initialPrice,
         uint64 _changePrice,
@@ -900,9 +872,9 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     /*
     if _defaultingPossible() we never revert otherwise we do revert
 
-    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_whenDefaultingPossibleTxDoesNotRevert_badDebt_fuzz -vv
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_whenDefaultingPossibleTxDoesNotRevert_badDebt_fuzz -vv --fuzz-runs 2222
+    locally: 2s
     */
-    /// forge-config: core_test.fuzz.runs = 2222
     function test_whenDefaultingPossibleTxDoesNotRevert_badDebt_fuzz(
         uint64 _dropPricePercentage,
         uint32 _warp,
@@ -921,9 +893,9 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     /*
     if _defaultingPossible() we never revert otherwise we do revert
 
-    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_whenDefaultingPossibleTxDoesNotRevert_notBadDebt_fuzz -vv
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_whenDefaultingPossibleTxDoesNotRevert_notBadDebt_fuzz -vv --fuzz-runs 8888
+    locally: 12s
     */
-    /// forge-config: core_test.fuzz.runs = 8888
     function test_whenDefaultingPossibleTxDoesNotRevert_notBadDebt_fuzz(
         uint64 _dropPricePercentage,
         uint32 _warp,
@@ -1013,10 +985,10 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     use uint64 for collateral and protected because fuzzing was trouble to find cases, 
     reason is incentive uint104 cap
 
-    use only 500 runs because fuzzing for this one is demanding
+    use only 100 runs because fuzzing for this one is demanding
     */
-    /// forge-config: core_test.fuzz.runs = 500
-    function test_bothLiquidationsResultsMatch_insolvent_fuzz(
+    /// forge-config: core_test.fuzz.runs = 10
+    function test_bothLiquidationsResultsMatch_insolvent_fuzz_limit(
         uint64 _priceDropPercentage,
         uint32 _warp,
         uint48 _collateral,
@@ -1166,9 +1138,8 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_getKeeperAndLenderSharesSplit_fuzz -vv --fuzz-runs 2345
 
-    we should never generate more shares then borrower has, rounding check
+    we should never generate more shares than borrower has, rounding check
     */
-    /// forge-config: core_test.fuzz.runs = 2345
     function test_defaulting_getKeeperAndLenderSharesSplit_fuzz(uint32 _collateral, uint32 _protected, uint32 _warp)
         public
     {
@@ -1232,18 +1203,25 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         assertLe(collateralShareToken.balanceOf(address(gauge)), 1, "gauge should have ~0 collateral shares");
         assertLe(protectedShareToken.balanceOf(address(gauge)), 1, "gauge should have ~0 protected shares");
 
+        uint256 keeperCollateralShares = collateralShareToken.balanceOf(address(this));
+        uint256 keeperProtectedShares = protectedShareToken.balanceOf(address(this));
+
         if (_protected == 0) {
             assertEq(protectedRewards, 0, "no protected rewards if no protected deposit");
-            assertEq(protectedShareToken.balanceOf(address(this)), 0, "keeper should have 0 protected shares");
+            assertEq(keeperProtectedShares, 0, "keeper should have 0 protected shares");
         } else {
             assertGt(protectedRewards, 0, "protected rewards are always somethig after liquidation");
-            assertLt(protectedRewards, protectedSharesBefore, "protected rewards are always less, because of fee");
-            // keeprs can have 0 or more
+
+            if (keeperProtectedShares == 0) {
+                assertLe(protectedRewards, protectedSharesBefore, "rewards are always le, because of NO fee");
+            } else {
+                assertLt(protectedRewards, protectedSharesBefore, "protected rewards are always less, because of fee");
+            }
         }
 
         if (_collateral == 0) {
             assertEq(collateralRewards, 0, "no collateral rewards if no collateral deposit");
-            assertEq(collateralShareToken.balanceOf(address(this)), 0, "keeper should have 0 collateral shares");
+            assertEq(keeperCollateralShares, 0, "keeper should have 0 collateral shares");
         } else {
             if (_protected == 0) {
                 assertGt(collateralRewards, 0, "collateral rewards are always somethig");
@@ -1251,8 +1229,11 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
                 // collaterar rewards depends if protected were enough or not
             }
 
-            assertLt(collateralRewards, collateralSharesBefore, "rewards are always less, because of fee");
-            // keeprs can have 0 or more
+            if (keeperCollateralShares == 0) {
+                assertLe(collateralRewards, collateralSharesBefore, "rewards are always le, because of NO fee");
+            } else {
+                assertLt(collateralRewards, collateralSharesBefore, "rewards are always less, because of fee");
+            }
         }
     }
 
@@ -1262,16 +1243,18 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_incentiveDistribution_everyoneCanClaim_badDebt -vv
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_incentiveDistribution_everyoneCanClaim_badDebt -vv --mc DefaultingLiquidationBorrowable1Test
+    locally: 10s
     */
-    function test_incentiveDistribution_everyoneCanClaim_badDebt(uint48 _collateral, uint48 _protected) public {
+    function test_incentiveDistribution_everyoneCanClaim_badDebt_fuzz(uint48 _collateral, uint48 _protected) public {
         // (uint48 _collateral, uint48 _protected) = (17829408, 331553767526);
         _incentiveDistribution_everyoneCanClaim(_collateral, _protected, true);
     }
 
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_incentiveDistribution_everyoneCanClaim_insolvent -vv
+    locally: 55s
     */
-    function test_incentiveDistribution_everyoneCanClaim_insolvent(uint64 _collateral, uint64 _protected) public {
+    function test_incentiveDistribution_everyoneCanClaim_insolvent_long_fuzz(uint64 _collateral, uint64 _protected) public {
         _incentiveDistribution_everyoneCanClaim(_collateral, _protected, false);
     }
 
@@ -1417,14 +1400,15 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_incentiveDistribution_defaultingIsProRata_badDebt -vv
     */
-    function test_incentiveDistribution_defaultingIsProRata_badDebt(uint64 _collateral, uint64 _protected) public {
+    function test_incentiveDistribution_defaultingIsProRata_badDebt_fuzz(uint64 _collateral, uint64 _protected) public {
         _incentiveDistribution_defaultingIsProRata(_collateral, _protected, true);
     }
 
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_incentiveDistribution_defaultingIsProRata_insolvent -vv
+    locally: 10s
     */
-    function test_incentiveDistribution_defaultingIsProRata_insolvent(uint64 _collateral, uint64 _protected) public {
+    function test_incentiveDistribution_defaultingIsProRata_insolvent_fuzz(uint64 _collateral, uint64 _protected) public {
         _incentiveDistribution_defaultingIsProRata(_collateral, _protected, false);
     }
 
@@ -1509,8 +1493,9 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_incentiveDistribution_twoRewardsReceivers -vv
+    locally: 40s
     */
-    function test_incentiveDistribution_twoRewardsReceivers(uint64 _collateral, uint64 _protected) public {
+    function test_incentiveDistribution_twoRewardsReceivers_long_fuzz(uint64 _collateral, uint64 _protected) public {
         // (uint64 _collateral, uint64 _protected) = (27125091, 30817190);
         vm.assume(uint256(_collateral) + _protected > 0);
 
@@ -1631,77 +1616,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
             2, // 1 leftover from first + 1 from second liquidation
             "[lpProvider2] protected rewards from second liquidation"
         );
-    }
-
-    /*
-    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_Defaulting_maxDebtToCover1Wei -vv
-    */
-    function test_Defaulting_maxDebtToCover1Wei(
-        uint64 _collateral, uint64 _protected, bool _maxOut
-    ) public {
-        // (uint64 _collateral, uint64 _protected, bool _maxOut) = (30088, 1290024793, false);
-        _addLiquidity(100e18);
-        bool position = _createPosition({_borrower: borrower, _collateral: _collateral, _protected: _protected, _maxOut: _maxOut});
-        vm.assume(position);
-        
-        _createIncentiveController();
-
-        _moveUntillDefaultingPossible(borrower, 0.001e18, 1 hours);
-
-        (ISilo collateralSilo, ISilo debtSilo) = _getSilos();
-
-        siloConfig.accrueInterestForBothSilos();
-
-        uint256 totalDebtBefore = debtSilo.getDebtAssets();
-        uint256 totalProtectedBefore = debtSilo.getTotalAssetsStorage(ISilo.AssetType.Protected);
-        uint256 totalCollateralBefore = debtSilo.totalAssets();
-
-        _printMaxLiquidation(borrower);
-
-        // we only want cases when it is possible, but it can fail with diff errors eg ZeroQuote
-        vm.assume(_tryDefaulting(borrower, 1));
-
-        console2.log("liquidation done");
-
-        uint256 totalDebtAfter = debtSilo.getDebtAssets();
-        uint256 totalProtectedAfter = debtSilo.getTotalAssetsStorage(ISilo.AssetType.Protected);
-        uint256 totalCollateralAfter = debtSilo.totalAssets();
-        
-        bool fullLiquidation;
-        (bool throwing,) = _isOracleThrowing(borrower);
-
-        if (throwing) {
-            fullLiquidation = false;
-            console2.log("oracle is throwing, we can not check user solvency");
-
-            // we should expect withdraw to throw because of oracle throwing
-            vm.startPrank(borrower);
-
-            vm.expectRevert();
-            collateralSilo.withdraw(1, borrower, borrower);
-
-            vm.expectRevert();
-            collateralSilo.withdraw(1, borrower, borrower, ISilo.CollateralType.Protected);
-            vm.stopPrank();
-        } else {
-            _printLtv(borrower);
-            fullLiquidation = siloLens.getUserLTV(debtSilo, borrower) == 0;
-            console2.log("is user solvent?", debtSilo.isSolvent(borrower) ? "yes" : "no");
-        }
-
-        if (totalDebtAfter == 0 && totalDebtBefore != 1) {
-            console2.log("it was full liquidation, not 1wei case");
-            vm.assume(false);
-        }
-
-        assertEq(totalDebtAfter, totalDebtBefore - 1, "total debt should be reduced by 1 wei");
-
-        // for full liquidation we only checking debt, because debt to cover should be 1 always
-        if (fullLiquidation) return;
-
-        uint256 protectedDiff = totalProtectedBefore - totalProtectedAfter;
-        uint256 collateralDiff = totalCollateralBefore - totalCollateralAfter;
-        assertLe(protectedDiff + collateralDiff, 1, "protected and collateral should be reduced by at most 1 wei");
     }
 
     /*

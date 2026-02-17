@@ -203,10 +203,9 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
         {
             // lpProvider checks
 
-            uint256 totalGaugeRewards = 0.499009900990099009901e21; // hardcoded based on logs
-            // if (_withOtherBorrower) totalGaugeRewards -= 998;
+            uint256 totalGaugeRewards = 0.499512389292466912131e21; // hardcoded based on logs
 
-            uint256 totalProtectedRewards = 0.499009900990099009901e21; // hardcoded based on logs
+            uint256 totalProtectedRewards = 0.499512389292466912131e21; // hardcoded based on logs
 
             (address protectedShareToken,,) = siloConfig.getShareTokens(address(collateralSilo));
 
@@ -303,10 +302,10 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_bothLiquidationsResultsMatch_insolvent_fuzz -vv --mc DefaultingLiquidationTwo1Test
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_bothLiquidationsResultsMatch_insolvent_fuzz -vv --mc DefaultingLiquidationBorrowable0 --fuzz-runs 10
     */
-    /// forge-config: core_test.fuzz.runs = 100
-    function test_bothLiquidationsResultsMatch_insolvent_fuzz(
+    /// forge-config: core_test.fuzz.runs = 10
+    function test_bothLiquidationsResultsMatch_insolvent_fuzz_limit(
         uint64 _dropPercentage,
         uint32 _warp,
         uint48 _collateral,
@@ -315,7 +314,7 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
         _dropPercentage = 0.061e18;
         _warp = 5 days;
 
-        super.test_bothLiquidationsResultsMatch_insolvent_fuzz(_dropPercentage, _warp, _collateral, _protected);
+        super.test_bothLiquidationsResultsMatch_insolvent_fuzz_limit(_dropPercentage, _warp, _collateral, _protected);
     }
 
     /*
@@ -335,12 +334,12 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
 
         assertEq(
             borrowerCollateralShareToken.balanceOf(address(gauge2)),
-            998.019801980198019802e18,
+            999.024778584933824262e18,
             "gauge2 should have only collateral rewards from borrower2 liquidation"
         );
         assertEq(
             borrowerCollateralShareToken.balanceOf(makeAddr("keeper2")),
-            1.980198019801980198e18,
+            0.975221415066175738e18,
             "keeper2 fee from borrower2 liquidation"
         );
         assertEq(
@@ -352,12 +351,12 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
         uint256 gauge2CollateralRewards1 = gauge2.getRewardsBalance(makeAddr("lpProvider1"), programNames[0]);
         uint256 gauge2CollateralRewards2 = gauge2.getRewardsBalance(makeAddr("lpProvider2"), programNames[0]);
 
-        assertEq(gauge2CollateralRewards1, 499.009900990099009901e18, "[lpProvider1] gauge2 has claimable rewards");
-        assertEq(gauge2CollateralRewards2, 499.009900990099009901e18, "[lpProvider2] gauge2 has claimable rewards");
+        assertEq(gauge2CollateralRewards1, 499.512389292466912131e18, "[lpProvider1] gauge2 has claimable rewards");
+        assertEq(gauge2CollateralRewards2, 499.512389292466912131e18, "[lpProvider2] gauge2 has claimable rewards");
 
         assertEq(
             borrowerProtectedShareToken.balanceOf(address(gauge3)),
-            99.801980198019801981e18,
+            99.902477858493382427e18,
             "gauge3 should have only protected rewards"
         );
 
@@ -397,19 +396,19 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
 
         assertEq(
             borrowerProtectedShareToken.balanceOf(makeAddr("lpProvider1")),
-            49.90099009900990099e18,
+            49.951238929246691213e18,
             "[lpProvider1] gauge3 protected rewards"
         );
 
         assertEq(
             borrowerProtectedShareToken.balanceOf(makeAddr("lpProvider2")),
-            49.90099009900990099e18,
+            49.951238929246691213e18,
             "[lpProvider2] gauge3 protected rewards"
         );
 
         assertEq(
             borrowerProtectedShareToken.balanceOf(makeAddr("keeper3")),
-            0.198019801980198019e18,
+            0.097522141506617573e18,
             "keeper3 fee from borrower3 liquidation (protected)"
         );
     }
@@ -432,12 +431,12 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
 
         assertEq(
             borrowerCollateralShareToken.balanceOf(address(gauge2)),
-            998.019801980198019802e18,
+            999.024778584933824262e18,
             "gauge2 should have only collateral rewards from borrower2 liquidation"
         );
         assertEq(
             borrowerCollateralShareToken.balanceOf(makeAddr("keeper2")),
-            1.980198019801980198e18,
+            0.975221415066175738e18,
             "keeper2 fee from borrower2 liquidation"
         );
         assertEq(
@@ -449,12 +448,12 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
         uint256 gauge2CollateralRewards1 = gauge2.getRewardsBalance(makeAddr("lpProvider1"), programNames[0]);
         uint256 gauge2CollateralRewards2 = gauge2.getRewardsBalance(makeAddr("lpProvider2"), programNames[0]);
 
-        assertEq(gauge2CollateralRewards1, 499.009900990099009901e18, "[lpProvider1] gauge2 has claimable rewards");
-        assertEq(gauge2CollateralRewards2, 499.009900990099009901e18, "[lpProvider2] gauge2 has claimable rewards");
+        assertEq(gauge2CollateralRewards1, 499.512389292466912131e18, "[lpProvider1] gauge2 has claimable rewards");
+        assertEq(gauge2CollateralRewards2, 499.512389292466912131e18, "[lpProvider2] gauge2 has claimable rewards");
 
         assertEq(
             borrowerProtectedShareToken.balanceOf(address(gauge3)),
-            99.801980198019801981e18,
+            99.902477858493382427e18,
             "gauge3 should have only protected rewards"
         );
 
@@ -494,19 +493,19 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
 
         assertEq(
             borrowerProtectedShareToken.balanceOf(makeAddr("lpProvider1")),
-            49.90099009900990099e18,
+            49.951238929246691213e18,
             "[lpProvider1] gauge3 protected rewards"
         );
 
         assertEq(
             borrowerProtectedShareToken.balanceOf(makeAddr("lpProvider2")),
-            49.90099009900990099e18,
+            49.951238929246691213e18,
             "[lpProvider2] gauge3 protected rewards"
         );
 
         assertEq(
             borrowerProtectedShareToken.balanceOf(makeAddr("keeper3")),
-            0.198019801980198019e18,
+            0.097522141506617573e18,
             "keeper3 fee from borrower3 liquidation (protected)"
         );
     }

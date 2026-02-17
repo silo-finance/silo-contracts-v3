@@ -9,7 +9,7 @@ import {SiloRouterV2Implementation} from "silo-core/contracts/silo-router/SiloRo
 /*
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloRouterV2Deploy.s.sol \
-        --ffi --rpc-url $RPC_INK --broadcast --verify
+        --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify
 
     Resume verification:
     FOUNDRY_PROFILE=core \

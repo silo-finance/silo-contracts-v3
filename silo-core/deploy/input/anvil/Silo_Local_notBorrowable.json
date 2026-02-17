@@ -12,7 +12,7 @@
     "maxLtv0": 0,
     "lt0": 0,
     "liquidationTargetLtv0": 0,
-    "liquidationFee0": 500,
+    "liquidationFee0": 0,
     "flashloanFee0": 100,
     "callBeforeQuote0": false,
     "token1": "PLACEHOLDER",

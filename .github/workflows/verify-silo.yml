@@ -19,10 +19,29 @@ on:
       - 'silo-core/deploy/silo/_siloDeployments.json'
 
 jobs:
+  count-config-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      config_count: ${{ steps.count.outputs.config_count }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Count Silo configs in diff
+        id: count
+        run: |
+          FILE=silo-core/deploy/silo/_siloDeployments.json
+          BASE_REF="${{ github.base_ref }}"
+          N=$(git diff "origin/$BASE_REF" -- "$FILE" 2>/dev/null | grep '^+' | grep -E '"[^"]+":\s*"0x[0-9a-fA-F]{40}"' | wc -l)
+          echo "config_count=$N" >> $GITHUB_OUTPUT
+          echo "Silo config count: $N (workflow runs only when exactly 1)"
+
   verify:
     runs-on: ubuntu-latest
-    # Skip on PRs from release branches
-    if: ${{ !startsWith(github.head_ref, 'release/') }}
+    needs: count-config-changes
+    # Run only when exactly one Silo config was added (skip when 0 or 2+)
+    if: needs.count-config-changes.outputs.config_count == '1'
 
     permissions:
       pull-requests: write  # Required to post a comment on the PR

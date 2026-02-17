@@ -43,7 +43,7 @@ contract SiloFactoryTest is SiloLittleHelper, IntegrationTest {
     forge test -vv --ffi --mt test_burnCreatedSiloToken
     */
     function test_burnCreatedSiloToken() public {
-        uint256 firstSiloId = 100;
+        uint256 firstSiloId = siloFactory.getNextSiloId() - 1;
 
         (, address owner) = siloFactory.getFeeReceivers(address(silo0));
 
@@ -71,10 +71,10 @@ contract SiloFactoryTest is SiloLittleHelper, IntegrationTest {
     }
 
     /*
-    forge test -vv --ffi --mt test_tokenURI
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_tokenURI
     */
     function test_tokenURI() public view {
-        uint256 firstSiloId = 100;
+        uint256 firstSiloId = siloFactory.getNextSiloId() - 1;
         address siloConfigFromFactory = siloFactory.idToSiloConfig(firstSiloId);
 
         string memory expectedURI = string.concat(
@@ -91,10 +91,10 @@ contract SiloFactoryTest is SiloLittleHelper, IntegrationTest {
     }
 
     /*
-    forge test -vv --ffi --mt test_tokenURIUpdate
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_tokenURIUpdate
     */
     function test_tokenURIUpdate(string calldata _newBaseURI) public {
-        uint256 firstSiloId = 100;
+        uint256 firstSiloId = siloFactory.getNextSiloId() - 1;
         address siloConfigFromFactory = siloFactory.idToSiloConfig(firstSiloId);
 
         string memory expectedURI = string.concat(
@@ -115,8 +115,8 @@ contract SiloFactoryTest is SiloLittleHelper, IntegrationTest {
     forge test -vv --ffi --mt test_tokenURIRevertsNonExistingSilo
     */
     function test_tokenURIRevertsNonExistingSilo() public {
-        uint256 existingSiloId = 100;
-        uint256 nonExistingSiloId = 102;
+        uint256 existingSiloId = siloFactory.getNextSiloId() - 1;
+        uint256 nonExistingSiloId = existingSiloId + 2;
 
         assertTrue(
             bytes(IERC721Metadata(address(siloFactory)).tokenURI(existingSiloId)).length > 0,

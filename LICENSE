@@ -7,12 +7,16 @@ License text copyright (c) 2017 MariaDB Corporation Ab, All Rights Reserved.
 
 Parameters
 
-Licensor:             Silo Labs
+Licensor:             Distributed Coders Inc.
 
-Licensed Work:        Silo V2 Core
-                      The Licensed Work is (c) 2024 Silo Labs
+Licensed Work:        Silo V3 Core
+                      The Licensed Work is (c) 2026 Distributed Coders Inc.
 
-Change Date:          The earlier of 2028-11-2 unless adjusted by SiloDAO
+Additional Use Grant: SiloDAO is permitted to deploy, use, and interact with
+                      the Licensed Work on public blockchain networks for
+                      the operation and governance of the Silo protocol.
+
+Change Date:          2031-01-31
 
 Change License:       GNU General Public License v2.0 or later
 

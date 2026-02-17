@@ -427,7 +427,7 @@
       "isFixedGasLimit": false
     },
     {
-      "hash": "0xe745595afb323395e8ca003798a67631a6b072e9d21a32c55431c7a6a84fcf30",
+      "hash": "0x0a6870afd2c701c158b482fb578b1f3ce8172f56c167952d7ca26ec1004556e1",
       "transactionType": "CREATE",
       "contractName": "SiloIncentivesControllerFactory",
       "contractAddress": "0x57448f23fe51be6934a1d88f783d613b9801b151",
@@ -445,7 +445,7 @@
       "isFixedGasLimit": false
     },
     {
-      "hash": "0x5a71ec80bf145e1ffe54c8bb3ee30d10ab26ee78648f5be12208b0a41c063de4",
+      "hash": "0x15653f986f25e541da00deafdca6c2abb77573ae41fbf0984dea4aa82e1efc32",
       "transactionType": "CREATE",
       "contractName": "LeverageRouter",
       "contractAddress": "0xf5d029bfb7565bd75a423f179607147c31b7a6b3",
@@ -480,7 +480,7 @@
       "isFixedGasLimit": false
     },
     {
-      "hash": "0xd2643cc8d1f71013a3745708e694077c2433a53700612067f7e462219538f3ba",
+      "hash": "0xb001c003f47bc5de1c3d4a3d666633ead404d49103bdece03bfd865470ec7725",
       "transactionType": "CREATE",
       "contractName": "SiloDeployer",
       "contractAddress": "0x55c5b74bc138c42dcb0deb206ae325a828cd1372",

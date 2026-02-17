@@ -24,7 +24,7 @@ import {PTLinearOracleFactoryDeploy} from "./pendle/PTLinearOracleFactoryDeploy.
 /*
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_MAINNET --broadcast --verify
+        --ffi --rpc-url $RPC_BASE --broadcast --verify
 
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \

@@ -12,7 +12,7 @@ import {
 /*
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/InterestRateModelV2FactoryDeploy.s.sol:InterestRateModelV2FactoryDeploy \
-        --ffi --rpc-url $RPC_INK --broadcast --verify
+        --ffi --rpc-url $RPC_INJECTIVE --broadcast --verify
 
     Resume verification:
     FOUNDRY_PROFILE=core \

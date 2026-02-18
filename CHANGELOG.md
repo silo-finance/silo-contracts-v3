@@ -6,7 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-## [4.0.0] - 2026-01-15
+## [4.1.0] - 2026-02-18
+### Added
+- Injective deployment for Silo V3
+- `getVerions()` to `ISiloLens` interface 
+
+## [4.0.0] - 2026-02-17
 ### Added
 - silo-core: Liquidation by defaulting (#1694)
 - add additional events for external app integration (#1737)

@@ -310,25 +310,72 @@ jobs:
         echo "🔍 Final compilation check..."
         
         WARNINGS_FOUND=false
+
+        print_warnings() {
+          local label="$1"
+          local file="$2"
+          local mode="$3"
+
+          if [ ! -f "$file" ]; then
+            return
+          fi
+
+          local warnings
+          if [ "$mode" = "oracles" ]; then
+            warnings=$(awk '
+              BEGIN { IGNORECASE = 1 }
+              /warning/ {
+                if ($0 ~ /Compiler run successful with warnings:/) {
+                  next
+                }
+                current = $0
+                if (getline next_line > 0) {
+                  if (current ~ /Return value of low-level calls not used/ && next_line ~ /gitmodules\/pyth-sdk-solidity/) {
+                    next
+                  }
+                }
+                print current
+              }
+            ' "$file")
+          else
+            warnings=$(awk '
+              BEGIN { IGNORECASE = 1 }
+              /warning/ &&
+              $0 !~ /Compiler run successful with warnings:/ &&
+              $0 !~ /There are more than 256 warnings. Ignoring the rest/ {
+                print
+              }
+            ' "$file")
+          fi
+
+          if [ -n "$warnings" ]; then
+            echo "⚠️ $label warning lines:"
+            echo "$warnings"
+          fi
+        }
         
         # Check contracts
         if [ "${{ steps.compile-core.outputs.core_has_warnings }}" = "true" ]; then
           echo "❌ silo-core contracts have warnings"
+          print_warnings "silo-core contracts" "core_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         
         if [ "${{ steps.compile-oracles.outputs.oracles_has_warnings }}" = "true" ]; then
           echo "❌ silo-oracles contracts have warnings"
+          print_warnings "silo-oracles contracts" "oracles_compilation.log" "oracles"
           WARNINGS_FOUND=true
         fi
         
         if [ "${{ steps.compile-vaults.outputs.vaults_has_warnings }}" = "true" ]; then
           echo "❌ silo-vaults contracts have warnings"
+          print_warnings "silo-vaults contracts" "vaults_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         
         if [ "${{ steps.compile-x-silo.outputs.x_silo_has_warnings }}" = "true" ]; then
           echo "❌ x-silo contracts have warnings"
+          print_warnings "x-silo contracts" "x_silo_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         
@@ -336,17 +383,20 @@ jobs:
         # Check tests
         if [ "${{ steps.compile-core-tests.outputs.core_tests_has_warnings }}" = "true" ]; then
           echo "❌ silo-core tests have warnings"
+          print_warnings "silo-core tests" "core_tests_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         
         
         if [ "${{ steps.compile-vaults-tests.outputs.vaults_tests_has_warnings }}" = "true" ]; then
           echo "❌ silo-vaults tests have warnings"
+          print_warnings "silo-vaults tests" "vaults_tests_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         
         if [ "${{ steps.compile-x-silo-tests.outputs.x_silo_tests_has_warnings }}" = "true" ]; then
           echo "❌ x-silo tests have warnings"
+          print_warnings "x-silo tests" "x_silo_tests_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         

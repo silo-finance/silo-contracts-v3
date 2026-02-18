@@ -16,12 +16,14 @@ import {CommonDeploy} from "./_CommonDeploy.sol";
 
 
     in case verification fail, set `ETHERSCAN_API_KEY` in env and run:
-    FOUNDRY_PROFILE=core forge verify-contract <contract-address> \
-        silo-core/contracts/utils/Tower.sol:Tower \
-        --verifier blockscout --verifier-url $VERIFIER_URL_INK \
-        --compiler-version 0.8.28 \
-        --num-of-optimizations 200 \
-        --watch
+    FOUNDRY_PROFILE=core \
+    forge script silo-core/deploy/TowerDeploy.s.sol:TowerDeploy \
+        --ffi --rpc-url $RPC_INJECTIVE \
+        --verify \
+        --verifier blockscout \
+        --verifier-url $VERIFIER_URL_INJECTIVE \
+        --private-key $PRIVATE_KEY \
+        --resume
  */
 contract TowerDeploy is CommonDeploy {
     function run() public returns (Tower tower) {

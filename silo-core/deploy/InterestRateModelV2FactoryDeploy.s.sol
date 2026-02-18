@@ -17,9 +17,9 @@ import {
     Resume verification:
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/InterestRateModelV2FactoryDeploy.s.sol:InterestRateModelV2FactoryDeploy \
-        --ffi --rpc-url $RPC_INK \
+        --ffi --rpc-url $RPC_INJECTIVE \
         --verify \
-        --verifier blockscout --verifier-url $VERIFIER_URL_INK \
+        --verifier blockscout --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
         --resume
  */

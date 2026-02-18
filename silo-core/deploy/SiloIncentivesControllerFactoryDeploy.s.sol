@@ -15,9 +15,9 @@ import {ISiloIncentivesControllerFactory} from "silo-core/contracts/incentives/i
     Resume verification:
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloIncentivesControllerFactoryDeploy.s.sol \
-        --ffi --rpc-url $RPC_INK \
+        --ffi --rpc-url $RPC_INJECTIVE \
         --verify \
-        --verifier blockscout --verifier-url $VERIFIER_URL_INK \
+        --verifier blockscout --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
         --resume
  */

@@ -31,6 +31,7 @@ env:
   RPC_ANVIL: ${{ secrets.RPC_ANVIL }}
   RPC_SONIC: ${{ secrets.RPC_SONIC }}
   RPC_AVALANCHE: ${{ secrets.RPC_AVALANCHE }}
+  RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
   PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
 
 jobs:
@@ -309,25 +310,111 @@ jobs:
         echo "🔍 Final compilation check..."
         
         WARNINGS_FOUND=false
+
+        print_warnings() {
+          local label="$1"
+          local file="$2"
+          local mode="$3"
+
+          if [ ! -f "$file" ]; then
+            return
+          fi
+
+          local warnings
+          if [ "$mode" = "oracles" ]; then
+            warnings=$(awk '
+              /Compiler run successful with warnings:/ {
+                next
+              }
+              /Warning.*Return value of low-level calls not used/ {
+                getline next_line
+                if (next_line ~ /gitmodules\/pyth-sdk-solidity/) {
+                  next
+                }
+                print
+                print next_line
+                next
+              }
+              { print }
+            ' "$file" | awk '
+              BEGIN {
+                IGNORECASE = 1
+                remaining = 0
+                printed_any = 0
+              }
+              {
+                is_warning = ($0 ~ /warning/)
+                if (is_warning) {
+                  if (printed_any) {
+                    print ""
+                  }
+                  print "-----"
+                  print
+                  remaining = 4
+                  printed_any = 1
+                  next
+                }
+                if (remaining > 0) {
+                  print
+                  remaining--
+                }
+              }
+            ')
+          else
+            warnings=$(awk '
+              BEGIN { IGNORECASE = 1 }
+              {
+                is_warning = ($0 ~ /warning/ &&
+                  $0 !~ /Compiler run successful with warnings:/ &&
+                  $0 !~ /There are more than 256 warnings. Ignoring the rest/)
+
+                if (is_warning) {
+                  if (printed_any) {
+                    print ""
+                  }
+                  print "-----"
+                  print
+                  remaining = 4
+                  printed_any = 1
+                  next
+                }
+
+                if (remaining > 0) {
+                  print
+                  remaining--
+                }
+              }
+            ' "$file")
+          fi
+
+          if [ -n "$warnings" ]; then
+            echo "⚠️ $label warning blocks (5 lines each):"
+            echo "$warnings"
+          fi
+        }
         
         # Check contracts
         if [ "${{ steps.compile-core.outputs.core_has_warnings }}" = "true" ]; then
           echo "❌ silo-core contracts have warnings"
+          print_warnings "silo-core contracts" "core_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         
         if [ "${{ steps.compile-oracles.outputs.oracles_has_warnings }}" = "true" ]; then
           echo "❌ silo-oracles contracts have warnings"
+          print_warnings "silo-oracles contracts" "oracles_compilation.log" "oracles"
           WARNINGS_FOUND=true
         fi
         
         if [ "${{ steps.compile-vaults.outputs.vaults_has_warnings }}" = "true" ]; then
           echo "❌ silo-vaults contracts have warnings"
+          print_warnings "silo-vaults contracts" "vaults_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         
         if [ "${{ steps.compile-x-silo.outputs.x_silo_has_warnings }}" = "true" ]; then
           echo "❌ x-silo contracts have warnings"
+          print_warnings "x-silo contracts" "x_silo_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         
@@ -335,17 +422,20 @@ jobs:
         # Check tests
         if [ "${{ steps.compile-core-tests.outputs.core_tests_has_warnings }}" = "true" ]; then
           echo "❌ silo-core tests have warnings"
+          print_warnings "silo-core tests" "core_tests_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         
         
         if [ "${{ steps.compile-vaults-tests.outputs.vaults_tests_has_warnings }}" = "true" ]; then
           echo "❌ silo-vaults tests have warnings"
+          print_warnings "silo-vaults tests" "vaults_tests_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         
         if [ "${{ steps.compile-x-silo-tests.outputs.x_silo_tests_has_warnings }}" = "true" ]; then
           echo "❌ x-silo tests have warnings"
+          print_warnings "x-silo tests" "x_silo_tests_compilation.log" "default"
           WARNINGS_FOUND=true
         fi
         

@@ -30,6 +30,12 @@ interface ISiloLens {
     /// "legacy" if not implement IVersioned, "Not a contract" if not a contract.
     function getVersion(address _contract) external view returns (string memory version);
 
+    /// @notice Retrieves the versions of the contracts
+    /// @param _contracts Addresses of the contracts
+    /// @return versions The versions of the contracts in format "SiloLens 3.17.0",
+    /// "legacy" if not implement IVersioned, "Not a contract" if not a contract.
+    function getVersions(address[] calldata _contracts) external view returns (string[] memory versions);
+
     /// @dev calculates solvency
     /// @notice this is backwards compatible method, you can use `_silo.isSolvent(_borrower)` directly.
     /// @param _silo Silo address from which to read data

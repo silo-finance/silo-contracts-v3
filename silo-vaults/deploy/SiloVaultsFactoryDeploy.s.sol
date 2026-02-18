@@ -20,6 +20,15 @@ import {CommonDeploy} from "./common/CommonDeploy.sol";
         --verifier blockscout --verifier-url $VERIFIER_URL_INK \
         --private-key $PRIVATE_KEY \
         --resume
+
+    FOUNDRY_PROFILE=vaults forge verify-contract 0x68D9ddfCBa478Fb56019a30CdF5A37788Af163Ac \
+        --rpc-url $RPC_INJECTIVE \
+        silo-vaults/contracts/SiloVault.sol:SiloVault \
+        --verifier blockscout \
+        --verifier-url $VERIFIER_URL_INJECTIVE \
+        --compiler-version 0.8.28 \
+        --num-of-optimizations 200 \
+        --watch
 */
 contract SiloVaultsFactoryDeploy is CommonDeploy {
     function run() public returns (SiloVaultsFactory siloVaultsFactory) {

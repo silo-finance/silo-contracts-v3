@@ -6,18 +6,23 @@ import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {SiloDeploy, ISiloDeployer} from "./SiloDeploy.s.sol";
 
 /*
-FOUNDRY_PROFILE=core CONFIG=Silo_savUSD_USDC_v4 HOOK_RECEIVER_OWNER=DAO \
+FOUNDRY_PROFILE=core CONFIG=Test_Silo_WINJ_USDT HOOK_RECEIVER_OWNER=DAO \
     forge script silo-core/deploy/silo/SiloDeployWithHookReceiverOwner.s.sol \
-    --ffi --rpc-url $RPC_AVALANCHE --broadcast --verify
+    --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify \
+    --verifier blockscout \
+    --verifier-url $VERIFIER_URL_INJECTIVE
 
 Resume verification:
-    FOUNDRY_PROFILE=core CONFIG=Silo_savUSD_USDC_v4 HOOK_RECEIVER_OWNER=DAO \
+    FOUNDRY_PROFILE=core CONFIG=Test_Silo_WINJ_USDT HOOK_RECEIVER_OWNER=DAO \
     forge script silo-core/deploy/silo/SiloDeployWithHookReceiverOwner.s.sol \
-        --ffi --rpc-url $RPC_SONIC \
+        --ffi --rpc-url $RPC_INJECTIVE \
         --verify \
+        --verifier blockscout \
+        --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
         --resume
- */
+
+*/
 contract SiloDeployWithHookReceiverOwner is SiloDeploy {
     function _getClonableHookReceiverOwner() internal view override returns (address owner) {
         owner = _getHookReceiverOwner()

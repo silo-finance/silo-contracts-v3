@@ -33,6 +33,7 @@ library AddrKey {
     string constant public USDC_E = "USDC.e";
     string constant public USDC_ETH_UNI_POOL = "USDC_ETH_UNI_POOL";
     string constant public USDai = "USDai";
+    string constant public USDT = "USDT";
     string constant public WAVAX = "WAVAX";
     string constant public WETH = "WETH";
     string constant public WBNB = "WBNB";
@@ -41,4 +42,5 @@ library AddrKey {
     string constant public WRAPPER_LPT_eUSDe_14AUG25 = "Wrapper-LPT-sUSDe-25SEP25";
     string constant public wS = "wS";
     string constant public XSilo = "XSilo";
+    string constant public WINJ = "WINJ";
 }

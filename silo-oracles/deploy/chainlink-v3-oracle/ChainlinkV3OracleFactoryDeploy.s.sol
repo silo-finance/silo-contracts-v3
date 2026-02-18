@@ -10,15 +10,15 @@ import {ChainlinkV3OracleFactory} from "silo-oracles/contracts/chainlinkV3/Chain
 /*
 FOUNDRY_PROFILE=oracles \
     forge script silo-oracles/deploy/chainlink-v3-oracle/ChainlinkV3OracleFactoryDeploy.s.sol \
-    --ffi --rpc-url $RPC_INK --broadcast --verify
+    --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify
 
 Resume verification:
 FOUNDRY_PROFILE=oracles \
     forge script silo-oracles/deploy/chainlink-v3-oracle/ChainlinkV3OracleFactoryDeploy.s.sol \
-    --ffi --rpc-url $RPC_INK \
+    --ffi --rpc-url $RPC_INJECTIVE \
     --verify \
     --verifier blockscout \
-    --verifier-url $VERIFIER_URL_INK \
+    --verifier-url $VERIFIER_URL_INJECTIVE \
     --private-key $PRIVATE_KEY \
     --resume
 

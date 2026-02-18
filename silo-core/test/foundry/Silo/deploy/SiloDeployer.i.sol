@@ -103,7 +103,7 @@ contract SiloDeployerIntegrationTest is Test {
         } else if (chainId == ChainsLib.ARBITRUM_ONE_CHAIN_ID) {
             return SiloDeployer(0x1bdeBe3C773452e1f8FBE338fF4139539D9bC2f4);
         } else if (chainId == ChainsLib.INJECTIVE_CHAIN_ID) {
-            return SiloDeployer(0x931e59f06b83dD3d9A622FD4537989B6C63B9bde);
+            return SiloDeployer(address(0));
         }
 
         revert("Chain not supported");

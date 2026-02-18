@@ -29,7 +29,7 @@ contract SiloDeployerIntegrationTest is Test {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test RPC_URL=$RPC_OPTIMISM forge test -vv --ffi --mt test_compareToOldDeployer
+    FOUNDRY_PROFILE=core_test RPC_URL=$RPC_INJECTIVE forge test -vv --ffi --mt test_compareToOldDeployer
     */
     function test_compareToOldDeployer() public {
         string memory i = " (This is verification test, adjust it when needed)";
@@ -89,7 +89,7 @@ contract SiloDeployerIntegrationTest is Test {
             // we have fresh deployment on Injective, no need to use old deployer
             // so if current is this address we return address(0)
             address current = _getDeployedAddress(SiloCoreContracts.SILO_DEPLOYER);
-            if (current == address(0xc4832aEbD785d9A35608E9Abc5d644A2e616311d)) return SiloDeployer(address(0));
+            if (current == address(0x931e59f06b83dD3d9A622FD4537989B6C63B9bde)) return SiloDeployer(address(0));
             else return SiloDeployer(current);
         }
 

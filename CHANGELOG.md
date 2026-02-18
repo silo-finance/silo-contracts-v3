@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.1.2] - 2026-02-18
+### Updated
+- update list of Silo implementation addresses
+
 ## [4.1.1] - 2026-02-18
 ### Updated
 - Chainlink oracle and vaults redeployment for Injective

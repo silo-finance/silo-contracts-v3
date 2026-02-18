@@ -323,33 +323,72 @@ jobs:
           local warnings
           if [ "$mode" = "oracles" ]; then
             warnings=$(awk '
-              BEGIN { IGNORECASE = 1 }
-              /warning/ {
-                if ($0 ~ /Compiler run successful with warnings:/) {
+              /Compiler run successful with warnings:/ {
+                next
+              }
+              /Warning.*Return value of low-level calls not used/ {
+                getline next_line
+                if (next_line ~ /gitmodules\/pyth-sdk-solidity/) {
                   next
                 }
-                current = $0
-                if (getline next_line > 0) {
-                  if (current ~ /Return value of low-level calls not used/ && next_line ~ /gitmodules\/pyth-sdk-solidity/) {
-                    next
-                  }
-                }
-                print current
+                print
+                print next_line
+                next
               }
-            ' "$file")
+              { print }
+            ' "$file" | awk '
+              BEGIN {
+                IGNORECASE = 1
+                remaining = 0
+                printed_any = 0
+              }
+              {
+                is_warning = ($0 ~ /warning/)
+                if (is_warning) {
+                  if (printed_any) {
+                    print ""
+                  }
+                  print "-----"
+                  print
+                  remaining = 4
+                  printed_any = 1
+                  next
+                }
+                if (remaining > 0) {
+                  print
+                  remaining--
+                }
+              }
+            ')
           else
             warnings=$(awk '
               BEGIN { IGNORECASE = 1 }
-              /warning/ &&
-              $0 !~ /Compiler run successful with warnings:/ &&
-              $0 !~ /There are more than 256 warnings. Ignoring the rest/ {
-                print
+              {
+                is_warning = ($0 ~ /warning/ &&
+                  $0 !~ /Compiler run successful with warnings:/ &&
+                  $0 !~ /There are more than 256 warnings. Ignoring the rest/)
+
+                if (is_warning) {
+                  if (printed_any) {
+                    print ""
+                  }
+                  print "-----"
+                  print
+                  remaining = 4
+                  printed_any = 1
+                  next
+                }
+
+                if (remaining > 0) {
+                  print
+                  remaining--
+                }
               }
             ' "$file")
           fi
 
           if [ -n "$warnings" ]; then
-            echo "⚠️ $label warning lines:"
+            echo "⚠️ $label warning blocks (5 lines each):"
             echo "$warnings"
           fi
         }

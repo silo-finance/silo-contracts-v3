@@ -43,6 +43,13 @@ contract SiloDeployerIntegrationTest is Test {
                 return;
             }
         }
+        
+        if (ChainsLib.getChainId() == ChainsLib.INJECTIVE_CHAIN_ID) {
+            if (address(oldDeployer) == address(0) && address(siloDeployer) == 0x931e59f06b83dD3d9A622FD4537989B6C63B9bde) {
+                console2.log("there is no old deployer on this chain yet");
+                return;
+            }
+        }
 
         assertNotEq(address(oldDeployer), address(0), string.concat("Previous deployer not found", i));
         assertNotEq(address(oldDeployer), address(siloDeployer), string.concat("Update old deployer address, it is the same as new one", i));
@@ -86,11 +93,7 @@ contract SiloDeployerIntegrationTest is Test {
         } else if (chainId == ChainsLib.ARBITRUM_ONE_CHAIN_ID) {
             return SiloDeployer(0x1bdeBe3C773452e1f8FBE338fF4139539D9bC2f4);
         } else if (chainId == ChainsLib.INJECTIVE_CHAIN_ID) {
-            // we have fresh deployment on Injective, no need to use old deployer
-            // so if current is this address we return address(0)
-            address current = _getDeployedAddress(SiloCoreContracts.SILO_DEPLOYER);
-            if (current == address(0x931e59f06b83dD3d9A622FD4537989B6C63B9bde)) return SiloDeployer(address(0));
-            else return SiloDeployer(current);
+            return SiloDeployer(0x931e59f06b83dD3d9A622FD4537989B6C63B9bde);
         }
 
         revert("Chain not supported");

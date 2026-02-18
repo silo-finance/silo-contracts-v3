@@ -1,0 +1,225 @@
+name: Coverage Report
+
+on:
+  workflow_dispatch:
+    inputs:
+      workspace:
+        description: 'Workspace to generate coverage for'
+        required: true
+        type: choice
+        options:
+          - silo-core
+          - silo-oracles
+          - silo-vaults
+      match_contracts:
+        description: 'Match contracts pattern (--mc). If empty, will use default --nmc behavior'
+        required: false
+        type: string
+        default: ''
+
+env:
+  RPC_MAINNET: ${{ secrets.RPC_MAINNET }}
+  RPC_ARBITRUM: ${{ secrets.RPC_ARBITRUM }}
+  RPC_OPTIMISM: ${{ secrets.RPC_OPTIMISM }}
+  RPC_ANVIL: ${{ secrets.RPC_ANVIL }}
+  RPC_SONIC: ${{ secrets.RPC_SONIC }}
+  RPC_AVALANCHE: ${{ secrets.RPC_AVALANCHE }}
+  PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
+  RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
+
+jobs:
+  generate-coverage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.2.3
+
+      - name: Install lcov 2.1
+        run: |
+          # Install dependencies
+          sudo apt-get update
+          sudo apt-get install -y perl libcapture-tiny-perl libdatetime-perl
+          
+          # Download and install lcov 2.1
+          wget https://github.com/linux-test-project/lcov/releases/download/v2.1/lcov-2.1.tar.gz
+          tar -xzf lcov-2.1.tar.gz
+          cd lcov-2.1
+          sudo make install
+
+          # Verify installation
+          which lcov
+          which genhtml
+
+      - name: Show lcov version
+        run: |
+          lcov --version
+          genhtml --version
+
+      - name: Run submodule update
+        run: git submodule update --init --recursive
+
+      - name: Build silo foundry utils
+        working-directory: ./gitmodules/silo-foundry-utils
+        run: |
+          cargo build --release
+          cp target/release/silo-foundry-utils ../../silo-foundry-utils
+          ../../silo-foundry-utils --version
+
+      - name: Create coverage directory
+        run: mkdir -p coverage
+
+      - name: Generate coverage for silo-core
+        if: inputs.workspace == 'silo-core'
+        run: |
+          rm -f lcov.info
+
+          echo "Building contracts first to generate ABI files..."
+          FOUNDRY_PROFILE=core forge build
+
+          echo "Running forge coverage..."
+          # Set up match contracts parameter
+          if [ -n "${{ inputs.match_contracts }}" ]; then
+            MATCH_CONTRACTS_ARG="--mc ${{ inputs.match_contracts }}"
+          else
+            MATCH_CONTRACTS_ARG="--nmc SiloLensCompatibilityTest|NewMarketTest|SiloDeployerIntegrationTest"
+          fi
+
+          echo "MATCH_CONTRACTS_ARG: $MATCH_CONTRACTS_ARG"
+          
+          AGGREGATOR=1INCH FOUNDRY_PROFILE=core_with_test forge coverage --report summary --report lcov --gas-price 1 --ffi --gas-limit 40000000000 --no-match-test "_skip_|_gas_|_anvil_" $MATCH_CONTRACTS_ARG > coverage/silo-core.log 2>&1 || true
+
+          echo "Coverage log contents:"
+          cat coverage/silo-core.log || true
+
+          cat coverage/silo-core.log | grep -i 'silo-core/contracts/' | grep -v -E '/(test|deploy|silo-oracles)/' > coverage/silo-core.txt || true
+
+          if [ -f lcov.info ]; then
+            echo "lcov.info found, generating HTML report..."
+            genhtml --ignore-errors inconsistent --ignore-errors range --exclude 'silo-oracles/*' --exclude '*/test/*' --exclude '*/deploy/*' -o coverage/silo-core/ lcov.info
+          else
+            echo "ERROR: lcov.info not generated. Check the coverage log above for errors."
+            exit 1
+          fi
+
+      - name: Generate coverage for silo-oracles
+        if: inputs.workspace == 'silo-oracles'
+        run: |
+          rm -f lcov.info
+
+          echo "Building contracts first to generate ABI files..."
+          FOUNDRY_PROFILE=oracles forge build
+
+          echo "Running forge coverage..."
+          # Set up match contracts parameter
+          if [ -n "${{ inputs.match_contracts }}" ]; then
+            MATCH_CONTRACTS_ARG="--mc ${{ inputs.match_contracts }}"
+          else
+            MATCH_CONTRACTS_ARG=""
+          fi
+          
+          FOUNDRY_PROFILE=oracles forge coverage --report summary --report lcov --ffi --no-match-test "_skip_|_gas_|_gas|_anvil_|test_UniswapV3OracleFactory_create_reuseConfig" $MATCH_CONTRACTS_ARG > coverage/silo-oracles.log 2>&1 || true
+
+          echo "Coverage log contents:"
+          cat coverage/silo-oracles.log || true
+
+          cat coverage/silo-oracles.log | grep -i 'silo-oracles/contracts/' | grep -v -E '/(test|deploy|common|silo-core)/' > coverage/silo-oracles.txt || true
+
+          if [ -f lcov.info ]; then
+            echo "lcov.info found, generating HTML report..."
+            genhtml --ignore-errors inconsistent --ignore-errors range --exclude 'silo-core/*' --exclude 'common/*' --exclude '*/test/*' --exclude '*/deploy/*' -o coverage/silo-oracles/ lcov.info
+          else
+            echo "ERROR: lcov.info not generated. Check the coverage log above for errors."
+            exit 1
+          fi
+
+      - name: Generate coverage for silo-vaults
+        if: inputs.workspace == 'silo-vaults'
+        run: |
+          rm -f lcov.info
+
+          echo "Building contracts first to generate ABI files..."
+          FOUNDRY_PROFILE=vaults forge build
+
+          echo "Running forge coverage..."
+          # Set up match contracts parameter
+          if [ -n "${{ inputs.match_contracts }}" ]; then
+            MATCH_CONTRACTS_ARG="--mc ${{ inputs.match_contracts }}"
+          else
+            MATCH_CONTRACTS_ARG=""
+          fi
+          
+          FOUNDRY_PROFILE=vaults_with_tests forge coverage --report summary --report lcov --gas-price 1 --ffi --gas-limit 40000000000 --no-match-test "_skip_|_gas_|_anvil_" $MATCH_CONTRACTS_ARG > coverage/silo-vaults.log 2>&1 || true
+
+          echo "Coverage log contents:"
+          cat coverage/silo-vaults.log || true
+
+          cat coverage/silo-vaults.log | grep -i 'silo-vaults/contracts/' | grep -v -E '/(test|deploy|common|mocks|silo-core|silo-oracles)/' > coverage/silo-vaults.txt || true
+
+          if [ -f lcov.info ]; then
+            echo "lcov.info found, generating HTML report..."
+            genhtml --ignore-errors inconsistent --ignore-errors range --exclude 'silo-core/*' --exclude 'silo-oracles/*' --exclude 'common/*' --exclude '*/mocks/*' --exclude '*/test/*' --exclude '*/deploy/*' -o coverage/silo-vaults/ lcov.info
+          else
+            echo "ERROR: lcov.info not generated. Check the coverage log above for errors."
+            exit 1
+          fi
+
+      - name: Get branch name
+        id: branch-name
+        run: |
+          # github.ref_name contains the branch name when using workflow_dispatch
+          BRANCH_NAME="${{ github.ref_name }}"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "Running coverage on branch: $BRANCH_NAME"
+
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p deploy-coverage
+          cp -r coverage/${{ inputs.workspace }}/* deploy-coverage/
+          echo "<h1>Coverage Report - ${{ inputs.workspace }}</h1>" > deploy-coverage/header.html
+          echo "<p>Branch: ${{ steps.branch-name.outputs.branch }}</p>" >> deploy-coverage/header.html
+          echo "<p>Generated: $(date)</p>" >> deploy-coverage/header.html
+          echo "<hr>" >> deploy-coverage/header.html
+          if [ -f deploy-coverage/index.html ]; then
+            cat deploy-coverage/header.html deploy-coverage/index.html > deploy-coverage/index-new.html
+            mv deploy-coverage/index-new.html deploy-coverage/index.html
+          fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy-coverage
+          destination_dir: coverage/${{ steps.branch-name.outputs.branch }}/${{ inputs.workspace }}
+          keep_files: true
+
+      - name: Generate job summary
+        run: |
+          PAGES_URL="https://silo-finance.github.io/silo-contracts-v3/coverage/${{ steps.branch-name.outputs.branch }}/${{ inputs.workspace }}/"
+          echo "# Coverage Report Generated! 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workspace**: ${{ inputs.workspace }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ steps.branch-name.outputs.branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Generated at**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📊 View Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "[Click here to view the coverage report]($PAGES_URL)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Direct URL: \`$PAGES_URL\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** The coverage report may take a few minutes to be available after deployment. If you get a 404 error, please wait a moment and refresh the page." >> $GITHUB_STEP_SUMMARY
+
+          # Also output the URL for easy copying
+          echo "Coverage report available at: $PAGES_URL"

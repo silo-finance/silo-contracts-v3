@@ -1,0 +1,147 @@
+name: Generate Commit List
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  generate-commit-list:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write  # Required for sticky comment
+    # Only run on PRs from release or hotfix branches
+    if: startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix/')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history to compare with previous releases
+        
+    - name: Extract version from branch name
+      id: extract-version
+      run: |
+        # Extract version from branch name (e.g., release/3.10.0 -> 3.10.0)
+        BRANCH_NAME=${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}
+        if [[ $BRANCH_NAME =~ ^(release|hotfix)/(.+)$ ]]; then
+          VERSION=${BASH_REMATCH[2]}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION from branch: $BRANCH_NAME"
+        else
+          echo "Branch name does not match expected pattern (release/* or hotfix/*)"
+          echo "Branch name: $BRANCH_NAME"
+          exit 1
+        fi
+        
+    - name: Get commits since last release
+      id: get-commits
+      run: |
+        VERSION="${{ steps.extract-version.outputs.version }}"
+        
+        # Try to find the previous version tag
+        # Look for tags that match version pattern (e.g., v3.9.0, 3.9.0)
+        PREVIOUS_TAG=$(git tag -l | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
+        
+        if [ -z "$PREVIOUS_TAG" ]; then
+          echo "No previous version tag found, getting all commits"
+          COMMITS=$(git log --oneline --pretty=format:"%s" --no-merges)
+        else
+          echo "Found previous tag: $PREVIOUS_TAG"
+          COMMITS=$(git log $PREVIOUS_TAG..HEAD --oneline --pretty=format:"%s" --no-merges)
+        fi
+        
+        # Count commits
+        COMMIT_COUNT=$(echo "$COMMITS" | wc -l)
+        echo "Found $COMMIT_COUNT commits since $PREVIOUS_TAG"
+        
+        # Save commits to file
+        echo "$COMMITS" > commits.txt
+        
+        # Create bullet point format
+        echo "$COMMITS" | sed 's/^/- /' > commits_bullets.txt
+        
+        echo "commits_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+        echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+        
+    - name: Generate commit list output
+      id: generate-output
+      run: |
+        VERSION="${{ steps.extract-version.outputs.version }}"
+        COMMIT_COUNT="${{ steps.get-commits.outputs.commits_count }}"
+        PREVIOUS_TAG="${{ steps.get-commits.outputs.previous_tag }}"
+        
+        # Create formatted output
+        cat > commit_list.md << EOF
+        # Commit List for Version $VERSION
+        
+        **Previous version:** $PREVIOUS_TAG  
+        **Total commits:** $COMMIT_COUNT  
+        **Generated:** $(date -u '+%Y-%m-%d %H:%M:%S') UTC
+        
+        ## Commits:
+        
+        $(cat commits_bullets.txt)
+        
+        EOF
+        
+        # Also create a simple text version
+        cat > commit_list.txt << EOF
+        Commits for Version $VERSION (since $PREVIOUS_TAG):
+        
+        $(cat commits_bullets.txt)
+        EOF
+        
+        echo "Generated commit list with $COMMIT_COUNT commits"
+        
+    - name: Upload commit list as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: commit-list-${{ steps.extract-version.outputs.version }}
+        path: |
+          commit_list.md
+          commit_list.txt
+          commits.txt
+        retention-days: 30
+        
+    - name: Display summary
+      run: |
+        echo "## 📋 Commit List Generated for Version ${{ steps.extract-version.outputs.version }}"
+        echo ""
+        echo "**Previous version:** ${{ steps.get-commits.outputs.previous_tag }}"
+        echo "**Total commits:** ${{ steps.get-commits.outputs.commits_count }}"
+        
+    - name: Create changelog suggestion file for sticky comment
+      run: |
+        VERSION="${{ steps.extract-version.outputs.version }}"
+        COMMIT_COUNT="${{ steps.get-commits.outputs.commits_count }}"
+        PREVIOUS_TAG="${{ steps.get-commits.outputs.previous_tag }}"
+        DATE_UTC=$(date -u '+%Y-%m-%d %H:%M:%S')
+        DATE_SHORT=$(date -u '+%Y-%m-%d')
+        
+        {
+          echo "## 📝 Suggested CHANGELOG.md Entry for Version $VERSION"
+          echo ""
+          echo "**Previous version:** $PREVIOUS_TAG"
+          echo "**Total commits:** $COMMIT_COUNT"
+          echo "**Generated:** $DATE_UTC UTC"
+          echo ""
+          echo "### Suggested addition to CHANGELOG.md:"
+          echo ""
+          echo '```markdown'
+          echo "## [$VERSION] - $DATE_SHORT"
+          echo ""
+          echo "### Added"
+          echo ""
+          cat commits_bullets.txt
+          echo '```'
+          echo ""
+          echo "### Commit Details:"
+          echo ""
+          cat commits_bullets.txt
+        } > changelog_suggestion.md
+
+    - name: Post changelog suggestion as sticky comment (overwrites previous, no duplicate comments)
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: changelog-suggestion
+        path: changelog_suggestion.md

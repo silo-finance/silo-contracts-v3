@@ -7,6 +7,7 @@ env:
     RPC_ANVIL: ${{ secrets.RPC_ANVIL }}
     RPC_SONIC: ${{ secrets.RPC_SONIC }}
     RPC_AVALANCHE: ${{ secrets.RPC_AVALANCHE }}
+    RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
     PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
     VERIFIER_URL_SONIC: ${{ secrets.VERIFIER_URL_SONIC }}
     VERIFIER_API_KEY_SONIC: ${{ secrets.VERIFIER_API_KEY_SONIC }}
@@ -68,8 +69,6 @@ jobs:
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: v1.2.3
 
       - name: Build silo foundry utils
         working-directory: ./gitmodules/silo-foundry-utils

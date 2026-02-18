@@ -13,16 +13,16 @@ import {LiquidationHelperDeploy} from "./LiquidationHelperDeploy.s.sol";
 /*
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/ManualLiquidationHelperDeploy.s.sol:ManualLiquidationHelperDeploy \
-        --ffi --rpc-url $RPC_SONIC \
+        --ffi --rpc-url $RPC_INJECTIVE \
         --broadcast --verify
 
     Resume verification:
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/ManualLiquidationHelperDeploy.s.sol:ManualLiquidationHelperDeploy \
-        --ffi --rpc-url $RPC_INK \
+        --ffi --rpc-url $RPC_INJECTIVE \
         --verify \
         --verifier blockscout \
-        --verifier-url $VERIFIER_URL_INK \
+        --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
         --resume
 
@@ -36,7 +36,10 @@ contract ManualLiquidationHelperDeploy is LiquidationHelperDeploy {
         address payable tokenReceiver = _tokenReceiver();
 
         console2.log("[ManualLiquidationHelperDeploy] nativeToken: ", nativeToken);
+        require(nativeToken != address(0), "Native token is not set");
+        
         console2.log("[ManualLiquidationHelperDeploy] tokensReceiver: ", tokenReceiver);
+        require(tokenReceiver != address(0), "Token receiver is not set");
 
         vm.startBroadcast(deployerPrivateKey);
 

@@ -17,17 +17,25 @@ import {SiloImplementationDeploy} from "./SiloImplementationDeploy.s.sol";
 /*
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloDeployerDeploy.s.sol \
-        --ffi --rpc-url $RPC_MAINNET --broadcast --verify
+        --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify
 
     Resume verification:
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloDeployerDeploy.s.sol \
-        --ffi --rpc-url $RPC_INK \
+        --ffi --rpc-url $RPC_INJECTIVE \
         --verify \
         --verifier blockscout \
-        --verifier-url $VERIFIER_URL_INK \
+        --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
         --resume
+
+    FOUNDRY_PROFILE=core forge verify-contract 0xe9E4f53DFF2e28272C87767aA235286134B09283 \
+         silo-core/contracts/SiloDeployer.sol:SiloDeployer \
+        --verifier blockscout \
+        --verifier-url $VERIFIER_URL_INJECTIVE \
+        --compiler-version 0.8.28 \
+        --num-of-optimizations 200 \
+        --watch
 
     Lib verification:
 

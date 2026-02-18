@@ -7,6 +7,8 @@ import {StdCheats} from "forge-std/StdCheats.sol";
 import {CommonBase} from "forge-std/Base.sol";
 
 import {MainnetDeploy} from "silo-core/deploy/MainnetDeploy.s.sol";
+import {SiloFactoryDeploy} from "silo-core/deploy/SiloFactoryDeploy.s.sol";
+import {SiloImplementationDeploy} from "silo-core/deploy/SiloImplementationDeploy.s.sol";
 import {SiloDeployWithDeployerOwner} from "silo-core/deploy/silo/SiloDeployWithDeployerOwner.s.sol";
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 
@@ -140,6 +142,14 @@ contract SiloFixture is StdCheats, CommonBase {
         )
     {
         if (!_mainNetDeployed) {
+            SiloFactoryDeploy siloFactoryDeploy = new SiloFactoryDeploy();
+            siloFactoryDeploy.run();
+            console2.log("[SiloFixture] _deploy: siloFactoryDeploy.run() done.");
+
+            SiloImplementationDeploy siloImplementationDeploy = new SiloImplementationDeploy();
+            siloImplementationDeploy.run();
+            console2.log("[SiloFixture] _deploy: siloImplementationDeploy.run() done.");
+
             MainnetDeploy mainnetDeploy = new MainnetDeploy();
             mainnetDeploy.disableDeploymentsSync();
             mainnetDeploy.run();

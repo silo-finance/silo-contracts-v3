@@ -15,7 +15,17 @@ import {SiloFactory} from "silo-core/contracts/SiloFactory.sol";
 /*
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloFactoryDeploy.s.sol \
-        --ffi --rpc-url $RPC_SONIC --verify --broadcast
+        --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify 
+
+    Resume verification:
+    FOUNDRY_PROFILE=core \
+        forge script silo-core/deploy/SiloFactoryDeploy.s.sol \
+        --ffi --rpc-url $RPC_INJECTIVE \
+        --verify \
+        --verifier blockscout \
+        --verifier-url $VERIFIER_URL_INJECTIVE \
+        --private-key $PRIVATE_KEY \
+        --resume
  */
 contract SiloFactoryDeploy is CommonDeploy {
     function run() public returns (ISiloFactory siloFactory) {

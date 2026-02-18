@@ -193,13 +193,40 @@ https://github.com/crytic/slither
 
 ## Deployment
 
-set env variable `PRIVATE_KEY` then run
+### Silo Core
+1. set env variable `PRIVATE_KEY` then run
+1. some adjustment is needed for new blockchain, I will use `Injective` as example:
+  - update silo utils to add new blockchain
+  - create `common/addresses/injective.json` and add necessary addresses
+  - add necessary keys `common/addresses/AddrKey.sol`
+1. run `silo-core/deploy/SiloFactoryDeploy.s.sol`
+1. run `silo-core/deploy/SiloImplementationDeploy.s.sol`
+1. run [MainnetDeploy.sol](silo-core/deploy/MainnetDeploy.s.sol) script
+1. update onchain registry `silo-core/deploy/TowerRegistration.s.sol`
+1. deploy any test market, to confirm everything is ok.
 
-```bash
-FOUNDRY_PROFILE=core \
-forge script silo-core/deploy/MainnetDeploy.s.sol \
---ffi --broadcast --rpc-url https://arbitrum-mainnet.infura.io/v3/<key>
+#### New SiloDeployer with Silo, ProtectedShareToken, and DebtShareToken implementations
+SiloDeployer is deployed using `MainnetDeploy` script. In case you need to redeploy:
+- run `silo-core/deploy/SiloDeployerDeploy.s.sol` script
+- then deploy new market
+
+### Silo Vaults
+1. run `silo-vaults/deploy/MainnetDeploy.s.sol`
+
+### Oracles
+Choose oracle you want to deploy and ruch each deployer individually.
+
+### Injective
+
+- we need custom build foundry from INJ repo
 ```
+git clone https://github.com/InjectiveLabs/foundry.git
+cd foundry
+foundryup -p . 
+```
+
+It is recommended to use dedicated scripts instead of mainnet deploy for injective.
+
 
 ## Flat Standard JSON script
 
@@ -209,8 +236,3 @@ Example:
 ```bash
 python3 scripts/get_standard_json.py --network arbitrum_one --address 0xA8C5eb9ae9c7a8fab4116d1e9c1FCfc8A478b390
 ```
-
-### New Silo deployer with Silo, ProtectedShareToken, and DebtShareToken implementations
-
-- run `silo-core/deploy/SiloDeployerDeploy.s.sol` script
-- then deploy new market

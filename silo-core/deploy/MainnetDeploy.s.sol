@@ -3,6 +3,10 @@ pragma solidity 0.8.28;
 
 import {CommonDeploy} from "./_CommonDeploy.sol";
 
+import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
+import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
+import {SiloCoreContracts, SiloCoreDeployments} from "silo-core/common/SiloCoreContracts.sol";
+
 import {InterestRateModelV2FactoryDeploy} from "./InterestRateModelV2FactoryDeploy.s.sol";
 import {InterestRateModelV2Deploy} from "./InterestRateModelV2Deploy.s.sol";
 import {SiloHookV1Deploy} from "./SiloHookV1Deploy.s.sol";
@@ -29,9 +33,15 @@ import {
 
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_MAINNET \
+        --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify
+
+    Resume verification:
+    FOUNDRY_PROFILE=core \
+        forge script silo-core/deploy/MainnetDeploy.s.sol \
+        --ffi --rpc-url $RPC_INJECTIVE \
         --verify \
-        --verifier etherscan --verifier-url $VERIFIER_URL_MAINNET \
+        --verifier blockscout \
+        --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
         --resume
  */
@@ -62,12 +72,12 @@ contract MainnetDeploy is CommonDeploy {
         siloFactoryDeploy.run();
         siloImplementationDeploy.run();
         interestRateModelV2ConfigFactoryDeploy.run(); // not for V3
-        dkinkIRMFactoryDeploy.run();
         interestRateModelV2Deploy.run(); // not for V3
+        dkinkIRMFactoryDeploy.run();
         siloHookV1Deploy.run();
         siloHookV2Deploy.run();
         siloHookV3Deploy.run();
-        liquidationHelperDeploy.run();
+        liquidationHelperDeploy.run(); // TODO once we have exchange on Injective
         siloLensDeploy.run();
         siloRouterV2Deploy.run();
         siloIncentivesControllerFactoryDeploy.run();
@@ -78,5 +88,6 @@ contract MainnetDeploy is CommonDeploy {
 
         // execute deployer at the end, to make sure we est factories
         siloDeployerDeploy.run();
+
     }
 }

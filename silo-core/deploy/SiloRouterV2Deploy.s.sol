@@ -9,14 +9,14 @@ import {SiloRouterV2Implementation} from "silo-core/contracts/silo-router/SiloRo
 /*
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloRouterV2Deploy.s.sol \
-        --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify
+        --ffi --rpc-url $RPC_INJECTIVE --broadcast --verify
 
     Resume verification:
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloRouterV2Deploy.s.sol \
-        --ffi --rpc-url $RPC_INK \
+        --ffi --rpc-url $RPC_INJECTIVE \
         --verify \
-        --verifier blockscout --verifier-url $VERIFIER_URL_INK \
+        --verifier blockscout --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
         --resume
 */

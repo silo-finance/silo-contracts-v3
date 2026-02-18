@@ -36,23 +36,33 @@ contract SiloDeployerIntegrationTest is Test {
         SiloDeployer oldDeployer = _getPreviousDeployer();
 
         console2.log("chain %s (%s)", ChainsLib.chainAlias(), ChainsLib.getChainId());
-        
+
         if (ChainsLib.getChainId() == ChainsLib.OPTIMISM_CHAIN_ID) {
-            if (address(oldDeployer) == address(0) && address(siloDeployer) == 0x6225eF6256f945f490204D7F71e80B0FF84523dD) {
+            if (
+                address(oldDeployer) == address(0)
+                    && address(siloDeployer) == 0x6225eF6256f945f490204D7F71e80B0FF84523dD
+            ) {
                 console2.log("there is no old deployer on this chain yet");
                 return;
             }
         }
-        
+
         if (ChainsLib.getChainId() == ChainsLib.INJECTIVE_CHAIN_ID) {
-            if (address(oldDeployer) == address(0) && address(siloDeployer) == 0x931e59f06b83dD3d9A622FD4537989B6C63B9bde) {
+            if (
+                address(oldDeployer) == address(0)
+                    && address(siloDeployer) == 0x931e59f06b83dD3d9A622FD4537989B6C63B9bde
+            ) {
                 console2.log("there is no old deployer on this chain yet");
                 return;
             }
         }
 
         assertNotEq(address(oldDeployer), address(0), string.concat("Previous deployer not found", i));
-        assertNotEq(address(oldDeployer), address(siloDeployer), string.concat("Update old deployer address, it is the same as new one", i));
+        assertNotEq(
+            address(oldDeployer),
+            address(siloDeployer),
+            string.concat("Update old deployer address, it is the same as new one", i)
+        );
 
         bool irmConfigFactoryMatch = oldDeployer.IRM_CONFIG_FACTORY() == siloDeployer.IRM_CONFIG_FACTORY();
         bool dynamicKinkModelFactoryMatch;

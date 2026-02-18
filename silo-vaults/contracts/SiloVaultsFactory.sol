@@ -2,7 +2,6 @@
 
 pragma solidity 0.8.28;
 
-import {Create2} from "openzeppelin5/utils/Create2.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 
 import {IIncentivesClaimingLogic} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogic.sol";

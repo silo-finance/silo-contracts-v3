@@ -10,7 +10,6 @@ import {Address} from "openzeppelin5/utils/Address.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 
 import {ISiloConfig} from "../interfaces/ISiloConfig.sol";
-import {IInterestRateModelV2} from "../interfaces/IInterestRateModelV2.sol";
 import {ISilo} from "../interfaces/ISilo.sol";
 import {IShareToken} from "../interfaces/IShareToken.sol";
 import {IERC3156FlashBorrower} from "../interfaces/IERC3156FlashBorrower.sol";

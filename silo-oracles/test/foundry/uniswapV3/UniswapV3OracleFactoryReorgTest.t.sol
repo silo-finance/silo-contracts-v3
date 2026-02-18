@@ -4,9 +4,6 @@ pragma abicoder v2;
 
 import "forge-std/Test.sol";
 
-import {IUniswapV3PoolState} from "uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol";
-import {IUniswapV3PoolImmutables} from "uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol";
-
 import "../../../constants/Ethereum.sol";
 import "../_common/UniswapPools.sol";
 import "../../../contracts/uniswapV3/UniswapV3OracleFactory.sol";

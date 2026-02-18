@@ -8,9 +8,7 @@ import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {IERC4626} from "forge-std/interfaces/IERC4626.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
-import {Math} from "openzeppelin5/utils/math/Math.sol";
 
-import {SiloIncentivesControllerFactory} from "silo-core/contracts/incentives/SiloIncentivesControllerFactory.sol";
 import {SiloIncentivesControllerFactoryDeploy} from "silo-core/deploy/SiloIncentivesControllerFactoryDeploy.s.sol";
 import {ISiloIncentivesControllerFactory} from
     "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";

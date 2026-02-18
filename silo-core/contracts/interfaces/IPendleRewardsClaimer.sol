@@ -2,8 +2,6 @@
 pragma solidity >=0.5.0;
 
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
-import {IPendleMarketLike} from "silo-core/contracts/interfaces/IPendleMarketLike.sol";
-import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 
 interface IPendleRewardsClaimer is IHookReceiver {

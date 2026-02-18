@@ -3,8 +3,6 @@ pragma solidity 0.8.28;
 
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
-import {Math} from "openzeppelin5/utils/math/Math.sol";
-
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
@@ -15,7 +13,6 @@ import {GaugeHookReceiver} from "silo-core/contracts/hooks/gauge/GaugeHookReceiv
 import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
 import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiver.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
-import {ShareTokenLib} from "silo-core/contracts/lib/ShareTokenLib.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 
 /// @title PendleRewardsClaimer

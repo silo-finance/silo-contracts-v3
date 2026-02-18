@@ -2,8 +2,6 @@ pragma solidity 0.8.28;
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ILeverageUsingSiloFlashloan} from "silo-core/contracts/interfaces/ILeverageUsingSiloFlashloan.sol";
-import {IGeneralSwapModule} from "silo-core/contracts/interfaces/IGeneralSwapModule.sol";
-
 import {LeverageUsingSiloFlashloanWithGeneralSwap} from
     "silo-core/contracts/leverage/LeverageUsingSiloFlashloanWithGeneralSwap.sol";
 

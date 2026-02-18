@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.28;
 
-import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {Clones} from "openzeppelin5/proxy/Clones.sol";
 
 import {Create2Factory} from "common/utils/Create2Factory.sol";
 import {OracleFactory} from "../_common/OracleFactory.sol";
 import {DIAOracle, IDIAOracle} from "../dia/DIAOracle.sol";
 import {DIAOracleConfig} from "../dia/DIAOracleConfig.sol";
-import {OracleNormalization} from "../lib/OracleNormalization.sol";
 
 contract DIAOracleFactory is Create2Factory, OracleFactory {
     /// @dev decimals in DIA oracle

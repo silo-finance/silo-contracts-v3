@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.28;
 
-import {CommonBase} from "forge-std/Base.sol";
-import {console} from "forge-std/console.sol";
-
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 

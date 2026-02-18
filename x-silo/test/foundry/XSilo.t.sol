@@ -3,18 +3,17 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 
-import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 
 import {ERC20Mock} from "openzeppelin5/mocks/token/ERC20Mock.sol";
-import {IERC20Errors} from "openzeppelin5/interfaces/draft-IERC6093.sol";
 
 import {XSiloAndStreamDeploy} from "x-silo/deploy/XSiloAndStreamDeploy.s.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
 
-import {XSilo, XRedeemPolicy, Stream, ERC20} from "../../contracts/XSilo.sol";
+import {XSilo} from "../../contracts/XSilo.sol";
+import {Stream} from "../../contracts/modules/Stream.sol";
 
 /*
 FOUNDRY_PROFILE=x_silo forge test -vv --ffi --mc XSiloTest

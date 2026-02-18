@@ -6,8 +6,6 @@ import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {Initializable} from "openzeppelin5/proxy/utils/Initializable.sol";
 import {ERC20Mock} from "openzeppelin5/mocks/token/ERC20Mock.sol";
-import {Clones} from "openzeppelin5/proxy/Clones.sol";
-import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
@@ -19,7 +17,6 @@ import {IPendleMarketLike} from "silo-core/contracts/interfaces/IPendleMarketLik
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
 import {SiloCoreContracts, SiloCoreDeployments} from "silo-core/common/SiloCoreContracts.sol";
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
-import {PendleRewardsClaimer} from "silo-core/contracts/hooks/PendleRewardsClaimer.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";

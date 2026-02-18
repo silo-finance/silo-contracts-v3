@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.0;
 
-import {Test} from "forge-std/Test.sol";
-
 import {Initializable} from "openzeppelin5-upgradeable/proxy/utils/Initializable.sol";
 
 import {IPTLinearOracleConfig} from "silo-oracles/contracts/interfaces/IPTLinearOracleConfig.sol";
@@ -12,10 +10,6 @@ import {IPTLinearOracle} from "silo-oracles/contracts/interfaces/IPTLinearOracle
 import {PTLinearOracle} from "silo-oracles/contracts/pendle/linear/PTLinearOracle.sol";
 
 import {PTLinearOracleFactory} from "silo-oracles/contracts/pendle/linear/PTLinearOracleFactory.sol";
-
-import {IPendleMarketV3Like} from "silo-oracles/contracts/pendle/interfaces/IPendleMarketV3Like.sol";
-import {IPendleSYTokenLike} from "silo-oracles/contracts/pendle/interfaces/IPendleSYTokenLike.sol";
-import {IPendlePTLike} from "silo-oracles/contracts/pendle/interfaces/IPendlePTLike.sol";
 
 import {SparkLinearDiscountOracleFactoryMock} from "./_common/SparkLinearDiscountOracleFactoryMock.sol";
 import {PTLinearMocks} from "./_common/PTLinearMocks.sol";

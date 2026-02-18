@@ -9,8 +9,6 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
-import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
-
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 import {Rounding} from "silo-core/contracts/lib/Rounding.sol";

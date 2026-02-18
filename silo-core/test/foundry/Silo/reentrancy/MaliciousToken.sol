@@ -4,12 +4,9 @@ pragma solidity ^0.8.24;
 import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
-import {ERC20} from "openzeppelin5/token/ERC20/ERC20.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
-import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
-import {TransientReentrancy} from "silo-core/contracts/hooks/_common/TransientReentrancy.sol";
 import {Registries} from "./registries/Registries.sol";
 import {LeverageMethodsRegistry} from "./registries/LeverageMethodsRegistry.sol";
 import {IMethodsRegistry} from "./interfaces/IMethodsRegistry.sol";

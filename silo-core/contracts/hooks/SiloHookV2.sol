@@ -4,7 +4,6 @@ pragma solidity 0.8.28;
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
-import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
 import {GaugeHookReceiver} from "silo-core/contracts/hooks/gauge/GaugeHookReceiver.sol";

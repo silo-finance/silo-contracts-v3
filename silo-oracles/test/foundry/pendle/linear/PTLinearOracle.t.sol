@@ -5,7 +5,6 @@ import {AggregatorV3Interface} from "chainlink/v0.8/interfaces/AggregatorV3Inter
 import {ERC20} from "openzeppelin5/token/ERC20/ERC20.sol";
 
 import {PTLinearOracleFactory} from "silo-oracles/contracts/pendle/linear/PTLinearOracleFactory.sol";
-import {IPTLinearOracleConfig} from "silo-oracles/contracts/interfaces/IPTLinearOracleConfig.sol";
 import {IPTLinearOracle} from "silo-oracles/contracts/interfaces/IPTLinearOracle.sol";
 import {IPTLinearOracleFactory} from "silo-oracles/contracts/interfaces/IPTLinearOracleFactory.sol";
 

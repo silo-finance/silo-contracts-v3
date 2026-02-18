@@ -3,9 +3,8 @@ pragma solidity 0.8.28;
 
 import "../../../constants/Arbitrum.sol";
 
-import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {TokensGenerator} from "../_common/TokensGenerator.sol";
-import {DIAOracle, DIAOracle, IDIAOracle, IDIAOracleV2} from "../../../contracts/dia/DIAOracle.sol";
+import {IDIAOracle} from "../../../contracts/interfaces/IDIAOracle.sol";
 import {DIAOracleConfig} from "../../../contracts/dia/DIAOracleConfig.sol";
 import "../_common/DIAConfigDefault.sol";
 

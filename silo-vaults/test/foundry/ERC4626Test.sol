@@ -3,7 +3,6 @@ pragma solidity ^0.8.28;
 
 import {IERC20Errors} from "openzeppelin5/interfaces/draft-IERC6093.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
-import {Math} from "openzeppelin5/token/ERC20/extensions/ERC4626.sol";
 
 import {IERC3156FlashBorrower} from "silo-core/contracts/interfaces/IERC3156FlashBorrower.sol";
 

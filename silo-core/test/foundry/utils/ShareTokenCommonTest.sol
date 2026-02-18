@@ -6,14 +6,11 @@ import {Vm} from "forge-std/Vm.sol";
 import {MessageHashUtils} from "openzeppelin5/utils/cryptography/MessageHashUtils.sol";
 import {ERC20PermitUpgradeable} from "openzeppelin5-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 
-import {IERC20R} from "silo-core/contracts/interfaces/IERC20R.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {SiloLittleHelper} from "silo-core/test/foundry/_common/SiloLittleHelper.sol";
-import {SiloMathLib} from "silo-core/contracts/lib/SiloERC4626Lib.sol";
-import {Hook} from "silo-core/contracts/lib/Hook.sol";
 
 // solhint-disable ordering
 

@@ -10,7 +10,7 @@ import {IShareTokenInitializable} from "./interfaces/IShareTokenInitializable.so
 import {ISiloFactory} from "./interfaces/ISiloFactory.sol";
 import {ISilo} from "./interfaces/ISilo.sol";
 import {IShareToken} from "./interfaces/IShareToken.sol";
-import {ISiloConfig, SiloConfig} from "./SiloConfig.sol";
+import {ISiloConfig} from "./SiloConfig.sol";
 import {Hook} from "./lib/Hook.sol";
 import {Views} from "./lib/Views.sol";
 import {CloneDeterministic} from "./lib/CloneDeterministic.sol";

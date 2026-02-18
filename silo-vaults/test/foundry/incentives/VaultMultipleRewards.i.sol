@@ -15,7 +15,6 @@ import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
-import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 
@@ -24,8 +23,6 @@ import {IVaultIncentivesModule} from "silo-vaults/contracts/interfaces/IVaultInc
 
 import {INotificationReceiver} from "../../../contracts/interfaces/INotificationReceiver.sol";
 import {IntegrationTest} from "../helpers/IntegrationTest.sol";
-
-import {CAP} from "../helpers/BaseTest.sol";
 
 /*
  FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc VaultMultipleRewardsTest -vvv

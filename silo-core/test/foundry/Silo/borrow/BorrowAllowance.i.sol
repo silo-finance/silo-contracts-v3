@@ -6,8 +6,6 @@ import {Test} from "forge-std/Test.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ShareDebtToken} from "silo-core/contracts/utils/ShareDebtToken.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
-import {IERC20Errors} from "openzeppelin5/interfaces/draft-IERC6093.sol";
-
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 
 /*

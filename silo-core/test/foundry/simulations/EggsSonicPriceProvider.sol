@@ -2,7 +2,6 @@
 pragma solidity ^0.8.28;
 
 import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
-import {IWrappedNativeToken} from "silo-core/contracts/interfaces/IWrappedNativeToken.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
 struct Loan {

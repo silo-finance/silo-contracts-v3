@@ -7,7 +7,6 @@ import {MessageHashUtils} from "openzeppelin5//utils/cryptography/MessageHashUti
 
 import {MethodReentrancyTest} from "silo-core/test/foundry/Silo/reentrancy/methods/MethodReentrancyTest.sol";
 import {TestStateLib} from "silo-vaults/test/foundry/call-and-reenter/TestState.sol";
-import {ISiloVault} from "silo-vaults/contracts/interfaces/ISiloVault.sol";
 
 contract PermitReentrancyTest is MethodReentrancyTest {
     bytes32 constant internal _PERMIT_TYPEHASH =

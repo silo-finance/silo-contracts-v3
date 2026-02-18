@@ -7,7 +7,6 @@ import {console2} from "forge-std/console2.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
-import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 
 import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";

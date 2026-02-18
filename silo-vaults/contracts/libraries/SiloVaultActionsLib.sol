@@ -7,7 +7,6 @@ import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 import {Math} from "openzeppelin5/token/ERC20/extensions/ERC4626.sol";
 
 import {UtilsLib} from "morpho-blue/libraries/UtilsLib.sol";
-import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 
 import {ErrorsLib} from "./ErrorsLib.sol";
 import {EventsLib} from "./EventsLib.sol";

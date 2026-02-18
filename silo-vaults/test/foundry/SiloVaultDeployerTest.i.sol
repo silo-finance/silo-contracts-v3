@@ -9,8 +9,6 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {ISiloVaultDeployer} from "silo-vaults/contracts/interfaces/ISiloVaultDeployer.sol";
 import {IVaultIncentivesModule} from "silo-vaults/contracts/interfaces/IVaultIncentivesModule.sol";
-import {ISiloVaultsFactory} from "silo-vaults/contracts/interfaces/ISiloVaultsFactory.sol";
-import {IdleVaultsFactory} from "silo-vaults/contracts/IdleVaultsFactory.sol";
 import {ISiloVault} from "silo-vaults/contracts/interfaces/ISiloVault.sol";
 import {SiloVaultsDeployerDeploy} from "silo-vaults/deploy/SiloVaultsDeployerDeploy.s.sol";
 import {SiloIncentivesControllerFactoryDeploy} from "silo-core/deploy/SiloIncentivesControllerFactoryDeploy.s.sol";
@@ -19,14 +17,6 @@ import {SiloVaultsFactoryDeploy} from "silo-vaults/deploy/SiloVaultsFactoryDeplo
 import {IdleVaultsFactoryDeploy} from "silo-vaults/deploy/IdleVaultsFactoryDeploy.s.sol";
 import {IdleVault} from "silo-vaults/contracts/IdleVault.sol";
 import {IIncentivesClaimingLogicFactory} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogicFactory.sol";
-
-import {
-    ISiloIncentivesControllerFactory
-} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
-
-import {
-    ISiloIncentivesControllerCLFactory
-} from "silo-vaults/contracts/interfaces/ISiloIncentivesControllerCLFactory.sol";
 
 /*
 FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc SiloVaultDeployerTest -vv

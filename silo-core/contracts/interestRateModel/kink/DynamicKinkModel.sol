@@ -2,7 +2,6 @@
 pragma solidity 0.8.28;
 
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
-import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {SignedMath} from "openzeppelin5/utils/math/SignedMath.sol";
 import {Initializable} from "openzeppelin5/proxy/utils/Initializable.sol";
 

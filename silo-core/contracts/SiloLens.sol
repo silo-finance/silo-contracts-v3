@@ -8,7 +8,6 @@ import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {Utils} from "silo-foundry-utils/lib/Utils.sol";
 
 import {ISiloLens, ISilo} from "./interfaces/ISiloLens.sol";
-import {IShareToken} from "./interfaces/IShareToken.sol";
 import {ISiloConfig} from "./interfaces/ISiloConfig.sol";
 import {IPartialLiquidation} from "./interfaces/IPartialLiquidation.sol";
 import {IInterestRateModel} from "./interfaces/IInterestRateModel.sol";

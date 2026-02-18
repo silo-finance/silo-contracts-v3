@@ -22,10 +22,6 @@ import {LeverageUsingSiloFlashloanWithGeneralSwap} from
 import {LeverageRouter} from "silo-core/contracts/leverage/LeverageRouter.sol";
 
 import {SiloLittleHelper} from "../_common/SiloLittleHelper.sol";
-import {SwapRouterMock} from "./mocks/SwapRouterMock.sol";
-
-import {MintableToken} from "../_common/MintableToken.sol";
-import {SiloFixture, SiloConfigOverride} from "../_common/fixtures/SiloFixture.sol";
 
 /*
     FOUNDRY_PROFILE=core_test  forge test -vv --ffi --mc LeverageWstkscUSDTest

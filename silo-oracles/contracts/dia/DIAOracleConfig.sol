@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.28;
 
-import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
-import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
-
 import {IDIAOracle} from "../interfaces/IDIAOracle.sol";
 import {IDIAOracleV2} from "../external/dia/IDIAOracleV2.sol";
 import {Layer1OracleConfig} from "../_common/Layer1OracleConfig.sol";

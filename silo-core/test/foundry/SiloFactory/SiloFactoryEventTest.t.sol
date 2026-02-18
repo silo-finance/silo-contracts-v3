@@ -13,7 +13,6 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {Silo} from "silo-core/contracts/Silo.sol";
 import {ShareProtectedCollateralToken} from "silo-core/contracts/utils/ShareProtectedCollateralToken.sol";
 import {ShareDebtToken} from "silo-core/contracts/utils/ShareDebtToken.sol";
-import {SiloConfig} from "silo-core/contracts/SiloConfig.sol";
 import {SiloFactory} from "silo-core/contracts/SiloFactory.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 

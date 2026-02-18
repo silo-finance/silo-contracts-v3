@@ -18,8 +18,7 @@ import {
     PendingAddress,
     MarketAllocation,
     ISiloVaultBase,
-    ISiloVaultStaticTyping,
-    ISiloVault
+    ISiloVaultStaticTyping
 } from "./interfaces/ISiloVault.sol";
 
 import {INotificationReceiver} from "./interfaces/INotificationReceiver.sol";

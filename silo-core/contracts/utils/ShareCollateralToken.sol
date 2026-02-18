@@ -2,9 +2,8 @@
 pragma solidity 0.8.28;
 
 import {ShareTokenLib} from "../lib/ShareTokenLib.sol";
-import {SiloMathLib} from "../lib/SiloMathLib.sol";
 import {ShareCollateralTokenLib} from "../lib/ShareCollateralTokenLib.sol";
-import {IShareToken, ShareToken, ISilo} from "./ShareToken.sol";
+import {IShareToken, ShareToken} from "./ShareToken.sol";
 import {IVersioned} from "../interfaces/IVersioned.sol";
 
 /// @title ShareCollateralToken

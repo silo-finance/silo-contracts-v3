@@ -5,8 +5,6 @@ pragma solidity 0.8.28;
 
 import {Ownable1and2Steps} from "common/access/Ownable1and2Steps.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
-import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
-import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {IGaugeHookReceiver, IHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";

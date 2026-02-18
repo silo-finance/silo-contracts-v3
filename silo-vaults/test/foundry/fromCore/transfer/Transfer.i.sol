@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.28;
 
-import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
-
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
-import {ErrorsLib} from "silo-vaults/contracts/libraries/ErrorsLib.sol";
-import {MarketConfig} from "silo-vaults/contracts/libraries/PendingLib.sol";
 import {VaultsLittleHelper} from "../_common/VaultsLittleHelper.sol";
 
 /*

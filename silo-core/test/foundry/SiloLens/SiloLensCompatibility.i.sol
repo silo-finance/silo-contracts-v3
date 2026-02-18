@@ -37,7 +37,9 @@ contract SiloLensCompatibilityTest is IntegrationTest {
         _initializeSilosForChain(ChainsLib.SONIC_ALIAS);
     }
 
-    // FOUNDRY_PROFILE=core_test forge test --mt test_siloLens_compatibility --ffi -vv
+    /*
+    FOUNDRY_PROFILE=core_test forge test --mt test_siloLens_compatibility --ffi -vv
+    */
     function test_siloLens_compatibility() public {
         uint256 chainsLength = _chainsToTest.length;
 
@@ -97,6 +99,7 @@ contract SiloLensCompatibilityTest is IntegrationTest {
         _testFn(_getOracleAddresses, _silo);
         _testFn(_VERSION);
         _testFn(_getVersion, address(_silo));
+        _testFn(_getVersions, address(_silo));
     }
 
     function _testSiloConfig(ISiloConfig _siloConfig) internal {
@@ -367,6 +370,13 @@ contract SiloLensCompatibilityTest is IntegrationTest {
         // method is not related to Silo
         _lens.getVersion(_contract);
         sig = ISiloLens.getVersion.selector;
+    }
+
+    function _getVersions(address _contract) internal view returns (bytes4 sig) {
+        address[] memory contracts = new address[](1);
+        contracts[0] = _contract;
+        _lens.getVersions(contracts);
+        sig = ISiloLens.getVersions.selector;
     }
 
     function _getOracleAddresses(ISilo _silo) internal view returns (bytes4 sig) {

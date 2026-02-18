@@ -31,7 +31,7 @@ contract SiloDeployerIntegrationTest is Test {
     /*
     FOUNDRY_PROFILE=core_test RPC_URL=$RPC_INJECTIVE forge test -vv --ffi --mt test_compareToOldDeployer
     */
-    function test_compareToOldDeployer() public {
+    function test_compareToOldDeployer() public view {
         string memory i = " (This is verification test, adjust it when needed)";
         SiloDeployer oldDeployer = _getPreviousDeployer();
 

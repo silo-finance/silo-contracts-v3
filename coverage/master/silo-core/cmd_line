@@ -1,0 +1,1 @@
+genhtml --ignore-errors inconsistent --ignore-errors range --exclude silo-oracles/* --exclude */test/* --exclude */deploy/* -o coverage/silo-core/ lcov.info

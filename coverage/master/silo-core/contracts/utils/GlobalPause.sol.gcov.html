@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - contracts/utils/GlobalPause.sol</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory contracts/utils">contracts/utils</a> - GlobalPause.sol<span style="font-size: 80%;"> (source / <a href="GlobalPause.sol.func-c.html" title="Click to go to function table">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">0.0&nbsp;%</td>
+            <td class="headerCovTableEntry">62</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-02-18 12:07:44</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryLo">0.0&nbsp;%</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : // SPDX-License-Identifier: MIT</span>
+<span id="L2"><span class="lineNum">       2</span>              : pragma solidity 0.8.28;</span>
+<span id="L3"><span class="lineNum">       3</span>              : </span>
+<span id="L4"><span class="lineNum">       4</span>              : // solhint-disable ordering</span>
+<span id="L5"><span class="lineNum">       5</span>              : </span>
+<span id="L6"><span class="lineNum">       6</span>              : import {EnumerableSet} from &quot;openzeppelin5/utils/structs/EnumerableSet.sol&quot;;</span>
+<span id="L7"><span class="lineNum">       7</span>              : </span>
+<span id="L8"><span class="lineNum">       8</span>              : import {Ownable1and2Steps, Ownable2Step} from &quot;common/access/Ownable1and2Steps.sol&quot;;</span>
+<span id="L9"><span class="lineNum">       9</span>              : import {IPausable} from &quot;common/utils/interfaces/IPausable.sol&quot;;</span>
+<span id="L10"><span class="lineNum">      10</span>              : import {IGnosisSafeLike} from &quot;common/utils/interfaces/IGnosisSafeLike.sol&quot;;</span>
+<span id="L11"><span class="lineNum">      11</span>              : import {IGlobalPause} from &quot;common/utils/interfaces/IGlobalPause.sol&quot;;</span>
+<span id="L12"><span class="lineNum">      12</span>              : </span>
+<span id="L13"><span class="lineNum">      13</span>              : contract GlobalPause is Ownable1and2Steps, IGlobalPause {</span>
+<span id="L14"><span class="lineNum">      14</span>              :     using EnumerableSet for EnumerableSet.AddressSet;</span>
+<span id="L15"><span class="lineNum">      15</span>              : </span>
+<span id="L16"><span class="lineNum">      16</span>              :     /// @notice The list of contracts to pause and unpause</span>
+<span id="L17"><span class="lineNum">      17</span>              :     EnumerableSet.AddressSet private _contracts;</span>
+<span id="L18"><span class="lineNum">      18</span>              : </span>
+<span id="L19"><span class="lineNum">      19</span>              :     /// @notice The list of accounts who can pause and unpause contracts</span>
+<span id="L20"><span class="lineNum">      20</span>              :     EnumerableSet.AddressSet private _authorizedToPause;</span>
+<span id="L21"><span class="lineNum">      21</span>              : </span>
+<span id="L22"><span class="lineNum">      22</span>              :     /// @dev Modifier to check if the caller is a signer of the multisig contract or a manager</span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaUNC tlaBgUNC">           0 :     modifier onlyAuthorized() {</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaUNC">           0 :         require(</span></span>
+<span id="L25"><span class="lineNum">      25</span>              :             isSigner(msg.sender) || _authorizedToPause.contains(msg.sender) || msg.sender == owner(),</span>
+<span id="L26"><span class="lineNum">      26</span>              :             Forbidden()</span>
+<span id="L27"><span class="lineNum">      27</span>              :         );</span>
+<span id="L28"><span class="lineNum">      28</span>              :         _;</span>
+<span id="L29"><span class="lineNum">      29</span>              :     }</span>
+<span id="L30"><span class="lineNum">      30</span>              : </span>
+<span id="L31"><span class="lineNum">      31</span>              :     /// @param _multisig The multisig contract which owners are allowed to pause and unpause contracts</span>
+<span id="L32"><span class="lineNum">      32</span>              :     constructor(address _multisig) Ownable1and2Steps(_multisig) {}</span>
+<span id="L33"><span class="lineNum">      33</span>              : </span>
+<span id="L34"><span class="lineNum">      34</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaUNC">           0 :     function pauseAll() external onlyAuthorized {</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaUNC">           0 :         uint256 length = _contracts.length();</span></span>
+<span id="L37"><span class="lineNum">      37</span>              : </span>
+<span id="L38"><span class="lineNum">      38</span> <span class="tlaUNC">           0 :         for (uint256 i = 0; i &lt; length; i++) {</span></span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaUNC">           0 :             _pause(_contracts.at(i));</span></span>
+<span id="L40"><span class="lineNum">      40</span>              :         }</span>
+<span id="L41"><span class="lineNum">      41</span>              :     }</span>
+<span id="L42"><span class="lineNum">      42</span>              : </span>
+<span id="L43"><span class="lineNum">      43</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaUNC">           0 :     function unpauseAll() external onlyAuthorized {</span></span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaUNC">           0 :         uint256 length = _contracts.length();</span></span>
+<span id="L46"><span class="lineNum">      46</span>              : </span>
+<span id="L47"><span class="lineNum">      47</span> <span class="tlaUNC">           0 :         for (uint256 i = 0; i &lt; length; i++) {</span></span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaUNC">           0 :             _unpause(_contracts.at(i));</span></span>
+<span id="L49"><span class="lineNum">      49</span>              :         }</span>
+<span id="L50"><span class="lineNum">      50</span>              :     }</span>
+<span id="L51"><span class="lineNum">      51</span>              : </span>
+<span id="L52"><span class="lineNum">      52</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L53"><span class="lineNum">      53</span> <span class="tlaUNC">           0 :     function pause(address _contract) external onlyAuthorized {</span></span>
+<span id="L54"><span class="lineNum">      54</span> <span class="tlaUNC">           0 :         _pause(_contract);</span></span>
+<span id="L55"><span class="lineNum">      55</span>              :     }</span>
+<span id="L56"><span class="lineNum">      56</span>              : </span>
+<span id="L57"><span class="lineNum">      57</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaUNC">           0 :     function unpause(address _contract) external onlyAuthorized {</span></span>
+<span id="L59"><span class="lineNum">      59</span> <span class="tlaUNC">           0 :         _unpause(_contract);</span></span>
+<span id="L60"><span class="lineNum">      60</span>              :     }</span>
+<span id="L61"><span class="lineNum">      61</span>              : </span>
+<span id="L62"><span class="lineNum">      62</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaUNC">           0 :     function addContract(address _contract) external onlyAuthorized {</span></span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaUNC">           0 :         require(_contracts.add(_contract), FailedToAdd());</span></span>
+<span id="L65"><span class="lineNum">      65</span> <span class="tlaUNC">           0 :         emit ContractAdded(_contract);</span></span>
+<span id="L66"><span class="lineNum">      66</span>              :     }</span>
+<span id="L67"><span class="lineNum">      67</span>              : </span>
+<span id="L68"><span class="lineNum">      68</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaUNC">           0 :     function removeContract(address _contract) external onlyOwner {</span></span>
+<span id="L70"><span class="lineNum">      70</span> <span class="tlaUNC">           0 :         require(_contracts.remove(_contract), FailedToRemove());</span></span>
+<span id="L71"><span class="lineNum">      71</span> <span class="tlaUNC">           0 :         emit ContractRemoved(_contract);</span></span>
+<span id="L72"><span class="lineNum">      72</span>              :     }</span>
+<span id="L73"><span class="lineNum">      73</span>              : </span>
+<span id="L74"><span class="lineNum">      74</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L75"><span class="lineNum">      75</span> <span class="tlaUNC">           0 :     function grantAuthorization(address _account) external onlyOwner {</span></span>
+<span id="L76"><span class="lineNum">      76</span> <span class="tlaUNC">           0 :         require(_authorizedToPause.add(_account), FailedToAdd());</span></span>
+<span id="L77"><span class="lineNum">      77</span> <span class="tlaUNC">           0 :         emit Authorized(_account);</span></span>
+<span id="L78"><span class="lineNum">      78</span>              :     }</span>
+<span id="L79"><span class="lineNum">      79</span>              : </span>
+<span id="L80"><span class="lineNum">      80</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L81"><span class="lineNum">      81</span> <span class="tlaUNC">           0 :     function revokeAuthorization(address _account) external onlyOwner {</span></span>
+<span id="L82"><span class="lineNum">      82</span> <span class="tlaUNC">           0 :         require(_authorizedToPause.remove(_account), FailedToRemove());</span></span>
+<span id="L83"><span class="lineNum">      83</span> <span class="tlaUNC">           0 :         emit Unauthorized(_account);</span></span>
+<span id="L84"><span class="lineNum">      84</span>              :     }</span>
+<span id="L85"><span class="lineNum">      85</span>              : </span>
+<span id="L86"><span class="lineNum">      86</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaUNC">           0 :     function acceptOwnership(address _contract) external onlyAuthorized {</span></span>
+<span id="L88"><span class="lineNum">      88</span> <span class="tlaUNC">           0 :         Ownable2Step(_contract).acceptOwnership();</span></span>
+<span id="L89"><span class="lineNum">      89</span> <span class="tlaUNC">           0 :         emit OwnershipAccepted(_contract);</span></span>
+<span id="L90"><span class="lineNum">      90</span>              :     }</span>
+<span id="L91"><span class="lineNum">      91</span>              : </span>
+<span id="L92"><span class="lineNum">      92</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L93"><span class="lineNum">      93</span> <span class="tlaUNC">           0 :     function transferOwnershipFrom(address _contract, address _newOwner) external onlyOwner {</span></span>
+<span id="L94"><span class="lineNum">      94</span> <span class="tlaUNC">           0 :         Ownable2Step(_contract).transferOwnership(_newOwner);</span></span>
+<span id="L95"><span class="lineNum">      95</span> <span class="tlaUNC">           0 :         emit OwnershipTransferStarted(_contract, _newOwner);</span></span>
+<span id="L96"><span class="lineNum">      96</span>              :     }</span>
+<span id="L97"><span class="lineNum">      97</span>              : </span>
+<span id="L98"><span class="lineNum">      98</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L99"><span class="lineNum">      99</span> <span class="tlaUNC">           0 :     function allContracts() external view returns (address[] memory) {</span></span>
+<span id="L100"><span class="lineNum">     100</span> <span class="tlaUNC">           0 :         return _contracts.values();</span></span>
+<span id="L101"><span class="lineNum">     101</span>              :     }</span>
+<span id="L102"><span class="lineNum">     102</span>              : </span>
+<span id="L103"><span class="lineNum">     103</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaUNC">           0 :     function authorizedToPause() external view returns (address[] memory) {</span></span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaUNC">           0 :         return _authorizedToPause.values();</span></span>
+<span id="L106"><span class="lineNum">     106</span>              :     }</span>
+<span id="L107"><span class="lineNum">     107</span>              : </span>
+<span id="L108"><span class="lineNum">     108</span>              :     /// @notice Renounce ownership of the contract and ensure that _contracts and _authorizedToPause are empty</span>
+<span id="L109"><span class="lineNum">     109</span> <span class="tlaUNC">           0 :     function renounceOwnership() public virtual override {</span></span>
+<span id="L110"><span class="lineNum">     110</span> <span class="tlaUNC">           0 :         require(_contracts.length() == 0, ContractsNotEmpty());</span></span>
+<span id="L111"><span class="lineNum">     111</span> <span class="tlaUNC">           0 :         require(_authorizedToPause.length() == 0, AuthorizedToPauseNotEmpty());</span></span>
+<span id="L112"><span class="lineNum">     112</span>              : </span>
+<span id="L113"><span class="lineNum">     113</span> <span class="tlaUNC">           0 :         super.renounceOwnership();</span></span>
+<span id="L114"><span class="lineNum">     114</span>              :     }</span>
+<span id="L115"><span class="lineNum">     115</span>              : </span>
+<span id="L116"><span class="lineNum">     116</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L117"><span class="lineNum">     117</span> <span class="tlaUNC">           0 :     function isSigner(address _account) public view returns (bool result) {</span></span>
+<span id="L118"><span class="lineNum">     118</span> <span class="tlaUNC">           0 :         address[] memory signers = IGnosisSafeLike(owner()).getOwners();</span></span>
+<span id="L119"><span class="lineNum">     119</span>              : </span>
+<span id="L120"><span class="lineNum">     120</span> <span class="tlaUNC">           0 :         for (uint256 i = 0; i &lt; signers.length; i++) {</span></span>
+<span id="L121"><span class="lineNum">     121</span> <span class="tlaUNC">           0 :             if (signers[i] == _account) {</span></span>
+<span id="L122"><span class="lineNum">     122</span> <span class="tlaUNC">           0 :                 return true;</span></span>
+<span id="L123"><span class="lineNum">     123</span>              :             }</span>
+<span id="L124"><span class="lineNum">     124</span>              :         }</span>
+<span id="L125"><span class="lineNum">     125</span>              :     }</span>
+<span id="L126"><span class="lineNum">     126</span>              : </span>
+<span id="L127"><span class="lineNum">     127</span>              :     /// @inheritdoc IGlobalPause</span>
+<span id="L128"><span class="lineNum">     128</span> <span class="tlaUNC">           0 :     function getAllContractsPauseStatus() external view returns (ContractPauseStatus[] memory result) {</span></span>
+<span id="L129"><span class="lineNum">     129</span> <span class="tlaUNC">           0 :         uint256 length = _contracts.length();</span></span>
+<span id="L130"><span class="lineNum">     130</span> <span class="tlaUNC">           0 :         result = new ContractPauseStatus[](length);</span></span>
+<span id="L131"><span class="lineNum">     131</span>              : </span>
+<span id="L132"><span class="lineNum">     132</span> <span class="tlaUNC">           0 :         for (uint256 i = 0; i &lt; length; i++) {</span></span>
+<span id="L133"><span class="lineNum">     133</span> <span class="tlaUNC">           0 :             address contractAddress = _contracts.at(i);</span></span>
+<span id="L134"><span class="lineNum">     134</span> <span class="tlaUNC">           0 :             bool isPaused = IPausable(contractAddress).paused();</span></span>
+<span id="L135"><span class="lineNum">     135</span>              : </span>
+<span id="L136"><span class="lineNum">     136</span> <span class="tlaUNC">           0 :             result[i] = ContractPauseStatus({contractAddress: contractAddress, isPaused: isPaused});</span></span>
+<span id="L137"><span class="lineNum">     137</span>              :         }</span>
+<span id="L138"><span class="lineNum">     138</span>              :     }</span>
+<span id="L139"><span class="lineNum">     139</span>              : </span>
+<span id="L140"><span class="lineNum">     140</span>              :     /// @dev Pause a contract</span>
+<span id="L141"><span class="lineNum">     141</span>              :     /// @param _contract The contract to pause</span>
+<span id="L142"><span class="lineNum">     142</span> <span class="tlaUNC">           0 :     function _pause(address _contract) internal {</span></span>
+<span id="L143"><span class="lineNum">     143</span>              :         // Using try/catch to avoid blockage of the `pauseAll` fn</span>
+<span id="L144"><span class="lineNum">     144</span>              :         // in case contract permissions were revoked and contract was not removed.</span>
+<span id="L145"><span class="lineNum">     145</span> <span class="tlaUNC">           0 :         try IPausable(_contract).pause() {</span></span>
+<span id="L146"><span class="lineNum">     146</span> <span class="tlaUNC">           0 :             emit Paused(_contract);</span></span>
+<span id="L147"><span class="lineNum">     147</span> <span class="tlaUNC">           0 :         } catch {</span></span>
+<span id="L148"><span class="lineNum">     148</span> <span class="tlaUNC">           0 :             emit FailedToPause(_contract);</span></span>
+<span id="L149"><span class="lineNum">     149</span>              :         }</span>
+<span id="L150"><span class="lineNum">     150</span>              :     }</span>
+<span id="L151"><span class="lineNum">     151</span>              : </span>
+<span id="L152"><span class="lineNum">     152</span>              :     /// @dev Unpause a contract</span>
+<span id="L153"><span class="lineNum">     153</span>              :     /// @param _contract The contract to unpause</span>
+<span id="L154"><span class="lineNum">     154</span> <span class="tlaUNC">           0 :     function _unpause(address _contract) internal {</span></span>
+<span id="L155"><span class="lineNum">     155</span>              :         // Using try/catch to avoid blockage of the `unpauseAll` fn</span>
+<span id="L156"><span class="lineNum">     156</span> <span class="tlaUNC">           0 :         try IPausable(_contract).unpause() {</span></span>
+<span id="L157"><span class="lineNum">     157</span> <span class="tlaUNC">           0 :             emit Unpaused(_contract);</span></span>
+<span id="L158"><span class="lineNum">     158</span> <span class="tlaUNC">           0 :         } catch {</span></span>
+<span id="L159"><span class="lineNum">     159</span> <span class="tlaUNC">           0 :             emit FailedToUnpause(_contract);</span></span>
+<span id="L160"><span class="lineNum">     160</span>              :         }</span>
+<span id="L161"><span class="lineNum">     161</span>              :     }</span>
+<span id="L162"><span class="lineNum">     162</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.1-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

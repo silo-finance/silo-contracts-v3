@@ -1,0 +1,374 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - contracts/lib/CloneDeterministic.sol</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory contracts/lib">contracts/lib</a> - CloneDeterministic.sol<span style="font-size: 80%;"> (source / <a href="CloneDeterministic.sol.func-c.html" title="Click to go to function table">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryHi">100.0&nbsp;%</td>
+            <td class="headerCovTableEntry">36</td>
+            <td class="headerCovTableEntry">36</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-02-18 12:07:44</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">100.0&nbsp;%</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntry">18</td>
+          </tr>
+                  <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : // SPDX-License-Identifier: BUSL-1.1</span>
+<span id="L2"><span class="lineNum">       2</span>              : pragma solidity 0.8.28;</span>
+<span id="L3"><span class="lineNum">       3</span>              : </span>
+<span id="L4"><span class="lineNum">       4</span>              : import {Clones} from &quot;openzeppelin5/proxy/Clones.sol&quot;;</span>
+<span id="L5"><span class="lineNum">       5</span>              : </span>
+<span id="L6"><span class="lineNum">       6</span>              : /// @title Deterministic clones library for the silo market deployment.</span>
+<span id="L7"><span class="lineNum">       7</span>              : /// @dev This library is used to deploy deterministic clones of:</span>
+<span id="L8"><span class="lineNum">       8</span>              : /// Silo (SILO_0, SILO_1)</span>
+<span id="L9"><span class="lineNum">       9</span>              : /// ShareProtectedCollateralToken (SHARE_PROTECTED_COLLATERAL_TOKEN_0, SHARE_PROTECTED_COLLATERAL_TOKEN_1)</span>
+<span id="L10"><span class="lineNum">      10</span>              : /// ShareDebtToken (SHARE_DEBT_TOKEN_0, SHARE_DEBT_TOKEN_1)</span>
+<span id="L11"><span class="lineNum">      11</span>              : library CloneDeterministic {</span>
+<span id="L12"><span class="lineNum">      12</span>              :     /// @dev Deterministic salt for Silo0</span>
+<span id="L13"><span class="lineNum">      13</span>              :     bytes32 private constant _SILO_0 = keccak256(&quot;create2.salt.Silo0&quot;);</span>
+<span id="L14"><span class="lineNum">      14</span>              :     /// @dev Deterministic salt for ShareProtectedCollateralToken Silo0</span>
+<span id="L15"><span class="lineNum">      15</span>              :     bytes32 private constant _SHARE_PROTECTED_COLLATERAL_TOKEN_0 = keccak256(</span>
+<span id="L16"><span class="lineNum">      16</span>              :         &quot;create2.salt.ShareProtectedCollateralToken0&quot;</span>
+<span id="L17"><span class="lineNum">      17</span>              :     );</span>
+<span id="L18"><span class="lineNum">      18</span>              :     /// @dev Deterministic salt for ShareDebtToken Silo0</span>
+<span id="L19"><span class="lineNum">      19</span>              :     bytes32 private constant _SHARE_DEBT_TOKEN_0 = keccak256(&quot;create2.salt.ShareDebtToken0&quot;);</span>
+<span id="L20"><span class="lineNum">      20</span>              :     /// @dev Deterministic salt for Silo1</span>
+<span id="L21"><span class="lineNum">      21</span>              :     bytes32 private constant _SILO_1 = keccak256(&quot;create2.salt.Silo1&quot;);</span>
+<span id="L22"><span class="lineNum">      22</span>              :     /// @dev Deterministic salt for ShareProtectedCollateralToken Silo1</span>
+<span id="L23"><span class="lineNum">      23</span>              :     bytes32 private constant _SHARE_PROTECTED_COLLATERAL_TOKEN_1 = keccak256(</span>
+<span id="L24"><span class="lineNum">      24</span>              :         &quot;create2.salt.ShareProtectedCollateralToken1&quot;</span>
+<span id="L25"><span class="lineNum">      25</span>              :     );</span>
+<span id="L26"><span class="lineNum">      26</span>              :     /// @dev Deterministic salt for ShareDebtToken Silo1</span>
+<span id="L27"><span class="lineNum">      27</span>              :     bytes32 private constant _SHARE_DEBT_TOKEN_1 = keccak256(&quot;create2.salt.ShareDebtToken1&quot;);</span>
+<span id="L28"><span class="lineNum">      28</span>              : </span>
+<span id="L29"><span class="lineNum">      29</span>              :     /// @notice Deploys a Silo0 clone.</span>
+<span id="L30"><span class="lineNum">      30</span>              :     /// @param _implementation The Silo implementation to be cloned.</span>
+<span id="L31"><span class="lineNum">      31</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L32"><span class="lineNum">      32</span>              :     /// @param _creator The creator address.</span>
+<span id="L33"><span class="lineNum">      33</span> <span class="tlaGNC tlaBgGNC">          58 :     function silo0(address _implementation, uint256 _creatorSiloCounter, address _creator)</span></span>
+<span id="L34"><span class="lineNum">      34</span>              :         internal</span>
+<span id="L35"><span class="lineNum">      35</span>              :         returns (address instance)</span>
+<span id="L36"><span class="lineNum">      36</span>              :     {</span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaGNC">          58 :         instance = Clones.cloneDeterministic(_implementation, _silo0Salt(_creatorSiloCounter, _creator));</span></span>
+<span id="L38"><span class="lineNum">      38</span>              :     }</span>
+<span id="L39"><span class="lineNum">      39</span>              : </span>
+<span id="L40"><span class="lineNum">      40</span>              :     /// @notice Deploys a Silo1 clone.</span>
+<span id="L41"><span class="lineNum">      41</span>              :     /// @param _implementation The Silo implementation to be cloned.</span>
+<span id="L42"><span class="lineNum">      42</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L43"><span class="lineNum">      43</span>              :     /// @param _creator The creator address.</span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">          58 :     function silo1(address _implementation, uint256 _creatorSiloCounter, address _creator)</span></span>
+<span id="L45"><span class="lineNum">      45</span>              :         internal</span>
+<span id="L46"><span class="lineNum">      46</span>              :         returns (address instance)</span>
+<span id="L47"><span class="lineNum">      47</span>              :     {</span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaGNC">          58 :         instance = Clones.cloneDeterministic(_implementation, _silo1Salt(_creatorSiloCounter, _creator));</span></span>
+<span id="L49"><span class="lineNum">      49</span>              :     }</span>
+<span id="L50"><span class="lineNum">      50</span>              : </span>
+<span id="L51"><span class="lineNum">      51</span>              :     /// @notice Deploys a protected share token clone for the silo0.</span>
+<span id="L52"><span class="lineNum">      52</span>              :     /// @param _implementation The protected share token implementation to be cloned.</span>
+<span id="L53"><span class="lineNum">      53</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L54"><span class="lineNum">      54</span>              :     /// @param _creator The creator address.</span>
+<span id="L55"><span class="lineNum">      55</span> <span class="tlaGNC">          58 :     function shareProtectedCollateralToken0(</span></span>
+<span id="L56"><span class="lineNum">      56</span>              :         address _implementation,</span>
+<span id="L57"><span class="lineNum">      57</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L58"><span class="lineNum">      58</span>              :         address _creator</span>
+<span id="L59"><span class="lineNum">      59</span>              :     )</span>
+<span id="L60"><span class="lineNum">      60</span>              :         internal</span>
+<span id="L61"><span class="lineNum">      61</span>              :         returns (address instance)</span>
+<span id="L62"><span class="lineNum">      62</span>              :     {</span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaGNC">          58 :         instance = Clones.cloneDeterministic(</span></span>
+<span id="L64"><span class="lineNum">      64</span>              :             _implementation, _shareProtectedCollateralToken0Salt(_creatorSiloCounter, _creator)</span>
+<span id="L65"><span class="lineNum">      65</span>              :         );</span>
+<span id="L66"><span class="lineNum">      66</span>              :     }</span>
+<span id="L67"><span class="lineNum">      67</span>              : </span>
+<span id="L68"><span class="lineNum">      68</span>              :     /// @notice Deploys a debt share token clone for the silo0.</span>
+<span id="L69"><span class="lineNum">      69</span>              :     /// @param _implementation The debt share token implementation to be cloned.</span>
+<span id="L70"><span class="lineNum">      70</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L71"><span class="lineNum">      71</span>              :     /// @param _creator The creator address.</span>
+<span id="L72"><span class="lineNum">      72</span> <span class="tlaGNC">          58 :     function shareDebtToken0(</span></span>
+<span id="L73"><span class="lineNum">      73</span>              :         address _implementation,</span>
+<span id="L74"><span class="lineNum">      74</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L75"><span class="lineNum">      75</span>              :         address _creator</span>
+<span id="L76"><span class="lineNum">      76</span>              :     )</span>
+<span id="L77"><span class="lineNum">      77</span>              :         internal</span>
+<span id="L78"><span class="lineNum">      78</span>              :         returns (address instance)</span>
+<span id="L79"><span class="lineNum">      79</span>              :     {</span>
+<span id="L80"><span class="lineNum">      80</span> <span class="tlaGNC">          58 :         instance = Clones.cloneDeterministic(_implementation, _shareDebtToken0Salt(_creatorSiloCounter, _creator));</span></span>
+<span id="L81"><span class="lineNum">      81</span>              :     }</span>
+<span id="L82"><span class="lineNum">      82</span>              : </span>
+<span id="L83"><span class="lineNum">      83</span>              :     /// @notice Deploys a protected share token  clone for the silo1.</span>
+<span id="L84"><span class="lineNum">      84</span>              :     /// @param _implementation The protected share token implementation to be cloned.</span>
+<span id="L85"><span class="lineNum">      85</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L86"><span class="lineNum">      86</span>              :     /// @param _creator The creator address.</span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaGNC">          58 :     function shareProtectedCollateralToken1(</span></span>
+<span id="L88"><span class="lineNum">      88</span>              :         address _implementation,</span>
+<span id="L89"><span class="lineNum">      89</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L90"><span class="lineNum">      90</span>              :         address _creator</span>
+<span id="L91"><span class="lineNum">      91</span>              :     )</span>
+<span id="L92"><span class="lineNum">      92</span>              :         internal</span>
+<span id="L93"><span class="lineNum">      93</span>              :         returns (address instance)</span>
+<span id="L94"><span class="lineNum">      94</span>              :     {</span>
+<span id="L95"><span class="lineNum">      95</span> <span class="tlaGNC">          58 :         instance = Clones.cloneDeterministic(</span></span>
+<span id="L96"><span class="lineNum">      96</span>              :             _implementation,</span>
+<span id="L97"><span class="lineNum">      97</span>              :             _shareProtectedCollateralToken1Salt(_creatorSiloCounter, _creator)</span>
+<span id="L98"><span class="lineNum">      98</span>              :         );</span>
+<span id="L99"><span class="lineNum">      99</span>              :     }</span>
+<span id="L100"><span class="lineNum">     100</span>              : </span>
+<span id="L101"><span class="lineNum">     101</span>              :     /// @notice Deploys a debt share token clone for the silo1.</span>
+<span id="L102"><span class="lineNum">     102</span>              :     /// @param _implementation The debt share token implementation to be cloned.</span>
+<span id="L103"><span class="lineNum">     103</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L104"><span class="lineNum">     104</span>              :     /// @param _creator The creator address.</span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaGNC">          58 :     function shareDebtToken1(</span></span>
+<span id="L106"><span class="lineNum">     106</span>              :         address _implementation,</span>
+<span id="L107"><span class="lineNum">     107</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L108"><span class="lineNum">     108</span>              :         address _creator</span>
+<span id="L109"><span class="lineNum">     109</span>              :     )</span>
+<span id="L110"><span class="lineNum">     110</span>              :         internal</span>
+<span id="L111"><span class="lineNum">     111</span>              :         returns (address instance)</span>
+<span id="L112"><span class="lineNum">     112</span>              :     {</span>
+<span id="L113"><span class="lineNum">     113</span> <span class="tlaGNC">          58 :         instance = Clones.cloneDeterministic(_implementation, _shareDebtToken1Salt(_creatorSiloCounter, _creator));</span></span>
+<span id="L114"><span class="lineNum">     114</span>              :     }</span>
+<span id="L115"><span class="lineNum">     115</span>              : </span>
+<span id="L116"><span class="lineNum">     116</span>              :     /// @notice Predicts the address of the SiloConfig _SILO0.</span>
+<span id="L117"><span class="lineNum">     117</span>              :     /// @param _siloImpl The Silo implementation address.</span>
+<span id="L118"><span class="lineNum">     118</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L119"><span class="lineNum">     119</span>              :     /// @param _deployer The deployer address.</span>
+<span id="L120"><span class="lineNum">     120</span>              :     /// @param _creator The creator address.</span>
+<span id="L121"><span class="lineNum">     121</span> <span class="tlaGNC">          58 :     function predictSilo0Addr(</span></span>
+<span id="L122"><span class="lineNum">     122</span>              :         address _siloImpl,</span>
+<span id="L123"><span class="lineNum">     123</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L124"><span class="lineNum">     124</span>              :         address _deployer,</span>
+<span id="L125"><span class="lineNum">     125</span>              :         address _creator</span>
+<span id="L126"><span class="lineNum">     126</span>              :     )</span>
+<span id="L127"><span class="lineNum">     127</span>              :         internal</span>
+<span id="L128"><span class="lineNum">     128</span>              :         pure</span>
+<span id="L129"><span class="lineNum">     129</span>              :         returns (address addr)</span>
+<span id="L130"><span class="lineNum">     130</span>              :     {</span>
+<span id="L131"><span class="lineNum">     131</span> <span class="tlaGNC">          58 :         addr = Clones.predictDeterministicAddress(_siloImpl, _silo0Salt(_creatorSiloCounter, _creator), _deployer);</span></span>
+<span id="L132"><span class="lineNum">     132</span>              :     }</span>
+<span id="L133"><span class="lineNum">     133</span>              : </span>
+<span id="L134"><span class="lineNum">     134</span>              :     /// @notice Predicts the address of the SiloConfig _SILO1.</span>
+<span id="L135"><span class="lineNum">     135</span>              :     /// @param _siloImpl The Silo implementation address.</span>
+<span id="L136"><span class="lineNum">     136</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L137"><span class="lineNum">     137</span>              :     /// @param _deployer The deployer address.</span>
+<span id="L138"><span class="lineNum">     138</span>              :     /// @param _creator The creator address.</span>
+<span id="L139"><span class="lineNum">     139</span> <span class="tlaGNC">          58 :     function predictSilo1Addr(</span></span>
+<span id="L140"><span class="lineNum">     140</span>              :         address _siloImpl,</span>
+<span id="L141"><span class="lineNum">     141</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L142"><span class="lineNum">     142</span>              :         address _deployer,</span>
+<span id="L143"><span class="lineNum">     143</span>              :         address _creator</span>
+<span id="L144"><span class="lineNum">     144</span>              :     )</span>
+<span id="L145"><span class="lineNum">     145</span>              :         internal</span>
+<span id="L146"><span class="lineNum">     146</span>              :         pure</span>
+<span id="L147"><span class="lineNum">     147</span>              :         returns (address addr)</span>
+<span id="L148"><span class="lineNum">     148</span>              :     {</span>
+<span id="L149"><span class="lineNum">     149</span> <span class="tlaGNC">          58 :         addr = Clones.predictDeterministicAddress(_siloImpl, _silo1Salt(_creatorSiloCounter, _creator), _deployer);</span></span>
+<span id="L150"><span class="lineNum">     150</span>              :     }</span>
+<span id="L151"><span class="lineNum">     151</span>              : </span>
+<span id="L152"><span class="lineNum">     152</span>              :     /// @notice Predicts the address of the SiloConfig _PROTECTED_COLLATERAL_SHARE_TOKEN0.</span>
+<span id="L153"><span class="lineNum">     153</span>              :     /// @param _shareProtectedCollateralTokenImpl The ShareProtectedCollateralToken implementation address.</span>
+<span id="L154"><span class="lineNum">     154</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L155"><span class="lineNum">     155</span>              :     /// @param _deployer The deployer address.</span>
+<span id="L156"><span class="lineNum">     156</span>              :     /// @param _creator The creator address.</span>
+<span id="L157"><span class="lineNum">     157</span> <span class="tlaGNC">          58 :     function predictShareProtectedCollateralToken0Addr(</span></span>
+<span id="L158"><span class="lineNum">     158</span>              :         address _shareProtectedCollateralTokenImpl,</span>
+<span id="L159"><span class="lineNum">     159</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L160"><span class="lineNum">     160</span>              :         address _deployer,</span>
+<span id="L161"><span class="lineNum">     161</span>              :         address _creator</span>
+<span id="L162"><span class="lineNum">     162</span>              :     )</span>
+<span id="L163"><span class="lineNum">     163</span>              :         internal</span>
+<span id="L164"><span class="lineNum">     164</span>              :         pure</span>
+<span id="L165"><span class="lineNum">     165</span>              :         returns (address addr)</span>
+<span id="L166"><span class="lineNum">     166</span>              :     {</span>
+<span id="L167"><span class="lineNum">     167</span> <span class="tlaGNC">          58 :         addr = Clones.predictDeterministicAddress(</span></span>
+<span id="L168"><span class="lineNum">     168</span>              :             _shareProtectedCollateralTokenImpl,</span>
+<span id="L169"><span class="lineNum">     169</span>              :             _shareProtectedCollateralToken0Salt(_creatorSiloCounter, _creator),</span>
+<span id="L170"><span class="lineNum">     170</span>              :             _deployer</span>
+<span id="L171"><span class="lineNum">     171</span>              :         );</span>
+<span id="L172"><span class="lineNum">     172</span>              :     }</span>
+<span id="L173"><span class="lineNum">     173</span>              : </span>
+<span id="L174"><span class="lineNum">     174</span>              :     /// @notice Predicts the address of the SiloConfig _DEBT_SHARE_TOKEN0.</span>
+<span id="L175"><span class="lineNum">     175</span>              :     /// @param _shareDebtTokenImpl The ShareDebtToken implementation address.</span>
+<span id="L176"><span class="lineNum">     176</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L177"><span class="lineNum">     177</span>              :     /// @param _deployer The deployer address.</span>
+<span id="L178"><span class="lineNum">     178</span>              :     /// @param _creator The creator address.</span>
+<span id="L179"><span class="lineNum">     179</span> <span class="tlaGNC">          58 :     function predictShareDebtToken0Addr(</span></span>
+<span id="L180"><span class="lineNum">     180</span>              :         address _shareDebtTokenImpl,</span>
+<span id="L181"><span class="lineNum">     181</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L182"><span class="lineNum">     182</span>              :         address _deployer,</span>
+<span id="L183"><span class="lineNum">     183</span>              :         address _creator</span>
+<span id="L184"><span class="lineNum">     184</span>              :     )</span>
+<span id="L185"><span class="lineNum">     185</span>              :         internal</span>
+<span id="L186"><span class="lineNum">     186</span>              :         pure</span>
+<span id="L187"><span class="lineNum">     187</span>              :         returns (address addr)</span>
+<span id="L188"><span class="lineNum">     188</span>              :     {</span>
+<span id="L189"><span class="lineNum">     189</span> <span class="tlaGNC">          58 :         addr = Clones.predictDeterministicAddress(</span></span>
+<span id="L190"><span class="lineNum">     190</span>              :             _shareDebtTokenImpl, _shareDebtToken0Salt(_creatorSiloCounter, _creator), _deployer</span>
+<span id="L191"><span class="lineNum">     191</span>              :         );</span>
+<span id="L192"><span class="lineNum">     192</span>              :     }</span>
+<span id="L193"><span class="lineNum">     193</span>              : </span>
+<span id="L194"><span class="lineNum">     194</span>              :     /// @notice Predicts the address of the SiloConfig _PROTECTED_COLLATERAL_SHARE_TOKEN1.</span>
+<span id="L195"><span class="lineNum">     195</span>              :     /// @param _shareProtectedCollateralTokenImpl The ShareProtectedCollateralToken implementation address.</span>
+<span id="L196"><span class="lineNum">     196</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L197"><span class="lineNum">     197</span>              :     /// @param _deployer The deployer address.</span>
+<span id="L198"><span class="lineNum">     198</span>              :     /// @param _creator The creator address.</span>
+<span id="L199"><span class="lineNum">     199</span> <span class="tlaGNC">          58 :     function predictShareProtectedCollateralToken1Addr(</span></span>
+<span id="L200"><span class="lineNum">     200</span>              :         address _shareProtectedCollateralTokenImpl,</span>
+<span id="L201"><span class="lineNum">     201</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L202"><span class="lineNum">     202</span>              :         address _deployer,</span>
+<span id="L203"><span class="lineNum">     203</span>              :         address _creator</span>
+<span id="L204"><span class="lineNum">     204</span>              :     )</span>
+<span id="L205"><span class="lineNum">     205</span>              :         internal</span>
+<span id="L206"><span class="lineNum">     206</span>              :         pure</span>
+<span id="L207"><span class="lineNum">     207</span>              :         returns (address addr)</span>
+<span id="L208"><span class="lineNum">     208</span>              :     {</span>
+<span id="L209"><span class="lineNum">     209</span> <span class="tlaGNC">          58 :         addr = Clones.predictDeterministicAddress(</span></span>
+<span id="L210"><span class="lineNum">     210</span>              :             _shareProtectedCollateralTokenImpl,</span>
+<span id="L211"><span class="lineNum">     211</span>              :             _shareProtectedCollateralToken1Salt(_creatorSiloCounter, _creator),</span>
+<span id="L212"><span class="lineNum">     212</span>              :             _deployer</span>
+<span id="L213"><span class="lineNum">     213</span>              :         );</span>
+<span id="L214"><span class="lineNum">     214</span>              :     }</span>
+<span id="L215"><span class="lineNum">     215</span>              : </span>
+<span id="L216"><span class="lineNum">     216</span>              :     /// @notice Predicts the address of the SiloConfig _DEBT_SHARE_TOKEN1.</span>
+<span id="L217"><span class="lineNum">     217</span>              :     /// @param _shareDebtTokenImpl The ShareDebtToken implementation address.</span>
+<span id="L218"><span class="lineNum">     218</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L219"><span class="lineNum">     219</span>              :     /// @param _deployer The deployer address.</span>
+<span id="L220"><span class="lineNum">     220</span>              :     /// @param _creator The creator address.</span>
+<span id="L221"><span class="lineNum">     221</span> <span class="tlaGNC">          58 :     function predictShareDebtToken1Addr(</span></span>
+<span id="L222"><span class="lineNum">     222</span>              :         address _shareDebtTokenImpl,</span>
+<span id="L223"><span class="lineNum">     223</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L224"><span class="lineNum">     224</span>              :         address _deployer,</span>
+<span id="L225"><span class="lineNum">     225</span>              :         address _creator</span>
+<span id="L226"><span class="lineNum">     226</span>              :     )</span>
+<span id="L227"><span class="lineNum">     227</span>              :         internal</span>
+<span id="L228"><span class="lineNum">     228</span>              :         pure</span>
+<span id="L229"><span class="lineNum">     229</span>              :         returns (address addr)</span>
+<span id="L230"><span class="lineNum">     230</span>              :     {</span>
+<span id="L231"><span class="lineNum">     231</span> <span class="tlaGNC">          58 :         addr = Clones.predictDeterministicAddress(</span></span>
+<span id="L232"><span class="lineNum">     232</span>              :             _shareDebtTokenImpl, _shareDebtToken1Salt(_creatorSiloCounter, _creator), _deployer</span>
+<span id="L233"><span class="lineNum">     233</span>              :         );</span>
+<span id="L234"><span class="lineNum">     234</span>              :     }</span>
+<span id="L235"><span class="lineNum">     235</span>              : </span>
+<span id="L236"><span class="lineNum">     236</span>              :     /// @notice Generates the salt for the `Silo0` `create2` operations.</span>
+<span id="L237"><span class="lineNum">     237</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L238"><span class="lineNum">     238</span>              :     /// @param _creator The creator address.</span>
+<span id="L239"><span class="lineNum">     239</span> <span class="tlaGNC">         116 :     function _silo0Salt(uint256 _creatorSiloCounter, address _creator) private pure returns (bytes32 salt) {</span></span>
+<span id="L240"><span class="lineNum">     240</span> <span class="tlaGNC">         116 :         salt = keccak256(abi.encodePacked(_creatorSiloCounter, _creator, _SILO_0));</span></span>
+<span id="L241"><span class="lineNum">     241</span>              :     }</span>
+<span id="L242"><span class="lineNum">     242</span>              : </span>
+<span id="L243"><span class="lineNum">     243</span>              :     /// @notice Generates the salt for the `Silo1` `create2` operations.</span>
+<span id="L244"><span class="lineNum">     244</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L245"><span class="lineNum">     245</span>              :     /// @param _creator The creator address.</span>
+<span id="L246"><span class="lineNum">     246</span> <span class="tlaGNC">         116 :     function _silo1Salt(uint256 _creatorSiloCounter, address _creator) private pure returns (bytes32 salt) {</span></span>
+<span id="L247"><span class="lineNum">     247</span> <span class="tlaGNC">         116 :         salt = keccak256(abi.encodePacked(_creatorSiloCounter, _creator, _SILO_1));</span></span>
+<span id="L248"><span class="lineNum">     248</span>              :     }</span>
+<span id="L249"><span class="lineNum">     249</span>              : </span>
+<span id="L250"><span class="lineNum">     250</span>              :     /// @notice Generates the salt for the `ShareProtectedCollateralToken0` `create2` operations.</span>
+<span id="L251"><span class="lineNum">     251</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L252"><span class="lineNum">     252</span>              :     /// @param _creator The creator address.</span>
+<span id="L253"><span class="lineNum">     253</span> <span class="tlaGNC">         116 :     function _shareProtectedCollateralToken0Salt(</span></span>
+<span id="L254"><span class="lineNum">     254</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L255"><span class="lineNum">     255</span>              :         address _creator</span>
+<span id="L256"><span class="lineNum">     256</span>              :     )</span>
+<span id="L257"><span class="lineNum">     257</span>              :         private</span>
+<span id="L258"><span class="lineNum">     258</span>              :         pure</span>
+<span id="L259"><span class="lineNum">     259</span>              :         returns (bytes32 salt)</span>
+<span id="L260"><span class="lineNum">     260</span>              :     {</span>
+<span id="L261"><span class="lineNum">     261</span> <span class="tlaGNC">         116 :         salt = keccak256(abi.encodePacked(_creatorSiloCounter, _creator, _SHARE_PROTECTED_COLLATERAL_TOKEN_0));</span></span>
+<span id="L262"><span class="lineNum">     262</span>              :     }</span>
+<span id="L263"><span class="lineNum">     263</span>              : </span>
+<span id="L264"><span class="lineNum">     264</span>              :     /// @notice Generates the salt for the `ShareDebtToken0` `create2` operations.</span>
+<span id="L265"><span class="lineNum">     265</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L266"><span class="lineNum">     266</span>              :     /// @param _creator The creator address.</span>
+<span id="L267"><span class="lineNum">     267</span> <span class="tlaGNC">         116 :     function _shareDebtToken0Salt(</span></span>
+<span id="L268"><span class="lineNum">     268</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L269"><span class="lineNum">     269</span>              :         address _creator</span>
+<span id="L270"><span class="lineNum">     270</span>              :     )</span>
+<span id="L271"><span class="lineNum">     271</span>              :         private</span>
+<span id="L272"><span class="lineNum">     272</span>              :         pure</span>
+<span id="L273"><span class="lineNum">     273</span>              :         returns (bytes32 salt)</span>
+<span id="L274"><span class="lineNum">     274</span>              :     {</span>
+<span id="L275"><span class="lineNum">     275</span> <span class="tlaGNC">         116 :         salt = keccak256(abi.encodePacked(_creatorSiloCounter, _creator, _SHARE_DEBT_TOKEN_0));</span></span>
+<span id="L276"><span class="lineNum">     276</span>              :     }</span>
+<span id="L277"><span class="lineNum">     277</span>              : </span>
+<span id="L278"><span class="lineNum">     278</span>              :     /// @notice Generates the salt for the `ShareProtectedCollateralToken1` `create2` operations.</span>
+<span id="L279"><span class="lineNum">     279</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L280"><span class="lineNum">     280</span>              :     /// @param _creator The creator address.</span>
+<span id="L281"><span class="lineNum">     281</span> <span class="tlaGNC">         116 :     function _shareProtectedCollateralToken1Salt(</span></span>
+<span id="L282"><span class="lineNum">     282</span>              :         uint256 _creatorSiloCounter,</span>
+<span id="L283"><span class="lineNum">     283</span>              :         address _creator</span>
+<span id="L284"><span class="lineNum">     284</span>              :     )</span>
+<span id="L285"><span class="lineNum">     285</span>              :         private</span>
+<span id="L286"><span class="lineNum">     286</span>              :         pure</span>
+<span id="L287"><span class="lineNum">     287</span>              :         returns (bytes32 salt)</span>
+<span id="L288"><span class="lineNum">     288</span>              :     {</span>
+<span id="L289"><span class="lineNum">     289</span> <span class="tlaGNC">         116 :         salt = keccak256(abi.encodePacked(_creatorSiloCounter, _creator, _SHARE_PROTECTED_COLLATERAL_TOKEN_1));</span></span>
+<span id="L290"><span class="lineNum">     290</span>              :     }</span>
+<span id="L291"><span class="lineNum">     291</span>              : </span>
+<span id="L292"><span class="lineNum">     292</span>              :     /// @notice Generates the salt for the `ShareDebtToken1` `create2` operations.</span>
+<span id="L293"><span class="lineNum">     293</span>              :     /// @param _creatorSiloCounter The Silo ID (assigned by the `SiloFactory`).</span>
+<span id="L294"><span class="lineNum">     294</span>              :     /// @param _creator The creator address.</span>
+<span id="L295"><span class="lineNum">     295</span> <span class="tlaGNC">         116 :     function _shareDebtToken1Salt(uint256 _creatorSiloCounter, address _creator) private pure returns (bytes32 salt) {</span></span>
+<span id="L296"><span class="lineNum">     296</span> <span class="tlaGNC">         116 :         salt = keccak256(abi.encodePacked(_creatorSiloCounter, _creator, _SHARE_DEBT_TOKEN_1));</span></span>
+<span id="L297"><span class="lineNum">     297</span>              :     }</span>
+<span id="L298"><span class="lineNum">     298</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.1-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

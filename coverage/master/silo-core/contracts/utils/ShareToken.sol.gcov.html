@@ -1,0 +1,393 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - contracts/utils/ShareToken.sol</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory contracts/utils">contracts/utils</a> - ShareToken.sol<span style="font-size: 80%;"> (source / <a href="ShareToken.sol.func-c.html" title="Click to go to function table">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">65.2&nbsp;%</td>
+            <td class="headerCovTableEntry">69</td>
+            <td class="headerCovTableEntry">45</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-02-18 12:07:44</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryLo">60.0&nbsp;%</td>
+            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntry">15</td>
+          </tr>
+                  <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : // SPDX-License-Identifier: BUSL-1.1</span>
+<span id="L2"><span class="lineNum">       2</span>              : pragma solidity 0.8.28;</span>
+<span id="L3"><span class="lineNum">       3</span>              : </span>
+<span id="L4"><span class="lineNum">       4</span>              : import {IERC20Permit} from &quot;openzeppelin5/token/ERC20/extensions/ERC20Permit.sol&quot;;</span>
+<span id="L5"><span class="lineNum">       5</span>              : import {ERC20PermitUpgradeable} from &quot;openzeppelin5-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol&quot;;</span>
+<span id="L6"><span class="lineNum">       6</span>              : import {ERC20Upgradeable} from &quot;openzeppelin5-upgradeable/token/ERC20/ERC20Upgradeable.sol&quot;;</span>
+<span id="L7"><span class="lineNum">       7</span>              : import {IERC20Metadata, IERC20} from &quot;openzeppelin5/token/ERC20/ERC20.sol&quot;;</span>
+<span id="L8"><span class="lineNum">       8</span>              : </span>
+<span id="L9"><span class="lineNum">       9</span>              : import {IHookReceiver} from &quot;../interfaces/IHookReceiver.sol&quot;;</span>
+<span id="L10"><span class="lineNum">      10</span>              : import {IShareToken, ISilo} from &quot;../interfaces/IShareToken.sol&quot;;</span>
+<span id="L11"><span class="lineNum">      11</span>              : import {ISiloConfig} from &quot;../SiloConfig.sol&quot;;</span>
+<span id="L12"><span class="lineNum">      12</span>              : import {Hook} from &quot;../lib/Hook.sol&quot;;</span>
+<span id="L13"><span class="lineNum">      13</span>              : import {CallBeforeQuoteLib} from &quot;../lib/CallBeforeQuoteLib.sol&quot;;</span>
+<span id="L14"><span class="lineNum">      14</span>              : import {NonReentrantLib} from &quot;../lib/NonReentrantLib.sol&quot;;</span>
+<span id="L15"><span class="lineNum">      15</span>              : import {ShareTokenLib} from &quot;../lib/ShareTokenLib.sol&quot;;</span>
+<span id="L16"><span class="lineNum">      16</span>              : import {SiloMathLib} from &quot;../lib/SiloMathLib.sol&quot;;</span>
+<span id="L17"><span class="lineNum">      17</span>              : import {IVersioned} from &quot;../interfaces/IVersioned.sol&quot;;</span>
+<span id="L18"><span class="lineNum">      18</span>              : </span>
+<span id="L19"><span class="lineNum">      19</span>              : </span>
+<span id="L20"><span class="lineNum">      20</span>              : /// @title ShareToken</span>
+<span id="L21"><span class="lineNum">      21</span>              : /// @notice Implements common interface for Silo tokens representing debt or collateral.</span>
+<span id="L22"><span class="lineNum">      22</span>              : /// @dev Docs borrowed from https://github.com/OpenZeppelin/openzeppelin-contracts/tree/v4.9.3</span>
+<span id="L23"><span class="lineNum">      23</span>              : ///</span>
+<span id="L24"><span class="lineNum">      24</span>              : /// Implementation of the ERC4626 &quot;Tokenized Vault Standard&quot; as defined in</span>
+<span id="L25"><span class="lineNum">      25</span>              : /// https://eips.ethereum.org/EIPS/eip-4626[EIP-4626].</span>
+<span id="L26"><span class="lineNum">      26</span>              : ///</span>
+<span id="L27"><span class="lineNum">      27</span>              : /// This extension allows the minting and burning of &quot;shares&quot; (represented using the ERC20 inheritance) in exchange for</span>
+<span id="L28"><span class="lineNum">      28</span>              : /// underlying &quot;assets&quot; through standardized {deposit}, {mint}, {redeem} and {burn} workflows. This contract extends</span>
+<span id="L29"><span class="lineNum">      29</span>              : /// the ERC20 standard. Any additional extensions included along it would affect the &quot;shares&quot; token represented by this</span>
+<span id="L30"><span class="lineNum">      30</span>              : /// contract and not the &quot;assets&quot; token which is an independent contract.</span>
+<span id="L31"><span class="lineNum">      31</span>              : ///</span>
+<span id="L32"><span class="lineNum">      32</span>              : /// [CAUTION]</span>
+<span id="L33"><span class="lineNum">      33</span>              : /// ====</span>
+<span id="L34"><span class="lineNum">      34</span>              : /// In empty (or nearly empty) ERC-4626 vaults, deposits are at high risk of being stolen through frontrunning</span>
+<span id="L35"><span class="lineNum">      35</span>              : /// with a &quot;donation&quot; to the vault that inflates the price of a share. This is variously known as a donation or</span>
+<span id="L36"><span class="lineNum">      36</span>              : /// inflation attack and is essentially a problem of slippage. Vault deployers can protect against this attack by</span>
+<span id="L37"><span class="lineNum">      37</span>              : /// making an initial deposit of a non-trivial amount of the asset, such that price manipulation becomes infeasible.</span>
+<span id="L38"><span class="lineNum">      38</span>              : /// Withdrawals may similarly be affected by slippage. Users can protect against this attack as well as unexpected</span>
+<span id="L39"><span class="lineNum">      39</span>              : /// slippage in general by verifying the amount received is as expected, using a wrapper that performs these checks</span>
+<span id="L40"><span class="lineNum">      40</span>              : /// such as https://github.com/fei-protocol/ERC4626#erc4626router-and-base[ERC4626Router].</span>
+<span id="L41"><span class="lineNum">      41</span>              : ///</span>
+<span id="L42"><span class="lineNum">      42</span>              : /// Since v4.9, this implementation uses virtual assets and shares to mitigate that risk. The `_decimalsOffset()`</span>
+<span id="L43"><span class="lineNum">      43</span>              : /// corresponds to an offset in the decimal representation between the underlying asset's decimals and the vault</span>
+<span id="L44"><span class="lineNum">      44</span>              : /// decimals. This offset also determines the rate of virtual shares to virtual assets in the vault, which itself</span>
+<span id="L45"><span class="lineNum">      45</span>              : /// determines the initial exchange rate. While not fully preventing the attack, analysis shows that the default offset</span>
+<span id="L46"><span class="lineNum">      46</span>              : /// (0) makes it non-profitable, as a result of the value being captured by the virtual shares (out of the attacker's</span>
+<span id="L47"><span class="lineNum">      47</span>              : /// donation) matching the attacker's expected gains. With a larger offset, the attack becomes orders of magnitude more</span>
+<span id="L48"><span class="lineNum">      48</span>              : /// expensive than it is profitable. More details about the underlying math can be found</span>
+<span id="L49"><span class="lineNum">      49</span>              : /// xref:erc4626.adoc#inflation-attack[here].</span>
+<span id="L50"><span class="lineNum">      50</span>              : ///</span>
+<span id="L51"><span class="lineNum">      51</span>              : /// The drawback of this approach is that the virtual shares do capture (a very small) part of the value being accrued</span>
+<span id="L52"><span class="lineNum">      52</span>              : /// to the vault. Also, if the vault experiences losses, the users try to exit the vault, the virtual shares and assets</span>
+<span id="L53"><span class="lineNum">      53</span>              : /// will cause the first user to exit to experience reduced losses in detriment to the last users that will experience</span>
+<span id="L54"><span class="lineNum">      54</span>              : /// bigger losses. Developers willing to revert back to the pre-v4.9 behavior just need to override the</span>
+<span id="L55"><span class="lineNum">      55</span>              : /// `_convertToShares` and `_convertToAssets` functions.</span>
+<span id="L56"><span class="lineNum">      56</span>              : ///</span>
+<span id="L57"><span class="lineNum">      57</span>              : /// To learn more, check out our xref:ROOT:erc4626.adoc[ERC-4626 guide].</span>
+<span id="L58"><span class="lineNum">      58</span>              : /// ====</span>
+<span id="L59"><span class="lineNum">      59</span>              : ///</span>
+<span id="L60"><span class="lineNum">      60</span>              : /// _Available since v4.7._</span>
+<span id="L61"><span class="lineNum">      61</span>              : /// @custom:security-contact security@silo.finance</span>
+<span id="L62"><span class="lineNum">      62</span>              : abstract contract ShareToken is ERC20PermitUpgradeable, IShareToken, IVersioned {</span>
+<span id="L63"><span class="lineNum">      63</span>              :     using Hook for uint24;</span>
+<span id="L64"><span class="lineNum">      64</span>              :     using CallBeforeQuoteLib for ISiloConfig.ConfigData;</span>
+<span id="L65"><span class="lineNum">      65</span>              : </span>
+<span id="L66"><span class="lineNum">      66</span>              :     string private constant _NAME = &quot;SiloShareTokenEIP712Name&quot;;</span>
+<span id="L67"><span class="lineNum">      67</span>              : </span>
+<span id="L68"><span class="lineNum">      68</span> <span class="tlaGNC tlaBgGNC">       60414 :     modifier onlySilo() {</span></span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaGNC">       60414 :         require(msg.sender == address(_getSilo()), OnlySilo());</span></span>
+<span id="L70"><span class="lineNum">      70</span>              : </span>
+<span id="L71"><span class="lineNum">      71</span>              :         _;</span>
+<span id="L72"><span class="lineNum">      72</span>              :     }</span>
+<span id="L73"><span class="lineNum">      73</span>              : </span>
+<span id="L74"><span class="lineNum">      74</span> <span class="tlaGNC">       33198 :     modifier onlyHookReceiver() {</span></span>
+<span id="L75"><span class="lineNum">      75</span> <span class="tlaGNC">       33198 :         require(</span></span>
+<span id="L76"><span class="lineNum">      76</span>              :             msg.sender == address(ShareTokenLib.getShareTokenStorage().hookSetup.hookReceiver),</span>
+<span id="L77"><span class="lineNum">      77</span>              :             ISilo.OnlyHookReceiver()</span>
+<span id="L78"><span class="lineNum">      78</span>              :         );</span>
+<span id="L79"><span class="lineNum">      79</span>              : </span>
+<span id="L80"><span class="lineNum">      80</span>              :         _;</span>
+<span id="L81"><span class="lineNum">      81</span>              :     }</span>
+<span id="L82"><span class="lineNum">      82</span>              : </span>
+<span id="L83"><span class="lineNum">      83</span>              :     /// @custom:oz-upgrades-unsafe-allow constructor</span>
+<span id="L84"><span class="lineNum">      84</span> <span class="tlaGNC">         348 :     constructor() {</span></span>
+<span id="L85"><span class="lineNum">      85</span> <span class="tlaGNC">         348 :         _disableInitializers();</span></span>
+<span id="L86"><span class="lineNum">      86</span>              :     }</span>
+<span id="L87"><span class="lineNum">      87</span>              : </span>
+<span id="L88"><span class="lineNum">      88</span>              :     /// @inheritdoc IShareToken</span>
+<span id="L89"><span class="lineNum">      89</span> <span class="tlaGNC">       60414 :     function synchronizeHooks(uint24 _hooksBefore, uint24 _hooksAfter) external virtual onlySilo {</span></span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaGNC">       60414 :         IShareToken.ShareTokenStorage storage $ = ShareTokenLib.getShareTokenStorage();</span></span>
+<span id="L91"><span class="lineNum">      91</span>              : </span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaGNC">       60414 :         $.hookSetup.hooksBefore = _hooksBefore;</span></span>
+<span id="L93"><span class="lineNum">      93</span> <span class="tlaGNC">       60414 :         $.hookSetup.hooksAfter = _hooksAfter;</span></span>
+<span id="L94"><span class="lineNum">      94</span>              :     }</span>
+<span id="L95"><span class="lineNum">      95</span>              : </span>
+<span id="L96"><span class="lineNum">      96</span>              :     /// @inheritdoc IShareToken</span>
+<span id="L97"><span class="lineNum">      97</span> <span class="tlaGNC">       65997 :     function forwardTransferFromNoChecks(address _from, address _to, uint256 _amount)</span></span>
+<span id="L98"><span class="lineNum">      98</span>              :         external</span>
+<span id="L99"><span class="lineNum">      99</span>              :         virtual</span>
+<span id="L100"><span class="lineNum">     100</span>              :         onlyHookReceiver</span>
+<span id="L101"><span class="lineNum">     101</span>              :     {</span>
+<span id="L102"><span class="lineNum">     102</span> <span class="tlaGNC">       65997 :         IShareToken.ShareTokenStorage storage $ = ShareTokenLib.getShareTokenStorage();</span></span>
+<span id="L103"><span class="lineNum">     103</span>              : </span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaGNC">       65997 :         $.transferWithChecks = false;</span></span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaGNC">       65997 :         _transfer(_from, _to, _amount);</span></span>
+<span id="L106"><span class="lineNum">     106</span> <span class="tlaGNC">       65997 :         $.transferWithChecks = true;</span></span>
+<span id="L107"><span class="lineNum">     107</span>              :     }</span>
+<span id="L108"><span class="lineNum">     108</span>              : </span>
+<span id="L109"><span class="lineNum">     109</span>              :     /// @inheritdoc IShareToken</span>
+<span id="L110"><span class="lineNum">     110</span> <span class="tlaUNC tlaBgUNC">           0 :     function decimalsOffset() external view virtual returns (uint256) {</span></span>
+<span id="L111"><span class="lineNum">     111</span> <span class="tlaUNC">           0 :         return SiloMathLib._DECIMALS_OFFSET;</span></span>
+<span id="L112"><span class="lineNum">     112</span>              :     }</span>
+<span id="L113"><span class="lineNum">     113</span>              : </span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaUNC">           0 :     function silo() external view virtual returns (ISilo) {</span></span>
+<span id="L115"><span class="lineNum">     115</span> <span class="tlaUNC">           0 :         return _getSilo();</span></span>
+<span id="L116"><span class="lineNum">     116</span>              :     }</span>
+<span id="L117"><span class="lineNum">     117</span>              : </span>
+<span id="L118"><span class="lineNum">     118</span> <span class="tlaUNC">           0 :     function siloConfig() external view virtual returns (ISiloConfig) {</span></span>
+<span id="L119"><span class="lineNum">     119</span> <span class="tlaUNC">           0 :         return _getSiloConfig();</span></span>
+<span id="L120"><span class="lineNum">     120</span>              :     }</span>
+<span id="L121"><span class="lineNum">     121</span>              : </span>
+<span id="L122"><span class="lineNum">     122</span> <span class="tlaUNC">           0 :     function hookSetup() external view virtual returns (HookSetup memory) {</span></span>
+<span id="L123"><span class="lineNum">     123</span> <span class="tlaUNC">           0 :         return ShareTokenLib.getShareTokenStorage().hookSetup;</span></span>
+<span id="L124"><span class="lineNum">     124</span>              :     }</span>
+<span id="L125"><span class="lineNum">     125</span>              : </span>
+<span id="L126"><span class="lineNum">     126</span> <span class="tlaGNC tlaBgGNC">         232 :     function hookReceiver() external view virtual returns (address) {</span></span>
+<span id="L127"><span class="lineNum">     127</span> <span class="tlaGNC">         232 :         return ShareTokenLib.getShareTokenStorage().hookSetup.hookReceiver;</span></span>
+<span id="L128"><span class="lineNum">     128</span>              :     }</span>
+<span id="L129"><span class="lineNum">     129</span>              : </span>
+<span id="L130"><span class="lineNum">     130</span>              :     /// @inheritdoc ERC20Upgradeable</span>
+<span id="L131"><span class="lineNum">     131</span> <span class="tlaUNC tlaBgUNC">           0 :     function transferFrom(address _from, address _to, uint256 _amount)</span></span>
+<span id="L132"><span class="lineNum">     132</span>              :         public</span>
+<span id="L133"><span class="lineNum">     133</span>              :         virtual</span>
+<span id="L134"><span class="lineNum">     134</span>              :         override(ERC20Upgradeable, IERC20)</span>
+<span id="L135"><span class="lineNum">     135</span>              :         returns (bool result)</span>
+<span id="L136"><span class="lineNum">     136</span>              :     {</span>
+<span id="L137"><span class="lineNum">     137</span> <span class="tlaUNC">           0 :         ISiloConfig siloConfigCached = _crossNonReentrantBefore();</span></span>
+<span id="L138"><span class="lineNum">     138</span>              : </span>
+<span id="L139"><span class="lineNum">     139</span> <span class="tlaUNC">           0 :         result = ERC20Upgradeable.transferFrom(_from, _to, _amount);</span></span>
+<span id="L140"><span class="lineNum">     140</span>              : </span>
+<span id="L141"><span class="lineNum">     141</span> <span class="tlaUNC">           0 :         siloConfigCached.turnOffReentrancyProtection();</span></span>
+<span id="L142"><span class="lineNum">     142</span>              :     }</span>
+<span id="L143"><span class="lineNum">     143</span>              : </span>
+<span id="L144"><span class="lineNum">     144</span>              :     /// @inheritdoc ERC20Upgradeable</span>
+<span id="L145"><span class="lineNum">     145</span> <span class="tlaGNC tlaBgGNC">       19523 :     function transfer(address _to, uint256 _amount)</span></span>
+<span id="L146"><span class="lineNum">     146</span>              :         public</span>
+<span id="L147"><span class="lineNum">     147</span>              :         virtual</span>
+<span id="L148"><span class="lineNum">     148</span>              :         override(ERC20Upgradeable, IERC20)</span>
+<span id="L149"><span class="lineNum">     149</span>              :         returns (bool result)</span>
+<span id="L150"><span class="lineNum">     150</span>              :     {</span>
+<span id="L151"><span class="lineNum">     151</span> <span class="tlaGNC">       19523 :         ISiloConfig siloConfigCached = _crossNonReentrantBefore();</span></span>
+<span id="L152"><span class="lineNum">     152</span>              : </span>
+<span id="L153"><span class="lineNum">     153</span> <span class="tlaGNC">       19523 :         result = ERC20Upgradeable.transfer(_to, _amount);</span></span>
+<span id="L154"><span class="lineNum">     154</span>              : </span>
+<span id="L155"><span class="lineNum">     155</span> <span class="tlaGNC">       19523 :         siloConfigCached.turnOffReentrancyProtection();</span></span>
+<span id="L156"><span class="lineNum">     156</span>              :     }</span>
+<span id="L157"><span class="lineNum">     157</span>              : </span>
+<span id="L158"><span class="lineNum">     158</span> <span class="tlaUNC tlaBgUNC">           0 :     function approve(address spender, uint256 value)</span></span>
+<span id="L159"><span class="lineNum">     159</span>              :         public</span>
+<span id="L160"><span class="lineNum">     160</span>              :         virtual</span>
+<span id="L161"><span class="lineNum">     161</span>              :         override(ERC20Upgradeable, IERC20)</span>
+<span id="L162"><span class="lineNum">     162</span>              :         returns (bool result)</span>
+<span id="L163"><span class="lineNum">     163</span>              :     {</span>
+<span id="L164"><span class="lineNum">     164</span> <span class="tlaUNC">           0 :         NonReentrantLib.nonReentrant(_getSiloConfig());</span></span>
+<span id="L165"><span class="lineNum">     165</span>              : </span>
+<span id="L166"><span class="lineNum">     166</span> <span class="tlaUNC">           0 :         result = ERC20Upgradeable.approve(spender, value);</span></span>
+<span id="L167"><span class="lineNum">     167</span>              :     }</span>
+<span id="L168"><span class="lineNum">     168</span>              : </span>
+<span id="L169"><span class="lineNum">     169</span>              :     /// @inheritdoc IERC20Permit</span>
+<span id="L170"><span class="lineNum">     170</span> <span class="tlaUNC">           0 :     function permit(</span></span>
+<span id="L171"><span class="lineNum">     171</span>              :         address owner,</span>
+<span id="L172"><span class="lineNum">     172</span>              :         address spender,</span>
+<span id="L173"><span class="lineNum">     173</span>              :         uint256 value,</span>
+<span id="L174"><span class="lineNum">     174</span>              :         uint256 deadline,</span>
+<span id="L175"><span class="lineNum">     175</span>              :         uint8 v,</span>
+<span id="L176"><span class="lineNum">     176</span>              :         bytes32 r,</span>
+<span id="L177"><span class="lineNum">     177</span>              :         bytes32 s</span>
+<span id="L178"><span class="lineNum">     178</span>              :     ) public virtual override {</span>
+<span id="L179"><span class="lineNum">     179</span> <span class="tlaUNC">           0 :         NonReentrantLib.nonReentrant(_getSiloConfig());</span></span>
+<span id="L180"><span class="lineNum">     180</span>              : </span>
+<span id="L181"><span class="lineNum">     181</span> <span class="tlaUNC">           0 :         ERC20PermitUpgradeable.permit(owner, spender, value, deadline, v, r, s);</span></span>
+<span id="L182"><span class="lineNum">     182</span>              :     }</span>
+<span id="L183"><span class="lineNum">     183</span>              : </span>
+<span id="L184"><span class="lineNum">     184</span>              :     /* solhint-disable */</span>
+<span id="L185"><span class="lineNum">     185</span>              :     /// @notice Decimals are the same as underlaying asset. Decimal offset is not accounted for in decimals.</span>
+<span id="L186"><span class="lineNum">     186</span>              :     /// @dev This does not imply a 1:1 ratio between shares and assets.</span>
+<span id="L187"><span class="lineNum">     187</span>              :     ///</span>
+<span id="L188"><span class="lineNum">     188</span>              :     /// Silo:</span>
+<span id="L189"><span class="lineNum">     189</span>              :     ///     decimals(): same as underlying asset</span>
+<span id="L190"><span class="lineNum">     190</span>              :     ///     offset: 3</span>
+<span id="L191"><span class="lineNum">     191</span>              :     ///     minted shares per 1 wei of asset deposited: 1000</span>
+<span id="L192"><span class="lineNum">     192</span>              :     /// ProtectedShareToken:</span>
+<span id="L193"><span class="lineNum">     193</span>              :     ///     decimals(): same as underlying asset</span>
+<span id="L194"><span class="lineNum">     194</span>              :     ///     offset: 3</span>
+<span id="L195"><span class="lineNum">     195</span>              :     ///     minted shares per 1 wei of asset deposited: 1000</span>
+<span id="L196"><span class="lineNum">     196</span>              :     /// DebtShareToken:</span>
+<span id="L197"><span class="lineNum">     197</span>              :     ///     decimals(): same as underlying asset</span>
+<span id="L198"><span class="lineNum">     198</span>              :     ///     offset: 0</span>
+<span id="L199"><span class="lineNum">     199</span>              :     ///     minted shares per 1 wei of asset borrowed: 1</span>
+<span id="L200"><span class="lineNum">     200</span>              :     ///</span>
+<span id="L201"><span class="lineNum">     201</span>              :     /// Learn more about the offset here:</span>
+<span id="L202"><span class="lineNum">     202</span>              :     /// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/a7d38c7a3321e3832ca84f7ba1125dff9a91361e/contracts/token/ERC20/extensions/ERC4626.sol#L31</span>
+<span id="L203"><span class="lineNum">     203</span>              :     ///</span>
+<span id="L204"><span class="lineNum">     204</span>              :     /// The share-to-asset ratio may change over time due to interest accrual. As assets grow with interest</span>
+<span id="L205"><span class="lineNum">     205</span>              :     /// but the number of shares remains constant, the ratio will adjust dynamically.</span>
+<span id="L206"><span class="lineNum">     206</span>              :     ///</span>
+<span id="L207"><span class="lineNum">     207</span>              :     /// To determine the current conversion rate, use the vault’s `convertToShares(1 asset)` method.</span>
+<span id="L208"><span class="lineNum">     208</span> <span class="tlaUNC">           0 :     function decimals() public view virtual override(ERC20Upgradeable, IERC20Metadata) returns (uint8) {</span></span>
+<span id="L209"><span class="lineNum">     209</span> <span class="tlaUNC">           0 :         return ShareTokenLib.decimals();</span></span>
+<span id="L210"><span class="lineNum">     210</span>              :     }</span>
+<span id="L211"><span class="lineNum">     211</span>              :     /* solhint-enable */</span>
+<span id="L212"><span class="lineNum">     212</span>              : </span>
+<span id="L213"><span class="lineNum">     213</span>              :     /// @dev Name convention:</span>
+<span id="L214"><span class="lineNum">     214</span>              :     ///      NAME - asset name</span>
+<span id="L215"><span class="lineNum">     215</span>              :     ///      SILO_ID - unique silo id</span>
+<span id="L216"><span class="lineNum">     216</span>              :     ///</span>
+<span id="L217"><span class="lineNum">     217</span>              :     ///      Protected deposit: &quot;Silo Finance Non-borrowable NAME Deposit, SiloId: SILO_ID&quot;</span>
+<span id="L218"><span class="lineNum">     218</span>              :     ///      Borrowable deposit: &quot;Silo Finance Borrowable NAME Deposit, SiloId: SILO_ID&quot;</span>
+<span id="L219"><span class="lineNum">     219</span>              :     ///      Debt: &quot;Silo Finance NAME Debt, SiloId: SILO_ID&quot;</span>
+<span id="L220"><span class="lineNum">     220</span> <span class="tlaUNC">           0 :     function name()</span></span>
+<span id="L221"><span class="lineNum">     221</span>              :         public</span>
+<span id="L222"><span class="lineNum">     222</span>              :         view</span>
+<span id="L223"><span class="lineNum">     223</span>              :         virtual</span>
+<span id="L224"><span class="lineNum">     224</span>              :         override(ERC20Upgradeable, IERC20Metadata)</span>
+<span id="L225"><span class="lineNum">     225</span>              :         returns (string memory)</span>
+<span id="L226"><span class="lineNum">     226</span>              :     {</span>
+<span id="L227"><span class="lineNum">     227</span> <span class="tlaUNC">           0 :         return ShareTokenLib.name();</span></span>
+<span id="L228"><span class="lineNum">     228</span>              :     }</span>
+<span id="L229"><span class="lineNum">     229</span>              : </span>
+<span id="L230"><span class="lineNum">     230</span>              :     /// @dev Symbol convention:</span>
+<span id="L231"><span class="lineNum">     231</span>              :     ///      SYMBOL - asset symbol</span>
+<span id="L232"><span class="lineNum">     232</span>              :     ///      SILO_ID - unique silo id</span>
+<span id="L233"><span class="lineNum">     233</span>              :     ///</span>
+<span id="L234"><span class="lineNum">     234</span>              :     ///      Protected deposit: &quot;nbSYMBOL-SILO_ID&quot;</span>
+<span id="L235"><span class="lineNum">     235</span>              :     ///      Borrowable deposit: &quot;bSYMBOL-SILO_ID&quot;</span>
+<span id="L236"><span class="lineNum">     236</span>              :     ///      Debt: &quot;dSYMBOL-SILO_ID&quot;</span>
+<span id="L237"><span class="lineNum">     237</span> <span class="tlaUNC">           0 :     function symbol()</span></span>
+<span id="L238"><span class="lineNum">     238</span>              :         public</span>
+<span id="L239"><span class="lineNum">     239</span>              :         view</span>
+<span id="L240"><span class="lineNum">     240</span>              :         virtual</span>
+<span id="L241"><span class="lineNum">     241</span>              :         override(ERC20Upgradeable, IERC20Metadata)</span>
+<span id="L242"><span class="lineNum">     242</span>              :         returns (string memory)</span>
+<span id="L243"><span class="lineNum">     243</span>              :     {</span>
+<span id="L244"><span class="lineNum">     244</span> <span class="tlaUNC">           0 :         return ShareTokenLib.symbol();</span></span>
+<span id="L245"><span class="lineNum">     245</span>              :     }</span>
+<span id="L246"><span class="lineNum">     246</span>              : </span>
+<span id="L247"><span class="lineNum">     247</span> <span class="tlaGNC tlaBgGNC">     2843026 :     function balanceOfAndTotalSupply(address _account) public view virtual returns (uint256, uint256) {</span></span>
+<span id="L248"><span class="lineNum">     248</span> <span class="tlaGNC">     2843026 :         return (balanceOf(_account), totalSupply());</span></span>
+<span id="L249"><span class="lineNum">     249</span>              :     }</span>
+<span id="L250"><span class="lineNum">     250</span>              : </span>
+<span id="L251"><span class="lineNum">     251</span>              :     /// @dev Share token initialization</span>
+<span id="L252"><span class="lineNum">     252</span> <span class="tlaGNC">         348 :     function _shareTokenInitialize(</span></span>
+<span id="L253"><span class="lineNum">     253</span>              :         ISilo _silo,</span>
+<span id="L254"><span class="lineNum">     254</span>              :         address _hookReceiver,</span>
+<span id="L255"><span class="lineNum">     255</span>              :         uint24 _tokenType</span>
+<span id="L256"><span class="lineNum">     256</span>              :     )</span>
+<span id="L257"><span class="lineNum">     257</span>              :         internal</span>
+<span id="L258"><span class="lineNum">     258</span>              :         virtual</span>
+<span id="L259"><span class="lineNum">     259</span>              :         initializer</span>
+<span id="L260"><span class="lineNum">     260</span>              :     {</span>
+<span id="L261"><span class="lineNum">     261</span> <span class="tlaGNC">         348 :         __ERC20Permit_init(_NAME);</span></span>
+<span id="L262"><span class="lineNum">     262</span>              : </span>
+<span id="L263"><span class="lineNum">     263</span> <span class="tlaGNC">         348 :         ShareTokenLib.__ShareToken_init(_silo, _hookReceiver, _tokenType);</span></span>
+<span id="L264"><span class="lineNum">     264</span>              :     }</span>
+<span id="L265"><span class="lineNum">     265</span>              : </span>
+<span id="L266"><span class="lineNum">     266</span>              :     /// @inheritdoc ERC20Upgradeable</span>
+<span id="L267"><span class="lineNum">     267</span> <span class="tlaGNC">      547601 :     function _update(address from, address to, uint256 value) internal virtual override {</span></span>
+<span id="L268"><span class="lineNum">     268</span> <span class="tlaGNC">      547601 :         require(value != 0, ZeroTransfer());</span></span>
+<span id="L269"><span class="lineNum">     269</span>              : </span>
+<span id="L270"><span class="lineNum">     270</span> <span class="tlaGNC">      547601 :         _beforeTokenTransfer(from, to, value);</span></span>
+<span id="L271"><span class="lineNum">     271</span>              : </span>
+<span id="L272"><span class="lineNum">     272</span> <span class="tlaGNC">      547601 :         ERC20Upgradeable._update(from, to, value);</span></span>
+<span id="L273"><span class="lineNum">     273</span>              : </span>
+<span id="L274"><span class="lineNum">     274</span> <span class="tlaGNC">      523315 :         _afterTokenTransfer(from, to, value);</span></span>
+<span id="L275"><span class="lineNum">     275</span>              :     }</span>
+<span id="L276"><span class="lineNum">     276</span>              : </span>
+<span id="L277"><span class="lineNum">     277</span>              :     /// @dev By default, we do not have any hooks before token transfer. However,</span>
+<span id="L278"><span class="lineNum">     278</span>              :     /// derived contracts can override this function if they need to execute any logic before token transfer.</span>
+<span id="L279"><span class="lineNum">     279</span> <span class="tlaGNC">      492573 :     function _beforeTokenTransfer(address _sender, address _recipient, uint256 _amount) internal virtual {}</span></span>
+<span id="L280"><span class="lineNum">     280</span>              : </span>
+<span id="L281"><span class="lineNum">     281</span>              :     /// @dev Call an afterTokenTransfer hook if registered</span>
+<span id="L282"><span class="lineNum">     282</span> <span class="tlaGNC">      523315 :     function _afterTokenTransfer(address _sender, address _recipient, uint256 _amount) internal virtual {</span></span>
+<span id="L283"><span class="lineNum">     283</span> <span class="tlaGNC">      523315 :         IShareToken.ShareTokenStorage storage $ = ShareTokenLib.getShareTokenStorage();</span></span>
+<span id="L284"><span class="lineNum">     284</span> <span class="tlaGNC">      523315 :         HookSetup memory setup = $.hookSetup;</span></span>
+<span id="L285"><span class="lineNum">     285</span>              : </span>
+<span id="L286"><span class="lineNum">     286</span> <span class="tlaGNC">      523315 :         uint256 action = Hook.shareTokenTransfer(setup.tokenType);</span></span>
+<span id="L287"><span class="lineNum">     287</span>              : </span>
+<span id="L288"><span class="lineNum">     288</span> <span class="tlaGNC">      523315 :         if (!setup.hooksAfter.matchAction(action)) return;</span></span>
+<span id="L289"><span class="lineNum">     289</span>              : </span>
+<span id="L290"><span class="lineNum">     290</span>              :         // report mint, burn or transfer</span>
+<span id="L291"><span class="lineNum">     291</span>              :         // even if it is possible to leave silo in a middle of mint/burn, where we can have invalid state</span>
+<span id="L292"><span class="lineNum">     292</span>              :         // you can not enter any function because of cross reentrancy check</span>
+<span id="L293"><span class="lineNum">     293</span>              :         // invalid mid-state can be eg: in a middle of transitionCollateral, after burn but before mint</span>
+<span id="L294"><span class="lineNum">     294</span> <span class="tlaGNC">       15018 :         IHookReceiver(setup.hookReceiver).afterAction(</span></span>
+<span id="L295"><span class="lineNum">     295</span>              :             address($.silo),</span>
+<span id="L296"><span class="lineNum">     296</span>              :             action,</span>
+<span id="L297"><span class="lineNum">     297</span>              :             abi.encodePacked(_sender, _recipient, _amount, balanceOf(_sender), balanceOf(_recipient), totalSupply())</span>
+<span id="L298"><span class="lineNum">     298</span>              :         );</span>
+<span id="L299"><span class="lineNum">     299</span>              :     }</span>
+<span id="L300"><span class="lineNum">     300</span>              : </span>
+<span id="L301"><span class="lineNum">     301</span> <span class="tlaGNC">       19523 :     function _crossNonReentrantBefore()</span></span>
+<span id="L302"><span class="lineNum">     302</span>              :         internal</span>
+<span id="L303"><span class="lineNum">     303</span>              :         virtual</span>
+<span id="L304"><span class="lineNum">     304</span>              :         returns (ISiloConfig siloConfigCached)</span>
+<span id="L305"><span class="lineNum">     305</span>              :     {</span>
+<span id="L306"><span class="lineNum">     306</span> <span class="tlaGNC">       19523 :         siloConfigCached = _getSiloConfig();</span></span>
+<span id="L307"><span class="lineNum">     307</span> <span class="tlaGNC">       19523 :         siloConfigCached.turnOnReentrancyProtection();</span></span>
+<span id="L308"><span class="lineNum">     308</span>              :     }</span>
+<span id="L309"><span class="lineNum">     309</span>              : </span>
+<span id="L310"><span class="lineNum">     310</span> <span class="tlaGNC">       19527 :     function _getSiloConfig() internal view virtual returns (ISiloConfig) {</span></span>
+<span id="L311"><span class="lineNum">     311</span> <span class="tlaGNC">       19527 :         return ShareTokenLib.getShareTokenStorage().siloConfig;</span></span>
+<span id="L312"><span class="lineNum">     312</span>              :     }</span>
+<span id="L313"><span class="lineNum">     313</span>              :     </span>
+<span id="L314"><span class="lineNum">     314</span> <span class="tlaGNC">      588113 :     function _getSilo() internal view virtual returns (ISilo) {</span></span>
+<span id="L315"><span class="lineNum">     315</span> <span class="tlaGNC">      588113 :         return ShareTokenLib.getShareTokenStorage().silo;</span></span>
+<span id="L316"><span class="lineNum">     316</span>              :     }</span>
+<span id="L317"><span class="lineNum">     317</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.1-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

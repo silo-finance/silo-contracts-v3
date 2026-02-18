@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - contracts/lib/IsContract.sol</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory contracts/lib">contracts/lib</a> - IsContract.sol<span style="font-size: 80%;"> (source / <a href="IsContract.sol.func-c.html" title="Click to go to function table">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">0.0&nbsp;%</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-02-18 12:07:44</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryLo">0.0&nbsp;%</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : // SPDX-License-Identifier: BUSL-1.1</span>
+<span id="L2"><span class="lineNum">       2</span>              : pragma solidity ^0.8.24;</span>
+<span id="L3"><span class="lineNum">       3</span>              : </span>
+<span id="L4"><span class="lineNum">       4</span>              : library IsContract {</span>
+<span id="L5"><span class="lineNum">       5</span>              :     /**</span>
+<span id="L6"><span class="lineNum">       6</span>              :      * @dev Returns true if `account` is a contract.</span>
+<span id="L7"><span class="lineNum">       7</span>              :      *</span>
+<span id="L8"><span class="lineNum">       8</span>              :      * [IMPORTANT]</span>
+<span id="L9"><span class="lineNum">       9</span>              :      * ====</span>
+<span id="L10"><span class="lineNum">      10</span>              :      * It is unsafe to assume that an address for which this function returns</span>
+<span id="L11"><span class="lineNum">      11</span>              :      * false is an externally-owned account (EOA) and not a contract.</span>
+<span id="L12"><span class="lineNum">      12</span>              :      *</span>
+<span id="L13"><span class="lineNum">      13</span>              :      * Among others, `isContract` will return false for the following</span>
+<span id="L14"><span class="lineNum">      14</span>              :      * types of addresses:</span>
+<span id="L15"><span class="lineNum">      15</span>              :      *</span>
+<span id="L16"><span class="lineNum">      16</span>              :      *  - an externally-owned account</span>
+<span id="L17"><span class="lineNum">      17</span>              :      *  - a contract in construction</span>
+<span id="L18"><span class="lineNum">      18</span>              :      *  - an address where a contract will be created</span>
+<span id="L19"><span class="lineNum">      19</span>              :      *  - an address where a contract lived, but was destroyed</span>
+<span id="L20"><span class="lineNum">      20</span>              :      *</span>
+<span id="L21"><span class="lineNum">      21</span>              :      * Furthermore, `isContract` will also return true if the target contract within</span>
+<span id="L22"><span class="lineNum">      22</span>              :      * the same transaction is already scheduled for destruction by `SELFDESTRUCT`,</span>
+<span id="L23"><span class="lineNum">      23</span>              :      * which only has an effect at the end of a transaction.</span>
+<span id="L24"><span class="lineNum">      24</span>              :      * ====</span>
+<span id="L25"><span class="lineNum">      25</span>              :      *</span>
+<span id="L26"><span class="lineNum">      26</span>              :      * [IMPORTANT]</span>
+<span id="L27"><span class="lineNum">      27</span>              :      * ====</span>
+<span id="L28"><span class="lineNum">      28</span>              :      * You shouldn't rely on `isContract` to protect against flash loan attacks!</span>
+<span id="L29"><span class="lineNum">      29</span>              :      *</span>
+<span id="L30"><span class="lineNum">      30</span>              :      * Preventing calls from contracts is highly discouraged. It breaks composability, breaks support for smart wallets</span>
+<span id="L31"><span class="lineNum">      31</span>              :      * like Gnosis Safe, and does not provide security since it can be circumvented by calling from a contract</span>
+<span id="L32"><span class="lineNum">      32</span>              :      * constructor.</span>
+<span id="L33"><span class="lineNum">      33</span>              :      * ====</span>
+<span id="L34"><span class="lineNum">      34</span>              :      */</span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaUNC tlaBgUNC">           0 :     function isContract(address _account) internal view returns (bool) {</span></span>
+<span id="L36"><span class="lineNum">      36</span>              :         // This method relies on extcodesize/address.code.length, which returns 0</span>
+<span id="L37"><span class="lineNum">      37</span>              :         // for contracts in construction, since the code is only stored at the end</span>
+<span id="L38"><span class="lineNum">      38</span>              :         // of the constructor execution.</span>
+<span id="L39"><span class="lineNum">      39</span>              : </span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaUNC">           0 :         return _account.code.length &gt; 0;</span></span>
+<span id="L41"><span class="lineNum">      41</span>              :     }</span>
+<span id="L42"><span class="lineNum">      42</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.1-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

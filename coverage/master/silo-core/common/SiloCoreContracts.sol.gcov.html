@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - common/SiloCoreContracts.sol</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory common">common</a> - SiloCoreContracts.sol<span style="font-size: 80%;"> (source / <a href="SiloCoreContracts.sol.func-c.html" title="Click to go to function table">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">6.7&nbsp;%</td>
+            <td class="headerCovTableEntry">30</td>
+            <td class="headerCovTableEntry">2</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-02-18 12:07:44</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryLo">20.0&nbsp;%</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntry">1</td>
+          </tr>
+                  <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : // SPDX-License-Identifier: MIT</span>
+<span id="L2"><span class="lineNum">       2</span>              : </span>
+<span id="L3"><span class="lineNum">       3</span>              : pragma solidity &gt;=0.7.6 &lt;0.9.0;</span>
+<span id="L4"><span class="lineNum">       4</span>              : </span>
+<span id="L5"><span class="lineNum">       5</span>              : import {Deployments} from &quot;silo-foundry-utils/lib/Deployments.sol&quot;;</span>
+<span id="L6"><span class="lineNum">       6</span>              : import {Strings} from &quot;openzeppelin5/utils/Strings.sol&quot;;</span>
+<span id="L7"><span class="lineNum">       7</span>              : </span>
+<span id="L8"><span class="lineNum">       8</span>              : library SiloCoreContracts {</span>
+<span id="L9"><span class="lineNum">       9</span>              :     // smart contracts list</span>
+<span id="L10"><span class="lineNum">      10</span>              :     string public constant SILO_FACTORY = &quot;SiloFactory.sol&quot;;</span>
+<span id="L11"><span class="lineNum">      11</span>              :     string public constant INTEREST_RATE_MODEL_V2_FACTORY = &quot;InterestRateModelV2Factory.sol&quot;;</span>
+<span id="L12"><span class="lineNum">      12</span>              :     string public constant INTEREST_RATE_MODEL_V2 = &quot;InterestRateModelV2.sol&quot;;</span>
+<span id="L13"><span class="lineNum">      13</span>              :     string public constant DYNAMIC_KINK_MODEL_FACTORY = &quot;DynamicKinkModelFactory.sol&quot;;</span>
+<span id="L14"><span class="lineNum">      14</span>              :     string public constant DYNAMIC_KINK_MODEL = &quot;DynamicKinkModel.sol&quot;;</span>
+<span id="L15"><span class="lineNum">      15</span>              :     string public constant SILO_HOOK_V1 = &quot;SiloHookV1.sol&quot;;</span>
+<span id="L16"><span class="lineNum">      16</span>              :     string public constant SILO_HOOK_V2 = &quot;SiloHookV2.sol&quot;;</span>
+<span id="L17"><span class="lineNum">      17</span>              :     string public constant SILO_HOOK_V3 = &quot;SiloHookV3.sol&quot;;</span>
+<span id="L18"><span class="lineNum">      18</span>              :     string public constant SILO_DEPLOYER = &quot;SiloDeployer.sol&quot;;</span>
+<span id="L19"><span class="lineNum">      19</span>              :     string public constant SILO = &quot;Silo.sol&quot;;</span>
+<span id="L20"><span class="lineNum">      20</span>              :     string public constant PARTIAL_LIQUIDATION = &quot;PartialLiquidation.sol&quot;;</span>
+<span id="L21"><span class="lineNum">      21</span>              :     string public constant PENDLE_REWARDS_CLAIMER = &quot;PendleRewardsClaimer.sol&quot;;</span>
+<span id="L22"><span class="lineNum">      22</span>              :     string public constant LIQUIDATION_HELPER = &quot;LiquidationHelper.sol&quot;;</span>
+<span id="L23"><span class="lineNum">      23</span>              :     string public constant MANUAL_LIQUIDATION_HELPER = &quot;ManualLiquidationHelper.sol&quot;;</span>
+<span id="L24"><span class="lineNum">      24</span>              :     string public constant TOWER = &quot;Tower.sol&quot;;</span>
+<span id="L25"><span class="lineNum">      25</span>              :     string public constant SHARE_PROTECTED_COLLATERAL_TOKEN = &quot;ShareProtectedCollateralToken.sol&quot;;</span>
+<span id="L26"><span class="lineNum">      26</span>              :     string public constant SHARE_DEBT_TOKEN = &quot;ShareDebtToken.sol&quot;;</span>
+<span id="L27"><span class="lineNum">      27</span>              :     string public constant SILO_LENS = &quot;SiloLens.sol&quot;;</span>
+<span id="L28"><span class="lineNum">      28</span>              :     string public constant LEVERAGE_ROUTER = &quot;LeverageRouter.sol&quot;;</span>
+<span id="L29"><span class="lineNum">      29</span>              :     string public constant SILO_ROUTER_V2 = &quot;SiloRouterV2.sol&quot;;</span>
+<span id="L30"><span class="lineNum">      30</span>              :     string public constant INCENTIVES_CONTROLLER_FACTORY = &quot;SiloIncentivesControllerFactory.sol&quot;;</span>
+<span id="L31"><span class="lineNum">      31</span>              :     string public constant GLOBAL_PAUSE = &quot;GlobalPause.sol&quot;;</span>
+<span id="L32"><span class="lineNum">      32</span>              : }</span>
+<span id="L33"><span class="lineNum">      33</span>              : </span>
+<span id="L34"><span class="lineNum">      34</span>              : /// @notice SiloCoreDeployments library</span>
+<span id="L35"><span class="lineNum">      35</span>              : /// @dev This library is used to get the deployed via deployment scripts address of the contracts.</span>
+<span id="L36"><span class="lineNum">      36</span>              : /// Supported deployment scripts are in the `silo-core/deploy` directory except for the `silo`,</span>
+<span id="L37"><span class="lineNum">      37</span>              : /// as it has a separate deployment script. Also, this library will not resolve the address of the</span>
+<span id="L38"><span class="lineNum">      38</span>              : /// smart contract that was cloned during the `silo` deployment.</span>
+<span id="L39"><span class="lineNum">      39</span>              : library SiloCoreDeployments {</span>
+<span id="L40"><span class="lineNum">      40</span>              :     string public constant DEPLOYMENTS_DIR = &quot;silo-core&quot;;</span>
+<span id="L41"><span class="lineNum">      41</span>              : </span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaGNC tlaBgGNC">         812 :     function get(string memory _contract, string memory _network) internal returns (address) {</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">         812 :         return Deployments.getAddress(DEPLOYMENTS_DIR, _network, _contract);</span></span>
+<span id="L44"><span class="lineNum">      44</span>              :     }</span>
+<span id="L45"><span class="lineNum">      45</span>              : </span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaUNC tlaBgUNC">           0 :     function parseAddress(string memory _string) internal pure returns (address fixedAddress) {</span></span>
+<span id="L47"><span class="lineNum">      47</span> <span class="tlaUNC">           0 :         if (bytes(_string).length != 42) return address(0);</span></span>
+<span id="L48"><span class="lineNum">      48</span>              : </span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaUNC">           0 :         bytes32 ox = keccak256(bytes(&quot;0x&quot;));</span></span>
+<span id="L50"><span class="lineNum">      50</span> <span class="tlaUNC">           0 :         bytes32 twoChars = keccak256(abi.encodePacked(bytes(_string)[0], bytes(_string)[1]));</span></span>
+<span id="L51"><span class="lineNum">      51</span>              : </span>
+<span id="L52"><span class="lineNum">      52</span> <span class="tlaUNC">           0 :         if (ox != twoChars) return address(0);</span></span>
+<span id="L53"><span class="lineNum">      53</span>              : </span>
+<span id="L54"><span class="lineNum">      54</span> <span class="tlaUNC">           0 :         (bool success, uint256 value) = _tryParseHexUintUncheckedBounds(_string, 0, 42);</span></span>
+<span id="L55"><span class="lineNum">      55</span> <span class="tlaUNC">           0 :         if (!success) return address(0);</span></span>
+<span id="L56"><span class="lineNum">      56</span>              : </span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaUNC">           0 :         return address(uint160(value));</span></span>
+<span id="L58"><span class="lineNum">      58</span>              :     }</span>
+<span id="L59"><span class="lineNum">      59</span>              : </span>
+<span id="L60"><span class="lineNum">      60</span>              :     /**</span>
+<span id="L61"><span class="lineNum">      61</span>              :      * @dev Implementation of {tryParseHexUint} that does not check bounds. Caller should make sure that</span>
+<span id="L62"><span class="lineNum">      62</span>              :      * `begin &lt;= end &lt;= input.length`. Other inputs would result in undefined behavior.</span>
+<span id="L63"><span class="lineNum">      63</span>              :      */</span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaUNC">           0 :     function _tryParseHexUintUncheckedBounds(string memory input, uint256 begin, uint256 end)</span></span>
+<span id="L65"><span class="lineNum">      65</span>              :         private</span>
+<span id="L66"><span class="lineNum">      66</span>              :         pure</span>
+<span id="L67"><span class="lineNum">      67</span>              :         returns (bool success, uint256 value)</span>
+<span id="L68"><span class="lineNum">      68</span>              :     {</span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaUNC">           0 :         bytes memory buffer = bytes(input);</span></span>
+<span id="L70"><span class="lineNum">      70</span>              : </span>
+<span id="L71"><span class="lineNum">      71</span>              :         // skip 0x prefix if present</span>
+<span id="L72"><span class="lineNum">      72</span>              :         // don't do out-of-bound (possibly unsafe) read if sub-string is empty</span>
+<span id="L73"><span class="lineNum">      73</span> <span class="tlaUNC">           0 :         bool hasPrefix = (end &gt; begin + 1) &amp;&amp; bytes2(_unsafeReadBytesOffset(buffer, begin)) == bytes2(&quot;0x&quot;);</span></span>
+<span id="L74"><span class="lineNum">      74</span> <span class="tlaUNC">           0 :         uint256 offset = hasPrefix ? 2 : 0;</span></span>
+<span id="L75"><span class="lineNum">      75</span>              : </span>
+<span id="L76"><span class="lineNum">      76</span> <span class="tlaUNC">           0 :         uint256 result = 0;</span></span>
+<span id="L77"><span class="lineNum">      77</span> <span class="tlaUNC">           0 :         for (uint256 i = begin + offset; i &lt; end; ++i) {</span></span>
+<span id="L78"><span class="lineNum">      78</span> <span class="tlaUNC">           0 :             uint8 chr = _tryParseChr(bytes1(_unsafeReadBytesOffset(buffer, i)));</span></span>
+<span id="L79"><span class="lineNum">      79</span> <span class="tlaUNC">           0 :             if (chr &gt; 15) return (false, 0);</span></span>
+<span id="L80"><span class="lineNum">      80</span> <span class="tlaUNC">           0 :             result *= 16;</span></span>
+<span id="L81"><span class="lineNum">      81</span>              :             unchecked {</span>
+<span id="L82"><span class="lineNum">      82</span>              :                 // Multiplying by 16 is equivalent to a shift of 4 bits (with additional overflow check).</span>
+<span id="L83"><span class="lineNum">      83</span>              :                 // This guaratees that adding a value &lt; 16 will not cause an overflow, hence the unchecked.</span>
+<span id="L84"><span class="lineNum">      84</span> <span class="tlaUNC">           0 :                 result += chr;</span></span>
+<span id="L85"><span class="lineNum">      85</span>              :             }</span>
+<span id="L86"><span class="lineNum">      86</span>              :         }</span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaUNC">           0 :         return (true, result);</span></span>
+<span id="L88"><span class="lineNum">      88</span>              :     }</span>
+<span id="L89"><span class="lineNum">      89</span>              : </span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaUNC">           0 :     function _tryParseChr(bytes1 chr) private pure returns (uint8) {</span></span>
+<span id="L91"><span class="lineNum">      91</span> <span class="tlaUNC">           0 :         uint8 value = uint8(chr);</span></span>
+<span id="L92"><span class="lineNum">      92</span>              : </span>
+<span id="L93"><span class="lineNum">      93</span>              :         // Try to parse `chr`:</span>
+<span id="L94"><span class="lineNum">      94</span>              :         // - Case 1: [0-9]</span>
+<span id="L95"><span class="lineNum">      95</span>              :         // - Case 2: [a-f]</span>
+<span id="L96"><span class="lineNum">      96</span>              :         // - Case 3: [A-F]</span>
+<span id="L97"><span class="lineNum">      97</span>              :         // - otherwise not supported</span>
+<span id="L98"><span class="lineNum">      98</span>              :         unchecked {</span>
+<span id="L99"><span class="lineNum">      99</span> <span class="tlaUNC">           0 :             if (value &gt; 47 &amp;&amp; value &lt; 58) value -= 48;</span></span>
+<span id="L100"><span class="lineNum">     100</span> <span class="tlaUNC">           0 :             else if (value &gt; 96 &amp;&amp; value &lt; 103) value -= 87;</span></span>
+<span id="L101"><span class="lineNum">     101</span> <span class="tlaUNC">           0 :             else if (value &gt; 64 &amp;&amp; value &lt; 71) value -= 55;</span></span>
+<span id="L102"><span class="lineNum">     102</span> <span class="tlaUNC">           0 :             else return type(uint8).max;</span></span>
+<span id="L103"><span class="lineNum">     103</span>              :         }</span>
+<span id="L104"><span class="lineNum">     104</span>              : </span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaUNC">           0 :         return value;</span></span>
+<span id="L106"><span class="lineNum">     106</span>              :     }</span>
+<span id="L107"><span class="lineNum">     107</span>              : </span>
+<span id="L108"><span class="lineNum">     108</span>              :     /**</span>
+<span id="L109"><span class="lineNum">     109</span>              :      * @dev Reads a bytes32 from a bytes array without bounds checking.</span>
+<span id="L110"><span class="lineNum">     110</span>              :      *</span>
+<span id="L111"><span class="lineNum">     111</span>              :      * NOTE: making this function internal would mean it could be used with memory unsafe offset, and marking the</span>
+<span id="L112"><span class="lineNum">     112</span>              :      * assembly block as such would prevent some optimizations.</span>
+<span id="L113"><span class="lineNum">     113</span>              :      */</span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaUNC">           0 :     function _unsafeReadBytesOffset(bytes memory buffer, uint256 offset) private pure returns (bytes32 value) {</span></span>
+<span id="L115"><span class="lineNum">     115</span>              :         // This is not memory safe in the general case, but all calls to this private function are within bounds.</span>
+<span id="L116"><span class="lineNum">     116</span>              :         // solhint-disable-next-line no-inline-assembly</span>
+<span id="L117"><span class="lineNum">     117</span>              :         assembly (&quot;memory-safe&quot;) {</span>
+<span id="L118"><span class="lineNum">     118</span> <span class="tlaUNC">           0 :             value := mload(add(buffer, add(0x20, offset)))</span></span>
+<span id="L119"><span class="lineNum">     119</span>              :         }</span>
+<span id="L120"><span class="lineNum">     120</span>              :     }</span>
+<span id="L121"><span class="lineNum">     121</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.1-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

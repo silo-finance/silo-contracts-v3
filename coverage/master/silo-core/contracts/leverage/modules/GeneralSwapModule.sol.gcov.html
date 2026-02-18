@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - contracts/leverage/modules/GeneralSwapModule.sol</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory contracts/leverage/modules">contracts/leverage/modules</a> - GeneralSwapModule.sol<span style="font-size: 80%;"> (source / <a href="GeneralSwapModule.sol.func-c.html" title="Click to go to function table">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">0.0&nbsp;%</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-02-18 12:07:44</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryLo">0.0&nbsp;%</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : // SPDX-License-Identifier: MIT</span>
+<span id="L2"><span class="lineNum">       2</span>              : pragma solidity 0.8.28;</span>
+<span id="L3"><span class="lineNum">       3</span>              : </span>
+<span id="L4"><span class="lineNum">       4</span>              : import {SafeERC20} from &quot;openzeppelin5/token/ERC20/utils/SafeERC20.sol&quot;;</span>
+<span id="L5"><span class="lineNum">       5</span>              : import {IERC20} from &quot;@openzeppelin/contracts/token/ERC20/IERC20.sol&quot;;</span>
+<span id="L6"><span class="lineNum">       6</span>              : </span>
+<span id="L7"><span class="lineNum">       7</span>              : import {RevertLib} from &quot;../../lib/RevertLib.sol&quot;;</span>
+<span id="L8"><span class="lineNum">       8</span>              : import {IGeneralSwapModule} from &quot;../../interfaces/IGeneralSwapModule.sol&quot;;</span>
+<span id="L9"><span class="lineNum">       9</span>              : </span>
+<span id="L10"><span class="lineNum">      10</span>              : /// @title ERC20 General use Swap Module</span>
+<span id="L11"><span class="lineNum">      11</span>              : /// @notice Enables ERC20 token swaps via an external exchange (e.g., 0x, ODOS, Pendle)</span>
+<span id="L12"><span class="lineNum">      12</span>              : /// @dev Based on the 0x demo contract:</span>
+<span id="L13"><span class="lineNum">      13</span>              : /// https://github.com/0xProject/0x-api-starter-guide-code/blob/master/contracts/SimpleTokenSwap.sol</span>
+<span id="L14"><span class="lineNum">      14</span>              : /// The swap module is designed to execute external calls and is under the caller's full control.</span>
+<span id="L15"><span class="lineNum">      15</span>              : /// It can call any contract using any method. NEVER approve any tokens for it!</span>
+<span id="L16"><span class="lineNum">      16</span>              : contract GeneralSwapModule is IGeneralSwapModule {</span>
+<span id="L17"><span class="lineNum">      17</span>              :     using SafeERC20 for IERC20;</span>
+<span id="L18"><span class="lineNum">      18</span>              : </span>
+<span id="L19"><span class="lineNum">      19</span>              :     /// @notice Executes a token swap using a prebuilt swap quote</span>
+<span id="L20"><span class="lineNum">      20</span>              :     /// @dev The contract must hold the sell token balance before calling.</span>
+<span id="L21"><span class="lineNum">      21</span>              :     /// @param _swapArgs SwapArgs struct containing all parameters for executing a swap</span>
+<span id="L22"><span class="lineNum">      22</span>              :     /// @param _maxApprovalAmount Amount of sell token to approve before the swap</span>
+<span id="L23"><span class="lineNum">      23</span>              :     /// @return amountOut Amount of buy token received after the swap including any previous balance that contract has</span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaUNC tlaBgUNC">           0 :     function fillQuote(SwapArgs memory _swapArgs, uint256 _maxApprovalAmount)</span></span>
+<span id="L25"><span class="lineNum">      25</span>              :         external</span>
+<span id="L26"><span class="lineNum">      26</span>              :         virtual</span>
+<span id="L27"><span class="lineNum">      27</span>              :         returns (uint256 amountOut)</span>
+<span id="L28"><span class="lineNum">      28</span>              :     {</span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaUNC">           0 :         if (_swapArgs.exchangeProxy == address(0)) revert ExchangeAddressZero();</span></span>
+<span id="L30"><span class="lineNum">      30</span>              : </span>
+<span id="L31"><span class="lineNum">      31</span>              :         // Approve token for spending by the exchange</span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaUNC">           0 :         IERC20(_swapArgs.sellToken).forceApprove(_swapArgs.allowanceTarget, _maxApprovalAmount);</span></span>
+<span id="L33"><span class="lineNum">      33</span>              : </span>
+<span id="L34"><span class="lineNum">      34</span>              :         // Perform low-level call to any method and any smart contract provided by the caller.</span>
+<span id="L35"><span class="lineNum">      35</span>              :         // solhint-disable-next-line avoid-low-level-calls</span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaUNC">           0 :         (bool success, bytes memory data) = _swapArgs.exchangeProxy.call(_swapArgs.swapCallData);</span></span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaUNC">           0 :         if (!success) RevertLib.revertBytes(data, SwapCallFailed.selector);</span></span>
+<span id="L38"><span class="lineNum">      38</span>              : </span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaUNC">           0 :         amountOut = _transferBalanceToSender(_swapArgs.buyToken);</span></span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaUNC">           0 :         if (amountOut == 0) revert ZeroAmountOut();</span></span>
+<span id="L41"><span class="lineNum">      41</span>              : </span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaUNC">           0 :         _transferBalanceToSender(_swapArgs.sellToken);</span></span>
+<span id="L43"><span class="lineNum">      43</span>              :     }</span>
+<span id="L44"><span class="lineNum">      44</span>              : </span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaUNC">           0 :     function _transferBalanceToSender(address _token) internal virtual returns (uint256 balance) {</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaUNC">           0 :         balance = IERC20(_token).balanceOf(address(this));</span></span>
+<span id="L47"><span class="lineNum">      47</span>              : </span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaUNC">           0 :         if (balance != 0) {</span></span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaUNC">           0 :             IERC20(_token).safeTransfer(msg.sender, balance);</span></span>
+<span id="L50"><span class="lineNum">      50</span>              :         }</span>
+<span id="L51"><span class="lineNum">      51</span>              :     }</span>
+<span id="L52"><span class="lineNum">      52</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.1-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

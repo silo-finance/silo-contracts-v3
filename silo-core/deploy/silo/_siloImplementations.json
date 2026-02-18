@@ -3,6 +3,10 @@
         {
             "implementation": "0x9b550BF0351986342959d4447c5851e570766238",
             "description": "original implementation"
+        },
+        {
+            "implementation": "0x92b70a15283d6b5dD7078cc4085fea8e4b7940df",
+            "description": "silo v3 implementation"
         }
     ],
     "sonic": [
@@ -17,6 +21,10 @@
         {
             "implementation": "0x435Ab368F5fCCcc71554f4A8ac5F5b922bC4Dc06",
             "description": "after code4arena contest and max borrow fix"
+        },
+        {
+            "implementation": "0x4C5526Ad3546819eE86fE3499D997453A3178043",
+            "description": "silo v3 implementation"
         }
     ],
     "optimism": [
@@ -35,12 +43,44 @@
         {
             "implementation": "0xEF1BC66E0eA9717a3f2C969633A989D6BF41024B",
             "description": "original implementation"
+        },
+        {
+            "implementation": "0x97D6d6196A22Abf2De4a7C6C98e539230411d8Bd",
+            "description": "silo v3 implementation"
         }
     ],
     "avalanche": [
         {
             "implementation": "0x2C7E816323B2E3894EB98d53B2cbec659aE26441",
             "description": "original implementation"
+        },
+        {
+            "implementation": "0x1478570FC9C8422b6733455DB5504378940DDAE8",
+            "description": "silo v3 implementation"
+        }
+    ],
+    "injective": [
+        {
+            "implementation": "0x57448f23Fe51be6934a1d88f783d613b9801B151",
+            "description": "silo v3 implementation"
+        }
+    ],
+    "okx": [
+        {
+            "implementation": "0x34490CBc071b9A15440179299CF10bd82F2b079B",
+            "description": "silo v3 implementation"
+        }
+    ],
+    "bnb": [
+        {
+            "implementation": "0x34490CBc071b9A15440179299CF10bd82F2b079B",
+            "description": "silo v3 implementation"
+        }
+    ],
+    "base": [
+        {
+            "implementation": "0xf274d56CC483A481DcE0663C4c5B2cCac04b7B64",
+            "description": "silo v3 implementation"
         }
     ]
 }

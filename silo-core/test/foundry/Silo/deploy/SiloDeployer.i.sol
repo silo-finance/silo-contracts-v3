@@ -87,7 +87,7 @@ contract SiloDeployerIntegrationTest is Test {
         _printMatch(shareDebtTokenImplMatch, SiloCoreContracts.SHARE_DEBT_TOKEN);
     }
 
-    function _getPreviousDeployer() internal returns (SiloDeployer) {
+    function _getPreviousDeployer() internal view returns (SiloDeployer) {
         uint256 chainId = ChainsLib.getChainId();
 
         if (chainId == ChainsLib.AVALANCHE_CHAIN_ID) {

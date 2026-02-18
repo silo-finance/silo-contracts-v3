@@ -1,7 +1,7 @@
 {
     "deployer": "",
     "hookReceiver": "CLONE_IMPLEMENTATION",
-    "hookReceiverImplementation": "SiloHookV1.sol",
+    "hookReceiverImplementation": "SiloHookV2.sol",
     "daoFee": 1500,
     "deployerFee": 0,
     "token0": "WINJ",

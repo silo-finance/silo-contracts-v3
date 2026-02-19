@@ -69,7 +69,7 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
 
         // now move into future until we overflow interest
 
-        uint256 ltvBefore = siloLens.getLtv(silo1, borrower);
+        uint256 ltvBefore = SILO_LENS.getLtv(silo1, borrower);
 
         emit log_named_decimal_uint("LTV before", ltvBefore, 16);
         _printUtilization(silo1);
@@ -84,7 +84,7 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
             allInterest += silo1.accrueInterest();
             emit log_named_decimal_uint("silo1.getLiquidity()", silo1.getLiquidity(), 18);
 
-            uint256 newLtv = siloLens.getLtv(silo1, borrower);
+            uint256 newLtv = SILO_LENS.getLtv(silo1, borrower);
 
             if (ltvBefore != newLtv) {
                 ltvBefore = newLtv;
@@ -102,7 +102,7 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
         assertEq(silo1.accrueInterest(), 0, "when IRM overflows, there should be no more interest");
         _printUtilization(silo1);
 
-        emit log_named_decimal_uint("LTV after", siloLens.getLtv(silo0, borrower), 16);
+        emit log_named_decimal_uint("LTV after", SILO_LENS.getLtv(silo0, borrower), 16);
         _printUtilization(silo1);
 
         uint256 dust = silo1.convertToAssets(1);
@@ -168,8 +168,8 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
         assertEq(_printUtilization(silo1).collateralAssets, 906695, "collateral dust left");
 
         {
-            assertEq(0, siloLens.getLtv(silo1, borrower), "LTV repaid");
-            assertEq(0, siloLens.getLtv(silo1, borrower2), "LTV repaid2");
+            assertEq(0, SILO_LENS.getLtv(silo1, borrower), "LTV repaid");
+            assertEq(0, SILO_LENS.getLtv(silo1, borrower2), "LTV repaid2");
         }
     }
 

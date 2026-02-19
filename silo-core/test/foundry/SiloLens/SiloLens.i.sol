@@ -40,155 +40,155 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
         uint256 collateral = 11e18;
 
         _deposit(deposit0, depositor);
-        assertTrue(siloLens.hasPosition(siloConfig, depositor), "hasPosition");
+        assertTrue(SILO_LENS.hasPosition(siloConfig, depositor), "hasPosition");
         assertTrue(
-            siloLens.hasPosition(siloConfig, depositor),
+            SILO_LENS.hasPosition(siloConfig, depositor),
             "depositor has position in silo0 but we checking whole market"
         );
 
         _depositForBorrow(deposit1, depositor);
 
-        assertTrue(siloLens.isSolvent(silo0, depositor), "depositor has no debt");
-        assertEq(siloLens.liquidity(silo0), deposit0, "liquidity in silo0");
-        assertEq(siloLens.liquidity(silo1), deposit1, "liquidity in silo1");
-        assertEq(siloLens.getRawLiquidity(silo0), deposit0, "getRawLiquidity 0");
-        assertEq(siloLens.getRawLiquidity(silo1), deposit1, "getRawLiquidity 1");
+        assertTrue(SILO_LENS.isSolvent(silo0, depositor), "depositor has no debt");
+        assertEq(SILO_LENS.liquidity(silo0), deposit0, "liquidity in silo0");
+        assertEq(SILO_LENS.liquidity(silo1), deposit1, "liquidity in silo1");
+        assertEq(SILO_LENS.getRawLiquidity(silo0), deposit0, "getRawLiquidity 0");
+        assertEq(SILO_LENS.getRawLiquidity(silo1), deposit1, "getRawLiquidity 1");
 
         _deposit(collateral, borrower);
 
-        assertFalse(siloLens.inDebt(siloConfig, borrower), "borrower has no debt");
-        assertEq(siloLens.getUserLT(silo0, borrower), 0, "LT is 0 when borrower has no debt");
+        assertFalse(SILO_LENS.inDebt(siloConfig, borrower), "borrower has no debt");
+        assertEq(SILO_LENS.getUserLT(silo0, borrower), 0, "LT is 0 when borrower has no debt");
 
-        assertEq(siloLens.liquidity(silo0), deposit0 + collateral, "liquidity in silo0 before borrow");
-        assertEq(siloLens.liquidity(silo1), deposit1, "liquidity in silo1 before borrow");
-        assertEq(siloLens.getRawLiquidity(silo0), deposit0 + collateral, "getRawLiquidity 0 before borrow");
-        assertEq(siloLens.getRawLiquidity(silo1), deposit1, "getRawLiquidity 1 before borrow");
+        assertEq(SILO_LENS.liquidity(silo0), deposit0 + collateral, "liquidity in silo0 before borrow");
+        assertEq(SILO_LENS.liquidity(silo1), deposit1, "liquidity in silo1 before borrow");
+        assertEq(SILO_LENS.getRawLiquidity(silo0), deposit0 + collateral, "getRawLiquidity 0 before borrow");
+        assertEq(SILO_LENS.getRawLiquidity(silo1), deposit1, "getRawLiquidity 1 before borrow");
 
-        assertEq(siloLens.totalDeposits(silo1), deposit1, "totalDeposits before borrow");
+        assertEq(SILO_LENS.totalDeposits(silo1), deposit1, "totalDeposits before borrow");
 
         uint256 toBorrow = silo1.maxBorrow(borrower);
         _borrow(toBorrow, borrower);
 
-        assertTrue(siloLens.isSolvent(silo1, borrower), "borrower is solvent @0");
-        assertTrue(siloLens.isSolvent(silo1, borrower), "borrower is solvent @1");
-        assertTrue(siloLens.inDebt(siloConfig, borrower), "borrower has debt now");
-        assertEq(siloLens.getUserLT(silo0, borrower), 0.85e18, "user LT when borrower has debt @0");
-        assertEq(siloLens.getUserLT(silo1, borrower), 0.85e18, "user LT when borrower has debt @1");
+        assertTrue(SILO_LENS.isSolvent(silo1, borrower), "borrower is solvent @0");
+        assertTrue(SILO_LENS.isSolvent(silo1, borrower), "borrower is solvent @1");
+        assertTrue(SILO_LENS.inDebt(siloConfig, borrower), "borrower has debt now");
+        assertEq(SILO_LENS.getUserLT(silo0, borrower), 0.85e18, "user LT when borrower has debt @0");
+        assertEq(SILO_LENS.getUserLT(silo1, borrower), 0.85e18, "user LT when borrower has debt @1");
 
         ISiloLens.Borrower[] memory borrowers = new ISiloLens.Borrower[](1);
         borrowers[0] = ISiloLens.Borrower(silo1, borrower);
-        ISiloLens.BorrowerHealth[] memory health = siloLens.getUsersHealth(borrowers);
+        ISiloLens.BorrowerHealth[] memory health = SILO_LENS.getUsersHealth(borrowers);
 
         assertEq(health[0].lt, 0.85e18, "[health] user LT when borrower has debt");
         assertEq(health[0].ltv, 0.75e18, "[health] user LTV when borrower has debt");
 
-        assertTrue(siloLens.hasPosition(siloConfig, borrower), "borrower has position #0");
-        assertTrue(siloLens.hasPosition(siloConfig, borrower), "borrower has position #1");
+        assertTrue(SILO_LENS.hasPosition(siloConfig, borrower), "borrower has position #0");
+        assertTrue(SILO_LENS.hasPosition(siloConfig, borrower), "borrower has position #1");
 
-        assertEq(siloLens.getUserLTV(silo0, borrower), 0.75e18, "borrower LTV #0");
-        assertEq(siloLens.getUserLTV(silo1, borrower), 0.75e18, "borrower LTV #1");
+        assertEq(SILO_LENS.getUserLTV(silo0, borrower), 0.75e18, "borrower LTV #0");
+        assertEq(SILO_LENS.getUserLTV(silo1, borrower), 0.75e18, "borrower LTV #1");
 
-        assertEq(siloLens.getUtilization(silo0), 0, "getUtilization #0");
-        assertEq(siloLens.getUtilization(silo1), 0.75e18 - 1, "getUtilization #1");
+        assertEq(SILO_LENS.getUtilization(silo0), 0, "getUtilization #0");
+        assertEq(SILO_LENS.getUtilization(silo1), 0.75e18 - 1, "getUtilization #1");
 
         assertEq(
-            siloLens.calculateCollateralValue(siloConfig, borrower),
+            SILO_LENS.calculateCollateralValue(siloConfig, borrower),
             collateral,
             "calculateCollateralValue (price is 1:1)"
         );
 
         assertEq(
-            siloLens.calculateBorrowValue(siloConfig, borrower), toBorrow, "calculateBorrowValue (price is 1:1)"
+            SILO_LENS.calculateBorrowValue(siloConfig, borrower), toBorrow, "calculateBorrowValue (price is 1:1)"
         );
 
         assertEq(
-            siloLens.collateralBalanceOfUnderlying(silo0, borrower),
+            SILO_LENS.collateralBalanceOfUnderlying(silo0, borrower),
             collateral,
             "collateralBalanceOfUnderlying after borrow"
         );
 
-        assertEq(siloLens.debtBalanceOfUnderlying(silo0, borrower), 0, "[debtBalanceOfUnderlying] no debt in silo0");
+        assertEq(SILO_LENS.debtBalanceOfUnderlying(silo0, borrower), 0, "[debtBalanceOfUnderlying] no debt in silo0");
 
-        assertEq(siloLens.debtBalanceOfUnderlying(silo1, borrower), toBorrow, "collateralBalanceOfUnderlying");
+        assertEq(SILO_LENS.debtBalanceOfUnderlying(silo1, borrower), toBorrow, "collateralBalanceOfUnderlying");
 
-        assertEq(siloLens.totalDeposits(silo1), deposit1, "totalDeposits after borrow are the same");
+        assertEq(SILO_LENS.totalDeposits(silo1), deposit1, "totalDeposits after borrow are the same");
 
         vm.warp(block.timestamp + 65 days);
 
-        assertEq(siloLens.getBorrowAPR(silo0), 0, "getBorrowAPR after 65 days #0");
-        assertEq(siloLens.getBorrowAPR(silo1), 6_605018041879152000, "getBorrowAPR after 65 days #1");
+        assertEq(SILO_LENS.getBorrowAPR(silo0), 0, "getBorrowAPR after 65 days #0");
+        assertEq(SILO_LENS.getBorrowAPR(silo1), 6_605018041879152000, "getBorrowAPR after 65 days #1");
 
-        assertEq(siloLens.getDepositAPR(silo0), 0, "getDepositAPR after 65 days #0");
-        assertEq(siloLens.getDepositAPR(silo1), 4_625564840789060382, "getDepositAPR after 65 days #1");
+        assertEq(SILO_LENS.getDepositAPR(silo0), 0, "getDepositAPR after 65 days #0");
+        assertEq(SILO_LENS.getDepositAPR(silo1), 4_625564840789060382, "getDepositAPR after 65 days #1");
 
         ISilo[] memory silos = new ISilo[](1);
         silos[0] = silo1;
 
-        ISiloLens.APR[] memory aprs = siloLens.getAPRs(silos);
+        ISiloLens.APR[] memory aprs = SILO_LENS.getAPRs(silos);
         assertEq(aprs[0].borrowAPR, 6_605018041879152000, "apr.getBorrowAPR after 65 days #1");
         assertEq(aprs[0].depositAPR, 4_625564840789060382, "aps.getDepositAPR after 65 days #1");
 
         assertLt(
-            siloLens.getDepositAPR(silo1), siloLens.getBorrowAPR(silo1), "deposit APR should be less than borrow"
+            SILO_LENS.getDepositAPR(silo1), SILO_LENS.getBorrowAPR(silo1), "deposit APR should be less than borrow"
         );
 
-        assertFalse(siloLens.isSolvent(silo0, borrower), "borrower is NOT solvent @0");
-        assertFalse(siloLens.isSolvent(silo1, borrower), "borrower is NOT solvent @1");
+        assertFalse(SILO_LENS.isSolvent(silo0, borrower), "borrower is NOT solvent @0");
+        assertFalse(SILO_LENS.isSolvent(silo1, borrower), "borrower is NOT solvent @1");
 
         assertEq(
-            siloLens.totalDeposits(silo1),
+            SILO_LENS.totalDeposits(silo1),
             deposit1,
             "totalDeposits after borrow + time are the same, because we reading storage"
         );
 
         assertGt(
-            siloLens.totalDepositsWithInterest(silo1),
+            SILO_LENS.totalDepositsWithInterest(silo1),
             deposit1,
             "totalDepositsWithInterest after borrow + time + interest"
         );
 
-        assertEq(siloLens.totalBorrowAmount(silo1), toBorrow, "totalBorrowAmount = toBorrow (no interest)");
+        assertEq(SILO_LENS.totalBorrowAmount(silo1), toBorrow, "totalBorrowAmount = toBorrow (no interest)");
 
         assertGt(
-            siloLens.totalBorrowAmountWithInterest(silo1),
+            SILO_LENS.totalBorrowAmountWithInterest(silo1),
             toBorrow,
             "totalBorrowAmountWithInterest = toBorrow + interest on the fly"
         );
 
-        assertEq(siloLens.borrowShare(silo1, borrower), toBorrow, "borrowShare = toBorrow  (no offset)");
+        assertEq(SILO_LENS.borrowShare(silo1, borrower), toBorrow, "borrowShare = toBorrow  (no offset)");
 
-        assertEq(siloLens.totalBorrowShare(silo1), toBorrow, "totalBorrowShare = toBorrow  (no offset)");
+        assertEq(SILO_LENS.totalBorrowShare(silo1), toBorrow, "totalBorrowShare = toBorrow  (no offset)");
 
-        assertEq(siloLens.liquidity(silo0), deposit0 + collateral, "liquidity in silo0 after borrow + time");
+        assertEq(SILO_LENS.liquidity(silo0), deposit0 + collateral, "liquidity in silo0 after borrow + time");
 
         assertLt(
-            siloLens.liquidity(silo1),
+            SILO_LENS.liquidity(silo1),
             deposit1 - toBorrow,
             "liquidity in silo1 after borrow + time is less than deposit - borrow, because of interest"
         );
 
-        assertEq(siloLens.getRawLiquidity(silo0), deposit0 + collateral, "getRawLiquidity 0 after borrow + time");
-        assertEq(siloLens.getRawLiquidity(silo1), deposit1 - toBorrow, "getRawLiquidity 1 after borrow + time");
+        assertEq(SILO_LENS.getRawLiquidity(silo0), deposit0 + collateral, "getRawLiquidity 0 after borrow + time");
+        assertEq(SILO_LENS.getRawLiquidity(silo1), deposit1 - toBorrow, "getRawLiquidity 1 after borrow + time");
 
         assertEq(
-            siloLens.collateralBalanceOfUnderlying(silo0, borrower), collateral, "collateralBalanceOfUnderlying"
+            SILO_LENS.collateralBalanceOfUnderlying(silo0, borrower), collateral, "collateralBalanceOfUnderlying"
         );
 
         assertGt(
-            siloLens.debtBalanceOfUnderlying(silo1, borrower),
+            SILO_LENS.debtBalanceOfUnderlying(silo1, borrower),
             toBorrow,
             "[debtBalanceOfUnderlying] with interest debt is higher"
         );
 
         silo1.accrueInterest();
 
-        assertEq(siloLens.getBorrowAPR(silo0), 0, "getBorrowAPR after accrueInterest #0");
-        assertEq(siloLens.getBorrowAPR(silo1), 6_942449830693104000, "getBorrowAPR after accrueInterest #1");
+        assertEq(SILO_LENS.getBorrowAPR(silo0), 0, "getBorrowAPR after accrueInterest #0");
+        assertEq(SILO_LENS.getBorrowAPR(silo1), 6_942449830693104000, "getBorrowAPR after accrueInterest #1");
 
-        assertEq(siloLens.getDepositAPR(silo0), 0, "getDepositAPR after accrueInterest #0");
-        assertEq(siloLens.getDepositAPR(silo1), 4_861871934669203484, "getDepositAPR after accrueInterest #1");
+        assertEq(SILO_LENS.getDepositAPR(silo0), 0, "getDepositAPR after accrueInterest #0");
+        assertEq(SILO_LENS.getDepositAPR(silo1), 4_861871934669203484, "getDepositAPR after accrueInterest #1");
 
-        assertGt(siloLens.totalDeposits(silo1), deposit1, "totalDeposits after borrow + interest");
+        assertGt(SILO_LENS.totalDeposits(silo1), deposit1, "totalDeposits after borrow + interest");
 
         uint256 maxRepayBefore = silo1.maxRepay(borrower);
         assertEq(maxRepayBefore, 14.994397297218850135e18, "maxRepayBefore");
@@ -196,16 +196,16 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
         vm.warp(block.timestamp + 300 days);
 
         // TODO why APR is zero but maxRepayAfter is growing?
-        assertEq(siloLens.getBorrowAPR(silo0), 0, "getBorrowAPR after long time #0");
-        assertEq(siloLens.getBorrowAPR(silo1), 0, "getBorrowAPR after long time #1");
+        assertEq(SILO_LENS.getBorrowAPR(silo0), 0, "getBorrowAPR after long time #0");
+        assertEq(SILO_LENS.getBorrowAPR(silo1), 0, "getBorrowAPR after long time #1");
 
-        assertEq(siloLens.getDepositAPR(silo0), 0, "getDepositAPR after long time #0");
-        assertEq(siloLens.getDepositAPR(silo1), 0, "getDepositAPR after long time #1");
+        assertEq(SILO_LENS.getDepositAPR(silo0), 0, "getDepositAPR after long time #0");
+        assertEq(SILO_LENS.getDepositAPR(silo1), 0, "getDepositAPR after long time #1");
 
         uint256 maxRepayAfter = silo1.maxRepay(borrower);
         assertEq(maxRepayAfter, 1247.4106135068090977e18, "maxRepayAfter");
 
-        assertTrue(siloLens.hasPosition(siloConfig, borrower), "hasPosition");
+        assertTrue(SILO_LENS.hasPosition(siloConfig, borrower), "hasPosition");
     }
 
     /*
@@ -230,8 +230,8 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
         uint256 toBorrow = collateral * _utilization / 1e18;
         _borrow(toBorrow, borrower);
 
-        assertEq(siloLens.getUtilization(silo0), 0, "getUtilization #0");
-        assertEq(siloLens.getUtilization(silo1), _utilization, "getUtilization #1");
+        assertEq(SILO_LENS.getUtilization(silo0), 0, "getUtilization #0");
+        assertEq(SILO_LENS.getUtilization(silo1), _utilization, "getUtilization #1");
 
         _assertInterest(toBorrow);
     }
@@ -239,9 +239,9 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
     function _assertInterest(uint256 _toBorrow) internal {
         vm.warp(block.timestamp + 5 days);
 
-        uint256 getBorrowAPR = siloLens.getBorrowAPR(silo1);
-        emit log_named_decimal_uint("utilization [%]", siloLens.getUtilization(silo1), 16);
-        emit log_named_decimal_uint("borrow APR (CurrentInterestRate) [%]", siloLens.getBorrowAPR(silo1), 16);
+        uint256 getBorrowAPR = SILO_LENS.getBorrowAPR(silo1);
+        emit log_named_decimal_uint("utilization [%]", SILO_LENS.getUtilization(silo1), 16);
+        emit log_named_decimal_uint("borrow APR (CurrentInterestRate) [%]", SILO_LENS.getBorrowAPR(silo1), 16);
 
         vm.warp(block.timestamp + 360 days);
 

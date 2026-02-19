@@ -17,29 +17,29 @@ import {MaxBorrowValueToAssetsAndSharesTestData} from
 contract MaxBorrowValueToAssetsAndSharesTest is Test {
     address constant ORACLE_ADDRESS = address(0xabcd);
 
-    TokenMock immutable debtToken;
-    OracleMock immutable oracle;
+    TokenMock immutable DEBT_TOKEN;
+    OracleMock immutable ORACLE;
 
-    MaxBorrowValueToAssetsAndSharesTestData immutable tests;
+    MaxBorrowValueToAssetsAndSharesTestData immutable TESTS;
 
     constructor() {
-        debtToken = new TokenMock(address(0xDDDDDDDDDDDDDD));
-        oracle = new OracleMock(ORACLE_ADDRESS);
-        tests = new MaxBorrowValueToAssetsAndSharesTestData(debtToken.ADDRESS());
+        DEBT_TOKEN = new TokenMock(address(0xDDDDDDDDDDDDDD));
+        ORACLE = new OracleMock(ORACLE_ADDRESS);
+        TESTS = new MaxBorrowValueToAssetsAndSharesTestData(DEBT_TOKEN.ADDRESS());
     }
 
     /*
     FOUNDRY_PROFILE=core_test forge test -vv --mt test_maxBorrowValueToAssetsAndShares_loop
     */
     function test_maxBorrowValueToAssetsAndShares_loop() public {
-        MaxBorrowValueToAssetsAndSharesTestData.MBVData[] memory testDatas = tests.getData();
+        MaxBorrowValueToAssetsAndSharesTestData.MBVData[] memory testDatas = TESTS.getData();
 
         for (uint256 i; i < testDatas.length; i++) {
             vm.clearMockedCalls();
             emit log_string(testDatas[i].name);
 
             if (testDatas[i].input.oracleSet) {
-                oracle.quoteMock(1e18, testDatas[i].input.debtToken, testDatas[i].input.debtOracleQuote);
+                ORACLE.quoteMock(1e18, testDatas[i].input.debtToken, testDatas[i].input.debtOracleQuote);
             }
 
             (uint256 maxAssets, uint256 maxShares) = SiloLendingLib.maxBorrowValueToAssetsAndShares(

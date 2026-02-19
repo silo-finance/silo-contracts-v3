@@ -71,7 +71,7 @@ contract LiquidationDebug_2025_10_15_Sonic3 is UserState {
         ILiquidationHelper.DexSwapInput[] memory dexSwapInput = new ILiquidationHelper.DexSwapInput[](1);
         dexSwapInput[0] = ILiquidationHelper.DexSwapInput({
             sellToken: collateralCfg.token,
-            allowanceTarget: swapAllowanceHolder,
+            allowanceTarget: SWAP_ALLOWANCE_HOLDER,
             swapCallData: hex"83bd37f90001039e2fb66102314ce7b64ce5ce3e5183bc94ad38000129219dd400f2bf60e5a23d13be72b486d40388940703871eaef0422001c407ae1400013a5d6a7aab7c1b681892bdc3667c76a5e4116ba300000001f363c6d369888f5367e9f1ad7b6a7dae133e87400000000003010204002101010102030000ff00000000000000000000000000000000000000b48d7326e5ca4159f8f07b051bd3c72912049e11039e2fb66102314ce7b64ce5ce3e5183bc94ad3829219dd400f2bf60e5a23d13be72b486d403889400000000"
         });
 
@@ -81,7 +81,7 @@ contract LiquidationDebug_2025_10_15_Sonic3 is UserState {
         // }
 
         vm.prank(0x0665609124CC2a958Cf0ED582eE132076243B6Da);
-        helper.executeLiquidation({
+        HELPER.executeLiquidation({
             _flashLoanFrom: flashLoanFrom,
             _debtAsset: debtCfg.token,
             _maxDebtToCover: ISilo(debtCfg.silo).maxRepay(user),

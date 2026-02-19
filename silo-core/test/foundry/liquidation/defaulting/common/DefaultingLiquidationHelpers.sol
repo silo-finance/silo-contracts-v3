@@ -227,7 +227,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     }
 
     function _isOracleThrowing(address _borrower) internal view returns (bool throwing, uint256 ltv) {
-        try siloLens.getLtv(silo0, _borrower) returns (uint256 _ltv) {
+        try SILO_LENS.getLtv(silo0, _borrower) returns (uint256 _ltv) {
             throwing = false;
             ltv = _ltv;
         } catch {
@@ -236,7 +236,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     }
 
     function _printLtv(address _user) internal returns (uint256 ltv) {
-        try siloLens.getLtv(silo0, _user) returns (uint256 _ltv) {
+        try SILO_LENS.getLtv(silo0, _user) returns (uint256 _ltv) {
             ltv = _ltv;
             emit log_named_decimal_uint(string.concat(vm.getLabel(_user), " LTV [%]"), ltv, 16);
         } catch {

@@ -26,10 +26,10 @@ forge test --ffi -vv --mc IsBelowMaxLtvTest
 contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
     ISiloConfig siloConfig;
 
-    IsBelowMaxLtv immutable impl;
+    IsBelowMaxLtv immutable IMPL;
 
     constructor() {
-        impl = new IsBelowMaxLtv();
+        IMPL = new IsBelowMaxLtv();
     }
 
     function setUp() public {
@@ -46,7 +46,7 @@ contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
         ISilo.AccrueInterestInMemory accrueInMemory;
 
         vm.expectRevert();
-        impl.isBelowMaxLtv(collateralConfig, debtConfig, borrower, accrueInMemory);
+        IMPL.isBelowMaxLtv(collateralConfig, debtConfig, borrower, accrueInMemory);
     }
 
     /*
@@ -59,7 +59,7 @@ contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
             siloConfig.getConfigsForSolvency(borrower);
 
         vm.expectRevert(); // because configs are empty
-        impl.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.Yes);
+        IMPL.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.Yes);
     }
 
     /*
@@ -76,12 +76,12 @@ contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
             siloConfig.getConfigsForSolvency(borrower);
 
         assertTrue(
-            impl.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.Yes),
+            IMPL.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.Yes),
             "when borrow with maxBorrow will be below max LTV"
         );
 
         assertTrue(
-            impl.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.No),
+            IMPL.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.No),
             "when borrow with maxBorrow will be below max LTV"
         );
     }
@@ -103,12 +103,12 @@ contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
             siloConfig.getConfigsForSolvency(borrower);
 
         assertFalse(
-            impl.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.Yes),
+            IMPL.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.Yes),
             "[AccrueInterestInMemory.Yes] because of withdraw we not longer below max LTV"
         );
 
         assertFalse(
-            impl.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.No),
+            IMPL.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.No),
             "[AccrueInterestInMemory.No] because of withdraw we not longer below max LTV"
         );
     }
@@ -129,12 +129,12 @@ contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
             siloConfig.getConfigsForSolvency(borrower);
 
         assertTrue(
-            impl.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.No),
+            IMPL.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.No),
             "without interest we still under max LTV"
         );
 
         assertFalse(
-            impl.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.Yes),
+            IMPL.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.Yes),
             "with interest we over max LTV"
         );
     }

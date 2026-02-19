@@ -7,10 +7,10 @@ import {VaultsLittleHelper} from "../../_common/VaultsLittleHelper.sol";
     FOUNDRY_PROFILE=vaults_tests forge test -vv --ffi --mc PreviewWithdrawTest
 */
 contract PreviewWithdrawTest is VaultsLittleHelper {
-    address immutable depositor;
+    address immutable DEPOSITOR;
 
     constructor() {
-        depositor = makeAddr("Depositor");
+        DEPOSITOR = makeAddr("Depositor");
     }
 
     /*
@@ -24,7 +24,7 @@ contract PreviewWithdrawTest is VaultsLittleHelper {
         uint256 amountIn = _partial ? uint256(_assetsOrShares) * 37 / 100 : _assetsOrShares;
         vm.assume(amountIn > 1);
 
-        _deposit(_assetsOrShares, depositor);
+        _deposit(_assetsOrShares, DEPOSITOR);
 
         amountIn -= 1;
 
@@ -58,7 +58,7 @@ contract PreviewWithdrawTest is VaultsLittleHelper {
         vm.assume(amountToUse > 0);
 
         uint256 assets = _useRedeem() ? _assetsOrShares * OFFSET_POW : _assetsOrShares;
-        _deposit(assets, depositor);
+        _deposit(assets, DEPOSITOR);
 
         _createSiloUsage();
 
@@ -80,7 +80,7 @@ contract PreviewWithdrawTest is VaultsLittleHelper {
     function test_previewWithdraw_random_fuzz(uint64 _assetsOrShares, bool _interest) public {
         vm.assume(_assetsOrShares > 0);
 
-        _deposit(_assetsOrShares, depositor);
+        _deposit(_assetsOrShares, DEPOSITOR);
 
         _createSiloUsage();
 
@@ -104,7 +104,7 @@ contract PreviewWithdrawTest is VaultsLittleHelper {
         else vm.assume(_assetsOrShares > 0);
 
         uint256 assets = _useRedeem() ? _assetsOrShares / OFFSET_POW : _assetsOrShares;
-        _deposit(assets, depositor);
+        _deposit(assets, DEPOSITOR);
 
         _createSiloUsage();
 
@@ -127,7 +127,7 @@ contract PreviewWithdrawTest is VaultsLittleHelper {
     function test_previewWithdraw_max_fuzz(uint64 _assets, bool _interest) public {
         vm.assume(_assets > 0);
 
-        _deposit(_assets, depositor);
+        _deposit(_assets, DEPOSITOR);
 
         _createSiloUsage();
 
@@ -135,8 +135,8 @@ contract PreviewWithdrawTest is VaultsLittleHelper {
 
         uint256 maxInput = _useRedeem()
             // we can not use balance of share token, because we not sure about liquidity
-            ? vault.maxRedeem(depositor)
-            : vault.maxWithdraw(depositor);
+            ? vault.maxRedeem(DEPOSITOR)
+            : vault.maxWithdraw(DEPOSITOR);
 
         uint256 maxPreview = _getPreview(maxInput);
 
@@ -148,8 +148,8 @@ contract PreviewWithdrawTest is VaultsLittleHelper {
     }
 
     function _createSiloUsage() internal {
-        vm.prank(depositor);
-        vault.deposit(type(uint128).max, depositor);
+        vm.prank(DEPOSITOR);
+        vault.deposit(type(uint128).max, DEPOSITOR);
 
         address borrower = makeAddr("Borrower");
 
@@ -167,11 +167,11 @@ contract PreviewWithdrawTest is VaultsLittleHelper {
 
     function _assertPreviewWithdraw(uint256 _preview, uint256 _assetsOrShares) internal {
         vm.assume(_preview > 0);
-        vm.prank(depositor);
+        vm.prank(DEPOSITOR);
 
         uint256 results = _useRedeem()
-            ? vault.redeem(_assetsOrShares, depositor, depositor)
-            : vault.withdraw(_assetsOrShares, depositor, depositor);
+            ? vault.redeem(_assetsOrShares, DEPOSITOR, DEPOSITOR)
+            : vault.withdraw(_assetsOrShares, DEPOSITOR, DEPOSITOR);
 
         assertGt(results, 0, "expect any withdraw amount > 0");
 

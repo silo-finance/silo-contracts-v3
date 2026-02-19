@@ -16,23 +16,23 @@ import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 
 abstract contract UserState is Test {
     SiloLens internal constant lens = SiloLens(0xB95AD415b0fcE49f84FbD5B26b14ec7cf4822c69);
-    address internal immutable swapAllowanceHolder;
+    address internal immutable SWAP_ALLOWANCE_HOLDER;
     address internal constant weth = 0x50c42dEAcD8Fc9773493ED674b675bE577f2634b;
     address internal constant wS = 0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38;
 
-    ILiquidationHelper internal immutable helper;
+    ILiquidationHelper internal immutable HELPER;
 
     constructor() {
-        swapAllowanceHolder = 0xaC041Df48dF9791B0654f1Dbbf2CC8450C5f2e9D;
-        helper = ILiquidationHelper(payable(0xf363C6d369888F5367e9f1aD7b6a7dAe133e8740));
+        SWAP_ALLOWANCE_HOLDER = 0xaC041Df48dF9791B0654f1Dbbf2CC8450C5f2e9D;
+        HELPER = ILiquidationHelper(payable(0xf363C6d369888F5367e9f1aD7b6a7dAe133e8740));
     }
 
     function setUp() public virtual {
         vm.label(address(lens), "SiloLens");
-        vm.label(address(helper), "LiquidationHelper");
+        vm.label(address(HELPER), "LiquidationHelper");
         vm.label(weth, "WETH");
         vm.label(wS, "wS");
-        vm.label(swapAllowanceHolder, "SWAP AllowanceHolder");
+        vm.label(SWAP_ALLOWANCE_HOLDER, "SWAP AllowanceHolder");
         vm.label(0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE, "scUSD");
     }
 

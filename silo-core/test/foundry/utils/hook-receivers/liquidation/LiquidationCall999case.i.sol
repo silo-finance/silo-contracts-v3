@@ -69,7 +69,7 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
     */
     function test_liquidationCall_NoCollateralToLiquidate() public {
         vm.warp(block.timestamp + 365 days);
-        uint256 ltv = siloLens.getLtv(silo0, BORROWER);
+        uint256 ltv = SILO_LENS.getLtv(silo0, BORROWER);
         assertGt(ltv, 1e18, "expect bad debt for this test");
 
         // price is 1:1 so we wil use collateral value as max debt to cover
@@ -79,7 +79,7 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
             address(token0), address(token1), BORROWER, collateralToLiquidate, false /* receiveSToken */
         );
 
-        ltv = siloLens.getLtv(silo0, BORROWER);
+        ltv = SILO_LENS.getLtv(silo0, BORROWER);
         assertEq(ltv, type(uint256).max, "expect ininite LTV after liquidation");
 
         vm.expectRevert(IPartialLiquidation.NoCollateralToLiquidate.selector);
@@ -122,7 +122,7 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
 
         emit log_named_decimal_uint("borrower other shares", otherShareToken.balanceOf(BORROWER), 18);
 
-        emit log_named_decimal_uint("LTV before liquidation [%]", siloLens.getLtv(silo0, BORROWER), 16);
+        emit log_named_decimal_uint("LTV before liquidation [%]", SILO_LENS.getLtv(silo0, BORROWER), 16);
 
         uint256 sharesBefore = shareToken.balanceOf(address(this));
         assertEq(sharesBefore, 0, "liquidator should have no shares before liquidation");

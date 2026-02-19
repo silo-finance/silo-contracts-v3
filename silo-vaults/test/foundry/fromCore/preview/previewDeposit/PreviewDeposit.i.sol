@@ -7,10 +7,10 @@ import {VaultsLittleHelper} from "../../_common/VaultsLittleHelper.sol";
     forge test -vv --ffi --mc PreviewDepositTest
 */
 contract PreviewDepositTest is VaultsLittleHelper {
-    address immutable depositor;
+    address immutable DEPOSITOR;
 
     constructor() {
-        depositor = makeAddr("Depositor");
+        DEPOSITOR = makeAddr("Depositor");
     }
 
     /*
@@ -21,7 +21,7 @@ contract PreviewDepositTest is VaultsLittleHelper {
         vm.assume(_assets > 0);
 
         uint256 previewShares =vault.previewDeposit(_assets);
-        uint256 shares = _deposit(_assets, depositor);
+        uint256 shares = _deposit(_assets, DEPOSITOR);
 
         assertEq(previewShares, shares, "previewDeposit must return as close but NOT more");
         assertEq(previewShares, vault.convertToShares(_assets), "previewDeposit == convertToShares");
@@ -34,14 +34,14 @@ contract PreviewDepositTest is VaultsLittleHelper {
     function test_previewDeposit_afterNoInterest_fuzz(uint128 _assets) public {
         vm.assume(_assets > 0);
 
-        uint256 sharesBefore = _deposit(_assets, depositor);
+        uint256 sharesBefore = _deposit(_assets, DEPOSITOR);
 
         vm.warp(block.timestamp + 365 days);
         _silo0().accrueInterest();
         _silo1().accrueInterest();
 
         uint256 previewShares = vault.previewDeposit(_assets);
-        uint256 gotShares = _deposit(_assets, depositor);
+        uint256 gotShares = _deposit(_assets, DEPOSITOR);
 
         assertEq(previewShares, gotShares, "previewDeposit must return as close but NOT more");
         assertEq(previewShares, sharesBefore, "without interest shares must be the same");

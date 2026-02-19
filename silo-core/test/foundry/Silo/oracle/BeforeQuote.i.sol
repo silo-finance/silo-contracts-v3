@@ -144,7 +144,8 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
 
         vm.prank(borrower);
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
-        require(IShareToken(collateral).transfer(depositor, depositAssets * SiloMathLib._DECIMALS_OFFSET_POW), "transfer failed");
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        IShareToken(collateral).transfer(depositor, depositAssets * SiloMathLib._DECIMALS_OFFSET_POW);
     }
 
     /*

@@ -97,6 +97,7 @@ contract MaxRedeemDustTest is SiloLittleHelper, Test {
 
         // we can not transfer debt if shares value is 0 (dust will be translated to 0)
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        require(IShareToken(debtShareToken).transfer(owner, 1), "transfer failed");
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        IShareToken(debtShareToken).transfer(owner, 1);
     }
 }

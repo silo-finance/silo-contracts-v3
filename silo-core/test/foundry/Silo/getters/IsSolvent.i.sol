@@ -80,6 +80,7 @@ contract IsSolventTest is SiloLittleHelper, Test {
 
         vm.prank(borrower);
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        require(IShareToken(debtShareToken).transfer(recipient, 1), "transfer failed");
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        IShareToken(debtShareToken).transfer(recipient, 1);
     }
 }

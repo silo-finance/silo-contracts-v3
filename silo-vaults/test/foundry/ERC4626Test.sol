@@ -387,8 +387,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         vault.approve(SUPPLIER, toTransfer);
 
         vm.prank(SUPPLIER);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        vault.transferFrom(ONBEHALF, RECEIVER, toTransfer);
+        require(vault.transferFrom(ONBEHALF, RECEIVER, toTransfer), "transfer failed");
 
         assertEq(vault.balanceOf(ONBEHALF), shares - toTransfer, "balanceOf(ONBEHALF)");
         assertEq(vault.balanceOf(RECEIVER), toTransfer, "balanceOf(RECEIVER)");
@@ -408,8 +407,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
 
         vm.prank(SUPPLIER);
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, SUPPLIER, 0, shares));
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        vault.transferFrom(ONBEHALF, RECEIVER, shares);
+        require(vault.transferFrom(ONBEHALF, RECEIVER, shares), "transfer failed");
     }
 
     /*
@@ -491,8 +489,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         toTransfer = bound(toTransfer, 0, minted);
 
         vm.prank(ONBEHALF);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        vault.transfer(RECEIVER, toTransfer);
+        require(vault.transfer(RECEIVER, toTransfer), "transfer failed");
 
         assertEq(vault.balanceOf(SUPPLIER), 0, "balanceOf(SUPPLIER)");
         assertEq(vault.balanceOf(ONBEHALF), minted - toTransfer, "balanceOf(ONBEHALF)");

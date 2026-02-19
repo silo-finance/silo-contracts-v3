@@ -56,8 +56,7 @@ contract XSiloTest is Test {
         _convert(address(this), 10);
 
         vm.expectRevert(XSilo.SelfTransferNotAllowed.selector);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        xSilo.transfer(address(this), 1);
+        require(xSilo.transfer(address(this), 1), "transfer failed");
     }
 
     /*
@@ -69,8 +68,7 @@ contract XSiloTest is Test {
         _convert(address(this), 10);
 
         vm.expectRevert(XSilo.ZeroTransfer.selector);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        xSilo.transfer(address(2), 0);
+        require(xSilo.transfer(address(2), 0), "transfer failed");
     }
 
     /*
@@ -93,8 +91,7 @@ contract XSiloTest is Test {
         assertEq(xSilo.balanceOf(spender), 0, "spender balance should be 0");
 
         vm.prank(spender);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        xSilo.transferFrom(user, spender, xSiloAmount);
+        require(xSilo.transferFrom(user, spender, xSiloAmount), "transfer failed");
 
         assertEq(xSilo.balanceOf(user), 0, "user balance should be 0");
         assertEq(xSilo.balanceOf(spender), xSiloAmount, "spender balance should be xSiloAmount");

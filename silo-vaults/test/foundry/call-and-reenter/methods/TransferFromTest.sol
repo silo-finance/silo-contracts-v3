@@ -18,16 +18,14 @@ contract TransferFromTest is MethodReentrancyTest {
             IERC20Errors.ERC20InsufficientAllowance.selector, address(this), 0, 100e18
         ));
 
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        vault.transferFrom(address(0), address(0), 100e18);
+        require(vault.transferFrom(address(0), address(0), 100e18), "transfer failed");
     }
 
     function verifyReentrancy() external {
         ISiloVault vault = TestStateLib.vault();
 
         vm.expectRevert(abi.encodeWithSelector(ErrorsLib.ReentrancyError.selector));
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        vault.transferFrom(address(0), address(0), 100e18);
+        require(vault.transferFrom(address(0), address(0), 100e18), "transfer failed");
     }
 
     function methodDescription() external pure returns (string memory description) {

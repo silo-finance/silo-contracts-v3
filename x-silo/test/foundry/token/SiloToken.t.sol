@@ -136,8 +136,7 @@ contract SiloTokenTest is IntegrationTest {
         address receiver = address(123);
         assertEq(token.balanceOf(receiver), 0);
         vm.prank(SILO_V1_WHALE);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        token.transfer(receiver, mintAmount);
+        require(token.transfer(receiver, mintAmount), "transfer failed");
         assertEq(token.balanceOf(receiver), mintAmount);
     }
 

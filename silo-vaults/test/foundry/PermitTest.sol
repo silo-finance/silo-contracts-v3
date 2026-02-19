@@ -110,8 +110,7 @@ contract PermitTest is IntegrationTest {
         vault.permit(permit.owner, permit.spender, permit.value, permit.deadline, v, r, s);
 
         vm.prank(spender);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        vault.transferFrom(owner, spender, 1e18);
+        require(vault.transferFrom(owner, spender, 1e18), "transfer failed");
 
         assertEq(vault.balanceOf(owner), 0);
         assertEq(vault.balanceOf(spender), 1e18);
@@ -130,8 +129,7 @@ contract PermitTest is IntegrationTest {
         vault.permit(permit.owner, permit.spender, permit.value, permit.deadline, v, r, s);
 
         vm.prank(spender);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        vault.transferFrom(owner, spender, 1e18);
+        require(vault.transferFrom(owner, spender, 1e18), "transfer failed");
 
         assertEq(vault.balanceOf(owner), 0);
         assertEq(vault.balanceOf(spender), 1e18);
@@ -156,8 +154,7 @@ contract PermitTest is IntegrationTest {
 
         vm.expectRevert();
         vm.prank(spender);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        vault.transferFrom(owner, spender, 1e18); // attempt to transfer 1 vault
+        require(vault.transferFrom(owner, spender, 1e18), "transfer failed");
     }
 
     function test_RevertWhen_InvalidBalance(uint256 deadline) public {
@@ -178,7 +175,6 @@ contract PermitTest is IntegrationTest {
 
         vm.expectRevert();
         vm.prank(spender);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
-        vault.transferFrom(owner, spender, 2e18); // attempt to transfer 2 tokens (owner only owns 1)
+        require(vault.transferFrom(owner, spender, 2e18), "transfer failed");
     }
 }

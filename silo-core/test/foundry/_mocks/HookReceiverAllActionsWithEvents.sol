@@ -6,6 +6,7 @@ import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialL
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /// @dev Hook receiver for all actions with events to see decoded inputs
 /// This contract is designed to be deployed for each test case
@@ -140,15 +141,10 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation {
         uint256 _silo1ActionsBefore,
         uint256 _silo1ActionsAfter
     ) {
-        // Safe: action counts are bounded by test scenarios and fit in uint24 (max 16777215).
-        // forge-lint: disable-next-line(unsafe-typecast)
-        _SILO0_ACTIONS_BEFORE = uint24(_silo0ActionsBefore);
-        // forge-lint: disable-next-line(unsafe-typecast)
-        _SILO0_ACTIONS_AFTER = uint24(_silo0ActionsAfter);
-        // forge-lint: disable-next-line(unsafe-typecast)
-        _SILO1_ACTIONS_BEFORE = uint24(_silo1ActionsBefore);
-        // forge-lint: disable-next-line(unsafe-typecast)
-        _SILO1_ACTIONS_AFTER = uint24(_silo1ActionsAfter);
+        _SILO0_ACTIONS_BEFORE = SafeCast.toUint24(_silo0ActionsBefore);
+        _SILO0_ACTIONS_AFTER = SafeCast.toUint24(_silo0ActionsAfter);
+        _SILO1_ACTIONS_BEFORE = SafeCast.toUint24(_silo1ActionsBefore);
+        _SILO1_ACTIONS_AFTER = SafeCast.toUint24(_silo1ActionsAfter);
     }
 
     /// @inheritdoc IHookReceiver

@@ -4,6 +4,7 @@ pragma solidity ^0.8.28;
 import {Test} from "forge-std/Test.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {IERC20} from "openzeppelin5/interfaces/IERC20.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {XSiloAndStreamDeploy} from "x-silo/deploy/XSiloAndStreamDeploy.s.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
@@ -146,12 +147,8 @@ contract XSiloIntegrationTest is Test {
         input = DistributionTypes.IncentivesProgramCreationInput({
             name: "test",
             rewardToken: address(usdcToken),
-            // Safe: emissionPerSecond is 1e6, which fits in uint104 (max ~2e31).
-            // forge-lint: disable-next-line(unsafe-typecast)
-            emissionPerSecond: uint104(emissionPerSecond),
-            // Safe: distributionEnd is block.timestamp + 1 hour, which fits in uint40 (max ~1.1e12).
-            // forge-lint: disable-next-line(unsafe-typecast)
-            distributionEnd: uint40(distributionEnd)
+            emissionPerSecond: SafeCast.toUint104(emissionPerSecond),
+            distributionEnd: SafeCast.toUint40(distributionEnd)
         });
 
         vm.prank(dao);

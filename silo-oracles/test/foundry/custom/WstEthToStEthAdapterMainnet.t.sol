@@ -8,6 +8,7 @@ import {AggregatorV3Interface} from "chainlink/v0.8/interfaces/AggregatorV3Inter
 import {TokensGenerator} from "../_common/TokensGenerator.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
     FOUNDRY_PROFILE=oracles forge test -vv --match-contract WstEthToStEthAdapterMainnet
@@ -63,12 +64,9 @@ contract WstEthToStEthAdapterMainnetTest is TokensGenerator {
         assertEq(IERC20Metadata(address(STETH)).balanceOf(address(this)), 0);
         IWstEthLike(WSTETH).unwrap(1 ether);
 
-        // Safe: answer is int256 from Chainlink feed, but represents a positive price value.
-        // Casting to uint256 is safe for comparison since we're subtracting 1 wei for rounding tolerance.
-        // forge-lint: disable-next-line(unsafe-typecast)
         assertEq(
             IERC20Metadata(address(STETH)).balanceOf(address(this)),
-            uint256(answer) - 1,
+            SafeCast.toUint256(answer) - 1,
             "received expected value - 1 wei"
         );
     }

@@ -7,6 +7,7 @@ import {console2} from "forge-std/console2.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
@@ -446,11 +447,9 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     {
         _changePricePercentage %= 1e18;
 
-        int256 diff = int256(uint256(_initialPrice)) * _changePricePercentage / 1e18;
-        // Safe: _initialPrice is uint64 (max ~1.8e19), diff is bounded by percentage change (max 1e18),
-        // so the sum fits in int64 range, and the result fits back in uint64.
-        // forge-lint: disable-next-line(unsafe-typecast)
-        newPrice = uint64(int64(int256(uint256(_initialPrice)) + diff));
+        int256 diff = SafeCast.toInt256(uint256(_initialPrice)) * _changePricePercentage / 1e18;
+        int256 sum = SafeCast.toInt256(uint256(_initialPrice)) + diff;
+        newPrice = SafeCast.toUint64(SafeCast.toInt64(sum));
     }
 
     /// @dev make sure it does not throw!

@@ -12,8 +12,7 @@ contract GetRoleMembersReentrancyTest is ConstantReentrancyTest {
 
     function _ensureItWillNotRevert() internal view override {
         SiloHookV2(TestStateLib.hookReceiver()).getRoleMembers(bytes32(0));
-        // Safe: string literal "role" is converted to bytes32, which is a standard conversion.
-        // forge-lint: disable-next-line(unsafe-typecast)
-        SiloHookV2(TestStateLib.hookReceiver()).getRoleMembers(bytes32("role"));
+        // Safe: string literal "role" is converted to bytes32, which is a standard safe conversion.
+        SiloHookV2(TestStateLib.hookReceiver()).getRoleMembers(bytes32(bytes("role")));
     }
 }

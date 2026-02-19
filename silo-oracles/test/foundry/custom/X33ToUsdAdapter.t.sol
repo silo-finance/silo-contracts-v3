@@ -7,6 +7,7 @@ import {Forking} from "silo-oracles/test/foundry/_common/Forking.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {X33ToUsdAdapterDeploy} from "silo-oracles/deploy/X33ToUsdAdapterDeploy.sol";
 import {PythAggregatorV3} from "pyth-sdk-solidity/PythAggregatorV3.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
     FOUNDRY_PROFILE=oracles forge test -vv --match-contract X33ToUsdAdapterTest --ffi
@@ -95,10 +96,7 @@ contract X33ToUsdAdapterTest is Forking {
         assertEq(updatedAt, underlyingUpdatedAt);
         assertEq(answeredInRound, underlyingAnsweredInRound);
 
-        // Safe: vaultRate is between 1e18 and 1.5e18 (checked above), so casting to int256 is safe
-        // since it's a positive value that fits within int256 range.
-        // forge-lint: disable-next-line(unsafe-typecast)
-        assertEq(answer, underlyingAnswer * int256(vaultRate) / (2 * 10 ** 18));
+        assertEq(answer, underlyingAnswer * SafeCast.toInt256(vaultRate) / (2 * 10 ** 18));
         assertEq(answer, 63_5435_1516, "answer is ~63$ with 8 decimals");
         assertEq(underlyingAnswer, 94_0111_1515, "underlying feed answer is ~94$ with 8 decimals");
     }

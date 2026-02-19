@@ -99,13 +99,13 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
     {
         bytes32 incentivesProgramId = getProgramId(_incentivesProgram);
 
-        details = IncentiveProgramDetails(
-            incentivesPrograms[incentivesProgramId].index,
-            incentivesPrograms[incentivesProgramId].rewardToken,
-            incentivesPrograms[incentivesProgramId].emissionPerSecond,
-            incentivesPrograms[incentivesProgramId].lastUpdateTimestamp,
-            incentivesPrograms[incentivesProgramId].distributionEnd
-        );
+        details = IncentiveProgramDetails({
+            index: incentivesPrograms[incentivesProgramId].index,
+            rewardToken: incentivesPrograms[incentivesProgramId].rewardToken,
+            emissionPerSecond: incentivesPrograms[incentivesProgramId].emissionPerSecond,
+            lastUpdateTimestamp: incentivesPrograms[incentivesProgramId].lastUpdateTimestamp,
+            distributionEnd: incentivesPrograms[incentivesProgramId].distributionEnd
+        });
     }
 
     /// @inheritdoc IDistributionManager

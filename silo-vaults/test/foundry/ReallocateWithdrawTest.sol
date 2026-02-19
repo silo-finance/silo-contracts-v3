@@ -40,10 +40,10 @@ contract ReallocateWithdrawTest is IntegrationTest {
      FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt testReallocateWithdrawMax -vvv
     */
     function testReallocateWithdrawMax() public {
-        allocations.push(MarketAllocation({market:{market: allMarkets[0], assets: 0}));
-        allocations.push(MarketAllocation({market:{market: allMarkets[1], assets: 0}));
-        allocations.push(MarketAllocation({market:{market: allMarkets[2], assets: 0}));
-        allocations.push(MarketAllocation({market:{market: idleMarket, assets: type(uint256).max}));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[1], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[2], assets: 0}));
+        allocations.push(MarketAllocation({market: idleMarket, assets: type(uint256).max}));
 
         vm.expectEmit();
 
@@ -70,10 +70,10 @@ contract ReallocateWithdrawTest is IntegrationTest {
      FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt testReallocateBalanceTrackerChanges -vvv
     */
     function testReallocateBalanceTrackerChanges() public {
-        allocations.push(MarketAllocation({market:{market: allMarkets[0], assets: 0}));
-        allocations.push(MarketAllocation({market:{market: allMarkets[1], assets: 0}));
-        allocations.push(MarketAllocation({market:{market: allMarkets[2], assets: 0}));
-        allocations.push(MarketAllocation({market:{market: idleMarket, assets: type(uint256).max}));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[1], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[2], assets: 0}));
+        allocations.push(MarketAllocation({market: idleMarket, assets: type(uint256).max}));
 
         uint256 balanceBefore0 = vault.balanceTracker(allMarkets[0]);
         uint256 balanceBefore1 = vault.balanceTracker(allMarkets[1]);

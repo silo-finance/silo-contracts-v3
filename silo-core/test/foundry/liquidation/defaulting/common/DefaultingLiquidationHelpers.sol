@@ -451,7 +451,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
 
         int256 diff = uint256(_initialPrice).toInt256() * _changePricePercentage / 1e18;
         int256 sum = uint256(_initialPrice).toInt256() + diff;
-        newPrice = sum.toInt64().toUint64();
+        newPrice = sum.toUint256().toUint64();
     }
 
     /// @dev make sure it does not throw!

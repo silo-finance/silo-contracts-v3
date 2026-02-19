@@ -136,6 +136,9 @@ contract PermitTest is IntegrationTest {
         assertEq(vault.allowance(owner, spender), type(uint256).max);
     }
 
+    /*
+    FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt test_RevertWhen_InvalidAllowance -vvv
+    */
     function test_RevertWhen_InvalidAllowance(uint256 deadline) public {
         deadline = bound(deadline, block.timestamp, type(uint48).max);
 
@@ -154,7 +157,8 @@ contract PermitTest is IntegrationTest {
 
         vm.expectRevert();
         vm.prank(spender);
-        require(vault.transferFrom(owner, spender, 1e18), "transfer failed");
+        // forge-lint: disable-next-line(unchecked-transfer)
+        vault.transferFrom(owner, spender, 1e18);
     }
 
     /*

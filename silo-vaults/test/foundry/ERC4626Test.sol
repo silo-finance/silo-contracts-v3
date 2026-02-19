@@ -407,7 +407,8 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
 
         vm.prank(SUPPLIER);
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, SUPPLIER, 0, shares));
-        require(vault.transferFrom(ONBEHALF, RECEIVER, shares), "transfer failed");
+        // forge-lint: disable-next-line(unchecked-transfer)
+        vault.transferFrom(ONBEHALF, RECEIVER, shares);
     }
 
     /*

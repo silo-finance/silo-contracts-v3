@@ -16,6 +16,8 @@ import {ISilo} from "../../../../contracts/interfaces/ISilo.sol";
 
 abstract contract KinkCommon {
     // using RandomLib for uint256;
+    using SafeCast for uint256;
+    using SafeCast for int256;
 
     struct RandomKinkConfig {
         uint64 ulow;
@@ -66,21 +68,21 @@ abstract contract KinkCommon {
 
     function _toConfig(RandomKinkConfig memory _config) internal pure returns (IDynamicKinkModel.Config memory) {
         return IDynamicKinkModel.Config({
-            ulow: SafeCast.toInt256(uint256(_config.ulow)),
-            u1: SafeCast.toInt256(uint256(_config.u1)),
-            u2: SafeCast.toInt256(uint256(_config.u2)),
-            ucrit: SafeCast.toInt256(uint256(_config.ucrit)),
-            rmin: SafeCast.toInt256(uint256(_config.rmin)),
+            ulow: uint256(_config.ulow).toInt256(),
+            u1: uint256(_config.u1).toInt256(),
+            u2: uint256(_config.u2).toInt256(),
+            ucrit: uint256(_config.ucrit).toInt256(),
+            rmin: uint256(_config.rmin).toInt256(),
             // we need to modulo, because on both sides we have 96 bits,
             // in order not to use vm.assume or require, we bound random value
             kmin: int96(_config.kmin % uint96(type(int96).max)),
             kmax: int96(_config.kmax % uint96(type(int96).max)),
-            alpha: SafeCast.toInt256(uint256(_config.alpha)),
-            cminus: SafeCast.toInt256(uint256(_config.cminus)),
-            cplus: SafeCast.toInt256(uint256(_config.cplus)),
-            c1: SafeCast.toInt256(uint256(_config.c1)),
-            c2: SafeCast.toInt256(uint256(_config.c2)),
-            dmax: SafeCast.toInt256(uint256(_config.dmax))
+            alpha: uint256(_config.alpha).toInt256(),
+            cminus: uint256(_config.cminus).toInt256(),
+            cplus: uint256(_config.cplus).toInt256(),
+            c1: uint256(_config.c1).toInt256(),
+            c2: uint256(_config.c2).toInt256(),
+            dmax: uint256(_config.dmax).toInt256()
         });
     }
 

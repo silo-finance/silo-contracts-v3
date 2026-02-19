@@ -7,11 +7,13 @@ import {
     DynamicKinkModel, IDynamicKinkModel
 } from "../../../../contracts/interestRateModel/kink/DynamicKinkModel.sol";
 import {KinkCommonTest} from "./KinkCommon.t.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
 FOUNDRY_PROFILE=core_test forge test --mc KinkVerifyConfigTest -vv
 */
 contract KinkVerifyConfigTest is KinkCommonTest {
+    using SafeCast for int256;
     function setUp() public {
         irm = new DynamicKinkModel();
     }
@@ -114,10 +116,9 @@ contract KinkVerifyConfigTest is KinkCommonTest {
         vm.expectRevert(IDynamicKinkModel.InvalidKmin.selector);
         irm.verifyConfig(config);
 
-        // Safe: UNIVERSAL_LIMIT is verified to fit in int96 (see test_kink_constants).
-        // Casting is safe; adding 1 intentionally causes overflow to test validation.
-        // forge-lint: disable-next-line(unsafe-typecast)
-        config.kmin = int96(UNIVERSAL_LIMIT) + 1;
+        // UNIVERSAL_LIMIT is verified to fit in int96 (see test_kink_constants).
+        // Adding 1 intentionally causes overflow to test validation.
+        config.kmin = UNIVERSAL_LIMIT.toInt96() + 1;
         vm.expectRevert(IDynamicKinkModel.InvalidKmin.selector);
         irm.verifyConfig(config);
 

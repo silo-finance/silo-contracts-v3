@@ -23,6 +23,9 @@ contract Token is ERC20 {
     FOUNDRY_PROFILE=oracles forge test --mc PTLinearOracleTest --ffi -vv
 */
 contract PTLinearOracleTest is PTLinearMocks {
+    using SafeCast for uint256;
+    using SafeCast for int256;
+
     PTLinearOracleFactory factory;
 
     function setUp() public {
@@ -36,7 +39,7 @@ contract PTLinearOracleTest is PTLinearMocks {
         IPTLinearOracle oracle = _createOracle();
 
         uint256 mockedPrice = 0.9e18;
-        _mockLatestRoundData(SafeCast.toInt256(mockedPrice));
+        _mockLatestRoundData(mockedPrice.toInt256());
 
         uint256 price = oracle.quote(1e18, makeAddr("ptToken"));
 
@@ -48,7 +51,7 @@ contract PTLinearOracleTest is PTLinearMocks {
             AggregatorV3Interface(address(oracle)).latestRoundData();
 
         assertEq(roundId, 0);
-        assertEq(SafeCast.toUint256(answer), price, "latestRoundData reutrns same data as quote");
+        assertEq(answer.toUint256(), price, "latestRoundData reutrns same data as quote");
         assertEq(startedAt, 0);
         assertEq(updatedAt, 0);
         assertEq(answeredInRound, 0);

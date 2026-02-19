@@ -12,6 +12,7 @@ import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 /// This contract is designed to be deployed for each test case
 contract HookReceiverAllActionsWithEvents is PartialLiquidation {
     using Hook for uint256;
+    using SafeCast for uint256;
 
     bool internal constant _IS_BEFORE = true;
     bool internal constant _IS_AFTER = false;
@@ -141,10 +142,10 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation {
         uint256 _silo1ActionsBefore,
         uint256 _silo1ActionsAfter
     ) {
-        _SILO0_ACTIONS_BEFORE = SafeCast.toUint24(_silo0ActionsBefore);
-        _SILO0_ACTIONS_AFTER = SafeCast.toUint24(_silo0ActionsAfter);
-        _SILO1_ACTIONS_BEFORE = SafeCast.toUint24(_silo1ActionsBefore);
-        _SILO1_ACTIONS_AFTER = SafeCast.toUint24(_silo1ActionsAfter);
+        _SILO0_ACTIONS_BEFORE = _silo0ActionsBefore.toUint24();
+        _SILO0_ACTIONS_AFTER = _silo0ActionsAfter.toUint24();
+        _SILO1_ACTIONS_BEFORE = _silo1ActionsBefore.toUint24();
+        _SILO1_ACTIONS_AFTER = _silo1ActionsAfter.toUint24();
     }
 
     /// @inheritdoc IHookReceiver

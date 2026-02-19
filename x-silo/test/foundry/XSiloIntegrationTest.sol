@@ -23,6 +23,7 @@ import {
  FOUNDRY_PROFILE=x_silo forge test --ffi --mc XSiloIntegrationTest -vv
 */
 contract XSiloIntegrationTest is Test {
+    using SafeCast for uint256;
     address public constant SILO_WHALE = 0xE641Dca2E131FA8BFe1D7931b9b040e3fE0c5BDc;
     address public constant USDC_WHALE = 0x578Ee1ca3a8E1b54554Da1Bf7C583506C4CD11c6;
 
@@ -147,8 +148,8 @@ contract XSiloIntegrationTest is Test {
         input = DistributionTypes.IncentivesProgramCreationInput({
             name: "test",
             rewardToken: address(usdcToken),
-            emissionPerSecond: SafeCast.toUint104(emissionPerSecond),
-            distributionEnd: SafeCast.toUint40(distributionEnd)
+            emissionPerSecond: emissionPerSecond.toUint104(),
+            distributionEnd: distributionEnd.toUint40()
         });
 
         vm.prank(dao);

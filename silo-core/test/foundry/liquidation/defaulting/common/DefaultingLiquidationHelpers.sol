@@ -29,6 +29,8 @@ import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 
 abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     using SiloLensLib for ISilo;
+    using SafeCast for uint256;
+    using SafeCast for int256;
 
     struct UserState {
         uint256 colalteralShares;
@@ -447,9 +449,9 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     {
         _changePricePercentage %= 1e18;
 
-        int256 diff = SafeCast.toInt256(uint256(_initialPrice)) * _changePricePercentage / 1e18;
-        int256 sum = SafeCast.toInt256(uint256(_initialPrice)) + diff;
-        newPrice = SafeCast.toUint64(SafeCast.toInt64(sum));
+        int256 diff = uint256(_initialPrice).toInt256() * _changePricePercentage / 1e18;
+        int256 sum = uint256(_initialPrice).toInt256() + diff;
+        newPrice = sum.toInt64().toUint64();
     }
 
     /// @dev make sure it does not throw!

@@ -7,6 +7,7 @@ import {SafeCast} from "openzeppelin-contracts/contracts/utils/math/SafeCast.sol
 import {IDynamicKinkModel} from "../../../contracts/interfaces/IDynamicKinkModel.sol";
 
 contract KinkRcurTestData is Test {
+    using SafeCast for int256;
     // must be in alphabetic order
     struct InputRcur {
         int256 currentTime;
@@ -93,14 +94,14 @@ contract KinkRcurTestData is Test {
         c.cminus = _data.constants.cminus;
         c.cplus = _data.constants.cplus;
         c.dmax = _data.constants.dmax;
-        c.kmax = SafeCast.toInt96(_data.constants.kmax);
-        c.kmin = SafeCast.toInt96(_data.constants.kmin);
+        c.kmax = _data.constants.kmax.toInt96();
+        c.kmin = _data.constants.kmin.toInt96();
         c.rmin = _data.constants.rmin;
         c.u1 = _data.constants.u1;
         c.u2 = _data.constants.u2;
         c.ucrit = _data.constants.ucrit;
         c.ulow = _data.constants.ulow;
 
-        state.k = SafeCast.toInt96(_data.input.lastSlope);
+        state.k = _data.input.lastSlope.toInt96();
     }
 }

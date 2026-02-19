@@ -20,6 +20,8 @@ import {DynamicKinkModelMock} from "./DynamicKinkModelMock.sol";
 FOUNDRY_PROFILE=core_test forge test -vv --mc DynamicKinkModelJsonTest
 */
 contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
+    using SafeCast for uint256;
+    using SafeCast for int256;
     DynamicKinkModelFactory immutable FACTORY = new DynamicKinkModelFactory(new DynamicKinkModelMock());
 
     DynamicKinkModelMock immutable IRM;
@@ -141,7 +143,7 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
             }
 
             _assertCloseTo(
-                SafeCast.toInt256(rcur),
+                rcur.toInt256(),
                 data[i].expected.currentAnnualInterest,
                 data[i].id,
                 "[getCurrentInterestRate] rcur is not close to expected value",
@@ -232,7 +234,7 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
             uint256 acceptableDiffPercent = _getAcceptableDiffPercent(data[i].id, _rcompDiffPercent);
 
             _assertCloseTo(
-                SafeCast.toInt256(rcomp),
+                rcomp.toInt256(),
                 data[i].expected.compoundInterest,
                 data[i].id,
                 "[getCompoundInterestRate] rcomp is not close to expected value",
@@ -291,17 +293,17 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
 
     function _setUtilizationData(RcompData memory _data) internal {
         utilizationData = ISilo.UtilizationData({
-            collateralAssets: SafeCast.toUint256(_data.input.totalDeposits),
-            debtAssets: SafeCast.toUint256(_data.input.totalBorrowAmount),
-            interestRateTimestamp: SafeCast.toUint64(SafeCast.toUint256(_data.input.lastTransactionTime))
+            collateralAssets: _data.input.totalDeposits.toUint256(),
+            debtAssets: _data.input.totalBorrowAmount.toUint256(),
+            interestRateTimestamp: _data.input.lastTransactionTime.toUint256().toUint64()
         });
     }
 
     function _setUtilizationData(RcurData memory _data) internal {
         utilizationData = ISilo.UtilizationData({
-            collateralAssets: SafeCast.toUint256(_data.input.totalDeposits),
-            debtAssets: SafeCast.toUint256(_data.input.totalBorrowAmount),
-            interestRateTimestamp: SafeCast.toUint64(SafeCast.toUint256(_data.input.lastTransactionTime))
+            collateralAssets: _data.input.totalDeposits.toUint256(),
+            debtAssets: _data.input.totalBorrowAmount.toUint256(),
+            interestRateTimestamp: _data.input.lastTransactionTime.toUint256().toUint64()
         });
     }
 

@@ -60,6 +60,7 @@ contract HookContract {
  FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc SiloIncentivesControllerTest
 */
 contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
+    using SafeCast for uint256;
     SiloIncentivesControllerCompatible internal _controller;
 
     address internal _notifier;
@@ -134,8 +135,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
-                distributionEnd: SafeCast.toUint40(block.timestamp + 100),
-                emissionPerSecond: SafeCast.toUint104(emissionPerSecond)
+                distributionEnd: (block.timestamp + 100).toUint40(),
+                emissionPerSecond: emissionPerSecond.toUint104()
             })
         );
 
@@ -193,7 +194,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 7e7;
 
         vm.startPrank(address(hook));
-        _controller.immediateDistribution(address(_rewardToken), SafeCast.toUint104(immediateDistribution));
+        _controller.immediateDistribution(address(_rewardToken), immediateDistribution.toUint104());
         vm.stopPrank();
 
         vm.warp(block.timestamp + 50);
@@ -241,8 +242,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
-                distributionEnd: SafeCast.toUint40(block.timestamp + 100),
-                emissionPerSecond: SafeCast.toUint104(emissionPerSecond) // it will not distribute less than 1e3, most likely because of offset
+                distributionEnd: (block.timestamp + 100).toUint40(),
+                emissionPerSecond: emissionPerSecond.toUint104() // it will not distribute less than 1e3, most likely because of offset
             })
         );
 
@@ -282,7 +283,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 7e7;
 
         vm.startPrank(address(hook));
-        _controller.immediateDistribution(address(_rewardToken), SafeCast.toUint104(immediateDistribution));
+        _controller.immediateDistribution(address(_rewardToken), immediateDistribution.toUint104());
         vm.stopPrank();
 
         string[] memory names = new string[](2);
@@ -358,8 +359,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
-                distributionEnd: SafeCast.toUint40(block.timestamp + 100),
-                emissionPerSecond: SafeCast.toUint104(emissionPerSecond) // it will not distribute less than 1e3, most likely because of offset
+                distributionEnd: (block.timestamp + 100).toUint40(),
+                emissionPerSecond: emissionPerSecond.toUint104() // it will not distribute less than 1e3, most likely because of offset
             })
         );
 
@@ -401,7 +402,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         string memory immediateProgramName = Strings.toHexString(address(_anotherRewardToken));
 
         vm.startPrank(address(hook));
-        _controller.immediateDistribution(address(_anotherRewardToken), SafeCast.toUint104(immediateDistribution));
+        _controller.immediateDistribution(address(_anotherRewardToken), immediateDistribution.toUint104());
         vm.stopPrank();
 
         assertEq(
@@ -467,8 +468,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
-                distributionEnd: SafeCast.toUint40(block.timestamp + 100),
-                emissionPerSecond: SafeCast.toUint104(0)
+                distributionEnd: (block.timestamp + 100).toUint40(),
+                emissionPerSecond: uint256(0).toUint104()
             })
         );
 
@@ -490,7 +491,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 33e7;
 
         vm.startPrank(address(hook));
-        _controller.immediateDistribution(address(_rewardToken), SafeCast.toUint104(immediateDistribution));
+        _controller.immediateDistribution(address(_rewardToken), immediateDistribution.toUint104());
         vm.stopPrank();
 
         assertEq(

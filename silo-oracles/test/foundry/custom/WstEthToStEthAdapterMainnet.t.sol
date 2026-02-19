@@ -19,6 +19,7 @@ interface IWstEthLike {
 }
 
 contract WstEthToStEthAdapterMainnetTest is TokensGenerator {
+    using SafeCast for int256;
     uint256 constant TEST_BLOCK = 22846446;
     IStEthLike constant STETH = IStEthLike(0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84);
     address constant WSTETH = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
@@ -66,7 +67,7 @@ contract WstEthToStEthAdapterMainnetTest is TokensGenerator {
 
         assertEq(
             IERC20Metadata(address(STETH)).balanceOf(address(this)),
-            SafeCast.toUint256(answer) - 1,
+            answer.toUint256() - 1,
             "received expected value - 1 wei"
         );
     }

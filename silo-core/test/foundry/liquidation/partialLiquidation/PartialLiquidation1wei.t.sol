@@ -176,7 +176,8 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
 
         vm.prank(borrower);
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
-        require(IShareToken(protectedShareToken).transfer(address(1), 1), "transfer failed");
+        // forge-lint: disable-next-line(unchecked-transfer)
+        IShareToken(protectedShareToken).transfer(address(1), 1);
         vm.stopPrank();
 
         emit log_named_decimal_uint("ltv after transfer", SILO_LENS.getLtv(silo0, borrower), 16);

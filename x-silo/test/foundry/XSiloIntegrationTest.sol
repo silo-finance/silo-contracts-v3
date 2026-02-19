@@ -63,8 +63,11 @@ contract XSiloIntegrationTest is Test {
         userInitialSiloBalance = whaleBalance / 10;
 
         vm.startPrank(SILO_WHALE);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         siloTokenV2.transfer(user1, userInitialSiloBalance);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         siloTokenV2.transfer(user2, userInitialSiloBalance);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         siloTokenV2.transfer(dao, userInitialSiloBalance);
         vm.stopPrank();
 
@@ -137,6 +140,7 @@ contract XSiloIntegrationTest is Test {
         stream.setEmissions(emissionPerSecond, distributionEnd);
 
         vm.prank(dao);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         siloTokenV2.transfer(address(stream), INCENTIVE_DURATION * emissionPerSecond);
     }
 
@@ -157,6 +161,7 @@ contract XSiloIntegrationTest is Test {
 
         assertGe(usdcToken.balanceOf(USDC_WHALE), INCENTIVE_DURATION * emissionPerSecond, "whale don't have tokens");
         vm.prank(USDC_WHALE);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         usdcToken.transfer(address(controller), INCENTIVE_DURATION * emissionPerSecond);
 
         vm.prank(dao);

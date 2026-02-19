@@ -88,6 +88,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
         if (donationAmount == 0) return;
 
         emit log_named_uint("executing donation attack with amount", donationAmount);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         IERC20(idleMarket.asset()).transfer(address(idleMarket), donationAmount);
     }
 
@@ -170,6 +171,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
 
         // here we have frontrun with donation
         if (_attackUsingHookBeforeDeposit) donationAmount = _donation;
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         else IERC20(idleMarket.asset()).transfer(address(idleMarket), _donation);
 
         vm.prank(SUPPLIER);
@@ -262,6 +264,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
         vm.stopPrank();
 
         // inflate price, possible eg on before deposit
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         IERC20(idleMarket.asset()).transfer(address(idleMarket), donation);
 
         // simulate reallocation back

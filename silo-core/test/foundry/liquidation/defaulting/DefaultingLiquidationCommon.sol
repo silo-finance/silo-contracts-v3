@@ -1001,7 +1001,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         // 0.5% to 20% price drop cap
         int256 dropPercentage = int256(uint256(_priceDropPercentage) % 0.2e18);
 
-        uint256 targetPrice = _calculateNewPrice(oracle0.price.toInt64(), -dropPercentage.toInt64());
+        uint256 targetPrice = _calculateNewPrice(uint64(oracle0.price()), -int64(dropPercentage));
 
         _addLiquidity(Math.max(_collateral, _protected));
         bool success =

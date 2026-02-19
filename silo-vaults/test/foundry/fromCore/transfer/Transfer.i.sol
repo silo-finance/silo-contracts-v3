@@ -28,6 +28,7 @@ contract TransferTest is VaultsLittleHelper {
         uint256 vaultDepositorShares = vault.balanceOf(depositor);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         vault.transfer(borrower, vaultDepositorShares);
 
         assertEq(vault.balanceOf(borrower), vaultDepositorShares, "borrower should have the shares");
@@ -60,6 +61,7 @@ contract TransferTest is VaultsLittleHelper {
         vault.approve(borrower, vaultDepositorShares);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         vault.transferFrom(depositor, borrower, vaultDepositorShares);
 
         assertEq(vault.balanceOf(borrower), vaultDepositorShares, "borrower should have the shares");

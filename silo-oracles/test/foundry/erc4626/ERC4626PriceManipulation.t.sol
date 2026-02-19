@@ -86,6 +86,7 @@ contract ERC4626PriceManipulation is IntegrationTest {
         uint256 priceBeforeDonation = _getPrice();
 
         vm.prank(_attacker);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         _asset.transfer(address(_vault), attackerBalance);
 
         _logPrice("\tAfter 100% donation\n");

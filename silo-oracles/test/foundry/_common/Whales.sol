@@ -36,6 +36,7 @@ contract Whales is TokensGenerator {
         } else {
             emit log_named_address("whale", whale);
             vm.prank(whale);
+            // forge-lint: disable-next-line(erc20-unchecked-transfer)
             IERC20(_asset).transfer(_recipient, _amount);
         }
     }

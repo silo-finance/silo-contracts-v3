@@ -295,7 +295,7 @@ contract SiloIncentivesControllerTest is Test {
         });
 
         vm.prank(_owner);
-        _controller.setDistributionEnd(_PROGRAM_NAME, clockStart + 20);
+        _controller.setDistributionEnd(_PROGRAM_NAME, (clockStart + 20).toUint40());
 
         assertEq(_controller.getDistributionEnd(_PROGRAM_NAME), clockStart + 20, "invalid distributionEnd");
 
@@ -413,7 +413,7 @@ contract SiloIncentivesControllerTest is Test {
             _amount: user1Deposit1
         });
 
-        uint40 newDistributionEnd = clockStart + 20.toUint40();
+        uint40 newDistributionEnd = (clockStart + 20).toUint40();
 
         vm.prank(_owner);
         _controller.setDistributionEnd(_PROGRAM_NAME, newDistributionEnd);

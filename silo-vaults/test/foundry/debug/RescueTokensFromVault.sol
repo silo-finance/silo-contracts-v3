@@ -125,6 +125,7 @@ contract RescueTokensFromVault is Test {
         IERC20 asset = IERC20Metadata(VAULT.asset());
 
         vm.prank(usdtWhale);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         asset.transfer(address(this), 100e6);
 
         asset.approve(address(VAULT), 100e6);

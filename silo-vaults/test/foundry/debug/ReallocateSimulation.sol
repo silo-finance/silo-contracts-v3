@@ -38,6 +38,7 @@ contract ReallocateSimulationTest is Test {
         uint256 vaultAssets = _printVaultBalance(fromSilo, address(vault));
 
         vm.prank(wSWhale); // give wS tokens to multisig
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         wS.transfer(multisig, vaultAssets);
 
 

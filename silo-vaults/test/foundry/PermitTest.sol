@@ -110,6 +110,7 @@ contract PermitTest is IntegrationTest {
         vault.permit(permit.owner, permit.spender, permit.value, permit.deadline, v, r, s);
 
         vm.prank(spender);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         vault.transferFrom(owner, spender, 1e18);
 
         assertEq(vault.balanceOf(owner), 0);
@@ -129,6 +130,7 @@ contract PermitTest is IntegrationTest {
         vault.permit(permit.owner, permit.spender, permit.value, permit.deadline, v, r, s);
 
         vm.prank(spender);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         vault.transferFrom(owner, spender, 1e18);
 
         assertEq(vault.balanceOf(owner), 0);
@@ -154,6 +156,7 @@ contract PermitTest is IntegrationTest {
 
         vm.expectRevert();
         vm.prank(spender);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         vault.transferFrom(owner, spender, 1e18); // attempt to transfer 1 vault
     }
 
@@ -175,6 +178,7 @@ contract PermitTest is IntegrationTest {
 
         vm.expectRevert();
         vm.prank(spender);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         vault.transferFrom(owner, spender, 2e18); // attempt to transfer 2 tokens (owner only owns 1)
     }
 }

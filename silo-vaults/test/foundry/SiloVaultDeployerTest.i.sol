@@ -153,6 +153,7 @@ contract SiloVaultDeployerTest is IntegrationTest {
         uint256 amount = 10_000e6;
 
         vm.prank(_USDC_WHALE);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         IERC20(_USDC).transfer(depositor, amount);
 
         vm.prank(depositor);

@@ -38,19 +38,21 @@ contract TransferFromReentrancyTest is MethodReentrancyTest {
         TestStateLib.enableReentrancy();
 
         vm.prank(spender);
-        require(silo.transferFrom(depositor, recepient, amount), "transfer failed");
+        require(silo.transferFrom(depositor, recepient, amount), "transfer failed 4");
     }
 
     function verifyReentrancy() external {
         ISilo silo0 = TestStateLib.silo0();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        require(silo0.transferFrom(address(0), address(0), 1000), "transfer failed");
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        silo0.transferFrom(address(0), address(0), 1000);
 
         ISilo silo1 = TestStateLib.silo1();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        require(silo1.transferFrom(address(0), address(0), 1000), "transfer failed");
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        silo1.transferFrom(address(0), address(0), 1000);
     }
 
     function methodDescription() external pure returns (string memory description) {

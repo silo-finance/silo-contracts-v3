@@ -44,10 +44,10 @@ contract TransferFromReentrancyTest is MethodReentrancyTest {
         TestStateLib.enableReentrancy();
 
         vm.prank(spender);
-        require(ShareToken(collateral).transferFrom(depositor, receiver, depositAmount), "transfer failed");
+        require(ShareToken(collateral).transferFrom(depositor, receiver, depositAmount), "transfer failed 19");
 
         vm.prank(spender);
-        require(ShareToken(protected).transferFrom(depositor, receiver, depositAmount), "transfer failed");
+        require(ShareToken(protected).transferFrom(depositor, receiver, depositAmount), "transfer failed 20");
     }
 
     function verifyReentrancy() external {
@@ -58,18 +58,22 @@ contract TransferFromReentrancyTest is MethodReentrancyTest {
         (address protected, address collateral,) = config.getShareTokens(address(silo0));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        require(ShareToken(collateral).transferFrom(address(0), address(0), 0), "transfer failed");
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        ShareToken(collateral).transferFrom(address(0), address(0), 0);
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        require(ShareToken(protected).transferFrom(address(0), address(0), 0), "transfer failed");
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        ShareToken(protected).transferFrom(address(0), address(0), 0);
 
         (protected, collateral,) = config.getShareTokens(address(silo1));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        require(ShareToken(collateral).transferFrom(address(0), address(0), 0), "transfer failed");
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        ShareToken(collateral).transferFrom(address(0), address(0), 0);
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        require(ShareToken(protected).transferFrom(address(0), address(0), 0), "transfer failed");
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        ShareToken(protected).transferFrom(address(0), address(0), 0);
     }
 
     function methodDescription() external pure returns (string memory description) {

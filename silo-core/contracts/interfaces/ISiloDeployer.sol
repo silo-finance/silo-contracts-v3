@@ -29,7 +29,6 @@ interface ISiloDeployer {
     }
 
     /// @dev DKinkIRM config to be created during the Silo creation.
-    // forge-lint: disable-next-item(pascal-case-struct)
     struct DKinkIRMConfig {
         IDynamicKinkModel.Config config;
         IDynamicKinkModel.ImmutableArgs immutableArgs;

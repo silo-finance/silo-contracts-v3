@@ -17,7 +17,6 @@ interface ISiloLens {
         uint256 ltv;
     }
 
-    // forge-lint: disable-next-item(pascal-case-struct)
     struct APR {
         uint256 depositAPR;
         uint256 borrowAPR;

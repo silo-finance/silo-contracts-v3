@@ -19,15 +19,15 @@ contract MaxWithdrawToAssetsAndSharesTestData {
         uint256 shares;
     }
 
-    struct MwtasData {
+    struct MWTASData {
         string name;
         Input input;
         Output output;
     }
 
-    MwtasData[] allData;
+    MWTASData[] allData;
 
-    function getData() external returns (MwtasData[] memory data) {
+    function getData() external returns (MWTASData[] memory data) {
         uint256 i;
 
         i = _init("all zeros");
@@ -145,7 +145,7 @@ contract MaxWithdrawToAssetsAndSharesTestData {
         allData[i].name = string(abi.encodePacked("#", toString(i), " ", _name));
     }
 
-    function _clone(MwtasData memory _src, MwtasData storage _dst) private {
+    function _clone(MWTASData memory _src, MWTASData storage _dst) private {
         _dst.input = Input({
             maxAssets: _src.input.maxAssets,
             borrowerCollateralAssets: _src.input.borrowerCollateralAssets,

@@ -17,7 +17,6 @@ interface IDIAOracle {
     /// both keys must be present in `diaOracle` and we assuming both prices are denominated in same token eg:
     /// primary: ABC/USD, secondary: ETH/USD, result will be ABC/ETH.
     /// @param invertSecondPrice in case we using second price, this flag will tell us if we need to 1/secondPrice
-    // forge-lint: disable-next-item(pascal-case-struct)
     struct DIADeploymentConfig {
         IDIAOracleV2 diaOracle;
         IERC20Metadata baseToken;
@@ -30,7 +29,6 @@ interface IDIAOracle {
         bool invertSecondPrice;
     }
 
-    // forge-lint: disable-next-item(pascal-case-struct)
     struct DIAConfig {
         IDIAOracleV2 diaOracle;
         address baseToken;

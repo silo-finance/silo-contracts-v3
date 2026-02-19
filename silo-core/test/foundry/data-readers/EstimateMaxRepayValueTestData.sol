@@ -9,17 +9,17 @@ contract EstimateMaxRepayValueTestData {
         uint256 liquidationFee;
     }
 
-    struct EmrvData {
+    struct EMRVData {
         Input input;
         uint256 repayValue;
     }
 
-    function readDataFromJson() external pure returns (EmrvData[] memory data) {
-        data = new EmrvData[](8);
+    function readDataFromJson() external pure returns (EMRVData[] memory data) {
+        data = new EMRVData[](8);
         uint256 i;
 
         // no debt no liquidation
-        data[i++] = EmrvData({
+        data[i++] = EMRVData({
             input: Input({
                 totalBorrowerDebtValue: 0,
                 totalBorrowerCollateralValue: 1e18,
@@ -30,7 +30,7 @@ contract EstimateMaxRepayValueTestData {
         });
 
         // when target LTV higher than current
-        data[i++] = EmrvData({
+        data[i++] = EMRVData({
             input: Input({
                 totalBorrowerDebtValue: 1e18,
                 totalBorrowerCollateralValue: 2e18,
@@ -41,7 +41,7 @@ contract EstimateMaxRepayValueTestData {
         });
 
         // if BP - LT - LT * f -> negative
-        data[i++] = EmrvData({
+        data[i++] = EMRVData({
             input: Input({
                 totalBorrowerDebtValue: 80e18,
                 totalBorrowerCollateralValue: 100e18,
@@ -52,7 +52,7 @@ contract EstimateMaxRepayValueTestData {
         });
 
         // if BP - LT - LT * f -> negative - COUNTER EXAMPLE
-        data[i++] = EmrvData({
+        data[i++] = EMRVData({
             input: Input({
                 totalBorrowerDebtValue: 80e18,
                 totalBorrowerCollateralValue: 100e18,
@@ -63,7 +63,7 @@ contract EstimateMaxRepayValueTestData {
         });
 
         // when bad debt
-        data[i++] = EmrvData({
+        data[i++] = EMRVData({
             input: Input({
                 totalBorrowerDebtValue: 180e18,
                 totalBorrowerCollateralValue: 180e18,
@@ -74,7 +74,7 @@ contract EstimateMaxRepayValueTestData {
         });
 
         // if we expect ltv to be 0, we need full liquidation
-        data[i++] = EmrvData({
+        data[i++] = EMRVData({
             input: Input({
                 totalBorrowerDebtValue: 80e18,
                 totalBorrowerCollateralValue: 100e18,
@@ -85,7 +85,7 @@ contract EstimateMaxRepayValueTestData {
         });
 
         // example from exec simulation
-        data[i++] = EmrvData({
+        data[i++] = EMRVData({
             input: Input({
                 totalBorrowerDebtValue: 80e18,
                 totalBorrowerCollateralValue: 100e18,
@@ -96,7 +96,7 @@ contract EstimateMaxRepayValueTestData {
         });
 
         // example from exec simulation
-        data[i++] = EmrvData({
+        data[i++] = EMRVData({
             input: Input({
                 totalBorrowerDebtValue: 80e18,
                 totalBorrowerCollateralValue: 112e18,

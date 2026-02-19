@@ -16,17 +16,17 @@ contract MaxLiquidationPreviewTestData {
         bool targetLtvPossible;
     }
 
-    struct MlpData {
+    struct MLPData {
         Input input;
         Output output;
     }
 
-    function readDataFromJson() external pure returns (MlpData[] memory data) {
-        data = new MlpData[](6);
+    function readDataFromJson() external pure returns (MLPData[] memory data) {
+        data = new MLPData[](6);
         uint256 i;
 
         // no debt no liquidation
-        data[i++] = MlpData({
+        data[i++] = MLPData({
             input: Input({
                 lt: 0.8e18,
                 totalBorrowerDebtValue: 0,
@@ -38,7 +38,7 @@ contract MaxLiquidationPreviewTestData {
         });
 
         // when bad debt
-        data[i++] = MlpData({
+        data[i++] = MLPData({
             input: Input({
                 lt: 0.8e18,
                 totalBorrowerDebtValue: 180e18,
@@ -50,7 +50,7 @@ contract MaxLiquidationPreviewTestData {
         });
 
         // if we expect ltv to be 0, we need full liquidation
-        data[i++] = MlpData({
+        data[i++] = MLPData({
             input: Input({
                 lt: 0.05e18,
                 totalBorrowerDebtValue: 80e18,
@@ -66,7 +66,7 @@ contract MaxLiquidationPreviewTestData {
         });
 
         // if we over 100% with fee, then we return all
-        data[i++] = MlpData({
+        data[i++] = MLPData({
             input: Input({
                 lt: 0.8e18,
                 totalBorrowerDebtValue: 98e18,
@@ -79,7 +79,7 @@ contract MaxLiquidationPreviewTestData {
 
         // "if we over 100% with fee, then we return all" - COUNTEREXAMPLE to above case
         // but we caught dust, so again full liquidation
-        data[i++] = MlpData({
+        data[i++] = MLPData({
             input: Input({
                 lt: 0.8e18,
                 totalBorrowerDebtValue: 98e18,
@@ -95,7 +95,7 @@ contract MaxLiquidationPreviewTestData {
         });
 
         // example from excel simulation
-        data[i++] = MlpData({
+        data[i++] = MLPData({
             input: Input({
                 lt: uint256(0.7e18) * 1e18 / 0.9e18, // ~77,77%
                 totalBorrowerDebtValue: 80e18,

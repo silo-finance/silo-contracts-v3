@@ -29,7 +29,7 @@ contract SiloLendingLibBorrowTestData {
         bytes4 reverts;
     }
 
-    struct SllbData {
+    struct SLLBData {
         string name;
         Input input;
         Mocks mocks;
@@ -53,8 +53,8 @@ contract SiloLendingLibBorrowTestData {
         debtToken = _debtToken;
     }
 
-    function getData() external view returns (SllbData[] memory data) {
-        data = new SllbData[](12);
+    function getData() external view returns (SLLBData[] memory data) {
+        data = new SLLBData[](12);
         uint256 i;
 
         _init(data[i], "#0 all zeros");
@@ -151,7 +151,7 @@ contract SiloLendingLibBorrowTestData {
         data[i].output.borrowedShare = 400e18;
     }
 
-    function _init(SllbData memory _src, string memory _name) private view {
+    function _init(SLLBData memory _src, string memory _name) private view {
         _src.name = _name;
 
         _src.input.configData.protectedShareToken = protectedShareToken;
@@ -168,7 +168,7 @@ contract SiloLendingLibBorrowTestData {
         _src.mocks.debtSharesTotalSupplyMock = true;
     }
 
-    function _clone(SllbData memory _src) private pure returns (SllbData memory dst) {
+    function _clone(SLLBData memory _src) private pure returns (SLLBData memory dst) {
         dst.input = Input({
             configData: ISiloConfig.ConfigData({
                 daoFee: _src.input.configData.daoFee,

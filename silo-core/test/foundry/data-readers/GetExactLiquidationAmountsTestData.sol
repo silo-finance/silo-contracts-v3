@@ -30,15 +30,15 @@ contract GetExactLiquidationAmountsTestData {
         uint256 repayDebtAssets;
     }
 
-    struct GelaData {
+    struct GELAData {
         string name;
         Input input;
         Mocks mocks;
         Output output;
     }
 
-    function getData() external pure returns (GelaData[] memory data) {
-        data = new GelaData[](8);
+    function getData() external pure returns (GELAData[] memory data) {
+        data = new GELAData[](8);
         uint256 i;
 
         data[i].name = "all zeros => zero output";
@@ -86,7 +86,7 @@ contract GetExactLiquidationAmountsTestData {
         data[i].mocks.debtUserSharesBalanceOf = 1.59e18 * SHARES_OFFSET;
     }
 
-    function _clone(GelaData memory _src) private pure returns (GelaData memory dst) {
+    function _clone(GELAData memory _src) private pure returns (GELAData memory dst) {
         dst.input.user = address(1);
         dst.input.maxDebtToCover = _src.input.maxDebtToCover;
         dst.input.liquidationFee = _src.input.liquidationFee;

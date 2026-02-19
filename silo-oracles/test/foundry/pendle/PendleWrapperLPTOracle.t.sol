@@ -39,6 +39,7 @@ contract PendleWrapperLPTOracle is Test {
     IPendleOracleHelper public constant PENDLE_ORACLE =
         IPendleOracleHelper(0x9a9Fa8338dd5E5B2188006f1Cd2Ef26d921650C2);
 
+    // forge-lint-disable-next-line(screaming-snake-case-const)
     IPendleLPWrapperLike public constant sUSDe_WRAPPER =
         IPendleLPWrapperLike(0xaB025d7b57B0902A2797599F3eB07477400e62B0); // Sep
 

@@ -15,10 +15,10 @@ import {ILiquidationHelper} from "silo-core/contracts/interfaces/ILiquidationHel
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 
 abstract contract UserState is Test {
-    SiloLens internal constant lens = SiloLens(0xB95AD415b0fcE49f84FbD5B26b14ec7cf4822c69);
+    SiloLens internal constant LENS = SiloLens(0xB95AD415b0fcE49f84FbD5B26b14ec7cf4822c69);
     address internal immutable SWAP_ALLOWANCE_HOLDER;
-    address internal constant weth = 0x50c42dEAcD8Fc9773493ED674b675bE577f2634b;
-    address internal constant wS = 0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38;
+    address internal constant WETH = 0x50c42dEAcD8Fc9773493ED674b675bE577f2634b;
+    address internal constant WS = 0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38;
 
     ILiquidationHelper internal immutable HELPER;
 
@@ -28,10 +28,10 @@ abstract contract UserState is Test {
     }
 
     function setUp() public virtual {
-        vm.label(address(lens), "SiloLens");
+        vm.label(address(LENS), "SiloLens");
         vm.label(address(HELPER), "LiquidationHelper");
-        vm.label(weth, "WETH");
-        vm.label(wS, "wS");
+        vm.label(WETH, "WETH");
+        vm.label(WS, "wS");
         vm.label(SWAP_ALLOWANCE_HOLDER, "SWAP AllowanceHolder");
         vm.label(0xd3DCe716f3eF535C5Ff8d041c1A41C3bd89b97aE, "scUSD");
     }
@@ -57,7 +57,7 @@ abstract contract UserState is Test {
         console2.log("collateral Liquidation Threshold: ", collateralCfg.lt);
         console2.log("      debt Liquidation Threshold: ", debtCfg.lt);
         emit log_named_decimal_uint(
-            "                        user LTV: ", lens.getUserLTV(ISilo(debtCfg.silo), _user), 16
+            "                        user LTV: ", LENS.getUserLTV(ISilo(debtCfg.silo), _user), 16
         );
         emit log_named_string("user solvent?: ", ISilo(debtCfg.silo).isSolvent(_user) ? "yes" : "no");
 

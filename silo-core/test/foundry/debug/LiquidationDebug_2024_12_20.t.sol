@@ -11,14 +11,14 @@ import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 // FOUNDRY_PROFILE=core_test forge test --mc LiquidationDebug_2024_12_20 --ffi -vvv
 contract LiquidationDebug_2024_12_20 is IntegrationTest {
     address internal constant _SILO_ADDR = 0x7abd3124E1e2F5f8aBF8b862d086647A5141bf4c;
-    IPartialLiquidation internal constant hook = IPartialLiquidation(0x2D2628f0434a5ed57601f6506d492849260193bA);
+    IPartialLiquidation internal constant HOOK = IPartialLiquidation(0x2D2628f0434a5ed57601f6506d492849260193bA);
     // ILiquidationHelper constant internal helper = ILiquidationHelper(0xd98C025cf5d405FE3385be8C9BE64b219EC750F8);
     ILiquidationHelper internal helper;
 
     function setUp() public {
         vm.label(0x82aF49447D8a07e3bd95BD0d56f35241523fBab1, "WETH");
         vm.label(address(helper), "LiquidationHelper");
-        vm.label(address(hook), "IPartialLiquidation");
+        vm.label(address(HOOK), "IPartialLiquidation");
 
         vm.createSelectFork(getChainRpcUrl(ARBITRUM_ONE_ALIAS), 286812225);
 
@@ -49,7 +49,7 @@ contract LiquidationDebug_2024_12_20 is IntegrationTest {
         vm.label(address(flashLoanFrom), "flashLoanFrom");
 
         ILiquidationHelper.LiquidationData memory liquidation =
-            ILiquidationHelper.LiquidationData(hook, 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1, user);
+            ILiquidationHelper.LiquidationData(HOOK, 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1, user);
 
         ILiquidationHelper.DexSwapInput[] memory dexSwapInput = new ILiquidationHelper.DexSwapInput[](0);
 

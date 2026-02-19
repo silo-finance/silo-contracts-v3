@@ -297,6 +297,7 @@ library Hook {
             totalSupply := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = AfterTokenTransfer(sender, recipient, amount, senderBalance, recipientBalance, totalSupply);
     }
 
@@ -321,6 +322,7 @@ library Hook {
             receiver := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = BeforeDepositInput(assets, shares, receiver);
     }
 
@@ -351,6 +353,7 @@ library Hook {
             mintedShares := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = AfterDepositInput(assets, shares, receiver, receivedAssets, mintedShares);
     }
 
@@ -381,6 +384,7 @@ library Hook {
             spender := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = BeforeWithdrawInput(assets, shares, receiver, owner, spender);
     }
 
@@ -417,6 +421,7 @@ library Hook {
             withdrawnShares := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = AfterWithdrawInput(assets, shares, receiver, owner, spender, withdrawnAssets, withdrawnShares);
     }
 
@@ -446,6 +451,7 @@ library Hook {
             spender := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = BeforeBorrowInput(assets, shares, receiver, borrower, spender);
     }
 
@@ -482,6 +488,7 @@ library Hook {
             borrowedShares := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = AfterBorrowInput(assets, shares, receiver, borrower, spender, borrowedAssets, borrowedShares);
     }
 
@@ -509,6 +516,7 @@ library Hook {
             repayer := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = BeforeRepayInput(assets, shares, borrower, repayer);
     }
 
@@ -542,6 +550,7 @@ library Hook {
             repaidShares := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = AfterRepayInput(assets, shares, borrower, repayer, repaidAssets, repaidShares);
     }
 
@@ -566,6 +575,7 @@ library Hook {
             amount := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = BeforeFlashLoanInput(receiver, token, amount);
     }
 
@@ -593,6 +603,7 @@ library Hook {
             fee := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = AfterFlashLoanInput(receiver, token, amount, fee);
     }
 
@@ -614,6 +625,7 @@ library Hook {
             owner := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = BeforeTransitionCollateralInput(shares, owner);
     }
 
@@ -638,6 +650,7 @@ library Hook {
             assets := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = AfterTransitionCollateralInput(shares, owner, assets);
     }
 
@@ -656,6 +669,7 @@ library Hook {
             user := mload(add(packed, pointer))
         }
 
+        // forge-lint: disable-next-line(named-struct-fields)
         input = SwitchCollateralInput(user);
     }
 

@@ -212,6 +212,7 @@ contract InterestRateModelV2 is IInterestRateModel, IInterestRateModelV2 {
     ) public pure virtual returns (uint256 rcur) {
         require(_interestRateTimestamp <= _blockTimestamp, InvalidTimestamps());
 
+        // forge-lint: disable-next-line(named-struct-fields)
         LocalVarsRCur memory _l = LocalVarsRCur(0,0,0,0,0,0,false); // struct for local vars to avoid "Stack too deep"
 
         (,,,_l.overflow) = calculateCompoundInterestRateWithOverflowDetection(
@@ -296,6 +297,7 @@ contract InterestRateModelV2 is IInterestRateModel, IInterestRateModelV2 {
         Tcrit = _c.Tcrit;
 
         // struct for local vars to avoid "Stack too deep"
+        // forge-lint: disable-next-line(named-struct-fields)
         LocalVarsRComp memory _l = LocalVarsRComp(0,0,0,0,0,0,0,0,0,0);
 
         require(_interestRateTimestamp <= _blockTimestamp, InvalidTimestamps());

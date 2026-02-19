@@ -112,6 +112,7 @@ contract DynamicKinkModel is IDynamicKinkModel, IVersioned, Ownable1and2Steps, I
         _irmConfig = currentState.irmConfig;
         _modelState.k = currentState.k;
 
+        // forge-lint: disable-next-line(named-struct-fields)
         configsHistory[pendingConfig] = History(0, IDynamicKinkModelConfig(address(0)));
 
         activateConfigAt = 0;
@@ -402,6 +403,7 @@ contract DynamicKinkModel is IDynamicKinkModel, IVersioned, Ownable1and2Steps, I
 
         IDynamicKinkModelConfig newCfg = IDynamicKinkModelConfig(new DynamicKinkModelConfig(_config, _immutableConfig));
 
+        // forge-lint: disable-next-line(named-struct-fields)
         configsHistory[newCfg] = History({k: _modelState.k, irmConfig: _irmConfig});
         _modelState.k = _config.kmin;
         _irmConfig = newCfg;

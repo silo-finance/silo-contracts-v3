@@ -289,6 +289,7 @@ abstract contract MaxLiquidationCommon is SiloLittleHelper, Test {
         ) returns (uint256 collateral, uint256 debt) {
             return (collateral, debt);
         } catch (bytes memory data) {
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
 
             bytes4 returnZeroAssets = bytes4(keccak256(abi.encodePacked("ReturnZeroAssets()")));

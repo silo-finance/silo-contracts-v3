@@ -133,7 +133,7 @@ contract ERC1820Registry {
     /// @param _interfaceName Name of the interface.
     /// @return The keccak256 hash of an interface name.
     function interfaceHash(string calldata _interfaceName) external pure returns (bytes32) {
-        // forge-lint: disable-next-line(screaming-snake-case-immutable)
+        // forge-lint: disable-next-line(asm-keccak256)
         return keccak256(abi.encodePacked(_interfaceName));
     }
 

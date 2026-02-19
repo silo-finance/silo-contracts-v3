@@ -34,6 +34,7 @@ contract VaultReentrancyTest is Test {
 
         for (uint j = 0; j < methodRegistries.length; j++) {
             string memory abiPath = string.concat(root, methodRegistries[j].abiFile());
+            // forge-lint: disable-next-line(unsafe-cheatcode)
             string memory json = vm.readFile(abiPath);
 
             string[] memory keys = vm.parseJsonKeys(json, ".methodIdentifiers");

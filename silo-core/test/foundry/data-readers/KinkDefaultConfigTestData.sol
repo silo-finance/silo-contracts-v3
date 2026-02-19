@@ -61,6 +61,7 @@ contract KinkDefaultConfigTestData is Test {
     function _readUserInputDataFromJson() internal view returns (UserInputData[] memory data) {
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/silo-core/test/foundry/data/KinkDefaultConfigTests.json");
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(path);
 
         UserInputDataJson[] memory dataJson =

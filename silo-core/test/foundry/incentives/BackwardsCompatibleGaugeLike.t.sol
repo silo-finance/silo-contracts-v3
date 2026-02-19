@@ -107,7 +107,9 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
         uint256 snapshot = vm.snapshot();
 
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 sonicHash = keccak256(abi.encodePacked("sonic"));
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 networkHash = keccak256(abi.encodePacked(_networkKey));
 
         for (uint256 i = 0; i < deployedSiloConfigs[_networkKey].length; i++) {
@@ -426,8 +428,10 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
         try hookReceiver.setGauge(_controller, IShareToken(_silo)) {
             console2.log("Gauge set successfully!");
             return true;
+        // forge-lint: disable-next-line(asm-keccak256)
         } catch (bytes memory e) {
             bytes32 alreadyConfiguredHash =
+                // forge-lint: disable-next-line(asm-keccak256)
                 keccak256(abi.encodeWithSelector(IGaugeHookReceiver.GaugeAlreadyConfigured.selector));
 
             if (keccak256(e) == alreadyConfiguredHash) {
@@ -445,9 +449,11 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
         vm.prank(owner);
         try hookReceiver.removeGauge(IShareToken(_silo)) {
+            // forge-lint: disable-next-line(asm-keccak256)
             console2.log("Gauge removed successfully!");
             return true;
         } catch (bytes memory e) {
+            // forge-lint: disable-next-line(asm-keccak256)
             bytes32 cantRemoveActiveGaugeHash = keccak256(abi.encodeWithSelector(CantRemoveActiveGauge.selector));
 
             if (keccak256(e) == cantRemoveActiveGaugeHash) {
@@ -467,10 +473,12 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_parseSiloDeployments
+    // forge-lint: disable-next-line(unsafe-cheatcode)
     */
     function _parseSiloDeployments() internal {
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/silo-core/deploy/silo/_siloDeployments.json");
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(path);
 
         networks = vm.parseJsonKeys(json, ".");

@@ -527,6 +527,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         ) {
             // nothing to do
         } catch (bytes memory data) {
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
             bytes4 returnZeroShares = bytes4(keccak256(abi.encodePacked("ReturnZeroShares()")));
 
@@ -670,6 +671,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         ) {
             // nothing to do
         } catch (bytes memory data) {
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
             bytes4 returnZeroShares = bytes4(keccak256(abi.encodePacked("ReturnZeroShares()")));
             if (errorType == returnZeroShares) {
@@ -999,8 +1001,10 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         vm.assume(_priceDropPercentage > 0.0005e18);
 
         // 0.5% to 20% price drop cap
+        // forge-lint: disable-next-line(unsafe-typecast)
         int256 dropPercentage = int256(uint256(_priceDropPercentage) % 0.2e18);
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         uint256 targetPrice = _calculateNewPrice(uint64(oracle0.price()), -int64(dropPercentage));
 
         _addLiquidity(Math.max(_collateral, _protected));

@@ -1037,6 +1037,7 @@ contract SiloIncentivesControllerTest is Test {
             bytes4 indexOverflowSelector = IDistributionManager.IndexOverflow.selector;
             bytes4 newIndexOverflowSelector = IDistributionManager.NewIndexOverflow.selector;
 
+            // forge-lint: disable-next-line(unsafe-typecast)
             if (bytes4(_err) != emissionPerSecondOverflowSelector && bytes4(_err) != indexOverflowSelector && bytes4(_err) != newIndexOverflowSelector) {
                 console2.log("expected EmissionForTimeDeltaOverflow() or IndexOverflow() or NewIndexOverflow()");
                 RevertLib.revertBytes(_err, string(""));
@@ -1257,8 +1258,11 @@ contract SiloIncentivesControllerTest is Test {
 
         vm.prank(_user);
         IDistributionManager.AccruedRewards[] memory accruedRewards2 = _controller.claimRewards(_to, programsNames);
+        // forge-lint: disable-next-line(asm-keccak256)
 
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 rewards1 = keccak256(abi.encode(accruedRewards1));
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 rewards2 = keccak256(abi.encode(accruedRewards2));
 
         assertTrue(rewards1 == rewards2, "expected rewards1 and rewards2 to be the same");

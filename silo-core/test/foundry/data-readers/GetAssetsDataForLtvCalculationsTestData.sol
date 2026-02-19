@@ -54,6 +54,7 @@ contract GetAssetsDataForLtvCalculationsTestData is Test {
     function _readInput(string memory input) internal view returns (string memory) {
         string memory inputDir = string.concat(vm.projectRoot(), "/silo-core/test/foundry/data/");
         string memory file = string.concat(input, ".json");
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         return vm.readFile(string.concat(inputDir, file));
     }
 

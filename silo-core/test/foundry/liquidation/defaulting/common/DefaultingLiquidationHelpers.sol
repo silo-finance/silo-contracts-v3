@@ -378,6 +378,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         // Error selectors are always 4 bytes, so casting is safe.
         // forge-lint: disable-next-line(unsafe-typecast)
         if (
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4(_err) == newIndexOverflowSelector || bytes4(_err) == indexOverflowSelector
                 // forge-lint: disable-next-line(unsafe-typecast)
                 || bytes4(_err) == emissionForTimeDeltaOverflowSelector

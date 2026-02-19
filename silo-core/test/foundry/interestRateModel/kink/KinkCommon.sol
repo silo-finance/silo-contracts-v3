@@ -126,6 +126,7 @@ abstract contract KinkCommon {
     }
 
     function _hashConfig(IDynamicKinkModel.Config memory _config) internal pure returns (bytes32) {
+        // forge-lint: disable-next-line(asm-keccak256)
         return keccak256(abi.encode(_config));
     }
 
@@ -134,6 +135,7 @@ abstract contract KinkCommon {
         pure
         returns (bytes32)
     {
+        // forge-lint: disable-next-line(asm-keccak256)
         return keccak256(abi.encode(_immutableConfig));
     }
 

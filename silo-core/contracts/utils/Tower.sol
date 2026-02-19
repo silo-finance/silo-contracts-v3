@@ -68,6 +68,7 @@ contract Tower is Ownable {
     /// @param _key string key
     /// @return bytes32 representation of the `_key`
     function makeKey(string calldata _key) public pure virtual returns (bytes32) {
+        // forge-lint: disable-next-line(asm-keccak256)
         return keccak256(abi.encodePacked(_key));
     }
 }

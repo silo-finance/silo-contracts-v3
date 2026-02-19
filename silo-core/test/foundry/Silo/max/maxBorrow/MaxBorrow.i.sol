@@ -297,6 +297,7 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
         if (success) {
             revert("we expect tx to be reverted for _maxBorrow + _precision!");
         } else {
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
 
             bytes4 error1 = bytes4(keccak256(abi.encodePacked("NotEnoughLiquidity()")));

@@ -130,6 +130,7 @@ contract DynamicKinkModelFactoryTest is KinkCommonTest {
     function test_kink_generateConfig_reverts() public {
         IDynamicKinkModel.UserFriendlyConfig memory userCfg;
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         userCfg.u1 = uint64(DP);
         vm.expectRevert(IDynamicKinkModel.InvalidU1.selector);
         FACTORY.generateConfig(userCfg);
@@ -144,10 +145,13 @@ contract DynamicKinkModelFactoryTest is KinkCommonTest {
         vm.expectRevert(IDynamicKinkModel.InvalidU2.selector);
         FACTORY.generateConfig(userCfg);
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         userCfg.ucrit = uint64(DP);
         vm.expectRevert(IDynamicKinkModel.InvalidUcrit.selector);
+        // forge-lint: disable-next-line(unsafe-typecast)
         FACTORY.generateConfig(userCfg);
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         userCfg.ucrit = uint64(DP - 1);
         vm.expectRevert(IDynamicKinkModel.InvalidRcritMin.selector);
         FACTORY.generateConfig(userCfg);
@@ -211,9 +215,12 @@ contract DynamicKinkModelFactoryTest is KinkCommonTest {
     function test_kink_castConfig(IDynamicKinkModel.UserFriendlyConfig memory _in) public {
         DynamicKinkFactoryMock factory = new DynamicKinkFactoryMock();
 
+        // forge-lint: disable-next-line(asm-keccak256)
         IDynamicKinkModel.UserFriendlyConfigInt memory _out = factory.castConfig(_in);
 
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 hashIn = keccak256(abi.encode(_in));
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 hashOut = keccak256(abi.encode(_out));
 
         assertEq(hashIn, hashOut, "castConfig fail In != Out");

@@ -241,6 +241,7 @@ contract MaxBorrowSharesTest is SiloLittleHelper, Test {
         try silo1.borrowShares(toBorrow, BORROWER, BORROWER) returns (uint256) {
             revert("[borrowShares] we expect tx to be reverted!");
         } catch (bytes memory data) {
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
 
             bytes4 error1 = bytes4(keccak256(abi.encodePacked("NotEnoughLiquidity()")));

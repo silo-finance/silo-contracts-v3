@@ -55,6 +55,7 @@ contract X33ToUsdAdapter is AggregatorV3Interface {
         // Safe: SHARES_QUOTE_SAMPLE is a small positive constant, so int256 conversion is always in range.
         // forge-lint: disable-next-line(unsafe-typecast)
         answer = (
+            // forge-lint: disable-next-line(unsafe-typecast)
             answer * SafeCast.toInt256(X33.convertToAssets(SHARES_QUOTE_SAMPLE)) / int256(SHARES_QUOTE_SAMPLE)
         ) / SLASHING_PENALTY_DIVIDER;
     }

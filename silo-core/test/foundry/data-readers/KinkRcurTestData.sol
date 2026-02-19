@@ -48,6 +48,7 @@ contract KinkRcurTestData is Test {
     function _readDataFromJsonRcur() internal view returns (RcurData[] memory data) {
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/silo-core/test/foundry/data/KinkRcurtest.json");
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(path);
 
         data = abi.decode(vm.parseJson(json, string(abi.encodePacked(".tests"))), (RcurData[]));

@@ -1256,6 +1256,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         uint256 _deadline,
         address _token
     ) internal view returns (uint8 v, bytes32 r, bytes32 s) {
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 structHash = keccak256(abi.encode(_PERMIT_TYPEHASH, _signer, _spender, _value, _nonce, _deadline));
 
         bytes32 domainSeparator = IERC20Permit(_token).DOMAIN_SEPARATOR();

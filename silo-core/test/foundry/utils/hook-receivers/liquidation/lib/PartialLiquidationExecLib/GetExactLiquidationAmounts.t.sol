@@ -236,6 +236,7 @@ contract GetExactLiquidationAmountsTest is GetExactLiquidationAmountsHelper {
                 : uint256(_debtUserBalanceOf - repayDebtAssets) * DECIMALS_POINTS
                     / uint256(_collateralUserBalanceOf - fromCollateral);
         } catch (bytes memory data) {
+            // forge-lint: disable-next-line(unsafe-typecast)
             errorType = bytes4(data);
         }
     }

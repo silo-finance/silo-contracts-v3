@@ -117,6 +117,7 @@ contract UniswapV3Oracle is ISiloOracle, IUniswapV3Oracle {
         // Safe: `_baseAmount` is bounded by `uint128` in the guard above.
         // forge-lint: disable-next-line(unsafe-typecast)
         quoteAmount = OracleLibrary.getQuoteAtTick(
+            // forge-lint: disable-next-line(unsafe-typecast)
             timeWeightedAverageTick, uint128(_baseAmount), _baseToken, config.quoteToken
         );
 

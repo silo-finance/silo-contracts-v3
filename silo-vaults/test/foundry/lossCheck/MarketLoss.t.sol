@@ -214,6 +214,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
         } catch (bytes memory data) {
             emit log("deposit reverted for SUPPLIER");
 
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
 
             if (

@@ -3,11 +3,14 @@ pragma solidity ^0.8.28;
 
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {VaultsLittleHelper} from "../_common/VaultsLittleHelper.sol";
+import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 /*
     FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc TransferTest -vv
 */
 contract TransferTest is VaultsLittleHelper {
+    using SafeERC20 for IERC20;
+
     /*
     FOUNDRY_PROFILE=vaults_tests forge test -vv --ffi --mt test_transferAccrueFee
     */
@@ -28,7 +31,7 @@ contract TransferTest is VaultsLittleHelper {
         uint256 vaultDepositorShares = vault.balanceOf(depositor);
 
         vm.prank(depositor);
-        vault.transfer(borrower, vaultDepositorShares);
+        vault.safeTransfer(borrower, vaultDepositorShares);
 
         assertEq(vault.balanceOf(borrower), vaultDepositorShares, "borrower should have the shares");
 
@@ -60,7 +63,7 @@ contract TransferTest is VaultsLittleHelper {
         vault.approve(borrower, vaultDepositorShares);
 
         vm.prank(borrower);
-        vault.transferFrom(depositor, borrower, vaultDepositorShares);
+        vault.safeTransferFrom(depositor, borrower, vaultDepositorShares);
 
         assertEq(vault.balanceOf(borrower), vaultDepositorShares, "borrower should have the shares");
 

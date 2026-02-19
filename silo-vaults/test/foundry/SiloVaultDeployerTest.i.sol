@@ -3,6 +3,7 @@ pragma solidity ^0.8.28;
 
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
+import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
@@ -22,6 +23,7 @@ import {IIncentivesClaimingLogicFactory} from "silo-vaults/contracts/interfaces/
 FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc SiloVaultDeployerTest -vv
 */
 contract SiloVaultDeployerTest is IntegrationTest {
+    using SafeERC20 for IERC20;
     uint256 constant internal _BLOCK_TO_FORK = 20329560;
     address constant internal _USDC = 0x29219dd400f2Bf60E5a23d13Be72B486D4038894;
     address constant internal _WS = 0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38;
@@ -153,7 +155,7 @@ contract SiloVaultDeployerTest is IntegrationTest {
         uint256 amount = 10_000e6;
 
         vm.prank(_USDC_WHALE);
-        IERC20(_USDC).transfer(depositor, amount);
+        IERC20(_USDC).safeTransfer(depositor, amount);
 
         vm.prank(depositor);
         IERC20(_USDC).approve(address(vault), type(uint256).max);

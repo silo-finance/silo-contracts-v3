@@ -2,6 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {IERC4626, IERC20} from "openzeppelin5/interfaces/IERC4626.sol";
+import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 import {ErrorsLib} from "../../../contracts/libraries/ErrorsLib.sol";
 import {IdleVault} from "../../../contracts/IdleVault.sol";
@@ -42,6 +43,8 @@ contract ERC4626WithBeforeHook is IdleVault {
  FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc MarketLossTest -vvv
 */
 contract MarketLossTest is IBefore, IntegrationTest {
+    using SafeERC20 for IERC20;
+
     address attacker = makeAddr("attacker");
     uint256 donationAmount;
 
@@ -88,7 +91,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
         if (donationAmount == 0) return;
 
         emit log_named_uint("executing donation attack with amount", donationAmount);
-        IERC20(idleMarket.asset()).transfer(address(idleMarket), donationAmount);
+        IERC20(idleMarket.asset()).safeTransfer(address(idleMarket), donationAmount);
     }
 
     /*
@@ -170,7 +173,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
 
         // here we have frontrun with donation
         if (_attackUsingHookBeforeDeposit) donationAmount = _donation;
-        else IERC20(idleMarket.asset()).transfer(address(idleMarket), _donation);
+        else IERC20(idleMarket.asset()).safeTransfer(address(idleMarket), _donation);
 
         vm.prank(SUPPLIER);
 
@@ -262,7 +265,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
         vm.stopPrank();
 
         // inflate price, possible eg on before deposit
-        IERC20(idleMarket.asset()).transfer(address(idleMarket), donation);
+        IERC20(idleMarket.asset()).safeTransfer(address(idleMarket), donation);
 
         // simulate reallocation back
         vm.startPrank(address(vault));

@@ -233,6 +233,7 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
             withdrawCollateral = assets;
         } catch (bytes memory e) {
             if (_isToAssetsConvertionError(e)) {
+                // forge-lint: disable-next-line(erc20-unchecked-transfer)
                 IERC20(_shareToken).transfer(msg.sender, _shares);
             } else {
                 RevertLib.revertBytes(e, string(""));

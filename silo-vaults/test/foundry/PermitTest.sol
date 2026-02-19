@@ -5,11 +5,14 @@ import {ERC20Permit} from "openzeppelin5/token/ERC20/extensions/ERC20Permit.sol"
 
 import {SigUtils, Permit} from "./helpers/SigUtils.sol";
 import {IntegrationTest} from "./helpers/IntegrationTest.sol";
+import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 /*
  FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc PermitTest -vvv
 */
 contract PermitTest is IntegrationTest {
+    using SafeERC20 for IERC20;
+
     uint256 internal constant OWNER_PK = 0xA11CE;
     uint256 internal constant SPENDER_PK = 0xB0B;
 
@@ -110,7 +113,7 @@ contract PermitTest is IntegrationTest {
         vault.permit(permit.owner, permit.spender, permit.value, permit.deadline, v, r, s);
 
         vm.prank(spender);
-        vault.transferFrom(owner, spender, 1e18);
+        vault.safeTransferFrom(owner, spender, 1e18);
 
         assertEq(vault.balanceOf(owner), 0);
         assertEq(vault.balanceOf(spender), 1e18);
@@ -129,7 +132,7 @@ contract PermitTest is IntegrationTest {
         vault.permit(permit.owner, permit.spender, permit.value, permit.deadline, v, r, s);
 
         vm.prank(spender);
-        vault.transferFrom(owner, spender, 1e18);
+        vault.safeTransferFrom(owner, spender, 1e18);
 
         assertEq(vault.balanceOf(owner), 0);
         assertEq(vault.balanceOf(spender), 1e18);
@@ -154,7 +157,7 @@ contract PermitTest is IntegrationTest {
 
         vm.expectRevert();
         vm.prank(spender);
-        vault.transferFrom(owner, spender, 1e18); // attempt to transfer 1 vault
+        vault.safeTransferFrom(owner, spender, 1e18); // attempt to transfer 1 vault
     }
 
     function test_RevertWhen_InvalidBalance(uint256 deadline) public {
@@ -175,6 +178,6 @@ contract PermitTest is IntegrationTest {
 
         vm.expectRevert();
         vm.prank(spender);
-        vault.transferFrom(owner, spender, 2e18); // attempt to transfer 2 tokens (owner only owns 1)
+        vault.safeTransferFrom(owner, spender, 2e18); // attempt to transfer 2 tokens (owner only owns 1)
     }
 }

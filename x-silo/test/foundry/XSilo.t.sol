@@ -14,11 +14,14 @@ import {AddrKey} from "common/addresses/AddrKey.sol";
 
 import {XSilo} from "../../contracts/XSilo.sol";
 import {Stream} from "../../contracts/modules/Stream.sol";
+import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 /*
 FOUNDRY_PROFILE=x_silo forge test -vv --ffi --mc XSiloTest
 */
 contract XSiloTest is Test {
+    using SafeERC20 for IERC20;
+
     uint256 internal constant _PRECISION = 1e18;
 
     Stream stream;
@@ -56,7 +59,7 @@ contract XSiloTest is Test {
         _convert(address(this), 10);
 
         vm.expectRevert(XSilo.SelfTransferNotAllowed.selector);
-        xSilo.transfer(address(this), 1);
+        xSilo.safeTransfer(address(this), 1);
     }
 
     /*
@@ -68,7 +71,7 @@ contract XSiloTest is Test {
         _convert(address(this), 10);
 
         vm.expectRevert(XSilo.ZeroTransfer.selector);
-        xSilo.transfer(address(2), 0);
+        xSilo.safeTransfer(address(2), 0);
     }
 
     /*
@@ -91,7 +94,7 @@ contract XSiloTest is Test {
         assertEq(xSilo.balanceOf(spender), 0, "spender balance should be 0");
 
         vm.prank(spender);
-        xSilo.transferFrom(user, spender, xSiloAmount);
+        xSilo.safeTransferFrom(user, spender, xSiloAmount);
 
         assertEq(xSilo.balanceOf(user), 0, "user balance should be 0");
         assertEq(xSilo.balanceOf(spender), xSiloAmount, "spender balance should be xSiloAmount");

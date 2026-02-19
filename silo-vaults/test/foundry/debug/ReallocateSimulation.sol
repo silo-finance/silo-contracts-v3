@@ -8,12 +8,15 @@ import {IERC4626, IERC20} from "openzeppelin5/interfaces/IERC4626.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {MarketAllocation, ISiloVault} from "../../../contracts/interfaces/ISiloVault.sol";
+import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 interface INative {
     function deposit() external payable;
 }
 
 contract ReallocateSimulationTest is Test {
+    using SafeERC20 for IERC20;
+
     
     /*
      FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt test_20250811_reallocate_simulation -vvv
@@ -38,7 +41,7 @@ contract ReallocateSimulationTest is Test {
         uint256 vaultAssets = _printVaultBalance(fromSilo, address(vault));
 
         vm.prank(wSWhale); // give wS tokens to multisig
-        wS.transfer(multisig, vaultAssets);
+        wS.safeTransfer(multisig, vaultAssets);
 
 
         console2.log("vault assets", vaultAssets / 1e18);

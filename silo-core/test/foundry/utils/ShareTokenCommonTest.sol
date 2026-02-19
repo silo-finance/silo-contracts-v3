@@ -179,9 +179,9 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
     }
 
     function _domainSeparator(IShareToken _shareToken) internal view {
-        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 expectedDomainSeparator = keccak256(
             abi.encode(
+                // forge-lint: disable-next-line(asm-keccak256)
                 _TYPE_HASH, keccak256(bytes(_NAME)), keccak256(bytes(_VERSION)), block.chainid, address(_shareToken)
             )
         );

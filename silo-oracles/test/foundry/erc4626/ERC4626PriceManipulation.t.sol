@@ -14,14 +14,11 @@ import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadat
 import {ERC4626OracleFactoryDeploy} from "silo-oracles/deploy/erc4626/ERC4626OracleFactoryDeploy.sol";
 import {ERC4626OracleFactory} from "silo-oracles/contracts/erc4626/ERC4626OracleFactory.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
-import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 /*
 FOUNDRY_PROFILE=oracles VAULT=savETH forge test -vv --ffi --mc ERC4626PriceManipulation
 */
 contract ERC4626PriceManipulation is IntegrationTest {
-    using SafeERC20 for IERC20;
-
     IERC4626 internal _vault = IERC4626(0xc8CF6D7991f15525488b2A83Df53468D682Ba4B0); // sUSDf - Ethereum
 
     ISiloOracle internal _erc4626Oracle;
@@ -89,7 +86,7 @@ contract ERC4626PriceManipulation is IntegrationTest {
         uint256 priceBeforeDonation = _getPrice();
 
         vm.prank(_attacker);
-        _asset.safeTransfer(address(_vault), attackerBalance);
+        _asset.transfer(address(_vault), attackerBalance);
 
         _logPrice("\tAfter 100% donation\n");
         _logVaultSharesAndAssets();

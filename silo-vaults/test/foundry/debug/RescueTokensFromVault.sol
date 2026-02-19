@@ -12,14 +12,11 @@ import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadat
 import {IVaultIncentivesModule} from "../../../contracts/interfaces/IVaultIncentivesModule.sol";
 
 import {RescueWAVAX} from "silo-vaults/contracts/utils/RescueWAVAX.sol";
-import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 /*
 FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt test_rescue_tokens_from_vault -vvv
 */
 contract RescueTokensFromVault is Test {
-    using SafeERC20 for IERC20;
-
     address constant MULTISIG = 0xE8e8041cB5E3158A0829A19E014CA1cf91098554;
     SiloVault internal constant VAULT = SiloVault(0x6c09bfdc1df45D6c4Ff78Dc9F1C13aF29eB335d4);
 
@@ -128,7 +125,7 @@ contract RescueTokensFromVault is Test {
         IERC20 asset = IERC20Metadata(VAULT.asset());
 
         vm.prank(usdtWhale);
-        asset.safeTransfer(address(this), 100e6);
+        asset.transfer(address(this), 100e6);
 
         asset.approve(address(VAULT), 100e6);
         VAULT.deposit(100e6, address(this));

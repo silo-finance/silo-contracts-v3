@@ -4,10 +4,8 @@ pragma abicoder v2;
 
 import {TokensGenerator} from "./TokensGenerator.sol";
 import {IERC20} from "../interfaces/IERC20.sol";
-import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 contract Whales is TokensGenerator {
-    using SafeERC20 for IERC20;
     // asset => whale
     mapping(IERC20 => address) public whales;
 
@@ -38,7 +36,7 @@ contract Whales is TokensGenerator {
         } else {
             emit log_named_address("whale", whale);
             vm.prank(whale);
-            IERC20(_asset).safeTransfer(_recipient, _amount);
+            IERC20(_asset).transfer(_recipient, _amount);
         }
     }
 }

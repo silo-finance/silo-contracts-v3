@@ -11,14 +11,11 @@ import {EventsLib} from "../../contracts/libraries/EventsLib.sol";
 import {MarketConfig} from "../../contracts/libraries/PendingLib.sol";
 import {IntegrationTest} from "./helpers/IntegrationTest.sol";
 import {CAP, MIN_TEST_ASSETS, MAX_TEST_ASSETS, TIMELOCK} from "./helpers/BaseTest.sol";
-import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 /*
  FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc ERC4626Test -vvv
 */
 contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
-    using SafeERC20 for IERC20;
-
     uint256 public vaultDecimalsOffset;
 
     function setUp() public override {
@@ -390,7 +387,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         vault.approve(SUPPLIER, toTransfer);
 
         vm.prank(SUPPLIER);
-        vault.safeTransferFrom(ONBEHALF, RECEIVER, toTransfer);
+        vault.transferFrom(ONBEHALF, RECEIVER, toTransfer);
 
         assertEq(vault.balanceOf(ONBEHALF), shares - toTransfer, "balanceOf(ONBEHALF)");
         assertEq(vault.balanceOf(RECEIVER), toTransfer, "balanceOf(RECEIVER)");
@@ -410,7 +407,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
 
         vm.prank(SUPPLIER);
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, SUPPLIER, 0, shares));
-        vault.safeTransferFrom(ONBEHALF, RECEIVER, shares);
+        vault.transferFrom(ONBEHALF, RECEIVER, shares);
     }
 
     /*
@@ -492,7 +489,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         toTransfer = bound(toTransfer, 0, minted);
 
         vm.prank(ONBEHALF);
-        vault.safeTransfer(RECEIVER, toTransfer);
+        vault.transfer(RECEIVER, toTransfer);
 
         assertEq(vault.balanceOf(SUPPLIER), 0, "balanceOf(SUPPLIER)");
         assertEq(vault.balanceOf(ONBEHALF), minted - toTransfer, "balanceOf(ONBEHALF)");

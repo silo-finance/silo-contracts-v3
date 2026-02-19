@@ -7,11 +7,8 @@ import {MethodReentrancyTest} from "silo-core/test/foundry/Silo/reentrancy/metho
 import {TestStateLib} from "silo-vaults/test/foundry/call-and-reenter/TestState.sol";
 import {ISiloVault} from "silo-vaults/contracts/interfaces/ISiloVault.sol";
 import {ErrorsLib} from "silo-vaults/contracts/libraries/ErrorsLib.sol";
-import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 contract TransferFromTest is MethodReentrancyTest {
-    using SafeERC20 for IERC20;
-
     function callMethod() external {
         emit log_string("\tEnsure it reverts as expected");
 
@@ -21,14 +18,14 @@ contract TransferFromTest is MethodReentrancyTest {
             IERC20Errors.ERC20InsufficientAllowance.selector, address(this), 0, 100e18
         ));
 
-        vault.safeTransferFrom(address(0), address(0), 100e18);
+        vault.transferFrom(address(0), address(0), 100e18);
     }
 
     function verifyReentrancy() external {
         ISiloVault vault = TestStateLib.vault();
 
         vm.expectRevert(abi.encodeWithSelector(ErrorsLib.ReentrancyError.selector));
-        vault.safeTransferFrom(address(0), address(0), 100e18);
+        vault.transferFrom(address(0), address(0), 100e18);
     }
 
     function methodDescription() external pure returns (string memory description) {

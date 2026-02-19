@@ -18,14 +18,11 @@ import {SiloIncentivesControllerFactoryDeploy} from "silo-core/deploy/SiloIncent
 import {
     ISiloIncentivesControllerFactory
 } from "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
-import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 /*
  FOUNDRY_PROFILE=x_silo forge test --ffi --mc XSiloIntegrationTest -vv
 */
 contract XSiloIntegrationTest is Test {
-    using SafeERC20 for IERC20;
-
     using SafeCast for uint256;
     address public constant SILO_WHALE = 0xE641Dca2E131FA8BFe1D7931b9b040e3fE0c5BDc;
     address public constant USDC_WHALE = 0x578Ee1ca3a8E1b54554Da1Bf7C583506C4CD11c6;
@@ -66,9 +63,9 @@ contract XSiloIntegrationTest is Test {
         userInitialSiloBalance = whaleBalance / 10;
 
         vm.startPrank(SILO_WHALE);
-        siloTokenV2.safeTransfer(user1, userInitialSiloBalance);
-        siloTokenV2.safeTransfer(user2, userInitialSiloBalance);
-        siloTokenV2.safeTransfer(dao, userInitialSiloBalance);
+        siloTokenV2.transfer(user1, userInitialSiloBalance);
+        siloTokenV2.transfer(user2, userInitialSiloBalance);
+        siloTokenV2.transfer(dao, userInitialSiloBalance);
         vm.stopPrank();
 
         SiloIncentivesControllerFactoryDeploy factoryDeploy = new SiloIncentivesControllerFactoryDeploy();
@@ -140,7 +137,7 @@ contract XSiloIntegrationTest is Test {
         stream.setEmissions(emissionPerSecond, distributionEnd);
 
         vm.prank(dao);
-        siloTokenV2.safeTransfer(address(stream), INCENTIVE_DURATION * emissionPerSecond);
+        siloTokenV2.transfer(address(stream), INCENTIVE_DURATION * emissionPerSecond);
     }
 
     function _siloIncentivesControllerConfiguration() internal {
@@ -160,7 +157,7 @@ contract XSiloIntegrationTest is Test {
 
         assertGe(usdcToken.balanceOf(USDC_WHALE), INCENTIVE_DURATION * emissionPerSecond, "whale don't have tokens");
         vm.prank(USDC_WHALE);
-        usdcToken.safeTransfer(address(controller), INCENTIVE_DURATION * emissionPerSecond);
+        usdcToken.transfer(address(controller), INCENTIVE_DURATION * emissionPerSecond);
 
         vm.prank(dao);
         xSilo.setNotificationReceiver(INotificationReceiver(address(controller)), true);

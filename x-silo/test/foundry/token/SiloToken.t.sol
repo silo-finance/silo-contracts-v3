@@ -11,11 +11,8 @@ import {IERC20Errors} from "openzeppelin5/interfaces/draft-IERC6093.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {SiloTokenDeploy} from "x-silo/deploy/token/SiloTokenDeploy.s.sol";
 import {ERC20Mock} from "openzeppelin5/mocks/token/ERC20Mock.sol";
-import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 contract SiloTokenTest is IntegrationTest {
-    using SafeERC20 for IERC20;
-
     ERC20Burnable public constant SILO_V1 = ERC20Burnable(0x6f80310CA7F2C654691D1383149Fa1A57d8AB1f8);
     address public constant OWNER = 0xE8e8041cB5E3158A0829A19E014CA1cf91098554;
     address public constant SILO_V1_WHALE = 0xE641Dca2E131FA8BFe1D7931b9b040e3fE0c5BDc;
@@ -139,7 +136,7 @@ contract SiloTokenTest is IntegrationTest {
         address receiver = address(123);
         assertEq(token.balanceOf(receiver), 0);
         vm.prank(SILO_V1_WHALE);
-        token.safeTransfer(receiver, mintAmount);
+        token.transfer(receiver, mintAmount);
         assertEq(token.balanceOf(receiver), mintAmount);
     }
 

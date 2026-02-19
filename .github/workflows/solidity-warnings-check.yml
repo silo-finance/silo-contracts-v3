@@ -81,13 +81,13 @@ jobs:
         COMPILE_EXIT_CODE=$?
         set -e  # Re-enable exit on error
         
-        # Check for warnings in the output
-        if grep -i "warning" core_compilation.log; then
-          echo "❌ Found warnings in silo-core compilation"
-          echo "core_has_warnings=true" >> $GITHUB_OUTPUT
+        # Check for any linter output (warnings, notes, notices, etc.)
+        if grep -iE "(warning|note|notice|info)" core_compilation.log | grep -v "Compiler run successful"; then
+          echo "❌ Found linter output in silo-core compilation"
+          echo "core_has_issues=true" >> $GITHUB_OUTPUT
         else
-          echo "✅ No warnings in silo-core compilation"
-          echo "core_has_warnings=false" >> $GITHUB_OUTPUT
+          echo "✅ No linter output in silo-core compilation"
+          echo "core_has_issues=false" >> $GITHUB_OUTPUT
         fi
         
         echo "core_exit_code=$COMPILE_EXIT_CODE" >> $GITHUB_OUTPUT
@@ -130,22 +130,22 @@ jobs:
         { print }
         ' temp_step1.log > temp_clean.log
         
-        # Check for actual warnings
-        if grep -i "warning" temp_clean.log > temp_warnings.log; then
-          if [ -s temp_warnings.log ]; then
-            echo "❌ Found warnings in silo-oracles compilation"
-            echo "oracles_has_warnings=true" >> $GITHUB_OUTPUT
+        # Check for any linter output (warnings, notes, notices, etc.)
+        if grep -iE "(warning|note|notice|info)" temp_clean.log > temp_issues.log; then
+          if [ -s temp_issues.log ]; then
+            echo "❌ Found linter output in silo-oracles compilation"
+            echo "oracles_has_issues=true" >> $GITHUB_OUTPUT
           else
-            echo "✅ No warnings in silo-oracles compilation (excluding known gitmodule warnings)"
-            echo "oracles_has_warnings=false" >> $GITHUB_OUTPUT
+            echo "✅ No linter output in silo-oracles compilation (excluding known gitmodule warnings)"
+            echo "oracles_has_issues=false" >> $GITHUB_OUTPUT
           fi
         else
-          echo "✅ No warnings in silo-oracles compilation"
-          echo "oracles_has_warnings=false" >> $GITHUB_OUTPUT
+          echo "✅ No linter output in silo-oracles compilation"
+          echo "oracles_has_issues=false" >> $GITHUB_OUTPUT
         fi
         
         # Clean up
-        rm -f temp_step1.log temp_clean.log temp_warnings.log
+        rm -f temp_step1.log temp_clean.log temp_issues.log
         
         echo "oracles_exit_code=$COMPILE_EXIT_CODE" >> $GITHUB_OUTPUT
         
@@ -166,13 +166,13 @@ jobs:
         COMPILE_EXIT_CODE=$?
         set -e  # Re-enable exit on error
         
-        # Check for warnings in the output
-        if grep -i "warning" vaults_compilation.log; then
-          echo "❌ Found warnings in silo-vaults compilation"
-          echo "vaults_has_warnings=true" >> $GITHUB_OUTPUT
+        # Check for any linter output (warnings, notes, notices, etc.)
+        if grep -iE "(warning|note|notice|info)" vaults_compilation.log | grep -v "Compiler run successful"; then
+          echo "❌ Found linter output in silo-vaults compilation"
+          echo "vaults_has_issues=true" >> $GITHUB_OUTPUT
         else
-          echo "✅ No warnings in silo-vaults compilation"
-          echo "vaults_has_warnings=false" >> $GITHUB_OUTPUT
+          echo "✅ No linter output in silo-vaults compilation"
+          echo "vaults_has_issues=false" >> $GITHUB_OUTPUT
         fi
         
         echo "vaults_exit_code=$COMPILE_EXIT_CODE" >> $GITHUB_OUTPUT
@@ -194,13 +194,13 @@ jobs:
         COMPILE_EXIT_CODE=$?
         set -e  # Re-enable exit on error
         
-        # Check for warnings in the output
-        if grep -i "warning" x_silo_compilation.log; then
-          echo "❌ Found warnings in x-silo compilation"
-          echo "x_silo_has_warnings=true" >> $GITHUB_OUTPUT
+        # Check for any linter output (warnings, notes, notices, etc.)
+        if grep -iE "(warning|note|notice|info)" x_silo_compilation.log | grep -v "Compiler run successful"; then
+          echo "❌ Found linter output in x-silo compilation"
+          echo "x_silo_has_issues=true" >> $GITHUB_OUTPUT
         else
-          echo "✅ No warnings in x-silo compilation"
-          echo "x_silo_has_warnings=false" >> $GITHUB_OUTPUT
+          echo "✅ No linter output in x-silo compilation"
+          echo "x_silo_has_issues=false" >> $GITHUB_OUTPUT
         fi
         
         echo "x_silo_exit_code=$COMPILE_EXIT_CODE" >> $GITHUB_OUTPUT
@@ -226,13 +226,13 @@ jobs:
         grep -v "Compiler run successful with warnings:" core_tests_compilation.log > temp_step1.log
         grep -v "Warning (4591): There are more than 256 warnings. Ignoring the rest" temp_step1.log > temp_clean.log
         
-        # Check for warnings in the output
-        if grep -i "warning" temp_clean.log; then
-          echo "❌ Found warnings in silo-core tests compilation"
-          echo "core_tests_has_warnings=true" >> $GITHUB_OUTPUT
+        # Check for any linter output (warnings, notes, notices, etc.)
+        if grep -iE "(warning|note|notice|info)" temp_clean.log; then
+          echo "❌ Found linter output in silo-core tests compilation"
+          echo "core_tests_has_issues=true" >> $GITHUB_OUTPUT
         else
-          echo "✅ No warnings in silo-core tests compilation"
-          echo "core_tests_has_warnings=false" >> $GITHUB_OUTPUT
+          echo "✅ No linter output in silo-core tests compilation"
+          echo "core_tests_has_issues=false" >> $GITHUB_OUTPUT
         fi
         
         # Clean up
@@ -258,13 +258,13 @@ jobs:
         COMPILE_EXIT_CODE=$?
         set -e  # Re-enable exit on error
         
-        # Check for warnings in the output
-        if grep -i "warning" vaults_tests_compilation.log; then
-          echo "❌ Found warnings in silo-vaults tests compilation"
-          echo "vaults_tests_has_warnings=true" >> $GITHUB_OUTPUT
+        # Check for any linter output (warnings, notes, notices, etc.)
+        if grep -iE "(warning|note|notice|info)" vaults_tests_compilation.log | grep -v "Compiler run successful"; then
+          echo "❌ Found linter output in silo-vaults tests compilation"
+          echo "vaults_tests_has_issues=true" >> $GITHUB_OUTPUT
         else
-          echo "✅ No warnings in silo-vaults tests compilation"
-          echo "vaults_tests_has_warnings=false" >> $GITHUB_OUTPUT
+          echo "✅ No linter output in silo-vaults tests compilation"
+          echo "vaults_tests_has_issues=false" >> $GITHUB_OUTPUT
         fi
         
         echo "vaults_tests_exit_code=$COMPILE_EXIT_CODE" >> $GITHUB_OUTPUT
@@ -286,13 +286,13 @@ jobs:
         COMPILE_EXIT_CODE=$?
         set -e  # Re-enable exit on error
         
-        # Check for warnings in the output
-        if grep -i "warning" x_silo_tests_compilation.log; then
-          echo "❌ Found warnings in x-silo tests compilation"
-          echo "x_silo_tests_has_warnings=true" >> $GITHUB_OUTPUT
+        # Check for any linter output (warnings, notes, notices, etc.)
+        if grep -iE "(warning|note|notice|info)" x_silo_tests_compilation.log | grep -v "Compiler run successful"; then
+          echo "❌ Found linter output in x-silo tests compilation"
+          echo "x_silo_tests_has_issues=true" >> $GITHUB_OUTPUT
         else
-          echo "✅ No warnings in x-silo tests compilation"
-          echo "x_silo_tests_has_warnings=false" >> $GITHUB_OUTPUT
+          echo "✅ No linter output in x-silo tests compilation"
+          echo "x_silo_tests_has_issues=false" >> $GITHUB_OUTPUT
         fi
         
         echo "x_silo_tests_exit_code=$COMPILE_EXIT_CODE" >> $GITHUB_OUTPUT
@@ -304,14 +304,14 @@ jobs:
           exit 1
         fi
 
-    # Final check - fail if any warnings found
-    - name: Check for warnings
+    # Final check - fail if any linter output found
+    - name: Check for linter output
       run: |
         echo "🔍 Final compilation check..."
         
-        WARNINGS_FOUND=false
+        ISSUES_FOUND=false
 
-        print_warnings() {
+        print_linter_output() {
           local label="$1"
           local file="$2"
           local mode="$3"
@@ -320,9 +320,9 @@ jobs:
             return
           fi
 
-          local warnings
+          local output
           if [ "$mode" = "oracles" ]; then
-            warnings=$(awk '
+            output=$(awk '
               /Compiler run successful with warnings:/ {
                 next
               }
@@ -343,8 +343,9 @@ jobs:
                 printed_any = 0
               }
               {
-                is_warning = ($0 ~ /warning/)
-                if (is_warning) {
+                is_linter_output = ($0 ~ /(warning|note|notice|info)/ &&
+                  $0 !~ /Compiler run successful/)
+                if (is_linter_output) {
                   if (printed_any) {
                     print ""
                   }
@@ -361,14 +362,14 @@ jobs:
               }
             ')
           else
-            warnings=$(awk '
+            output=$(awk '
               BEGIN { IGNORECASE = 1 }
               {
-                is_warning = ($0 ~ /warning/ &&
+                is_linter_output = ($0 ~ /(warning|note|notice|info)/ &&
                   $0 !~ /Compiler run successful with warnings:/ &&
                   $0 !~ /There are more than 256 warnings. Ignoring the rest/)
 
-                if (is_warning) {
+                if (is_linter_output) {
                   if (printed_any) {
                     print ""
                   }
@@ -387,58 +388,58 @@ jobs:
             ' "$file")
           fi
 
-          if [ -n "$warnings" ]; then
-            echo "⚠️ $label warning blocks (5 lines each):"
-            echo "$warnings"
+          if [ -n "$output" ]; then
+            echo "⚠️ $label linter output blocks (5 lines each):"
+            echo "$output"
           fi
         }
         
         # Check contracts
-        if [ "${{ steps.compile-core.outputs.core_has_warnings }}" = "true" ]; then
-          echo "❌ silo-core contracts have warnings"
-          print_warnings "silo-core contracts" "core_compilation.log" "default"
-          WARNINGS_FOUND=true
+        if [ "${{ steps.compile-core.outputs.core_has_issues }}" = "true" ]; then
+          echo "❌ silo-core contracts have linter output"
+          print_linter_output "silo-core contracts" "core_compilation.log" "default"
+          ISSUES_FOUND=true
         fi
         
-        if [ "${{ steps.compile-oracles.outputs.oracles_has_warnings }}" = "true" ]; then
-          echo "❌ silo-oracles contracts have warnings"
-          print_warnings "silo-oracles contracts" "oracles_compilation.log" "oracles"
-          WARNINGS_FOUND=true
+        if [ "${{ steps.compile-oracles.outputs.oracles_has_issues }}" = "true" ]; then
+          echo "❌ silo-oracles contracts have linter output"
+          print_linter_output "silo-oracles contracts" "oracles_compilation.log" "oracles"
+          ISSUES_FOUND=true
         fi
         
-        if [ "${{ steps.compile-vaults.outputs.vaults_has_warnings }}" = "true" ]; then
-          echo "❌ silo-vaults contracts have warnings"
-          print_warnings "silo-vaults contracts" "vaults_compilation.log" "default"
-          WARNINGS_FOUND=true
+        if [ "${{ steps.compile-vaults.outputs.vaults_has_issues }}" = "true" ]; then
+          echo "❌ silo-vaults contracts have linter output"
+          print_linter_output "silo-vaults contracts" "vaults_compilation.log" "default"
+          ISSUES_FOUND=true
         fi
         
-        if [ "${{ steps.compile-x-silo.outputs.x_silo_has_warnings }}" = "true" ]; then
-          echo "❌ x-silo contracts have warnings"
-          print_warnings "x-silo contracts" "x_silo_compilation.log" "default"
-          WARNINGS_FOUND=true
+        if [ "${{ steps.compile-x-silo.outputs.x_silo_has_issues }}" = "true" ]; then
+          echo "❌ x-silo contracts have linter output"
+          print_linter_output "x-silo contracts" "x_silo_compilation.log" "default"
+          ISSUES_FOUND=true
         fi
         
         
         # Check tests
-        if [ "${{ steps.compile-core-tests.outputs.core_tests_has_warnings }}" = "true" ]; then
-          echo "❌ silo-core tests have warnings"
-          print_warnings "silo-core tests" "core_tests_compilation.log" "default"
-          WARNINGS_FOUND=true
+        if [ "${{ steps.compile-core-tests.outputs.core_tests_has_issues }}" = "true" ]; then
+          echo "❌ silo-core tests have linter output"
+          print_linter_output "silo-core tests" "core_tests_compilation.log" "default"
+          ISSUES_FOUND=true
         fi
         
         
-        if [ "${{ steps.compile-vaults-tests.outputs.vaults_tests_has_warnings }}" = "true" ]; then
-          echo "❌ silo-vaults tests have warnings"
-          print_warnings "silo-vaults tests" "vaults_tests_compilation.log" "default"
-          WARNINGS_FOUND=true
+        if [ "${{ steps.compile-vaults-tests.outputs.vaults_tests_has_issues }}" = "true" ]; then
+          echo "❌ silo-vaults tests have linter output"
+          print_linter_output "silo-vaults tests" "vaults_tests_compilation.log" "default"
+          ISSUES_FOUND=true
         fi
         
-        if [ "${{ steps.compile-x-silo-tests.outputs.x_silo_tests_has_warnings }}" = "true" ]; then
-          echo "❌ x-silo tests have warnings"
-          print_warnings "x-silo tests" "x_silo_tests_compilation.log" "default"
-          WARNINGS_FOUND=true
+        if [ "${{ steps.compile-x-silo-tests.outputs.x_silo_tests_has_issues }}" = "true" ]; then
+          echo "❌ x-silo tests have linter output"
+          print_linter_output "x-silo tests" "x_silo_tests_compilation.log" "default"
+          ISSUES_FOUND=true
         fi
         
-        if [ "$WARNINGS_FOUND" = "true" ]; then
+        if [ "$ISSUES_FOUND" = "true" ]; then
           exit 1
         fi

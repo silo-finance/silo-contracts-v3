@@ -40,10 +40,10 @@ contract ReallocateWithdrawTest is IntegrationTest {
      FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt testReallocateWithdrawMax -vvv
     */
     function testReallocateWithdrawMax() public {
-        allocations.push(MarketAllocation(allMarkets[0], 0));
-        allocations.push(MarketAllocation(allMarkets[1], 0));
-        allocations.push(MarketAllocation(allMarkets[2], 0));
-        allocations.push(MarketAllocation(idleMarket, type(uint256).max));
+        allocations.push(MarketAllocation({market:{market: allMarkets[0], assets: 0}));
+        allocations.push(MarketAllocation({market:{market: allMarkets[1], assets: 0}));
+        allocations.push(MarketAllocation({market:{market: allMarkets[2], assets: 0}));
+        allocations.push(MarketAllocation({market:{market: idleMarket, assets: type(uint256).max}));
 
         vm.expectEmit();
 
@@ -70,10 +70,10 @@ contract ReallocateWithdrawTest is IntegrationTest {
      FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt testReallocateBalanceTrackerChanges -vvv
     */
     function testReallocateBalanceTrackerChanges() public {
-        allocations.push(MarketAllocation(allMarkets[0], 0));
-        allocations.push(MarketAllocation(allMarkets[1], 0));
-        allocations.push(MarketAllocation(allMarkets[2], 0));
-        allocations.push(MarketAllocation(idleMarket, type(uint256).max));
+        allocations.push(MarketAllocation({market:{market: allMarkets[0], assets: 0}));
+        allocations.push(MarketAllocation({market:{market: allMarkets[1], assets: 0}));
+        allocations.push(MarketAllocation({market:{market: allMarkets[2], assets: 0}));
+        allocations.push(MarketAllocation({market:{market: idleMarket, assets: type(uint256).max}));
 
         uint256 balanceBefore0 = vault.balanceTracker(allMarkets[0]);
         uint256 balanceBefore1 = vault.balanceTracker(allMarkets[1]);
@@ -106,8 +106,8 @@ contract ReallocateWithdrawTest is IntegrationTest {
      FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt testReallocateRedeemFailedToWithdraw -vvv
      */
     function testReallocateRedeemFailedToWithdraw() public {
-        allocations.push(MarketAllocation(allMarkets[0], 0));
-        allocations.push(MarketAllocation(idleMarket, type(uint256).max));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: 0}));
+        allocations.push(MarketAllocation({market: idleMarket, assets: type(uint256).max}));
 
         uint256 balance = allMarkets[0].balanceOf(address(vault));
 
@@ -129,8 +129,8 @@ contract ReallocateWithdrawTest is IntegrationTest {
         uint256 maxAssetsToWithdraw = allMarkets[0].previewRedeem(balance);
         uint256 assets = maxAssetsToWithdraw / 2;
 
-        allocations.push(MarketAllocation(allMarkets[0], assets));
-        allocations.push(MarketAllocation(idleMarket, type(uint256).max));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: assets}));
+        allocations.push(MarketAllocation({market: idleMarket, assets: type(uint256).max}));
 
         bytes memory data = abi.encodeWithSelector(
             IERC4626.withdraw.selector,
@@ -151,11 +151,11 @@ contract ReallocateWithdrawTest is IntegrationTest {
      FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt testReallocateInternalSupplyCapExceeded -vvv
     */
     function testReallocateInternalSupplyCapExceeded() public {
-        allocations.push(MarketAllocation(allMarkets[0], 0));
-        allocations.push(MarketAllocation(allMarkets[1], 0));
-        allocations.push(MarketAllocation(allMarkets[2], 0));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[1], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[2], assets: 0}));
 
-        allocations.push(MarketAllocation(allMarkets[0], CAP2 / 2));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: CAP2 / 2}));
 
         uint256 sharesBalance = allMarkets[0].balanceOf(address(vault));
 
@@ -182,7 +182,7 @@ contract ReallocateWithdrawTest is IntegrationTest {
         allMarkets[0].deposit(1, address(vault));
         vm.stopPrank();
 
-        allocations.push(MarketAllocation(allMarkets[0], 0));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: 0}));
 
         vm.prank(ALLOCATOR);
         vm.expectRevert(abi.encodeWithSelector(ErrorsLib.MarketNotEnabled.selector, allMarkets[0]));
@@ -208,11 +208,11 @@ contract ReallocateWithdrawTest is IntegrationTest {
         assets[1] = _expectedSupplyAssets(allMarkets[1], address(vault));
         assets[2] = _expectedSupplyAssets(allMarkets[2], address(vault));
 
-        allocations.push(MarketAllocation(idleMarket, 0));
-        allocations.push(MarketAllocation(allMarkets[0], newAssets[0]));
-        allocations.push(MarketAllocation(allMarkets[1], newAssets[1]));
-        allocations.push(MarketAllocation(allMarkets[2], newAssets[2]));
-        allocations.push(MarketAllocation(idleMarket, type(uint256).max));
+        allocations.push(MarketAllocation({market: idleMarket, assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: newAssets[0]}));
+        allocations.push(MarketAllocation({market: allMarkets[1], assets: newAssets[1]}));
+        allocations.push(MarketAllocation({market: allMarkets[2], assets: newAssets[2]}));
+        allocations.push(MarketAllocation({market: idleMarket, assets: type(uint256).max}));
 
         uint256 expectedIdle = _idle() + 3 * CAP2 - newAssets[0] - newAssets[1] - newAssets[2];
 
@@ -257,9 +257,9 @@ contract ReallocateWithdrawTest is IntegrationTest {
     function testReallocateWithdrawIncreaseSupply() public {
         _setCap(allMarkets[2], 3 * CAP2);
 
-        allocations.push(MarketAllocation(allMarkets[0], 0));
-        allocations.push(MarketAllocation(allMarkets[1], 0));
-        allocations.push(MarketAllocation(allMarkets[2], 3 * CAP2));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[1], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[2], assets: 3 * CAP2}));
 
         vm.expectEmit();
         emit EventsLib.ReallocateWithdraw(
@@ -294,13 +294,13 @@ contract ReallocateWithdrawTest is IntegrationTest {
 
         _setCap(allMarkets[1], 0);
 
-        allocations.push(MarketAllocation(allMarkets[0], 0));
-        allocations.push(MarketAllocation(allMarkets[1], 0));
-        allocations.push(MarketAllocation(allMarkets[2], 0));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[1], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[2], assets: 0}));
 
-        allocations.push(MarketAllocation(allMarkets[0], suppliedAssets[0]));
-        allocations.push(MarketAllocation(allMarkets[1], suppliedAssets[1]));
-        allocations.push(MarketAllocation(allMarkets[2], suppliedAssets[2]));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: suppliedAssets[0]}));
+        allocations.push(MarketAllocation({market: allMarkets[1], assets: suppliedAssets[1]}));
+        allocations.push(MarketAllocation({market: allMarkets[2], assets: suppliedAssets[2]}));
 
         vm.prank(ALLOCATOR);
         vm.expectRevert(abi.encodeWithSelector(ErrorsLib.UnauthorizedMarket.selector, allMarkets[1]));
@@ -311,11 +311,11 @@ contract ReallocateWithdrawTest is IntegrationTest {
      FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt testReallocateSupplyCapExceeded -vvv
     */
     function testReallocateSupplyCapExceeded() public {
-        allocations.push(MarketAllocation(allMarkets[0], 0));
-        allocations.push(MarketAllocation(allMarkets[1], 0));
-        allocations.push(MarketAllocation(allMarkets[2], 0));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[1], assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[2], assets: 0}));
 
-        allocations.push(MarketAllocation(allMarkets[0], CAP2 + 1));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: CAP2 + 1}));
 
         vm.prank(ALLOCATOR);
         vm.expectRevert(abi.encodeWithSelector(ErrorsLib.SupplyCapExceeded.selector, allMarkets[0]));
@@ -330,8 +330,8 @@ contract ReallocateWithdrawTest is IntegrationTest {
 
         _setCap(allMarkets[0], type(uint184).max);
 
-        allocations.push(MarketAllocation(idleMarket, 0));
-        allocations.push(MarketAllocation(allMarkets[0], 2 * CAP2 + rewards));
+        allocations.push(MarketAllocation({market: idleMarket, assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: 2 * CAP2 + rewards}));
 
         vm.prank(ALLOCATOR);
         vm.expectRevert(ErrorsLib.InconsistentReallocation.selector);

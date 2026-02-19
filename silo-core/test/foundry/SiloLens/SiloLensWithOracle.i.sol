@@ -129,6 +129,9 @@ contract SiloLensWithOracleTest is SiloLittleHelper, Test {
             // OK
         } catch (bytes memory data) {
             // then only acceptable error is FullLiquidationRequired
+            // Safe: extracting first 4 bytes from error bytes to compare with error selector.
+            // Error selectors are always 4 bytes, so casting is safe.
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
             bytes4 expectedError = bytes4(keccak256(abi.encodePacked("FullLiquidationRequired()")));
 

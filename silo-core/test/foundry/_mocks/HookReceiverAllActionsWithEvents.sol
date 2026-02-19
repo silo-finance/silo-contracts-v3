@@ -140,9 +140,14 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation {
         uint256 _silo1ActionsBefore,
         uint256 _silo1ActionsAfter
     ) {
+        // Safe: action counts are bounded by test scenarios and fit in uint24 (max 16777215).
+        // forge-lint: disable-next-line(unsafe-typecast)
         _SILO0_ACTIONS_BEFORE = uint24(_silo0ActionsBefore);
+        // forge-lint: disable-next-line(unsafe-typecast)
         _SILO0_ACTIONS_AFTER = uint24(_silo0ActionsAfter);
+        // forge-lint: disable-next-line(unsafe-typecast)
         _SILO1_ACTIONS_BEFORE = uint24(_silo1ActionsBefore);
+        // forge-lint: disable-next-line(unsafe-typecast)
         _SILO1_ACTIONS_AFTER = uint24(_silo1ActionsAfter);
     }
 

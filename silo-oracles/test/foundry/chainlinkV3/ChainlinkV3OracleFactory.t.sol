@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.28;
 
-import {DIA_ORACLE_V2} from "../../../constants/Arbitrum.sol";
-
 import {TokensGenerator} from "../_common/TokensGenerator.sol";
 import {
     ChainlinkV3OracleFactory,

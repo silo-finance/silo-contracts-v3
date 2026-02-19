@@ -2,8 +2,6 @@
 pragma solidity >=0.7.6 <0.9.0;
 pragma abicoder v2;
 
-import {Test} from "forge-std/Test.sol";
-
 import {IUniswapV3PoolState} from "uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol";
 import {IUniswapV3PoolImmutables} from "uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol";
 
@@ -28,6 +26,8 @@ contract UniswapV3OracleFactoryTest is UniswapPools {
     address constant TOKEN_B = address(2);
     uint32 constant PERIOD_FOR_AVG_PRICE = 1800;
     uint8 constant BLOCK_TIME = 120;
+    // Safe: PERIOD_FOR_AVG_PRICE * 10 / BLOCK_TIME = 1800 * 10 / 120 = 150, which fits in uint16 (max 65535)
+    // forge-lint: disable-next-line(unsafe-typecast)
     uint16 constant REQUIRED_CARDINALITY = uint16(uint256(PERIOD_FOR_AVG_PRICE) * 10 / BLOCK_TIME);
 
     address constant POOL = address(0x99999);

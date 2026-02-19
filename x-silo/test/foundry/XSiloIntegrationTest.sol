@@ -146,7 +146,11 @@ contract XSiloIntegrationTest is Test {
         input = DistributionTypes.IncentivesProgramCreationInput({
             name: "test",
             rewardToken: address(usdcToken),
+            // Safe: emissionPerSecond is 1e6, which fits in uint104 (max ~2e31).
+            // forge-lint: disable-next-line(unsafe-typecast)
             emissionPerSecond: uint104(emissionPerSecond),
+            // Safe: distributionEnd is block.timestamp + 1 hour, which fits in uint40 (max ~1.1e12).
+            // forge-lint: disable-next-line(unsafe-typecast)
             distributionEnd: uint40(distributionEnd)
         });
 

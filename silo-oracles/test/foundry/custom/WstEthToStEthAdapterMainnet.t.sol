@@ -63,6 +63,9 @@ contract WstEthToStEthAdapterMainnetTest is TokensGenerator {
         assertEq(IERC20Metadata(address(STETH)).balanceOf(address(this)), 0);
         IWstEthLike(WSTETH).unwrap(1 ether);
 
+        // Safe: answer is int256 from Chainlink feed, but represents a positive price value.
+        // Casting to uint256 is safe for comparison since we're subtracting 1 wei for rounding tolerance.
+        // forge-lint: disable-next-line(unsafe-typecast)
         assertEq(
             IERC20Metadata(address(STETH)).balanceOf(address(this)),
             uint256(answer) - 1,

@@ -134,6 +134,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
                 distributionEnd: uint40(block.timestamp + 100),
+                // Safe: emissionPerSecond is 1e6, which fits in uint104 (max ~2e31).
+                // forge-lint: disable-next-line(unsafe-typecast)
                 emissionPerSecond: uint104(emissionPerSecond)
             })
         );
@@ -192,6 +194,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 7e7;
 
         vm.startPrank(address(hook));
+        // Safe: immediateDistribution is 7e7, which fits in uint104 (max ~2e31).
+        // forge-lint: disable-next-line(unsafe-typecast)
         _controller.immediateDistribution(address(_rewardToken), uint104(immediateDistribution));
         vm.stopPrank();
 
@@ -241,6 +245,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
                 distributionEnd: uint40(block.timestamp + 100),
+                // Safe: emissionPerSecond values in tests are bounded (e.g., 1e6) and fit in uint104 (max ~2e31).
+                // forge-lint: disable-next-line(unsafe-typecast)
                 emissionPerSecond: uint104(emissionPerSecond) // it will not distribute less than 1e3, most likely because of offset
             })
         );
@@ -281,6 +287,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 7e7;
 
         vm.startPrank(address(hook));
+        // Safe: immediateDistribution is 7e7, which fits in uint104 (max ~2e31).
+        // forge-lint: disable-next-line(unsafe-typecast)
         _controller.immediateDistribution(address(_rewardToken), uint104(immediateDistribution));
         vm.stopPrank();
 
@@ -358,6 +366,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
                 distributionEnd: uint40(block.timestamp + 100),
+                // Safe: emissionPerSecond values in tests are bounded (e.g., 1e6) and fit in uint104 (max ~2e31).
+                // forge-lint: disable-next-line(unsafe-typecast)
                 emissionPerSecond: uint104(emissionPerSecond) // it will not distribute less than 1e3, most likely because of offset
             })
         );

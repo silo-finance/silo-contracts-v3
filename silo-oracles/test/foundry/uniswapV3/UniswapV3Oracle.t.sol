@@ -4,7 +4,6 @@ pragma abicoder v2;
 
 import {UNISWAPV3_FACTORY} from "../../../constants/Ethereum.sol";
 
-import {OracleFactory} from "../../../contracts/_common/OracleFactory.sol";
 import {UniswapV3OracleFactory} from "../../../contracts/uniswapV3/UniswapV3OracleFactory.sol";
 import {UniswapV3Oracle} from "../../../contracts/uniswapV3/UniswapV3Oracle.sol";
 import {IUniswapV3Oracle} from "../../../contracts/interfaces/IUniswapV3Oracle.sol";

@@ -371,8 +371,12 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         bytes4 indexOverflowSelector = IDistributionManager.IndexOverflow.selector;
         bytes4 emissionForTimeDeltaOverflowSelector = IDistributionManager.EmissionForTimeDeltaOverflow.selector;
 
+        // Safe: extracting first 4 bytes from error bytes to compare with error selectors.
+        // Error selectors are always 4 bytes, so casting is safe.
+        // forge-lint: disable-next-line(unsafe-typecast)
         if (
             bytes4(_err) == newIndexOverflowSelector || bytes4(_err) == indexOverflowSelector
+                // forge-lint: disable-next-line(unsafe-typecast)
                 || bytes4(_err) == emissionForTimeDeltaOverflowSelector
         ) {
             overflowing = true;
@@ -443,6 +447,9 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         _changePricePercentage %= 1e18;
 
         int256 diff = int256(uint256(_initialPrice)) * _changePricePercentage / 1e18;
+        // Safe: _initialPrice is uint64 (max ~1.8e19), diff is bounded by percentage change (max 1e18),
+        // so the sum fits in int64 range, and the result fits back in uint64.
+        // forge-lint: disable-next-line(unsafe-typecast)
         newPrice = uint64(int64(int256(uint256(_initialPrice)) + diff));
     }
 

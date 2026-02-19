@@ -35,6 +35,8 @@ contract PTLinearOracleTest is PTLinearMocks {
         IPTLinearOracle oracle = _createOracle();
 
         uint256 mockedPrice = 0.9e18;
+        // Safe: mockedPrice is 0.9e18, a positive value that fits in int256 range (max ~9.2e18)
+        // forge-lint: disable-next-line(unsafe-typecast)
         _mockLatestRoundData(int256(mockedPrice));
 
         uint256 price = oracle.quote(1e18, makeAddr("ptToken"));
@@ -47,6 +49,9 @@ contract PTLinearOracleTest is PTLinearMocks {
             AggregatorV3Interface(address(oracle)).latestRoundData();
 
         assertEq(roundId, 0);
+        // Safe: answer is int256 from Chainlink interface, but represents a positive price value.
+        // Casting to uint256 is safe for comparison since price values are always positive.
+        // forge-lint: disable-next-line(unsafe-typecast)
         assertEq(uint256(answer), price, "latestRoundData reutrns same data as quote");
         assertEq(startedAt, 0);
         assertEq(updatedAt, 0);

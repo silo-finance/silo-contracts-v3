@@ -114,6 +114,9 @@ contract KinkVerifyConfigTest is KinkCommonTest {
         vm.expectRevert(IDynamicKinkModel.InvalidKmin.selector);
         irm.verifyConfig(config);
 
+        // Safe: UNIVERSAL_LIMIT is verified to fit in int96 (see test_kink_constants).
+        // Casting is safe; adding 1 intentionally causes overflow to test validation.
+        // forge-lint: disable-next-line(unsafe-typecast)
         config.kmin = int96(UNIVERSAL_LIMIT) + 1;
         vm.expectRevert(IDynamicKinkModel.InvalidKmin.selector);
         irm.verifyConfig(config);

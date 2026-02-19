@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";

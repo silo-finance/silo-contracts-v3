@@ -206,17 +206,8 @@ ink = { key = "", chain = 57073, url = "https://explorer.inkonchain.com/api/", v
 exclude_lints = [
     "mixed-case-function",
     "mixed-case-variable",
-    "screaming-snake-case-immutable",
-    "screaming-snake-case-const",
-    "pascal-case-struct",
-    "named-struct-fields",
-    "unaliased-plain-import",
     "unwrapped-modifier-logic",
-    "asm-keccak256",
-    "unsafe-cheatcode",
-    "unsafe-typecast",
-    "erc20-unchecked-transfer",
-    "divide-before-multiply",
+    "pascal-case-struct"
 ]
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

@@ -160,7 +160,8 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
         vm.startPrank(DEPOSITOR);
 
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
-        require(token0.transfer(RECEIVER, 1), "transfer failed");
+        // forge-lint: disable-next-line(unchecked-transfer)
+        token0.transfer(RECEIVER, 1);
         assertEq(token0.balanceOf(RECEIVER), 0, "transfer0 success");
 
         require(token1.transfer(RECEIVER, 1), "transfer failed");
@@ -243,7 +244,8 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
-        require(token0.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
+        // forge-lint: disable-next-line(unchecked-transfer)
+        token0.transferFrom(DEPOSITOR, RECEIVER, 1);
         assertEq(token0.balanceOf(RECEIVER), 0, "transferFrom0 success");
 
         vm.prank(DEPOSITOR);

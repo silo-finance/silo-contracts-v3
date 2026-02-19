@@ -163,6 +163,7 @@ contract SiloLensTest is SiloLittleHelper, Test {
 
         assertEq(
             depositAPR,
+            // forge-lint: disable-next-line(divide-before-multiply)
             (borrowAPR * debtAssets / collateralAssets) * (10 ** 18 - daoFee - deployerFee) / 10 ** 18,
             "Deposit APR is borrow APR multiplied by debt/deposits minus fees"
         );

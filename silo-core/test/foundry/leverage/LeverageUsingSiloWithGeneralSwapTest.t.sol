@@ -1091,6 +1091,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
                 depositWithdrawn: silo0.previewRedeem(
                     IERC20(shareCollateral).balanceOf(_user), _closeArgs.collateralType
                 ),
+                // forge-lint: disable-next-line(divide-before-multiply)
                 swapAmountOut: (flashAmount * 111 / 100) * 99 / 100,
                 flashloanAmount: flashAmount,
                 flashloanFee: _flashFee(ISilo(_closeArgs.flashloanTarget), flashAmount),

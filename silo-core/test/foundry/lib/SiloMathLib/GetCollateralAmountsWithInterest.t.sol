@@ -117,6 +117,7 @@ contract GetCollateralAmountsWithInterestTest is Test {
 
         assertEq(collateralAssetsWithInterest, type(uint256).max, "collateralAssetsWithInterest");
         assertEq(debtAssetsWithInterest, debtAssets + debtAssets * rcomp / 1e18, "debtAssetsWithInterest");
+        // forge-lint: disable-next-line(divide-before-multiply)
         assertEq(daoAndDeployerRevenue, (debtAssets * rcomp / 1e18) * 0.2e18 / 1e18, "daoAndDeployerRevenue");
         assertEq(accruedInterest, debtAssets * rcomp / 1e18, "accruedInterest");
     }

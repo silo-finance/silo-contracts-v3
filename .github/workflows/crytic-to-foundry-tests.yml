@@ -1,0 +1,68 @@
+name: CryticToFoundry Tests
+
+on:
+    push:
+        branches: [ master, develop ]
+        paths:
+            - silo-core/**/*.sol
+            - silo-core/**/*.ts
+            - silo-core/**/*.js
+            - silo-core/**/*.json
+            - silo-oracles/**/*.sol
+            - silo-oracles/**/*.ts
+            - silo-oracles/**/*.js
+            - silo-oracles/**/*.json
+            - package.json
+            - yarn.lock
+            - gitmodules/*
+            - .gitmodules
+            - .github/workflows/silo-core.yml
+
+    pull_request:
+        paths:
+            - silo-core/**/*.sol
+            - silo-core/**/*.ts
+            - silo-core/**/*.js
+            - silo-core/**/*.json
+            - silo-oracles/**/*.sol
+            - silo-oracles/**/*.ts
+            - silo-oracles/**/*.js
+            - silo-oracles/**/*.json
+            - package.json
+            - yarn.lock
+            - gitmodules/*
+            - .gitmodules
+            - .github/workflows/silo-core.yml
+
+jobs:
+    CryticToFoundryDefaulting:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+                with:
+                    submodules: recursive
+
+            -   name: Install Foundry
+                uses: foundry-rs/foundry-toolchain@v1
+
+            -   name: Build silo foundry utils
+                working-directory: ./gitmodules/silo-foundry-utils
+                run: |
+                    cargo build --release
+                    cp target/release/silo-foundry-utils ../../silo-foundry-utils
+                    ../../silo-foundry-utils --version
+
+            -   name: Run CryticToFoundryDefaulting tests
+                run: FOUNDRY_PROFILE=echidna_defaulting forge test --mc CryticToFoundryDefaulting --ffi -vv
+
+            -   name: Run CryticToFoundryHookV3 tests
+                run: FOUNDRY_PROFILE=echidna_hookV3 forge test --mc CryticToFoundryHookV3 --ffi -vv
+
+            -   name: Run CryticToFoundry (Invariants) tests
+                run: FOUNDRY_PROFILE=core-with-invariants forge test --mc CryticToFoundry --ffi -vv
+
+            -   name: Run CryticToFoundryLeverage tests
+                run: FOUNDRY_PROFILE=echidna_leverage forge test --mc CryticToFoundryLeverage --ffi -vv
+
+            -   name: Run CryticToFoundry (x-silo) tests
+                run: FOUNDRY_PROFILE=x_silo_echidna forge test --mc CryticToFoundry --ffi -vv

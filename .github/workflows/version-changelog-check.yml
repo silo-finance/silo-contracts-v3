@@ -1,0 +1,114 @@
+name: Version and Changelog Check
+
+# Only for release/hotfix TO master. Does NOT run for PRs into release/* (e.g. feature/* -> release/4.0.0).
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  version-changelog-check:
+    runs-on: ubuntu-latest
+    # PR: target must be master, source must be release/* or hotfix/*.
+    # Push: must be to master.
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'master' &&
+        (startsWith(github.event.pull_request.head.ref, 'release/') ||
+         startsWith(github.event.pull_request.head.ref, 'hotfix/')))
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Resolve version to check
+      id: extract-version
+      run: |
+        if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          if [[ $BRANCH_NAME =~ ^(release|hotfix)/(.+)$ ]]; then
+            VERSION=${BASH_REMATCH[2]}
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "Extracted version: $VERSION from branch: $BRANCH_NAME"
+          else
+            echo "Unexpected: source should be release/* or hotfix/*, got: $BRANCH_NAME"
+            exit 1
+          fi
+        else
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Using version from package.json (push to master): $VERSION"
+        fi
+        
+    - name: Check package.json version
+      id: check-package-version
+      run: |
+        PACKAGE_VERSION=$(node -p "require('./package.json').version")
+        EXPECTED_VERSION="${{ steps.extract-version.outputs.version }}"
+        
+        echo "Package.json version: $PACKAGE_VERSION"
+        echo "Expected version: $EXPECTED_VERSION"
+        
+        if [ "$PACKAGE_VERSION" = "$EXPECTED_VERSION" ]; then
+          echo "✅ Package.json version matches expected version"
+          echo "package_version_match=true" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Package.json version ($PACKAGE_VERSION) does not match expected version ($EXPECTED_VERSION)"
+          echo "package_version_match=false" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Check changelog version
+      id: check-changelog-version
+      run: |
+        EXPECTED_VERSION="${{ steps.extract-version.outputs.version }}"
+        
+        # Check if the version exists in the changelog
+        if grep -q "## \[$EXPECTED_VERSION\]" CHANGELOG.md; then
+          echo "✅ Changelog contains version $EXPECTED_VERSION"
+          echo "changelog_version_match=true" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Changelog does not contain version $EXPECTED_VERSION"
+          echo "Expected to find: ## [$EXPECTED_VERSION]"
+          echo "changelog_version_match=false" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Validate both checks
+      run: |
+        PACKAGE_MATCH="${{ steps.check-package-version.outputs.package_version_match }}"
+        CHANGELOG_MATCH="${{ steps.check-changelog-version.outputs.changelog_version_match }}"
+        
+        echo "Package version match: $PACKAGE_MATCH"
+        echo "Changelog version match: $CHANGELOG_MATCH"
+        
+        if [ "$PACKAGE_MATCH" = "true" ] && [ "$CHANGELOG_MATCH" = "true" ]; then
+          echo "✅ All checks passed!"
+          echo "✅ Package.json version is correctly updated"
+          echo "✅ Changelog contains the version entry"
+        else
+          echo "Validation failed:"
+          if [ "$PACKAGE_MATCH" = "false" ]; then
+            echo "❌ Package.json version needs to be updated to match the branch version"
+          fi
+          if [ "$CHANGELOG_MATCH" = "false" ]; then
+            echo "❌ Changelog needs to be updated with the version entry"
+          fi
+          exit 1
+        fi
+        
+    - name: Show current changelog structure
+      if: failure()
+      run: |
+        echo "Current changelog structure (first 20 lines):"
+        head -20 CHANGELOG.md
+        echo ""
+        echo "Looking for version: ${{ steps.extract-version.outputs.version }}"
+        echo "Available versions in changelog:"
+        grep -E "^## \[.*\]" CHANGELOG.md | head -10

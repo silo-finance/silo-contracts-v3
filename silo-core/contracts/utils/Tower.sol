@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 
-import "openzeppelin5/access/Ownable.sol";
+import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
 /// @title Tower
 /// @notice Utility contract that stores addresses of any contracts

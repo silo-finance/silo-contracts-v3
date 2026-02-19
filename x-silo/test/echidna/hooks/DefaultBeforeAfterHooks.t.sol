@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 // Libraries
 import {Pretty, Strings} from "../utils/Pretty.sol";
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 
 

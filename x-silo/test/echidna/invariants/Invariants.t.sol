@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 // Interfaces
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 // Invariant Contracts
 import {BaseInvariants} from "./BaseInvariants.t.sol";

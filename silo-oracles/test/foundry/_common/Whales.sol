@@ -2,7 +2,7 @@
 pragma solidity >=0.7.6 <0.9.0;
 pragma abicoder v2;
 
-import "./TokensGenerator.sol";
+import {TokensGenerator} from "./TokensGenerator.sol";
 
 contract Whales is TokensGenerator {
     // asset => whale

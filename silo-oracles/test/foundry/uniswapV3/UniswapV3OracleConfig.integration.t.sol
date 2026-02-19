@@ -4,10 +4,11 @@ pragma abicoder v2;
 
 import {IUniswapV3Factory} from "uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 
-import "../../../constants/Ethereum.sol";
-import "../../../contracts/uniswapV3/UniswapV3OracleConfig.sol";
-import "../_common/UniswapPools.sol";
-import "../../../contracts/uniswapV3/UniswapV3OracleFactory.sol";
+import {UNISWAPV3_FACTORY} from "../../../constants/Ethereum.sol";
+import {UniswapV3OracleConfig} from "../../../contracts/uniswapV3/UniswapV3OracleConfig.sol";
+import {UniswapPools} from "../_common/UniswapPools.sol";
+import {UniswapV3OracleFactory} from "../../../contracts/uniswapV3/UniswapV3OracleFactory.sol";
+import {IUniswapV3Oracle} from "../../../contracts/interfaces/IUniswapV3Oracle.sol";
 
 /*
     FOUNDRY_PROFILE=oracles forge test -vv --match-contract UniswapV3OracleConfigIntegrationTest

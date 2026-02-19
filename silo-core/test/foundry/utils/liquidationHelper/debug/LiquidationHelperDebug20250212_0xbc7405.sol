@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import {Test} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 
-import "silo-core/contracts/lib/Actions.sol";
-import "silo-core/contracts/Silo.sol";
 
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";

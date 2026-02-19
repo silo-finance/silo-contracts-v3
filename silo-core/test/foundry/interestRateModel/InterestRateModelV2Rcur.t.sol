@@ -11,9 +11,12 @@ import {RcurTestData} from "../data-readers/RcurTestData.sol";
 import {IInterestRateModelV2} from "silo-core/contracts/interfaces/IInterestRateModelV2.sol";
 import {IInterestRateModelV2Config} from "silo-core/contracts/interfaces/IInterestRateModelV2Config.sol";
 import {InterestRateModelV2Config} from "silo-core/contracts/interestRateModel/InterestRateModelV2Config.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 // forge test -vv --mc InterestRateModelV2RcurTest
 contract InterestRateModelV2RcurTest is RcurTestData, InterestRateModelConfigs {
+    using SafeCast for uint256;
+
     InterestRateModelV2Impl immutable INTEREST_RATE_MODEL;
 
     uint256 constant DP = 10 ** 18;
@@ -33,7 +36,7 @@ contract InterestRateModelV2RcurTest is RcurTestData, InterestRateModelConfigs {
             RcurData memory testCase = data[i];
 
             IInterestRateModelV2.Config memory cfg = _toConfigStruct(testCase);
-            address silo = address(uint160(i));
+            address silo = address(i.toUint160());
             InterestRateModelV2Impl IRMv2Impl = _createIRM(silo, testCase);
 
             uint256 rcur = IRMv2Impl.calculateCurrentInterestRate(

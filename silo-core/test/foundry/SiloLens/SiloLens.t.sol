@@ -307,6 +307,8 @@ contract SiloLensTest is SiloLittleHelper, Test {
         vm.mockCall(token, abi.encodeWithSelector(IERC20.balanceOf.selector, address(SILO_LENS)), abi.encode(0));
 
         string memory expectedString = "0x5615deb798bb3e4dfa0139dfa1b3d433cc23b72f";
+        // Safe: hex literal is converted to bytes32, which is a standard safe conversion.
+        // forge-lint: disable-next-line(unsafe-typecast)
         bytes32 programId = bytes32(hex"5615deb798bb3e4dfa0139dfa1b3d433cc23b72f");
 
         address siloIncentivesController = makeAddr("SiloIncentivesControllerCompatible");
@@ -352,6 +354,8 @@ contract SiloLensTest is SiloLittleHelper, Test {
 
         bytes memory nameBytes = bytes(expectedString);
 
+        // Safe: nameBytes is always 20 bytes (address length) in this test context
+        // forge-lint: disable-next-line(unsafe-typecast)
         address token = address(bytes20(nameBytes));
 
         vm.mockCallRevert(token, abi.encodeWithSelector(IERC20.balanceOf.selector, address(SILO_LENS)), abi.encode(0));

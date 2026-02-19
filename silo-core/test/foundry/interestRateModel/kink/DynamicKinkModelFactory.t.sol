@@ -16,8 +16,11 @@ import {IInterestRateModel} from "../../../../contracts/interfaces/IInterestRate
 import {KinkCommonTest} from "./KinkCommon.t.sol";
 
 import {RandomLib} from "../../_common/RandomLib.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 contract DynamicKinkFactoryMock is DynamicKinkModelFactory {
+    using SafeCast for uint256;
+
     constructor() DynamicKinkModelFactory(new DynamicKinkModel()) {}
 
     function castConfig(IDynamicKinkModel.UserFriendlyConfig calldata _default)
@@ -127,7 +130,7 @@ contract DynamicKinkModelFactoryTest is KinkCommonTest {
     function test_kink_generateConfig_reverts() public {
         IDynamicKinkModel.UserFriendlyConfig memory userCfg;
 
-        userCfg.u1 = uint64(DP);
+        userCfg.u1 = DP.toUint64();
         vm.expectRevert(IDynamicKinkModel.InvalidU1.selector);
         FACTORY.generateConfig(userCfg);
 
@@ -141,11 +144,11 @@ contract DynamicKinkModelFactoryTest is KinkCommonTest {
         vm.expectRevert(IDynamicKinkModel.InvalidU2.selector);
         FACTORY.generateConfig(userCfg);
 
-        userCfg.ucrit = uint64(DP);
+        userCfg.ucrit = DP.toUint64();
         vm.expectRevert(IDynamicKinkModel.InvalidUcrit.selector);
         FACTORY.generateConfig(userCfg);
 
-        userCfg.ucrit = uint64(DP - 1);
+        userCfg.ucrit = DP - 1.toUint64();
         vm.expectRevert(IDynamicKinkModel.InvalidRcritMin.selector);
         FACTORY.generateConfig(userCfg);
 

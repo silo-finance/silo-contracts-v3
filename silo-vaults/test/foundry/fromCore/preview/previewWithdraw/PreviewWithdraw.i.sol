@@ -2,11 +2,14 @@
 pragma solidity ^0.8.28;
 
 import {VaultsLittleHelper} from "../../_common/VaultsLittleHelper.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
     FOUNDRY_PROFILE=vaults_tests forge test -vv --ffi --mc PreviewWithdrawTest
 */
 contract PreviewWithdrawTest is VaultsLittleHelper {
+    using SafeCast for uint256;
+
     address immutable DEPOSITOR;
 
     constructor() {
@@ -48,11 +51,11 @@ contract PreviewWithdrawTest is VaultsLittleHelper {
     ) public {
         vm.assume(_assetsOrShares > 1); // can not create debt with 1 collateral
 
-        uint128 amountToUse = _partial ? uint128(uint256(_assetsOrShares) * 37 / 100) : _assetsOrShares;
+        uint128 amountToUse = _partial ? _assetsOrShares * 37 / 100 : _assetsOrShares;
 
         if (_useRedeem()) {
-            vm.assume(amountToUse < type(uint128).max / uint128(OFFSET_POW));
-            amountToUse *= uint128(OFFSET_POW);
+            vm.assume(amountToUse < type(uint128).max / OFFSET_POW.toUint128());
+            amountToUse *= OFFSET_POW.toUint128();
         }
 
         vm.assume(amountToUse > 0);

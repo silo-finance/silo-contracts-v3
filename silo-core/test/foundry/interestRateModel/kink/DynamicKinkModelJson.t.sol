@@ -264,7 +264,7 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
             diffPercent = -diffPercent; // absolute value
         }
 
-        bool satisfied = diffPercent <= int256(_acceptableDiffPercent);
+        bool satisfied = diffPercent <= _acceptableDiffPercent.toInt256();
 
         string memory errorMessage = string.concat(
             "ID ",

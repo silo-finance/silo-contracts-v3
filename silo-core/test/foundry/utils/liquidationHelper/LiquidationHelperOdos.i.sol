@@ -21,11 +21,14 @@ import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 import {MintableToken} from "../../_common/MintableToken.sol";
 
 import {AggregatorV3Interface} from "chainlink/v0.8/interfaces/AggregatorV3Interface.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
 AGGREGATOR=ODOS FOUNDRY_PROFILE=core_test forge test --ffi --mc LiquidationHelperOdosTest -vv
 */
 contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
+    using SafeCast for uint256;
+
     LiquidationHelper liquidationHelper;
     SiloLens lens;
     ISilo flashLoanFrom;
@@ -133,7 +136,7 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
         // note: this is swap data for stS => sW with 50% slippage allowance
         bytes memory swapCallData = abi.encodePacked(
             hex"83bd37f90001e5da20f15420ad15de0fa650600afc998bbe39550001039e2fb66102314ce7b64ce5ce3e5183bc94ad3809",
-            uint72(collateralToLiquidate), // amount in
+            collateralToLiquidate.toUint72(), // amount in
             hex"0902b7ffaaafdba980007fffff00019b99e9c620b2E2f09E0b9Fced8F679eEcF2653FE00000001",
             address(liquidationHelper), // seller address in swap data
             hex"000000000301020300060101010200ff000000000000000000000000000000000000000000de861c8fc9ab78fe00490c5a38813d26e2d09c95e5da20f15420ad15de0fa650600afc998bbe3955000000000000000000000000000000000000000000000000"

@@ -11,11 +11,14 @@ import {InterestRateModelV2Config} from "silo-core/contracts/interestRateModel/I
 import {InterestRateModelConfigs} from "../_common/InterestRateModelConfigs.sol";
 import {InterestRateModelV2Impl} from "./InterestRateModelV2Impl.sol";
 import {InterestRateModelV2Checked} from "./InterestRateModelV2Checked.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
  forge test -vv --mc InterestRateModelV2Test
 */
 contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
+    using SafeCast for int256;
+
     uint256 constant TODAY = 1682885514;
     InterestRateModelV2 immutable INTEREST_RATE_MODEL;
 
@@ -186,8 +189,8 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
         bool expectedOverflow = true;
 
         assertEq(rcomp, expectedRcomp, "expect exact rcomp value");
-        assertEq(uint256(ri), expectedRi, "expect exact ri value");
-        assertEq(uint256(Tcrit), expectedTcrit, "expect exact Tcrit value");
+        assertEq(uri.toInt256(), expectedRi, "expect exact ri value");
+        assertEq(uTcrit.toInt256(), expectedTcrit, "expect exact Tcrit value");
         assertEq(overflow, expectedOverflow, "expect exact overflow value");
     }
 

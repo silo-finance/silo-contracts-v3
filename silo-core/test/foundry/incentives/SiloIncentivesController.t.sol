@@ -17,11 +17,14 @@ import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfac
 import {IDistributionManager} from "silo-core/contracts/incentives/interfaces/IDistributionManager.sol";
 import {AddressUtilsLib} from "silo-core/contracts/lib/AddressUtilsLib.sol";
 import {RevertLib} from "silo-core/contracts/lib/RevertLib.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
 FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc SiloIncentivesControllerTest
 */
 contract SiloIncentivesControllerTest is Test {
+    using SafeCast for uint256;
+
     SiloIncentivesControllerCompatible internal _controller;
 
     address internal _owner = makeAddr("Owner");
@@ -177,7 +180,7 @@ contract SiloIncentivesControllerTest is Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: _rewardToken,
-                distributionEnd: uint40(distributionEnd),
+                distributionEnd: distributionEnd.toUint40(),
                 emissionPerSecond: emissionPerSecond
             })
         );
@@ -292,7 +295,7 @@ contract SiloIncentivesControllerTest is Test {
         });
 
         vm.prank(_owner);
-        _controller.setDistributionEnd(_PROGRAM_NAME, uint40(clockStart + 20));
+        _controller.setDistributionEnd(_PROGRAM_NAME, clockStart + 20);
 
         assertEq(_controller.getDistributionEnd(_PROGRAM_NAME), clockStart + 20, "invalid distributionEnd");
 
@@ -410,7 +413,7 @@ contract SiloIncentivesControllerTest is Test {
             _amount: user1Deposit1
         });
 
-        uint40 newDistributionEnd = uint40(clockStart + 20);
+        uint40 newDistributionEnd = clockStart + 20.toUint40();
 
         vm.prank(_owner);
         _controller.setDistributionEnd(_PROGRAM_NAME, newDistributionEnd);
@@ -631,7 +634,7 @@ contract SiloIncentivesControllerTest is Test {
         ERC20Mock(_rewardToken).mint(address(_controller), toDistribute);
 
         vm.prank(_notifier);
-        programId = _controller.immediateDistribution(_rewardToken, uint104(toDistribute));
+        programId = _controller.immediateDistribution(_rewardToken, toDistribute);
         assertEq(_controller.getProgramName(programId), programName, "program name should stay the same");
 
         // user2 deposit 100
@@ -657,7 +660,7 @@ contract SiloIncentivesControllerTest is Test {
         ERC20Mock(_rewardToken).mint(address(_controller), toDistribute);
 
         vm.prank(_notifier);
-        programId = _controller.immediateDistribution(_rewardToken, uint104(toDistribute));
+        programId = _controller.immediateDistribution(_rewardToken, toDistribute);
         assertEq(_controller.getProgramName(programId), programName, "program name should stay the same");
 
         // user3 deposit 100
@@ -744,7 +747,7 @@ contract SiloIncentivesControllerTest is Test {
         ERC20Mock(_rewardToken).mint(address(_controller), toDistribute);
 
         vm.prank(_notifier);
-        _controller.immediateDistribution(_rewardToken, uint104(toDistribute));
+        _controller.immediateDistribution(_rewardToken, toDistribute);
 
         // user2 deposit 100
         uint256 user2Deposit1 = 100e18;
@@ -769,7 +772,7 @@ contract SiloIncentivesControllerTest is Test {
         ERC20Mock(_rewardToken).mint(address(_controller), toDistribute);
 
         vm.prank(_notifier);
-        _controller.immediateDistribution(_rewardToken, uint104(toDistribute));
+        _controller.immediateDistribution(_rewardToken, toDistribute);
 
         // user1 withdraw 100
         uint256 user1Withdraw1 = 100e18;
@@ -795,7 +798,7 @@ contract SiloIncentivesControllerTest is Test {
         totalSupply = ERC20Mock(_notifier).totalSupply();
 
         vm.prank(_notifier);
-        _controller.immediateDistribution(_rewardToken, uint104(toDistribute));
+        _controller.immediateDistribution(_rewardToken, toDistribute);
 
         // user3 deposit 100
         uint256 user3Deposit1 = 100e18;
@@ -991,7 +994,7 @@ contract SiloIncentivesControllerTest is Test {
         emit ISiloIncentivesController.ImmediateDistribution(_rewardToken, bytes32(uint256(uint160(_rewardToken))), toDistribute);
 
         vm.prank(_notifier);
-        _controller.immediateDistribution(_rewardToken, uint104(toDistribute));
+        _controller.immediateDistribution(_rewardToken, toDistribute);
 
         _claimRewards(user1, user2, programName);
     }
@@ -1056,7 +1059,7 @@ contract SiloIncentivesControllerTest is Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: _rewardToken,
-                distributionEnd: uint40(distributionEnd),
+                distributionEnd: distributionEnd.toUint40(),
                 emissionPerSecond: emissionPerSecond
             })
         );
@@ -1079,7 +1082,7 @@ contract SiloIncentivesControllerTest is Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: _rewardToken,
-                distributionEnd: uint40(distributionEnd),
+                distributionEnd: distributionEnd.toUint40(),
                 emissionPerSecond: emissionPerSecond
             })
         );
@@ -1089,7 +1092,7 @@ contract SiloIncentivesControllerTest is Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME_2,
                 rewardToken: _rewardToken,
-                distributionEnd: uint40(distributionEnd),
+                distributionEnd: distributionEnd.toUint40(),
                 emissionPerSecond: emissionPerSecond
             })
         );

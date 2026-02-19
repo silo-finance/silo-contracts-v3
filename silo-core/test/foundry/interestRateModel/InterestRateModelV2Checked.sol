@@ -101,11 +101,11 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
         currentSetup.initialized = true;
 
         currentSetup.ri =
-            ri > type(int112).max ? type(int112).max : ri < type(int112).min ? type(int112).min : int112(ri);
+            ri > type(int112).max ? type(int112).max : ri < type(int112).min ? type(int112).min : ri.toInt112();
 
         currentSetup.Tcrit = Tcrit > type(int112).max
             ? type(int112).max
-            : Tcrit < type(int112).min ? type(int112).min : int112(Tcrit);
+            : Tcrit < type(int112).min ? type(int112).min : Tcrit.toInt112();
     }
 
     /// @inheritdoc IInterestRateModel
@@ -204,7 +204,7 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
         }
 
         _l.u = SiloMathLib.calculateUtilization(_DP, _totalDeposits, _totalBorrowAmount).toInt256();
-        _l.DP = int256(_DP);
+        _l.DP = _DP.toInt256();
 
         if (_l.u > _c.ucrit) {
             // rp := kcrit *(1 + Tcrit + beta *T)*( u0 - ucrit )
@@ -274,7 +274,7 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
             _l.T = (_blockTimestamp - _interestRateTimestamp).toInt256();
         }
 
-        int256 decimalPoints = int256(_DP);
+        int256 decimalPoints = _DP.toInt256();
 
         _l.u = SiloMathLib.calculateUtilization(_DP, _totalDeposits, _totalBorrowAmount).toInt256();
 
@@ -363,7 +363,7 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
             // but later on we can get overflow worse.
             overflow = true;
         } else {
-            rcompSigned = _x.exp() - int256(_DP);
+            rcompSigned = _x.exp() - _DP.toInt256();
             rcomp = rcompSigned > 0 ? rcompSigned.toUint256() : 0;
         }
 

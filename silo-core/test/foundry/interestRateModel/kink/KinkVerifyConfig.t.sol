@@ -126,11 +126,11 @@ contract KinkVerifyConfigTest is KinkCommonTest {
         vm.expectRevert(IDynamicKinkModel.InvalidKmax.selector);
         irm.verifyConfig(config);
 
-        config.kmax = int96(UNIVERSAL_LIMIT) + 1;
+        config.kmax = UNIVERSAL_LIMIT.toInt96() + 1;
         vm.expectRevert(IDynamicKinkModel.InvalidKmax.selector);
         irm.verifyConfig(config);
 
-        config.kmax = int96(UNIVERSAL_LIMIT); // valid value
+        config.kmax = UNIVERSAL_LIMIT.toInt96(); // valid value
         irm.verifyConfig(config);
 
         // ----
@@ -214,8 +214,8 @@ contract KinkVerifyConfigTest is KinkCommonTest {
         config.u2 = _DP;
         config.ucrit = _DP;
         config.rmin = _DP;
-        config.kmin = int96(UNIVERSAL_LIMIT);
-        config.kmax = int96(UNIVERSAL_LIMIT);
+        config.kmin = UNIVERSAL_LIMIT.toInt96();
+        config.kmax = UNIVERSAL_LIMIT.toInt96();
         config.alpha = UNIVERSAL_LIMIT;
         config.cminus = UNIVERSAL_LIMIT;
         config.cplus = UNIVERSAL_LIMIT;

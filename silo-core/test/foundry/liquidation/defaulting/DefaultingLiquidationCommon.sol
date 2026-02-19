@@ -26,6 +26,7 @@ import {DummyOracle} from "silo-core/test/foundry/_common/DummyOracle.sol";
 import {DefaultingLiquidationAsserts} from "./common/DefaultingLiquidationAsserts.sol";
 import {RevertLib} from "silo-core/contracts/lib/RevertLib.sol";
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
 - anything with decimals? don't think so, we only transfer shares
@@ -37,6 +38,8 @@ FOUNDRY_PROFILE=core_test forge test --ffi --mc DefaultingLiquidationBorrowable 
 
 */
 abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
+    using SafeCast for int256;
+
     using SiloLensLib for ISilo;
 
     function setUp() public virtual {
@@ -998,7 +1001,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         // 0.5% to 20% price drop cap
         int256 dropPercentage = int256(uint256(_priceDropPercentage) % 0.2e18);
 
-        uint256 targetPrice = _calculateNewPrice(uint64(oracle0.price()), -int64(dropPercentage));
+        uint256 targetPrice = _calculateNewPrice(oracle0.price.toInt64(), -dropPercentage.toInt64());
 
         _addLiquidity(Math.max(_collateral, _protected));
         bool success =

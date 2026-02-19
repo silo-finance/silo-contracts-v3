@@ -35,6 +35,7 @@ test = 'silo-core/test/foundry'
 out = 'cache/foundry/out/silo-core'
 broadcast = 'silo-core/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 fs_permissions = [
     { access = "read", path = "./cache/foundry/"},
@@ -51,6 +52,7 @@ test = 'silo-core/test/invariants'
 out = 'cache/foundry/out/silo-core'
 broadcast = 'silo-core/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 fs_permissions = [
     { access = "read", path = "./cache/foundry/"},
@@ -64,6 +66,7 @@ test = 'silo-core/test/echidna-leverage'
 out = 'cache/foundry/out/echidna-leverage'
 broadcast = 'silo-core/echidna/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 fs_permissions = [
     { access = "read", path = "./cache/foundry/"},
@@ -77,6 +80,7 @@ test = 'silo-core/test/echidna-defaulting/siloHookV2'
 out = 'cache/foundry/out/echidna-defaulting/siloHookV2'
 broadcast = 'silo-core/echidna/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 [profile.echidna_hookV3]
 src = 'silo-core/contracts'
@@ -84,6 +88,7 @@ test = 'silo-core/test/echidna-defaulting/siloHookV3'
 out = 'cache/foundry/out/echidna-defaulting/siloHookV3'
 broadcast = 'silo-core/echidna/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 
 [profile.core_test]
@@ -91,6 +96,7 @@ src = 'silo-core/test/foundry'
 out = 'cache/foundry/out/silo-core'
 broadcast = 'silo-core/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 fs_permissions = [
     { access = "read", path = "./cache/foundry/"},
@@ -133,6 +139,7 @@ src = 'silo-vaults/test/foundry'
 out = 'cache/foundry/out/silo-vaults'
 broadcast = 'silo-vaults/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 fs_permissions = [
     { access = "read", path = "./cache/foundry/"},
@@ -146,6 +153,7 @@ test = 'silo-vaults/test/foundry'
 out = 'cache/foundry/out/silo-vaults'
 broadcast = 'silo-vaults/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 fs_permissions = [
     { access = "read", path = "./cache/foundry/"},
@@ -159,12 +167,14 @@ test = 'x-silo/test/foundry'
 out = 'cache/foundry/out/x-silo'
 broadcast = 'x-silo/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 [profile.x_silo_tests]
 src = 'x-silo/test/foundry'
 out = 'cache/foundry/out/x-silo'
 broadcast = 'x-silo/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 [profile.x_silo_echidna]
 src = 'x-silo/contracts'
@@ -172,6 +182,7 @@ test = 'x-silo/test/echidna'
 out = 'cache/foundry/out/x-silo'
 broadcast = 'x-silo/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 fs_permissions = [
     { access = "read", path = "./cache/foundry/"}
@@ -183,6 +194,7 @@ out = 'cache/foundry/out/silo-oracles'
 test = 'silo-oracles/test'
 broadcast = 'silo-oracles/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
+exclude_lints = ['unsafe-typecast']
 
 [fuzz]
 runs = 500

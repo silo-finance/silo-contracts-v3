@@ -189,8 +189,8 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
         bool expectedOverflow = true;
 
         assertEq(rcomp, expectedRcomp, "expect exact rcomp value");
-        assertEq(uri.toInt256(), expectedRi, "expect exact ri value");
-        assertEq(uTcrit.toInt256(), expectedTcrit, "expect exact Tcrit value");
+        assertEq(ri.toInt256(), expectedRi, "expect exact ri value");
+        assertEq(Tcrit.toInt256(), expectedTcrit, "expect exact Tcrit value");
         assertEq(overflow, expectedOverflow, "expect exact overflow value");
     }
 

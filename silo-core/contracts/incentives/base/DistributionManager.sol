@@ -99,6 +99,7 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
     {
         bytes32 incentivesProgramId = getProgramId(_incentivesProgram);
 
+        /// forge-lint: disable-start(named-struct-fields)
         details = IncentiveProgramDetails(
             incentivesPrograms[incentivesProgramId].index,
             incentivesPrograms[incentivesProgramId].rewardToken,
@@ -106,6 +107,7 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
             incentivesPrograms[incentivesProgramId].lastUpdateTimestamp,
             incentivesPrograms[incentivesProgramId].distributionEnd
         );
+        /// forge-lint: disable-end(named-struct-fields)
     }
 
     /// @inheritdoc IDistributionManager

@@ -330,6 +330,7 @@ library Actions {
         require(_amount <= Views.maxFlashLoan(_token), FlashLoanNotPossible());
 
         // cast safe, because we checked `fee > type(uint192).max`
+        // forge-lint: disable-next-line(unsafe-typecast)
         SiloStorageLib.getSiloStorage().daoAndDeployerRevenue += uint192(fee);
 
         IERC20(_token).safeTransfer(address(_receiver), _amount);
@@ -387,6 +388,7 @@ library Actions {
         if (earnedFees > availableLiquidity) earnedFees = availableLiquidity;
 
         // we will never underflow because earnedFees max value is `daoAndDeployerRevenue`
+        // forge-lint: disable-next-line(unsafe-typecast)
         unchecked { $.daoAndDeployerRevenue -= uint192(earnedFees); }
 
         daoRevenue = earnedFees;

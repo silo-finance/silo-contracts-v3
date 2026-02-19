@@ -206,6 +206,7 @@ contract SiloVault is ERC4626, ERC20Permit, Ownable2Step, Multicall, ISiloVaultS
             _setTimelock(_newTimelock);
         } else {
             // Safe "unchecked" cast because newTimelock <= MAX_TIMELOCK.
+            // forge-lint: disable-next-line(unsafe-typecast)
             pendingTimelock.update(uint184(_newTimelock), timelock);
 
             emit EventsLib.SubmitTimelock(_newTimelock);
@@ -220,6 +221,7 @@ contract SiloVault is ERC4626, ERC20Permit, Ownable2Step, Multicall, ISiloVaultS
         SiloVaultActionsLib.setFeeValidateEmitEvent(_newFee, fee, feeRecipient);
 
         // Safe to cast because newFee <= MAX_FEE.
+        // forge-lint: disable-next-line(unsafe-typecast)
         fee = uint96(_newFee);
     }
 

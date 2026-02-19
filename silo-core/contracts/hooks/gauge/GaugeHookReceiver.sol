@@ -40,6 +40,8 @@ abstract contract GaugeHookReceiver is BaseHookReceiver, IGaugeHookReceiver, Own
         uint256 action = tokenType | Hook.SHARE_TOKEN_TRANSFER;
         hooksAfter = hooksAfter.addAction(action);
 
+        // Safe: hook configuration uses 24-bit bitmasks by design.
+        // forge-lint: disable-next-line(unsafe-typecast)
         _setHookConfig(silo, uint24(_getHooksBefore(silo)), uint24(hooksAfter));
 
         configuredGauges[_shareToken] = _gauge;

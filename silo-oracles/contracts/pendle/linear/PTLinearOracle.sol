@@ -100,6 +100,8 @@ contract PTLinearOracle is IPTLinearOracle, Initializable {
         */
         (, int256 ptLinearPrice,,,) = AggregatorV3Interface(cfg.linearOracle).latestRoundData();
 
+        // Safe: linear discount oracle returns non-negative discount factors.
+        // forge-lint: disable-next-line(unsafe-typecast)
         quoteAmount = _baseAmount * uint256(ptLinearPrice) / cfg.normalizationDivider;
 
         require(quoteAmount != 0, ZeroQuote());

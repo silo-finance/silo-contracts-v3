@@ -118,10 +118,14 @@ contract InterestRateModelV2 is IInterestRateModel, IInterestRateModelV2 {
 
         currentSetup.ri = ri > type(int112).max
             ? type(int112).max
+            // Safe: value is clamped to int112 bounds in this ternary.
+            // forge-lint: disable-next-line(unsafe-typecast)
             : ri < type(int112).min ? type(int112).min : int112(ri);
 
         currentSetup.Tcrit = Tcrit > type(int112).max
             ? type(int112).max
+            // Safe: value is clamped to int112 bounds in this ternary.
+            // forge-lint: disable-next-line(unsafe-typecast)
             : Tcrit < type(int112).min ? type(int112).min : int112(Tcrit);
     }
 
@@ -229,6 +233,8 @@ contract InterestRateModelV2 is IInterestRateModel, IInterestRateModelV2 {
         }
 
         _l.u = SiloMathLib.calculateUtilization(_DP, _totalDeposits, _totalBorrowAmount).toInt256();
+        // Safe: `_DP` is a small constant (1e18) and always fits in int256.
+        // forge-lint: disable-next-line(unsafe-typecast)
         _l.DP = int256(_DP);
 
         if (_l.u > _c.ucrit) {
@@ -300,6 +306,8 @@ contract InterestRateModelV2 is IInterestRateModel, IInterestRateModelV2 {
             _l.T = (_blockTimestamp - _interestRateTimestamp).toInt256();
         }
 
+        // Safe: `_DP` is a small constant (1e18) and always fits in int256.
+        // forge-lint: disable-next-line(unsafe-typecast)
         int256 decimalPoints = int256(_DP);
 
         _l.u = SiloMathLib.calculateUtilization(_DP, _totalDeposits, _totalBorrowAmount).toInt256();
@@ -377,6 +385,8 @@ contract InterestRateModelV2 is IInterestRateModel, IInterestRateModelV2 {
     function configOverflowCheck(IInterestRateModelV2.Config calldata _config) external pure virtual {
         int256 YEAR = 365 days;
         int256 MAX_TIME = 50 * 365 days;
+        // Safe: `_DP` is a small constant (1e18) and always fits in int256.
+        // forge-lint: disable-next-line(unsafe-typecast)
         int256 DP = int256(_DP);
 
         int256 rcur_max;
@@ -421,6 +431,8 @@ contract InterestRateModelV2 is IInterestRateModel, IInterestRateModelV2 {
             // but later on we can get overflow worse.
             overflow = true;
         } else {
+            // Safe: `_DP` is a small constant (1e18) and always fits in int256.
+            // forge-lint: disable-next-line(unsafe-typecast)
             rcompSigned = _x.exp() - int256(_DP);
             rcomp = rcompSigned > 0 ? rcompSigned.toUint256() : 0;
         }

@@ -233,6 +233,7 @@ library SiloVaultActionsLib {
         emit EventsLib.SubmitMarketRemoval(msg.sender, _market);
 
         // Safe to cast because timelock <= MAX_TIMELOCK.
+        // forge-lint: disable-next-line(unsafe-typecast)
         _config[_market].removableAt = uint64(block.timestamp + _timelock);
     }
 

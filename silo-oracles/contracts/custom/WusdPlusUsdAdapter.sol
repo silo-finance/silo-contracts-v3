@@ -46,7 +46,9 @@ contract WusdPlusUsdAdapter is AggregatorV3Interface {
             uint80 answeredInRound
         )
     {
-        // Get SAMPLE_AMOUNT of wUSD+ in USD+
+        // Get SAMPLE_AMOUNT of wUSD+ in USD+.
+        // Safe: SAMPLE_AMOUNT is uint80 max, which always fits into uint256.
+        // forge-lint: disable-next-line(unsafe-typecast)
         int256 sampleConversionRate = SafeCast.toInt256(IERC4626(WUSD_PLUS).convertToAssets(uint256(SAMPLE_AMOUNT)));
 
         int256 usdPlusPrice;

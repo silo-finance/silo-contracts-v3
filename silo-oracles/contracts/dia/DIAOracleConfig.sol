@@ -36,6 +36,8 @@ contract DIAOracleConfig is Layer1OracleConfig {
         config.diaOracle = _DIA_ORACLEV2;
         config.baseToken = address(_BASE_TOKEN);
         config.quoteToken = address(_QUOTE_TOKEN);
+        // Safe: `_HEARTBEAT` is already stored as uint32-compatible config input.
+        // forge-lint: disable-next-line(unsafe-typecast)
         config.heartbeat = uint32(_HEARTBEAT);
         config.convertToQuote = _CONVERT_TO_QUOTE;
         config.normalizationDivider = _DECIMALS_NORMALIZATION_DIVIDER;

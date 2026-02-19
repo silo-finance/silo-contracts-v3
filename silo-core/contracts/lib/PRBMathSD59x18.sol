@@ -82,6 +82,8 @@ library PRBMathSD59x18 {
 
             unchecked {
                 // Convert x to the 128.128-bit fixed-point format.
+                // Safe: we are in the `x >= 0` branch and `x < 128e18`, so both casts are bounded.
+                // forge-lint: disable-next-line(unsafe-typecast)
                 uint256 x128x128 = (uint256(x) << 128) / uint256(_SCALE);
 
                 // Safe to convert the result to int256 directly because the maximum input allowed is 128e18.

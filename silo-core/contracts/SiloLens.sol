@@ -306,6 +306,8 @@ contract SiloLens is ISiloLens, IVersioned {
             bytes memory originalProgramName = bytes(originalProgramsNames[i]);
 
             if (_isTokenAddress(originalProgramName)) {
+                // Safe: `_isTokenAddress` ensures this byte array has exactly 20 bytes.
+                // forge-lint: disable-next-line(unsafe-typecast)
                 address token = address(bytes20(originalProgramName));
                 programsNames[i] = Strings.toHexString(token);
             } else {
@@ -324,6 +326,8 @@ contract SiloLens is ISiloLens, IVersioned {
     function _isTokenAddress(bytes memory _name) private view returns (bool isToken) {
         if (_name.length != 20) return false;
 
+        // Safe: the length check above guarantees exactly 20 bytes.
+        // forge-lint: disable-next-line(unsafe-typecast)
         address token = address(bytes20(_name));
 
         if (Utils.getCodeAt(token).length == 0) return false;

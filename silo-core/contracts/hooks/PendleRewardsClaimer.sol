@@ -186,6 +186,8 @@ contract PendleRewardsClaimer is GaugeHookReceiver, PartialLiquidation, IPendleR
         uint256 protectedTransferAction = Hook.shareTokenTransfer(Hook.PROTECTED_TOKEN);
         hooksAfter = hooksAfter.addAction(protectedTransferAction);
 
+        // Safe: hook bitmasks are designed to fit into 24 bits.
+        // forge-lint: disable-next-line(unsafe-typecast)
         _setHookConfig(_silo, hooksBefore, uint24(hooksAfter));
     }
 

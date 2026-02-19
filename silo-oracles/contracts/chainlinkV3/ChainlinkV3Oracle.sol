@@ -98,6 +98,8 @@ contract ChainlinkV3Oracle is IChainlinkV3Oracle, ISiloOracle, Initializable {
         ) = _aggregator.latestRoundData();
 
         if (aggregatorPrice > 0) {
+            // Safe: negative values are filtered out by the `aggregatorPrice > 0` check.
+            // forge-lint: disable-next-line(unsafe-typecast)
             return (true, uint256(aggregatorPrice));
         }
 

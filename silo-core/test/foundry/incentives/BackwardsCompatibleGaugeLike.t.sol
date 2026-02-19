@@ -203,7 +203,7 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
             uint256 siloBalance = IERC20(IERC4626(silo0).asset()).balanceOf(silo0);
             emit log_named_decimal_uint("silo balance before stealing", siloBalance, decimals0);
             vm.prank(silo0);
-            asset0.transfer(user, siloBalance / 1000);
+            require(asset0.transfer(user, siloBalance / 1000), "transfer failed");
             token0stolen = true;
         }
 
@@ -214,7 +214,7 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
             uint256 siloBalance = IERC20(IERC4626(silo1).asset()).balanceOf(silo1);
             emit log_named_decimal_uint("silo balance before stealing", siloBalance, decimals1);
             vm.prank(silo1);
-            asset1.transfer(user, siloBalance / 1000);
+            require(asset1.transfer(user, siloBalance / 1000), "transfer failed");
             token1stolen = true;
         }
 

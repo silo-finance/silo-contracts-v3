@@ -107,11 +107,11 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
 
         emit log("-- protectedShareToken.transfer --");
         vm.prank(borrower);
-        IERC20(protectedShareToken).transfer(depositor, 1);
+        require(IERC20(protectedShareToken).transfer(depositor, 1), "transfer failed");
 
         emit log("-- collateralShareToken.transfer --");
         vm.prank(borrower);
-        IERC20(collateralShareToken).transfer(depositor, 1);
+        require(IERC20(collateralShareToken).transfer(depositor, 1), "transfer failed");
 
         emit log("-- setReceiveApproval --");
         vm.prank(depositor);
@@ -119,7 +119,7 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
 
         emit log("-- debtShareToken.transfer --");
         vm.prank(borrower);
-        IERC20(debtShareToken).transfer(depositor, 1);
+        require(IERC20(debtShareToken).transfer(depositor, 1), "transfer failed");
 
         emit log("-- withdraw --");
         vm.prank(borrower);
@@ -201,7 +201,7 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
         external
         returns (bytes32)
     {
-        IERC20(_token).transfer(address(msg.sender), _amount);
+        require(IERC20(_token).transfer(address(msg.sender), _amount), "transfer failed");
         return FLASHLOAN_CALLBACK;
     }
 

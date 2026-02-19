@@ -55,7 +55,7 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
 
         vm.startPrank(address(silo1));
         // mock attack, leave just 1 wei of liquidity
-        token1.transfer(address(1), token1.balanceOf(address(silo1)) - 1);
+        require(token1.transfer(address(1), token1.balanceOf(address(silo1)) - 1), "transfer failed");
         vm.stopPrank();
 
         vm.warp(block.timestamp + 1);

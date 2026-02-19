@@ -219,7 +219,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         assertNotEq(amount, 0, "Depositor should have some protected tokens");
 
         vm.prank(_depositor);
-        IERC20(protected).transfer(address(this), amount);
+        require(IERC20(protected).transfer(address(this), amount), "transfer failed");
 
         vm.prank(_depositor);
         _incentivesController.claimRewards(_depositor);

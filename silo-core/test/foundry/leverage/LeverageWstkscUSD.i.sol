@@ -64,10 +64,10 @@ contract LeverageWstkscUSDTest is SiloLittleHelper, Test {
         usdcAsset = IERC20(usdcSilo.asset());
 
         vm.prank(wstkscUSDWhale);
-        wstkscUSDAsset.transfer(borrower, 50e6);
+        require(wstkscUSDAsset.transfer(borrower, 50e6), "transfer failed");
 
         vm.prank(usdcWhale);
-        usdcAsset.transfer(borrower, 100e6);
+        require(usdcAsset.transfer(borrower, 100e6), "transfer failed");
 
         emit log_named_address("borrower", borrower);
         emit log_named_address("siloLeverage", leverageRouter.predictUserLeverageContract(borrower));

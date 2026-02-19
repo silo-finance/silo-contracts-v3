@@ -242,9 +242,9 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         _depositForBorrow(3, frontrunner, ISilo.CollateralType.Protected);
 
         vm.prank(frontrunner);
-        IShareToken(collateralShareToken).transfer(borrower, 5);
+        require(IShareToken(collateralShareToken).transfer(borrower, 5), "transfer failed");
         vm.prank(frontrunner);
-        IShareToken(protectedShareToken).transfer(borrower, 3);
+        require(IShareToken(protectedShareToken).transfer(borrower, 3), "transfer failed");
 
         _borrow(12345, borrower); // frontrun does not work
     }

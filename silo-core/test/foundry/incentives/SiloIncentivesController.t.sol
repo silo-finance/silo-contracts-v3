@@ -302,7 +302,7 @@ contract SiloIncentivesControllerTest is Test {
         vm.warp(block.timestamp + 10);
 
         vm.prank(user1);
-        ERC20Mock(_notifier).transfer(user2, user1Deposit1);
+        require(ERC20Mock(_notifier).transfer(user2, user1Deposit1), "transfer failed");
         totalSupply = ERC20Mock(_notifier).totalSupply();
 
         vm.prank(_notifier);

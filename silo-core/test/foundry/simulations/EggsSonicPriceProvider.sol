@@ -46,7 +46,7 @@ contract EggsSonicPriceProvider is IntegrationTest {
         uint256 eggsAmount = _eggs.balanceOf(address(_eggsWhale));
 
         vm.prank(_eggsWhale);
-        IERC20(address(_eggs)).transfer(address(this), eggsAmount);
+        require(IERC20(address(_eggs)).transfer(address(this), eggsAmount), "transfer failed");
 
         _eggs.sell(eggsAmount);
 
@@ -99,7 +99,7 @@ contract EggsSonicPriceProvider is IntegrationTest {
         uint256 eggsAmount = _eggs.balanceOf(address(_eggsWhale));
 
         vm.prank(_eggsWhale);
-        IERC20(address(_eggs)).transfer(address(this), eggsAmount);
+        require(IERC20(address(_eggs)).transfer(address(this), eggsAmount), "transfer failed");
 
         _eggs.sell(eggsAmount);
 
@@ -118,7 +118,7 @@ contract EggsSonicPriceProvider is IntegrationTest {
         uint256 eggsAmount = _eggs.balanceOf(address(_eggsWhale));
 
         vm.prank(_eggsWhale);
-        IERC20(address(_eggs)).transfer(address(this), eggsAmount);
+        require(IERC20(address(_eggs)).transfer(address(this), eggsAmount), "transfer failed");
 
         _eggs.borrow(sonicAmount, 1);
 
@@ -133,7 +133,7 @@ contract EggsSonicPriceProvider is IntegrationTest {
         uint256 eggsAmount = _eggs.balanceOf(address(_eggsWhale));
 
         vm.prank(_eggsWhale);
-        IERC20(address(_eggs)).transfer(address(this), eggsAmount);
+        require(IERC20(address(_eggs)).transfer(address(this), eggsAmount), "transfer failed");
 
         _eggs.borrow(sonicAmount, 1);
 

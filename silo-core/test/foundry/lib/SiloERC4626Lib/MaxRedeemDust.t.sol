@@ -60,7 +60,7 @@ contract MaxRedeemDustTest is SiloLittleHelper, Test {
         uint256 notwithrawableShares = silo0.convertToShares(1, ISilo.AssetType(uint8(_type))) - 1;
         console2.log("notwithrawableShares", notwithrawableShares);
         vm.prank(depositor);
-        IShareToken(shareToken).transfer(owner, notwithrawableShares);
+        require(IShareToken(shareToken).transfer(owner, notwithrawableShares), "transfer failed");
 
         uint256 maxRedeem = silo0.maxRedeem(owner, _type);
         assertEq(maxRedeem, 0, "max redeem should return 0 because of rounding and fractions");
@@ -69,7 +69,7 @@ contract MaxRedeemDustTest is SiloLittleHelper, Test {
         silo0.redeem(notwithrawableShares, owner, owner);
 
         vm.prank(depositor);
-        IShareToken(shareToken).transfer(owner, 1);
+        require(IShareToken(shareToken).transfer(owner, 1), "transfer failed");
 
         silo0.redeem(IShareToken(shareToken).balanceOf(owner), owner, owner, _type);
     }
@@ -85,7 +85,7 @@ contract MaxRedeemDustTest is SiloLittleHelper, Test {
         address shareToken = _type == ISilo.CollateralType.Protected ? protectedShareToken : collateralShareToken;
 
         vm.prank(depositor);
-        IShareToken(shareToken).transfer(owner, 999);
+        require(IShareToken(shareToken).transfer(owner, 999), "transfer failed");
 
         (,, address debtShareToken) = silo1.config().getShareTokens(address(silo1));
 
@@ -97,6 +97,6 @@ contract MaxRedeemDustTest is SiloLittleHelper, Test {
 
         // we can not transfer debt if shares value is 0 (dust will be translated to 0)
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        IShareToken(debtShareToken).transfer(owner, 1);
+        require(IShareToken(debtShareToken).transfer(owner, 1), "transfer failed");
     }
 }

@@ -47,7 +47,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     */
     function test_debtToken_transfer_address_zero() public {
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidReceiver.selector, address(0)));
-        shareDebtToken.transfer(address(0), 0);
+        require(shareDebtToken.transfer(address(0), 0), "transfer failed");
     }
 
     /*
@@ -55,7 +55,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     */
     function test_debtToken_transfer_address_zero_withAmount() public {
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidReceiver.selector, address(0)));
-        shareDebtToken.transfer(address(0), 1);
+        require(shareDebtToken.transfer(address(0), 1), "transfer failed");
     }
 
     /*
@@ -67,7 +67,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         assertEq(collateralReceiverBefore, address(0), "RECEIVER has no state");
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        shareDebtToken.transfer(RECEIVER, 0);
+        require(shareDebtToken.transfer(RECEIVER, 0), "transfer failed");
     }
 
     /*
@@ -79,7 +79,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(2, address(this));
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        shareDebtToken.transfer(RECEIVER, 0);
+        require(shareDebtToken.transfer(RECEIVER, 0), "transfer failed");
     }
 
     function test_transfer_amountZero_withReceiverDebt() public {
@@ -88,7 +88,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(2, RECEIVER);
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        shareDebtToken.transfer(RECEIVER, 0);
+        require(shareDebtToken.transfer(RECEIVER, 0), "transfer failed");
     }
 
     function test_transfer_amountZero_withSenderReceiverDebt() public {
@@ -99,7 +99,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(2, RECEIVER);
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        shareDebtToken.transfer(RECEIVER, 0);
+        require(shareDebtToken.transfer(RECEIVER, 0), "transfer failed");
     }
 
     /*
@@ -111,7 +111,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(1, address(this));
 
         vm.expectRevert(IShareToken.AmountExceedsAllowance.selector);
-        shareDebtToken.transfer(RECEIVER, 1);
+        require(shareDebtToken.transfer(RECEIVER, 1), "transfer failed");
     }
 
     /*
@@ -126,7 +126,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.AmountExceedsAllowance.selector);
-        shareDebtToken.transfer(RECEIVER, 2);
+        require(shareDebtToken.transfer(RECEIVER, 2), "transfer failed");
     }
 
     /*
@@ -141,7 +141,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        shareDebtToken.transfer(RECEIVER, 1);
+        require(shareDebtToken.transfer(RECEIVER, 1), "transfer failed");
     }
 
     /*
@@ -157,7 +157,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        shareDebtToken.transfer(RECEIVER, 1);
+        require(shareDebtToken.transfer(RECEIVER, 1), "transfer failed");
     }
 
     /*
@@ -173,7 +173,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        shareDebtToken.transfer(RECEIVER, 1);
+        require(shareDebtToken.transfer(RECEIVER, 1), "transfer failed");
     }
 
     /*
@@ -190,7 +190,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
 
         (address collateralSenderBefore,) = _getCollateralState();
 
-        shareDebtToken.transfer(RECEIVER, 1);
+        require(shareDebtToken.transfer(RECEIVER, 1), "transfer failed");
 
         _assertCollateralSiloWasCopiedFromSenderToReceiver(collateralSenderBefore);
         _assertReceiverIsNotBlockedByAnything();
@@ -212,7 +212,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
 
         (address collateralSenderBefore,) = _getCollateralState();
 
-        shareDebtToken.transfer(RECEIVER, 1);
+        require(shareDebtToken.transfer(RECEIVER, 1), "transfer failed");
 
         _assertCollateralSiloWasCopiedFromSenderToReceiver(collateralSenderBefore);
         _assertReceiverIsNotBlockedByAnything();
@@ -236,7 +236,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         (address collateralSenderBefore, address collateralReceiverBefore) = _getCollateralState();
         assertEq(collateralReceiverBefore, address(0), "[transferAll] RECEIVER collateral is empty");
 
-        shareDebtToken.transfer(RECEIVER, toBorrow);
+        require(shareDebtToken.transfer(RECEIVER, toBorrow), "transfer failed");
 
         (address collateralSenderAfter, address collateralReceiverAfter) = _getCollateralState();
 
@@ -266,7 +266,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         shareDebtToken.setReceiveApproval(address(this), toBorrow);
 
         vm.expectRevert(ISiloConfig.DebtExistInOtherSilo.selector);
-        shareDebtToken.transfer(RECEIVER, toBorrow);
+        require(shareDebtToken.transfer(RECEIVER, toBorrow), "transfer failed");
     }
 
     /*
@@ -327,7 +327,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.AmountExceedsAllowance.selector);
-        shareDebtToken.transferFrom(borrower, RECEIVER, 1e18);
+        require(shareDebtToken.transferFrom(borrower, RECEIVER, 1e18), "transfer failed");
     }
 
     /*
@@ -356,7 +356,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        shareDebtToken.transferFrom(borrower, RECEIVER, borrowAmount);
+        require(shareDebtToken.transferFrom(borrower, RECEIVER, borrowAmount), "transfer failed");
 
         _deposit(amount * 3, RECEIVER, ISilo.CollateralType.Collateral);
 
@@ -365,7 +365,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         assertEq(balance, 0, "RECEIVER has no debt");
 
         vm.prank(spender);
-        shareDebtToken.transferFrom(borrower, RECEIVER, borrowAmount);
+        require(shareDebtToken.transferFrom(borrower, RECEIVER, borrowAmount), "transfer failed");
 
         balance = shareDebtToken.balanceOf(RECEIVER);
         assertEq(balance, borrowAmount, "RECEIVER has debt");

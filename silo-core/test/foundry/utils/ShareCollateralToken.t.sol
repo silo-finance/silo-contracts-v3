@@ -95,7 +95,7 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
         IShareToken token1 = _token1(_collateralType);
 
         vm.prank(DEPOSITOR);
-        token1.transfer(RECEIVER, 1);
+        require(token1.transfer(RECEIVER, 1), "transfer failed");
 
         assertEq(_token1(_collateralType).balanceOf(RECEIVER), 1, "transfer success");
     }
@@ -160,10 +160,10 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
         vm.startPrank(DEPOSITOR);
 
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
-        token0.transfer(RECEIVER, 1);
+        require(token0.transfer(RECEIVER, 1), "transfer failed");
         assertEq(token0.balanceOf(RECEIVER), 0, "transfer0 success");
 
-        token1.transfer(RECEIVER, 1);
+        require(token1.transfer(RECEIVER, 1), "transfer failed");
         assertEq(token1.balanceOf(RECEIVER), 1, "transfer1 success");
 
         vm.stopPrank();
@@ -198,7 +198,7 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
         shareToken.approve(spender, amount);
 
         vm.prank(spender);
-        shareToken.transferFrom(DEPOSITOR, RECEIVER, 1);
+        require(shareToken.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
         assertEq(shareToken.balanceOf(RECEIVER), 1, "transfer0 success");
 
         shareToken = _token1(_collateralType);
@@ -207,7 +207,7 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
         shareToken.approve(spender, amount);
 
         vm.prank(spender);
-        shareToken.transferFrom(DEPOSITOR, RECEIVER, 1);
+        require(shareToken.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
         assertEq(shareToken.balanceOf(RECEIVER), 1, "transfer1 success");
     }
 
@@ -243,14 +243,14 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
-        token0.transferFrom(DEPOSITOR, RECEIVER, 1);
+        require(token0.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
         assertEq(token0.balanceOf(RECEIVER), 0, "transferFrom0 success");
 
         vm.prank(DEPOSITOR);
         token1.approve(spender, 1);
 
         vm.prank(spender);
-        token1.transferFrom(DEPOSITOR, RECEIVER, 1);
+        require(token1.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
         assertEq(token1.balanceOf(RECEIVER), 1, "transferFrom1 success");
     }
 

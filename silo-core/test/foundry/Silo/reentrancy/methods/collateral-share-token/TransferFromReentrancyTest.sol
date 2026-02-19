@@ -44,10 +44,10 @@ contract TransferFromReentrancyTest is MethodReentrancyTest {
         TestStateLib.enableReentrancy();
 
         vm.prank(spender);
-        ShareToken(collateral).transferFrom(depositor, receiver, depositAmount);
+        require(ShareToken(collateral).transferFrom(depositor, receiver, depositAmount), "transfer failed");
 
         vm.prank(spender);
-        ShareToken(protected).transferFrom(depositor, receiver, depositAmount);
+        require(ShareToken(protected).transferFrom(depositor, receiver, depositAmount), "transfer failed");
     }
 
     function verifyReentrancy() external {
@@ -58,18 +58,18 @@ contract TransferFromReentrancyTest is MethodReentrancyTest {
         (address protected, address collateral,) = config.getShareTokens(address(silo0));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        ShareToken(collateral).transferFrom(address(0), address(0), 0);
+        require(ShareToken(collateral).transferFrom(address(0), address(0), 0), "transfer failed");
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        ShareToken(protected).transferFrom(address(0), address(0), 0);
+        require(ShareToken(protected).transferFrom(address(0), address(0), 0), "transfer failed");
 
         (protected, collateral,) = config.getShareTokens(address(silo1));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        ShareToken(collateral).transferFrom(address(0), address(0), 0);
+        require(ShareToken(collateral).transferFrom(address(0), address(0), 0), "transfer failed");
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        ShareToken(protected).transferFrom(address(0), address(0), 0);
+        require(ShareToken(protected).transferFrom(address(0), address(0), 0), "transfer failed");
     }
 
     function methodDescription() external pure returns (string memory description) {

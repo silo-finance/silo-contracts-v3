@@ -17,7 +17,8 @@ contract TransferTest is MethodReentrancyTest {
         address recipient = makeAddr("recipient");
 
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientBalance.selector, address(this), 0, 100e18));
-        require(vault.transfer(recipient, 100e18), "transfer failed");
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        vault.transfer(recipient, 100e18);
     }
 
     function verifyReentrancy() external {
@@ -26,7 +27,8 @@ contract TransferTest is MethodReentrancyTest {
         address recipient = makeAddr("recipient");
 
         vm.expectRevert(abi.encodeWithSelector(ErrorsLib.ReentrancyError.selector));
-        require(vault.transfer(recipient, 100e18), "transfer failed");
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        vault.transfer(recipient, 100e18);
     }
 
     function methodDescription() external pure returns (string memory description) {

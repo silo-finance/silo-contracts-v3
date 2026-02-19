@@ -51,7 +51,7 @@ contract PreviewWithdrawTest is VaultsLittleHelper {
     ) public {
         vm.assume(_assetsOrShares > 1); // can not create debt with 1 collateral
 
-        uint128 amountToUse = _partial ? _assetsOrShares * 37 / 100 : _assetsOrShares;
+        uint128 amountToUse = _partial ? uint128(uint256(_assetsOrShares) * 37 / 100) : _assetsOrShares;
 
         if (_useRedeem()) {
             vm.assume(amountToUse < type(uint128).max / OFFSET_POW.toUint128());

@@ -428,7 +428,6 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
         try hookReceiver.setGauge(_controller, IShareToken(_silo)) {
             console2.log("Gauge set successfully!");
             return true;
-        // forge-lint: disable-next-line(asm-keccak256)
         } catch (bytes memory e) {
             bytes32 alreadyConfiguredHash =
                 // forge-lint: disable-next-line(asm-keccak256)

@@ -55,7 +55,9 @@ contract VaultReentrancyTest is Test {
         assertTrue(allCovered, "All methods should be covered");
     }
 
-    // FOUNDRY_PROFILE=vaults_tests forge test -vvv --ffi --mt test_vault_calls_and_reentrancy
+    /*
+    FOUNDRY_PROFILE=vaults_tests forge test -vvv --ffi --mt test_vault_calls_and_reentrancy
+    */
     function test_vault_calls_and_reentrancy() public {
         ISiloVault vault = _deploySiloAndVaultWithOverrides();
         Registries registries = new Registries();

@@ -81,7 +81,7 @@ broadcast = 'silo-core/echidna/broadcast'
 
 
 [profile.core_test]
-src = 'silo-core/test'
+src = 'silo-core/test/foundry'
 out = 'cache/foundry/out/silo-core'
 broadcast = 'silo-core/broadcast'
 

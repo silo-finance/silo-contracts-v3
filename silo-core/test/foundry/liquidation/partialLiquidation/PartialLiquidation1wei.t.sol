@@ -176,7 +176,7 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
 
         vm.prank(borrower);
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
-        // forge-lint: disable-next-line(unchecked-transfer)
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
         IShareToken(protectedShareToken).transfer(address(1), 1);
         vm.stopPrank();
 

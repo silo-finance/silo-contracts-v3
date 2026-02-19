@@ -26,7 +26,7 @@ contract TransferFromTest is MethodReentrancyTest {
         ISiloVault vault = TestStateLib.vault();
 
         vm.expectRevert(abi.encodeWithSelector(ErrorsLib.ReentrancyError.selector));
-        // forge-lint: disable-next-line(unchecked-transfer)
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
         vault.transferFrom(address(0), address(0), 100e18);
     }
 

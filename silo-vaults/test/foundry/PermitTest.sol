@@ -157,7 +157,7 @@ contract PermitTest is IntegrationTest {
 
         vm.expectRevert();
         vm.prank(spender);
-        // forge-lint: disable-next-line(unchecked-transfer)
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
         vault.transferFrom(owner, spender, 1e18);
     }
 

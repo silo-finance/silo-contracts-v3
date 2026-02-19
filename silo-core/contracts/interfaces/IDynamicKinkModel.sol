@@ -125,6 +125,7 @@ interface IDynamicKinkModel {
     /// @param roc Rate of change variable for slope calculations
     /// @param x Internal calculation variable
     /// @param interest Absolute value of compounded interest
+    // forge-lint: disable-next-item(pascal-case-struct)
     struct LocalVarsRCOMP {
         int256 T;
         int256 k1;

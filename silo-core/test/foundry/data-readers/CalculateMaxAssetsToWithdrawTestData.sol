@@ -10,15 +10,15 @@ contract CalculateMaxAssetsToWithdrawTestData {
         uint256 borrowerProtectedAssets;
     }
 
-    struct CMATWData {
+    struct CmatwData {
         string name;
         Input input;
         uint256 maxAssets;
     }
 
-    CMATWData[] allData;
+    CmatwData[] allData;
 
-    function getData() external returns (CMATWData[] memory data) {
+    function getData() external returns (CmatwData[] memory data) {
         _add(0, 0, 0, 0, 0, 0, "when all zeros");
         _add(1, 0, 0, 1, 0, 1, "when no debt");
         _add(1, 0, 0, 0, 1, 1, "when no debt");

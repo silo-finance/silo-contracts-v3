@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 interface ISiloERC20 {
     /// @custom:storage-location erc7201:openzeppelin.storage.ERC20
+    // forge-lint: disable-next-item(pascal-case-struct)
     struct ERC20Storage {
         mapping(address account => uint256) _balances;
 

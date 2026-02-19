@@ -15,16 +15,16 @@ contract CalculateCollateralToLiquidateTestData {
         uint256 collateralValue;
     }
 
-    struct CCTLData {
+    struct CctlData {
         Input input;
         Output output;
     }
 
-    function readDataFromJson() external pure returns (CCTLData[] memory data) {
-        data = new CCTLData[](6);
+    function readDataFromJson() external pure returns (CctlData[] memory data) {
+        data = new CctlData[](6);
         uint256 i;
 
-        data[i++] = CCTLData({
+        data[i++] = CctlData({
             input: Input({
                 debtValueToCover: 0,
                 totalBorrowerCollateralValue: 1,
@@ -34,7 +34,7 @@ contract CalculateCollateralToLiquidateTestData {
             output: Output({collateralAssets: 0, collateralValue: 0})
         });
 
-        data[i++] = CCTLData({
+        data[i++] = CctlData({
             input: Input({
                 debtValueToCover: 1,
                 totalBorrowerCollateralValue: 1,
@@ -44,7 +44,7 @@ contract CalculateCollateralToLiquidateTestData {
             output: Output({collateralAssets: 1, collateralValue: 1})
         });
 
-        data[i++] = CCTLData({
+        data[i++] = CctlData({
             input: Input({
                 debtValueToCover: 2e18,
                 totalBorrowerCollateralAssets: 10e18,
@@ -54,7 +54,7 @@ contract CalculateCollateralToLiquidateTestData {
             output: Output({collateralValue: 2e18, collateralAssets: 10e18})
         });
 
-        data[i++] = CCTLData({
+        data[i++] = CctlData({
             input: Input({
                 debtValueToCover: 2e18,
                 totalBorrowerCollateralAssets: 10e18,
@@ -67,7 +67,7 @@ contract CalculateCollateralToLiquidateTestData {
             })
         });
 
-        data[i++] = CCTLData({
+        data[i++] = CctlData({
             input: Input({
                 debtValueToCover: 1e18,
                 totalBorrowerCollateralAssets: 100e18,
@@ -80,7 +80,7 @@ contract CalculateCollateralToLiquidateTestData {
             })
         });
 
-        data[i++] = CCTLData({
+        data[i++] = CctlData({
             input: Input({
                 debtValueToCover: 2e18,
                 totalBorrowerCollateralAssets: 10e18,

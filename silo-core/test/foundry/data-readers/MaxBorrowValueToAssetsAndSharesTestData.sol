@@ -16,7 +16,7 @@ contract MaxBorrowValueToAssetsAndSharesTestData {
         uint256 shares;
     }
 
-    struct MBVData {
+    struct MbvData {
         string name;
         Input input;
         Output output;
@@ -24,13 +24,13 @@ contract MaxBorrowValueToAssetsAndSharesTestData {
 
     address immutable debtToken;
 
-    MBVData[] allData;
+    MbvData[] allData;
 
     constructor(address _debtToken) {
         debtToken = _debtToken;
     }
 
-    function getData() external returns (MBVData[] memory data) {
+    function getData() external returns (MbvData[] memory data) {
         uint256 i;
 
         i = _init("all zeros");
@@ -114,7 +114,7 @@ contract MaxBorrowValueToAssetsAndSharesTestData {
         allData[i].input.debtToken = debtToken;
     }
 
-    function _clone(MBVData memory _src) private pure returns (MBVData memory dst) {
+    function _clone(MbvData memory _src) private pure returns (MbvData memory dst) {
         dst.input = Input({
             maxBorrowValue: _src.input.maxBorrowValue,
             debtToken: _src.input.debtToken,

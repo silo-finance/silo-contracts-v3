@@ -3,9 +3,6 @@ pragma solidity 0.8.28;
 
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {
-    ISiloIncentivesControllerCLFactory
-} from "silo-vaults/contracts/interfaces/ISiloIncentivesControllerCLFactory.sol";
-import {
     SiloIncentivesControllerCL
 } from "silo-vaults/contracts/incentives/claiming-logics/SiloIncentivesControllerCL.sol";
 

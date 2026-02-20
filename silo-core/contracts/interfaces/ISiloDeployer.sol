@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import {IInterestRateModelV2} from "./IInterestRateModelV2.sol";
 import {IDynamicKinkModel} from "./IDynamicKinkModel.sol";
 import {ISiloConfig} from "./ISiloConfig.sol";
 

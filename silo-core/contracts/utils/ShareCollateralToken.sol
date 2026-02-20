@@ -2,9 +2,8 @@
 pragma solidity 0.8.28;
 
 import {ShareTokenLib} from "../lib/ShareTokenLib.sol";
-import {SiloMathLib} from "../lib/SiloMathLib.sol";
 import {ShareCollateralTokenLib} from "../lib/ShareCollateralTokenLib.sol";
-import {IShareToken, ShareToken, ISilo} from "./ShareToken.sol";
+import {IShareToken, ShareToken} from "./ShareToken.sol";
 import {IVersioned} from "../interfaces/IVersioned.sol";
 
 /// @title ShareCollateralToken
@@ -24,7 +23,7 @@ abstract contract ShareCollateralToken is ShareToken {
 
     /// @inheritdoc IVersioned
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "ShareCollateralToken 4.0.0";
+        return "ShareCollateralToken 4.1.3";
     }
 
     /// @dev Check if sender is solvent after the transfer

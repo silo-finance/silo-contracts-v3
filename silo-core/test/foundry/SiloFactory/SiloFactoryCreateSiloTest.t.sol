@@ -60,7 +60,7 @@ contract SiloFactoryCreateSiloTest is SiloLittleHelper, IntegrationTest {
     function test_createSilo() public {
         (, ISiloConfig.InitData memory initData,) = siloData.getConfigData(SILO_TO_DEPLOY);
 
-        uint256 currentSiloId = 3000;
+        uint256 currentSiloId = 3001;
         assertEq(siloFactory.getNextSiloId(), currentSiloId + 1, "getNextSiloId does not match");
         assertTrue(siloFactory.isSilo(address(silo0)), "silo0 should exist in factory");
         assertTrue(siloFactory.isSilo(address(silo1)), "silo1 should exist in factory");

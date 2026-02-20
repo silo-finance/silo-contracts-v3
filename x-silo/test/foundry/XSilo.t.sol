@@ -56,7 +56,7 @@ contract XSiloTest is Test {
         _convert(address(this), 10);
 
         vm.expectRevert(XSilo.SelfTransferNotAllowed.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         xSilo.transfer(address(this), 1);
     }
 
@@ -69,7 +69,7 @@ contract XSiloTest is Test {
         _convert(address(this), 10);
 
         vm.expectRevert(XSilo.ZeroTransfer.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         xSilo.transfer(address(2), 0);
     }
 

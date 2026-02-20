@@ -58,21 +58,21 @@ contract TransferFromReentrancyTest is MethodReentrancyTest {
         (address protected, address collateral,) = config.getShareTokens(address(silo0));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareToken(collateral).transferFrom(address(0), address(0), 0);
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareToken(protected).transferFrom(address(0), address(0), 0);
 
         (protected, collateral,) = config.getShareTokens(address(silo1));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareToken(collateral).transferFrom(address(0), address(0), 0);
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareToken(protected).transferFrom(address(0), address(0), 0);
     }
 

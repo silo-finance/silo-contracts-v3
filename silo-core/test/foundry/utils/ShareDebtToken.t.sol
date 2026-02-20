@@ -47,7 +47,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     */
     function test_debtToken_transfer_address_zero() public {
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidReceiver.selector, address(0)));
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(address(0), 0);
     }
 
@@ -56,7 +56,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     */
     function test_debtToken_transfer_address_zero_withAmount() public {
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidReceiver.selector, address(0)));
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(address(0), 1);
     }
 
@@ -69,7 +69,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         assertEq(collateralReceiverBefore, address(0), "RECEIVER has no state");
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(RECEIVER, 0);
     }
 
@@ -82,7 +82,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(2, address(this));
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(RECEIVER, 0);
     }
 
@@ -92,7 +92,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(2, RECEIVER);
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(RECEIVER, 0);
     }
 
@@ -104,7 +104,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(2, RECEIVER);
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(RECEIVER, 0);
     }
 
@@ -117,7 +117,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(1, address(this));
 
         vm.expectRevert(IShareToken.AmountExceedsAllowance.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(RECEIVER, 1);
     }
 
@@ -133,7 +133,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.AmountExceedsAllowance.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(RECEIVER, 2);
     }
 
@@ -149,7 +149,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(RECEIVER, 1);
     }
 
@@ -166,7 +166,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(RECEIVER, 1);
     }
 
@@ -183,7 +183,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(RECEIVER, 1);
     }
 
@@ -277,7 +277,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         shareDebtToken.setReceiveApproval(address(this), toBorrow);
 
         vm.expectRevert(ISiloConfig.DebtExistInOtherSilo.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transfer(RECEIVER, toBorrow);
     }
 
@@ -339,7 +339,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.AmountExceedsAllowance.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transferFrom(borrower, RECEIVER, 1e18);
     }
 
@@ -369,7 +369,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transferFrom(borrower, RECEIVER, borrowAmount);
 
         _deposit(amount * 3, RECEIVER, ISilo.CollateralType.Collateral);

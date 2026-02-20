@@ -35,13 +35,13 @@ contract TransferReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         silo0.transfer(address(0), 1000);
 
         ISilo silo1 = TestStateLib.silo1();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         silo1.transfer(address(0), 1000);
     }
 

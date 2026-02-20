@@ -5,6 +5,7 @@ import {KeyValueStorage} from "silo-foundry-utils/key-value/KeyValueStorage.sol"
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 
 library SiloConfigsNames {
+    string public constant SILO_MOCKED = "Silo_Mocked";
     string public constant SILO_LOCAL_NO_ORACLE_SILO = "Silo_Local_noOracle";
     string public constant SILO_LOCAL_NO_ORACLE_DEFAULTING0 = "Silo_Local_noOracleDefaulting0";
     string public constant SILO_LOCAL_NO_ORACLE_DEFAULTING1 = "Silo_Local_noOracleDefaulting1";

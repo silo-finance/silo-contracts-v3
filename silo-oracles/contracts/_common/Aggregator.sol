@@ -4,7 +4,6 @@ pragma solidity 0.8.28;
 import {AggregatorV3Interface} from "chainlink/v0.8/interfaces/AggregatorV3Interface.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
-import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 
 /// @dev Aggregator is a common aggregator interface for Silo oracles. 
 /// It allows to join multiple oracles to caltulate any asset price.

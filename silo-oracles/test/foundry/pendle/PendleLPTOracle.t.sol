@@ -12,7 +12,6 @@ import {PendleLPTToAssetOracleFactory} from
 import {PendleLPTToSyOracleDeploy} from "silo-oracles/deploy/pendle/PendleLPTToSyOracleDeploy.s.sol";
 import {PendleLPTToAssetOracleDeploy} from "silo-oracles/deploy/pendle/PendleLPTToAssetOracleDeploy.s.sol";
 import {PendleLPTToSyOracleFactoryDeploy} from "silo-oracles/deploy/pendle/PendleLPTToSyOracleFactoryDeploy.s.sol";
-import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {PendleLPTToAssetOracle} from "silo-oracles/contracts/pendle/lp-tokens/PendleLPTToAssetOracle.sol";
 import {PendleLPTToAssetOracleFactoryDeploy} from
     "silo-oracles/deploy/pendle/PendleLPTToAssetOracleFactoryDeploy.s.sol";

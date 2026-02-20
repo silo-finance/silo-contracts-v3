@@ -472,7 +472,6 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_parseSiloDeployments
-    // forge-lint: disable-next-line(unsafe-cheatcode)
     */
     function _parseSiloDeployments() internal {
         string memory root = vm.projectRoot();

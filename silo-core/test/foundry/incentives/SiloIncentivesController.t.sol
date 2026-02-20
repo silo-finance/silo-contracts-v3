@@ -1258,7 +1258,6 @@ contract SiloIncentivesControllerTest is Test {
 
         vm.prank(_user);
         IDistributionManager.AccruedRewards[] memory accruedRewards2 = _controller.claimRewards(_to, programsNames);
-        // forge-lint: disable-next-line(asm-keccak256)
 
         // forge-lint: disable-next-line(asm-keccak256)
         bytes32 rewards1 = keccak256(abi.encode(accruedRewards1));

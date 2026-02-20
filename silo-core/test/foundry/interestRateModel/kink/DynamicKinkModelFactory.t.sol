@@ -148,7 +148,6 @@ contract DynamicKinkModelFactoryTest is KinkCommonTest {
         // forge-lint: disable-next-line(unsafe-typecast)
         userCfg.ucrit = uint64(DP);
         vm.expectRevert(IDynamicKinkModel.InvalidUcrit.selector);
-        // forge-lint: disable-next-line(unsafe-typecast)
         FACTORY.generateConfig(userCfg);
 
         // forge-lint: disable-next-line(unsafe-typecast)
@@ -215,7 +214,6 @@ contract DynamicKinkModelFactoryTest is KinkCommonTest {
     function test_kink_castConfig(IDynamicKinkModel.UserFriendlyConfig memory _in) public {
         DynamicKinkFactoryMock factory = new DynamicKinkFactoryMock();
 
-        // forge-lint: disable-next-line(asm-keccak256)
         IDynamicKinkModel.UserFriendlyConfigInt memory _out = factory.castConfig(_in);
 
         // forge-lint: disable-next-line(asm-keccak256)

@@ -4,17 +4,13 @@ pragma solidity ^0.8.28;
 import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
-import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
-import {IInterestRateModel} from "silo-core/contracts/interfaces/IInterestRateModel.sol";
 import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
-import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
-
 import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 
 /*
@@ -73,7 +69,7 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
     */
     function test_liquidationCall_NoCollateralToLiquidate() public {
         vm.warp(block.timestamp + 365 days);
-        uint256 ltv = siloLens.getLtv(silo0, BORROWER);
+        uint256 ltv = SILO_LENS.getLtv(silo0, BORROWER);
         assertGt(ltv, 1e18, "expect bad debt for this test");
 
         // price is 1:1 so we wil use collateral value as max debt to cover
@@ -83,7 +79,7 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
             address(token0), address(token1), BORROWER, collateralToLiquidate, false /* receiveSToken */
         );
 
-        ltv = siloLens.getLtv(silo0, BORROWER);
+        ltv = SILO_LENS.getLtv(silo0, BORROWER);
         assertEq(ltv, type(uint256).max, "expect ininite LTV after liquidation");
 
         vm.expectRevert(IPartialLiquidation.NoCollateralToLiquidate.selector);
@@ -126,7 +122,7 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
 
         emit log_named_decimal_uint("borrower other shares", otherShareToken.balanceOf(BORROWER), 18);
 
-        emit log_named_decimal_uint("LTV before liquidation [%]", siloLens.getLtv(silo0, BORROWER), 16);
+        emit log_named_decimal_uint("LTV before liquidation [%]", SILO_LENS.getLtv(silo0, BORROWER), 16);
 
         uint256 sharesBefore = shareToken.balanceOf(address(this));
         assertEq(sharesBefore, 0, "liquidator should have no shares before liquidation");

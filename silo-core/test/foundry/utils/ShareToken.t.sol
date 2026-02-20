@@ -74,6 +74,7 @@ contract ShareTokenTest is Test {
         sToken.initialize(ISilo(siloAddr), hookAddr, uint24(Hook.DEBT_TOKEN));
 
         vm.prank(siloAddr);
+        // forge-lint: disable-next-line(unsafe-typecast)
         sToken.synchronizeHooks(uint24(_DEBT_TOKE_BEFORE_ACTION), uint24(_DEBT_TOKE_AFTER_ACTION));
 
         uint256 amount = 1;

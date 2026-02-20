@@ -20,17 +20,17 @@ contract MaxLiquidationWithChunksTest is MaxLiquidationTest {
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
     {
         (uint256 totalCollateralToLiquidate, uint256 totalDebtToCover,) =
-            partialLiquidation.maxLiquidation(borrower);
+            partialLiquidation.maxLiquidation(BORROWER);
 
         for (uint256 i; i < 5; i++) {
             emit log_named_uint("[MaxLiquidationWithChunks] case ------------------------", i);
 
-            emit log_named_string("isSolvent", silo0.isSolvent(borrower) ? "YES" : "NO");
-            emit log_named_decimal_uint("[MaxLiquidationWithChunks] ltv before", silo0.getLtv(borrower), 16);
+            emit log_named_string("isSolvent", silo0.isSolvent(BORROWER) ? "YES" : "NO");
+            emit log_named_decimal_uint("[MaxLiquidationWithChunks] ltv before", silo0.getLtv(BORROWER), 16);
 
-            (uint256 collateralToLiquidate, uint256 maxDebtToCover,) = partialLiquidation.maxLiquidation(borrower);
+            (uint256 collateralToLiquidate, uint256 maxDebtToCover,) = partialLiquidation.maxLiquidation(BORROWER);
 
-            bool isSolvent = silo0.isSolvent(borrower);
+            bool isSolvent = silo0.isSolvent(BORROWER);
 
             // this conditions caught bug
             if (isSolvent && maxDebtToCover != 0) revert("if we solvent there should be no liquidation");

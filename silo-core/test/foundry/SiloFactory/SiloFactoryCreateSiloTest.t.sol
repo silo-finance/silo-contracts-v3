@@ -5,16 +5,13 @@ import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 import {IERC721Errors} from "openzeppelin5/interfaces/draft-IERC6093.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
-import {ISilo, IERC4626} from "silo-core/contracts/interfaces/ISilo.sol";
-import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
+import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IInterestRateModelV2} from "silo-core/contracts/interfaces/IInterestRateModelV2.sol";
 import {IInterestRateModelV2Config} from "silo-core/contracts/interfaces/IInterestRateModelV2Config.sol";
 import {InterestRateModelV2} from "silo-core/contracts/interestRateModel/InterestRateModelV2.sol";
-import {IShareTokenInitializable} from "silo-core/contracts/interfaces/IShareTokenInitializable.sol";
 import {ICrossReentrancyGuard} from "silo-core/contracts/interfaces/ICrossReentrancyGuard.sol";
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 
-import {Hook} from "silo-core/contracts/lib/Hook.sol";
 import {CloneDeterministic} from "silo-core/contracts/lib/CloneDeterministic.sol";
 import {ISiloFactory} from "silo-core/contracts/SiloFactory.sol";
 import {SiloCoreContracts} from "silo-core/common/SiloCoreContracts.sol";

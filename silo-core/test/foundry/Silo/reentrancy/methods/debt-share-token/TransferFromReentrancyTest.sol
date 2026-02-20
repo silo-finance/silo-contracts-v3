@@ -61,7 +61,7 @@ contract TransferFromReentrancyTest is MethodReentrancyTest {
         TestStateLib.enableReentrancy();
 
         vm.prank(spender);
-        ShareDebtToken(debtToken).transferFrom(borrower, receiver, borrowAmount);
+        require(ShareDebtToken(debtToken).transferFrom(borrower, receiver, borrowAmount), "transfer failed 10");
     }
 
     function verifyReentrancy() external {
@@ -72,11 +72,13 @@ contract TransferFromReentrancyTest is MethodReentrancyTest {
         (,, address debtToken) = config.getShareTokens(address(silo0));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareDebtToken(debtToken).transferFrom(address(0), address(0), 0);
 
         (,, debtToken) = config.getShareTokens(address(silo1));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareDebtToken(debtToken).transferFrom(address(0), address(0), 0);
     }
 

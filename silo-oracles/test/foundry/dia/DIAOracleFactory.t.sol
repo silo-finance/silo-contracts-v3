@@ -1,13 +1,9 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.28;
 
-import "../../../constants/Arbitrum.sol";
-
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {TokensGenerator} from "../_common/TokensGenerator.sol";
-import {DIAOracleConfig} from "../../../contracts/dia/DIAOracleConfig.sol";
 import {DIAOracleFactory, DIAOracle, IDIAOracle} from "../../../contracts/dia/DIAOracleFactory.sol";
-import {IDIAOracleV2} from "../../../contracts/external/dia/IDIAOracleV2.sol";
 import {DIAConfigDefault} from "../_common/DIAConfigDefault.sol";
 
 /*

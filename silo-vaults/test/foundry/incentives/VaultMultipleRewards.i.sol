@@ -15,7 +15,6 @@ import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
-import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 
@@ -24,13 +23,14 @@ import {IVaultIncentivesModule} from "silo-vaults/contracts/interfaces/IVaultInc
 
 import {INotificationReceiver} from "../../../contracts/interfaces/INotificationReceiver.sol";
 import {IntegrationTest} from "../helpers/IntegrationTest.sol";
-
-import {CAP} from "../helpers/BaseTest.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
  FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc VaultMultipleRewardsTest -vvv
 */
 contract VaultMultipleRewardsTest is IntegrationTest {
+    using SafeCast for uint256;
+
     ISiloConfig siloConfig;
 
     MintableToken reward1 = new MintableToken(18);
@@ -132,7 +132,7 @@ contract VaultMultipleRewardsTest is IntegrationTest {
         siloIncentivesController.createIncentivesProgram(DistributionTypes.IncentivesProgramCreationInput({
             name: "x",
             rewardToken: address(reward1),
-            emissionPerSecond: uint104(rewardsPerSec),
+            emissionPerSecond: rewardsPerSec.toUint104(),
             distributionEnd: uint40(block.timestamp + 10)
         }));
 
@@ -209,14 +209,14 @@ contract VaultMultipleRewardsTest is IntegrationTest {
         siloIncentivesController.createIncentivesProgram(DistributionTypes.IncentivesProgramCreationInput({
             name: "program1",
             rewardToken: address(reward1),
-            emissionPerSecond: uint104(rewardsPerSec),
+            emissionPerSecond: rewardsPerSec.toUint104(),
             distributionEnd: uint40(block.timestamp + 3)
         }));
 
         siloIncentivesController.createIncentivesProgram(DistributionTypes.IncentivesProgramCreationInput({
             name: "program2",
             rewardToken: address(reward2),
-            emissionPerSecond: uint104(rewardsPerSec),
+            emissionPerSecond: rewardsPerSec.toUint104(),
             distributionEnd: uint40(block.timestamp + 3)
         }));
 

@@ -4,18 +4,9 @@ pragma solidity ^0.8.0;
 import {Test} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 
-import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
-
-import "silo-core/contracts/lib/Actions.sol";
-import "silo-core/contracts/Silo.sol";
 
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
-import {ILiquidationHelper} from "silo-core/contracts/interfaces/ILiquidationHelper.sol";
-import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
-import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
-import {LiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/LiquidationHelper.sol";
-import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
 
 /*
  FOUNDRY_PROFILE=core_test forge test --ffi --mc LiquidationHelperDebug20250113_0x0a25ac -vv

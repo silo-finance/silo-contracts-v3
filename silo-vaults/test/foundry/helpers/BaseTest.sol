@@ -4,7 +4,6 @@ pragma solidity ^0.8.28;
 import {Test} from "forge-std/Test.sol";
 
 import {Strings} from "openzeppelin5/utils/Strings.sol";
-import {Clones} from "openzeppelin5/proxy/Clones.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 
 import {IIncentivesClaimingLogic} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogic.sol";
@@ -15,13 +14,8 @@ import {SiloLittleHelper, SiloFixture, SiloConfigOverride} from "silo-core/test/
 import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 
-import {SiloFixture, SiloConfigOverride} from "silo-core/test/foundry/_common/fixtures/SiloFixture.sol";
-import {SiloFixture} from "silo-core/test/foundry/_common/fixtures/SiloFixture.sol";
-
 import {SiloVaultsFactoryDeploy} from "../../../deploy/SiloVaultsFactoryDeploy.s.sol";
 
-import {SiloVault} from "../../../contracts/SiloVault.sol";
-import {IdleVault} from "../../../contracts/IdleVault.sol";
 import {IdleVaultsFactory} from "../../../contracts/IdleVaultsFactory.sol";
 import {SiloVaultsFactory} from "../../../contracts/SiloVaultsFactory.sol";
 

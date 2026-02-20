@@ -3,7 +3,6 @@ pragma solidity ^0.8.28;
 
 import {IERC20Errors} from "openzeppelin5/interfaces/draft-IERC6093.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
-import {Math} from "openzeppelin5/token/ERC20/extensions/ERC4626.sol";
 
 import {IERC3156FlashBorrower} from "silo-core/contracts/interfaces/IERC3156FlashBorrower.sol";
 
@@ -388,7 +387,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         vault.approve(SUPPLIER, toTransfer);
 
         vm.prank(SUPPLIER);
-        vault.transferFrom(ONBEHALF, RECEIVER, toTransfer);
+        require(vault.transferFrom(ONBEHALF, RECEIVER, toTransfer), "transfer failed");
 
         assertEq(vault.balanceOf(ONBEHALF), shares - toTransfer, "balanceOf(ONBEHALF)");
         assertEq(vault.balanceOf(RECEIVER), toTransfer, "balanceOf(RECEIVER)");
@@ -408,6 +407,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
 
         vm.prank(SUPPLIER);
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, SUPPLIER, 0, shares));
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
         vault.transferFrom(ONBEHALF, RECEIVER, shares);
     }
 
@@ -490,7 +490,7 @@ contract ERC4626Test is IntegrationTest, IERC3156FlashBorrower {
         toTransfer = bound(toTransfer, 0, minted);
 
         vm.prank(ONBEHALF);
-        vault.transfer(RECEIVER, toTransfer);
+        require(vault.transfer(RECEIVER, toTransfer), "transfer failed");
 
         assertEq(vault.balanceOf(SUPPLIER), 0, "balanceOf(SUPPLIER)");
         assertEq(vault.balanceOf(ONBEHALF), minted - toTransfer, "balanceOf(ONBEHALF)");

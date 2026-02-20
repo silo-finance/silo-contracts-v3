@@ -4,7 +4,6 @@ pragma solidity ^0.8.28;
 import {Test} from "forge-std/Test.sol";
 
 import {Strings} from "openzeppelin5/utils/Strings.sol";
-import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 
@@ -56,7 +55,7 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
 
         vm.startPrank(address(silo1));
         // mock attack, leave just 1 wei of liquidity
-        token1.transfer(address(1), token1.balanceOf(address(silo1)) - 1);
+        require(token1.transfer(address(1), token1.balanceOf(address(silo1)) - 1), "transfer failed");
         vm.stopPrank();
 
         vm.warp(block.timestamp + 1);

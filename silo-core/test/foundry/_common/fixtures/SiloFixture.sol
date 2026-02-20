@@ -143,10 +143,12 @@ contract SiloFixture is StdCheats, CommonBase {
     {
         if (!_mainNetDeployed) {
             SiloFactoryDeploy siloFactoryDeploy = new SiloFactoryDeploy();
+            siloFactoryDeploy.disableDeploymentsSync();
             siloFactoryDeploy.run();
             console2.log("[SiloFixture] _deploy: siloFactoryDeploy.run() done.");
 
             SiloImplementationDeploy siloImplementationDeploy = new SiloImplementationDeploy();
+            siloImplementationDeploy.disableDeploymentsSync();
             siloImplementationDeploy.run();
             console2.log("[SiloFixture] _deploy: siloImplementationDeploy.run() done.");
 

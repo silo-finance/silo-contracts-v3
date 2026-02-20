@@ -35,7 +35,7 @@ contract TutorialCreatePosition is Test {
 
         // get wstETH
         vm.prank(EXAMPLE_USER);
-        IERC20(WSTETH).transfer(address(this), 100 * 10 ** 18);
+        require(IERC20(WSTETH).transfer(address(this), 100 * 10 ** 18), "transfer failed");
     }
 
     // Deposit assets to Silo using ERC4626 deposit function.

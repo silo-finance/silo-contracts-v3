@@ -16,12 +16,12 @@ contract PreviewMintTest is SiloLittleHelper, Test {
     uint256 constant DEPOSIT_BEFORE = 1e18 + 9876543211;
 
     ISiloConfig siloConfig;
-    address immutable depositor;
-    address immutable borrower;
+    address immutable DEPOSITOR;
+    address immutable BORROWER;
 
     constructor() {
-        depositor = makeAddr("Depositor");
-        borrower = makeAddr("Borrower");
+        DEPOSITOR = makeAddr("Depositor");
+        BORROWER = makeAddr("Borrower");
     }
 
     function setUp() public {
@@ -64,11 +64,11 @@ contract PreviewMintTest is SiloLittleHelper, Test {
     function _createInterest() internal {
         uint256 assets = 1e18 + 123456789; // some not even number
 
-        _deposit(assets, depositor);
-        _depositForBorrow(assets, depositor);
+        _deposit(assets, DEPOSITOR);
+        _depositForBorrow(assets, DEPOSITOR);
 
-        _deposit(assets, borrower);
-        _borrow(assets / 10, borrower);
+        _deposit(assets, BORROWER);
+        _borrow(assets / 10, BORROWER);
 
         vm.warp(block.timestamp + 365 days);
 
@@ -101,13 +101,13 @@ contract PreviewMintTest is SiloLittleHelper, Test {
 
         uint256 previewMint = _defaultType ? silo0.previewMint(_shares) : silo0.previewMint(_shares, cType);
 
-        token0.mint(depositor, previewMint);
+        token0.mint(DEPOSITOR, previewMint);
 
-        vm.startPrank(depositor);
+        vm.startPrank(DEPOSITOR);
         token0.approve(address(silo0), previewMint);
 
         uint256 depositedAssets =
-            _defaultType ? silo0.mint(_shares, depositor) : silo0.mint(_shares, depositor, cType);
+            _defaultType ? silo0.mint(_shares, DEPOSITOR) : silo0.mint(_shares, DEPOSITOR, cType);
 
         assertEq(previewMint, depositedAssets, "previewMint == depositedAssets, NOT fewer");
         assertEq(previewMint, silo0.convertToAssets(_shares, aType), "previewMint == convertToAssets");

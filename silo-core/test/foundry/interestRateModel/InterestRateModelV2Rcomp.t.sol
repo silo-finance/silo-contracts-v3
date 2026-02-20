@@ -11,9 +11,13 @@ import {InterestRateModelV2Config} from "silo-core/contracts/interestRateModel/I
 import {InterestRateModelV2Impl} from "./InterestRateModelV2Impl.sol";
 import {InterestRateModelConfigs} from "../_common/InterestRateModelConfigs.sol";
 import {RcompTestData} from "../data-readers/RcompTestData.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 // forge test -vv --ffi --mc InterestRateModelV2RcompTest
 contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs {
+    using SafeCast for uint256;
+    using SafeCast for int256;
+
     InterestRateModelV2Impl immutable INTEREST_RATE_MODEL;
 
     uint256 constant DP = 10 ** 18;
@@ -123,7 +127,7 @@ contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs
             RcompData memory testCase = data[i];
 
             IInterestRateModelV2.Config memory cfg = _toConfigStruct(testCase);
-            address silo = address(uint160(i));
+            address silo = address(i.toUint160());
             InterestRateModelV2Impl IRMv2Impl = _createIRM(silo, testCase);
 
             (uint256 rcomp, int256 ri, int256 Tcrit, bool overflow) = IRMv2Impl
@@ -202,7 +206,7 @@ contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs
             RcompData memory testCase = data[i];
 
             IInterestRateModelV2.Config memory cfg = _toConfigStruct(testCase);
-            address silo = address(uint160(i));
+            address silo = address(i.toUint160());
             InterestRateModelV2Impl IRMv2Impl = _createIRM(silo, testCase);
 
             (, int256 ri, int256 Tcrit,) = IRMv2Impl.calculateCompoundInterestRateWithOverflowDetection(
@@ -242,7 +246,7 @@ contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs
     }
 
     function _diff(int256 _a, int256 _b) internal pure returns (uint256 diff) {
-        int256 deviation = (_a * int256(BASIS_POINTS)) / _b;
+        int256 deviation = (_a * BASIS_POINTS.toInt256()) / _b;
         uint256 positiveDeviation = uint256(deviation < 0 ? -deviation : deviation);
 
         diff =

@@ -5,7 +5,6 @@ import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
 import {ErrorsLib} from "silo-vaults/contracts/libraries/ErrorsLib.sol";
-import {MarketConfig} from "silo-vaults/contracts/libraries/PendingLib.sol";
 import {VaultsLittleHelper} from "./fromCore/_common/VaultsLittleHelper.sol";
 
 /*

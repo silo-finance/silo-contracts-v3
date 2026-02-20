@@ -2,8 +2,6 @@
 pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
-import {console2} from "forge-std/console2.sol";
-import {Initializable} from "openzeppelin5/proxy/utils/Initializable.sol";
 import {IAccessControl} from "openzeppelin5/access/IAccessControl.sol";
 
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";

@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.28;
 
-import "../../../constants/Arbitrum.sol";
+import {DIA_ORACLE_V2} from "../../../constants/Arbitrum.sol";
 
-import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {TokensGenerator} from "../_common/TokensGenerator.sol";
-import {DIAOracle, DIAOracle, IDIAOracle, IDIAOracleV2} from "../../../contracts/dia/DIAOracle.sol";
+import {IDIAOracle} from "../../../contracts/interfaces/IDIAOracle.sol";
 import {DIAOracleConfig} from "../../../contracts/dia/DIAOracleConfig.sol";
-import "../_common/DIAConfigDefault.sol";
+import {DIAConfigDefault} from "../_common/DIAConfigDefault.sol";
 
 /*
     FOUNDRY_PROFILE=oracles forge test -vv --match-contract DIAOracleConfigTest

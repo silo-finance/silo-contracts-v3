@@ -19,10 +19,10 @@ FOUNDRY_PROFILE=core_test forge test --ffi -vv --mc ShareDebtTokenTest
 contract ShareDebtTokenTest is Test, SiloLittleHelper {
     ISiloConfig public siloConfig;
     ShareDebtToken public shareDebtToken;
-    address immutable receiver;
+    address immutable RECEIVER;
 
     constructor() {
-        receiver = makeAddr("receiver");
+        RECEIVER = makeAddr("RECEIVER");
     }
 
     function setUp() public {
@@ -47,6 +47,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     */
     function test_debtToken_transfer_address_zero() public {
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidReceiver.selector, address(0)));
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
         shareDebtToken.transfer(address(0), 0);
     }
 
@@ -55,6 +56,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     */
     function test_debtToken_transfer_address_zero_withAmount() public {
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InvalidReceiver.selector, address(0)));
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
         shareDebtToken.transfer(address(0), 1);
     }
 
@@ -64,10 +66,11 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     function test_debtToken_transfer_amountZero_noDebt() public {
         (address collateralSenderBefore, address collateralReceiverBefore) = _getCollateralState();
         assertEq(collateralSenderBefore, address(0), "sender has no state");
-        assertEq(collateralReceiverBefore, address(0), "receiver has no state");
+        assertEq(collateralReceiverBefore, address(0), "RECEIVER has no state");
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        shareDebtToken.transfer(receiver, 0);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transfer(RECEIVER, 0);
     }
 
     /*
@@ -79,27 +82,30 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(2, address(this));
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        shareDebtToken.transfer(receiver, 0);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transfer(RECEIVER, 0);
     }
 
     function test_transfer_amountZero_withReceiverDebt() public {
-        _deposit(20, receiver);
+        _deposit(20, RECEIVER);
         _depositForBorrow(2, makeAddr("depositor"));
-        _borrow(2, receiver);
+        _borrow(2, RECEIVER);
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        shareDebtToken.transfer(receiver, 0);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transfer(RECEIVER, 0);
     }
 
     function test_transfer_amountZero_withSenderReceiverDebt() public {
         _deposit(20, address(this));
-        _deposit(20, receiver);
+        _deposit(20, RECEIVER);
         _depositForBorrow(20, makeAddr("depositor"));
         _borrow(2, address(this));
-        _borrow(2, receiver);
+        _borrow(2, RECEIVER);
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        shareDebtToken.transfer(receiver, 0);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transfer(RECEIVER, 0);
     }
 
     /*
@@ -111,7 +117,8 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(1, address(this));
 
         vm.expectRevert(IShareToken.AmountExceedsAllowance.selector);
-        shareDebtToken.transfer(receiver, 1);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transfer(RECEIVER, 1);
     }
 
     /*
@@ -122,11 +129,12 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _depositForBorrow(2, makeAddr("depositor"));
         _borrow(2, address(this));
 
-        vm.prank(receiver);
+        vm.prank(RECEIVER);
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.AmountExceedsAllowance.selector);
-        shareDebtToken.transfer(receiver, 2);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transfer(RECEIVER, 2);
     }
 
     /*
@@ -137,11 +145,12 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _depositForBorrow(2, makeAddr("depositor"));
         _borrow(2, address(this));
 
-        vm.prank(receiver);
+        vm.prank(RECEIVER);
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        shareDebtToken.transfer(receiver, 1);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transfer(RECEIVER, 1);
     }
 
     /*
@@ -149,15 +158,16 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     */
     function test_debtToken_transfer_withAllowance_notSolvent() public {
         _deposit(20, address(this));
-        _deposit(1, receiver);
+        _deposit(1, RECEIVER);
         _depositForBorrow(2, makeAddr("depositor"));
         _borrow(2, address(this));
 
-        vm.prank(receiver);
+        vm.prank(RECEIVER);
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        shareDebtToken.transfer(receiver, 1);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transfer(RECEIVER, 1);
     }
 
     /*
@@ -165,15 +175,16 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     */
     function test_debtToken_transfer_withAllowance_differentCollateral() public {
         _deposit(20, address(this));
-        _depositForBorrow(20, receiver);
+        _depositForBorrow(20, RECEIVER);
         _depositForBorrow(10, makeAddr("depositor"));
         _borrow(2, address(this));
 
-        vm.prank(receiver);
+        vm.prank(RECEIVER);
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        shareDebtToken.transfer(receiver, 1);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transfer(RECEIVER, 1);
     }
 
     /*
@@ -181,16 +192,16 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     */
     function test_debtToken_transfer_withAllowance_sameCollateral() public {
         _deposit(20, address(this));
-        _deposit(20, receiver);
+        _deposit(20, RECEIVER);
         _depositForBorrow(20, makeAddr("depositor"));
         _borrow(2, address(this));
 
-        vm.prank(receiver);
+        vm.prank(RECEIVER);
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         (address collateralSenderBefore,) = _getCollateralState();
 
-        shareDebtToken.transfer(receiver, 1);
+        require(shareDebtToken.transfer(RECEIVER, 1), "transfer failed");
 
         _assertCollateralSiloWasCopiedFromSenderToReceiver(collateralSenderBefore);
         _assertReceiverIsNotBlockedByAnything();
@@ -201,18 +212,18 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
     */
     function test_debtToken_transfer_withAllowance_withSameDebt() public {
         _deposit(20, address(this));
-        _deposit(20, receiver);
+        _deposit(20, RECEIVER);
         _depositForBorrow(20, makeAddr("depositor"));
 
         _borrow(2, address(this));
-        _borrow(1, receiver);
+        _borrow(1, RECEIVER);
 
-        vm.prank(receiver);
+        vm.prank(RECEIVER);
         shareDebtToken.setReceiveApproval(address(this), 1);
 
         (address collateralSenderBefore,) = _getCollateralState();
 
-        shareDebtToken.transfer(receiver, 1);
+        require(shareDebtToken.transfer(RECEIVER, 1), "transfer failed");
 
         _assertCollateralSiloWasCopiedFromSenderToReceiver(collateralSenderBefore);
         _assertReceiverIsNotBlockedByAnything();
@@ -225,23 +236,23 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         uint256 toBorrow = 2;
 
         _deposit(20, address(this));
-        _deposit(20, receiver);
+        _deposit(20, RECEIVER);
         _depositForBorrow(2, makeAddr("depositor"));
         _printStats(siloConfig, address(this));
         _borrow(toBorrow, address(this));
 
-        vm.prank(receiver);
+        vm.prank(RECEIVER);
         shareDebtToken.setReceiveApproval(address(this), toBorrow);
 
         (address collateralSenderBefore, address collateralReceiverBefore) = _getCollateralState();
-        assertEq(collateralReceiverBefore, address(0), "[transferAll] receiver collateral is empty");
+        assertEq(collateralReceiverBefore, address(0), "[transferAll] RECEIVER collateral is empty");
 
-        shareDebtToken.transfer(receiver, toBorrow);
+        require(shareDebtToken.transfer(RECEIVER, toBorrow), "transfer failed");
 
         (address collateralSenderAfter, address collateralReceiverAfter) = _getCollateralState();
 
         assertEq(collateralSenderBefore, collateralSenderAfter, "[transferAll] sender history is not cleared");
-        assertEq(collateralReceiverAfter, collateralSenderBefore, "[transferAll] state copied sender -> receiver");
+        assertEq(collateralReceiverAfter, collateralSenderBefore, "[transferAll] state copied sender -> RECEIVER");
 
         _assertReceiverIsNotBlockedByAnything();
     }
@@ -253,20 +264,21 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         uint256 toBorrow = 2;
 
         _deposit(20, address(this));
-        _depositForBorrow(20, receiver);
+        _depositForBorrow(20, RECEIVER);
         _depositForBorrow(2, makeAddr("depositor"));
         _printStats(siloConfig, address(this));
 
         _borrow(toBorrow, address(this));
 
-        vm.prank(receiver);
-        silo0.borrow(1, receiver, receiver);
+        vm.prank(RECEIVER);
+        silo0.borrow(1, RECEIVER, RECEIVER);
 
-        vm.prank(receiver);
+        vm.prank(RECEIVER);
         shareDebtToken.setReceiveApproval(address(this), toBorrow);
 
         vm.expectRevert(ISiloConfig.DebtExistInOtherSilo.selector);
-        shareDebtToken.transfer(receiver, toBorrow);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transfer(RECEIVER, toBorrow);
     }
 
     /*
@@ -327,7 +339,8 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.AmountExceedsAllowance.selector);
-        shareDebtToken.transferFrom(borrower, receiver, 1e18);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transferFrom(borrower, RECEIVER, 1e18);
     }
 
     /*
@@ -351,29 +364,30 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         vm.prank(borrower);
         shareDebtToken.approve(spender, borrowAmount);
 
-        vm.prank(receiver);
+        vm.prank(RECEIVER);
         shareDebtToken.setReceiveApproval(borrower, borrowAmount);
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        shareDebtToken.transferFrom(borrower, receiver, borrowAmount);
+        // forge-lint: disable-next-line(rc20-unchecked-transfer)
+        shareDebtToken.transferFrom(borrower, RECEIVER, borrowAmount);
 
-        _deposit(amount * 3, receiver, ISilo.CollateralType.Collateral);
+        _deposit(amount * 3, RECEIVER, ISilo.CollateralType.Collateral);
 
-        uint256 balance = shareDebtToken.balanceOf(receiver);
+        uint256 balance = shareDebtToken.balanceOf(RECEIVER);
 
-        assertEq(balance, 0, "receiver has no debt");
+        assertEq(balance, 0, "RECEIVER has no debt");
 
         vm.prank(spender);
-        shareDebtToken.transferFrom(borrower, receiver, borrowAmount);
+        require(shareDebtToken.transferFrom(borrower, RECEIVER, borrowAmount), "transfer failed");
 
-        balance = shareDebtToken.balanceOf(receiver);
-        assertEq(balance, borrowAmount, "receiver has debt");
+        balance = shareDebtToken.balanceOf(RECEIVER);
+        assertEq(balance, borrowAmount, "RECEIVER has debt");
     }
 
     function _getCollateralState() private returns (address collateralSender, address collateralReceiver) {
         collateralSender = siloConfig.borrowerCollateralSilo(address(this));
-        collateralReceiver = siloConfig.borrowerCollateralSilo(makeAddr("receiver"));
+        collateralReceiver = siloConfig.borrowerCollateralSilo(makeAddr("RECEIVER"));
     }
 
     function _assertCollateralSiloDidNotChanged(address _collateralSenderBefore, address _collateralReceiverBefore)
@@ -382,29 +396,29 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         (address collateralSenderAfter, address collateralReceiverAfter) = _getCollateralState();
 
         assertEq(_collateralSenderBefore, collateralSenderAfter, "[a] does not change the sender state");
-        assertEq(_collateralReceiverBefore, collateralReceiverAfter, "[a] does not change the receiver state");
+        assertEq(_collateralReceiverBefore, collateralReceiverAfter, "[a] does not change the RECEIVER state");
     }
 
     function _assertCollateralSiloWasCopiedFromSenderToReceiver(address _collateralSenderBefore) private {
         address collateralSenderAfter = siloConfig.borrowerCollateralSilo(address(this));
-        address collateralReceiverAfter = siloConfig.borrowerCollateralSilo(makeAddr("receiver"));
+        address collateralReceiverAfter = siloConfig.borrowerCollateralSilo(makeAddr("RECEIVER"));
 
         assertEq(_collateralSenderBefore, collateralSenderAfter, "[b] does not change the sender state");
-        assertEq(_collateralSenderBefore, collateralReceiverAfter, "[b] copies state of sender to receiver");
+        assertEq(_collateralSenderBefore, collateralReceiverAfter, "[b] copies state of sender to RECEIVER");
     }
 
     function _assertReceiverIsNotBlockedByAnything() private {
-        _depositForBorrow(100, receiver);
-        _deposit(100, receiver);
+        _depositForBorrow(100, RECEIVER);
+        _deposit(100, RECEIVER);
         _depositForBorrow(100, makeAddr("depositor"));
-        _borrow(2, receiver);
+        _borrow(2, RECEIVER);
 
-        _repay(2, receiver);
+        _repay(2, RECEIVER);
 
-        vm.prank(receiver);
-        silo0.withdraw(2, receiver, receiver);
+        vm.prank(RECEIVER);
+        silo0.withdraw(2, RECEIVER, RECEIVER);
 
-        vm.prank(receiver);
-        silo1.withdraw(2, receiver, receiver);
+        vm.prank(RECEIVER);
+        silo1.withdraw(2, RECEIVER, RECEIVER);
     }
 }

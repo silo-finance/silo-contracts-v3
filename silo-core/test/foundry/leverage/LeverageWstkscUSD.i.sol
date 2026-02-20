@@ -22,10 +22,6 @@ import {LeverageUsingSiloFlashloanWithGeneralSwap} from
 import {LeverageRouter} from "silo-core/contracts/leverage/LeverageRouter.sol";
 
 import {SiloLittleHelper} from "../_common/SiloLittleHelper.sol";
-import {SwapRouterMock} from "./mocks/SwapRouterMock.sol";
-
-import {MintableToken} from "../_common/MintableToken.sol";
-import {SiloFixture, SiloConfigOverride} from "../_common/fixtures/SiloFixture.sol";
 
 /*
     FOUNDRY_PROFILE=core_test  forge test -vv --ffi --mc LeverageWstkscUSDTest
@@ -68,10 +64,10 @@ contract LeverageWstkscUSDTest is SiloLittleHelper, Test {
         usdcAsset = IERC20(usdcSilo.asset());
 
         vm.prank(wstkscUSDWhale);
-        wstkscUSDAsset.transfer(borrower, 50e6);
+        require(wstkscUSDAsset.transfer(borrower, 50e6), "transfer failed");
 
         vm.prank(usdcWhale);
-        usdcAsset.transfer(borrower, 100e6);
+        require(usdcAsset.transfer(borrower, 100e6), "transfer failed");
 
         emit log_named_address("borrower", borrower);
         emit log_named_address("siloLeverage", leverageRouter.predictUserLeverageContract(borrower));

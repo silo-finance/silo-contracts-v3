@@ -2,8 +2,8 @@
 pragma solidity >=0.7.6 <0.9.0;
 pragma abicoder v2;
 
-import "forge-std/Test.sol";
-import "../../../contracts/_common/OracleFactory.sol";
+import {Test} from "forge-std/Test.sol";
+import {OracleFactory} from "../../../contracts/_common/OracleFactory.sol";
 
 contract OracleFactoryImpl is OracleFactory {
     constructor() OracleFactory(address(1)) {}

@@ -389,6 +389,7 @@ contract SiloLensCompatibilityTest is IntegrationTest {
         _chainsToTest.push(_chainAlias);
 
         string memory root = vm.projectRoot();
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(string.concat(root, "/", SiloDeployments.DEPLOYMENTS_FILE));
 
         string[] memory keys = vm.parseJsonKeys(json, string.concat(".", _chainAlias));
@@ -414,6 +415,7 @@ contract SiloLensCompatibilityTest is IntegrationTest {
         bool allCovered = true;
         string memory root = vm.projectRoot();
         string memory abiFile = "/cache/foundry/out/silo-core/SiloLens.sol/SiloLens.json";
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(string.concat(root, "/", abiFile));
 
         string[] memory keys = vm.parseJsonKeys(json, ".methodIdentifiers");

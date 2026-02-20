@@ -10,7 +10,7 @@ import {XSiloAndStreamDeploy} from "x-silo/deploy/XSiloAndStreamDeploy.s.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
 import {XSilo} from "x-silo/contracts/XSilo.sol";
 
-import {XSiloManagement, IXSiloManagement, INotificationReceiver} from "../../../contracts/modules/XSiloManagement.sol";
+import {IXSiloManagement, INotificationReceiver} from "../../../contracts/modules/XSiloManagement.sol";
 import {Stream, IStream} from "../../../contracts/modules/Stream.sol";
 
 /*

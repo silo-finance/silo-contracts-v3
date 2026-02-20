@@ -36,10 +36,10 @@ contract SiloLendingLibBorrowTestData {
         Output output;
     }
 
-    address immutable protectedShareToken;
-    address immutable collateralShareToken;
-    address immutable debtShareToken;
-    address immutable debtToken;
+    address immutable PROTECTED_SHARE_TOKEN;
+    address immutable COLLATERAL_SHARE_TOKEN;
+    address immutable DEBT_SHARE_TOKEN;
+    address immutable DEBT_TOKEN;
 
     constructor(
         address _protectedShareToken,
@@ -47,10 +47,10 @@ contract SiloLendingLibBorrowTestData {
         address _debtShareToken,
         address _debtToken
     ) {
-        protectedShareToken = _protectedShareToken;
-        collateralShareToken = _collateralShareToken;
-        debtShareToken = _debtShareToken;
-        debtToken = _debtToken;
+        PROTECTED_SHARE_TOKEN = _protectedShareToken;
+        COLLATERAL_SHARE_TOKEN = _collateralShareToken;
+        DEBT_SHARE_TOKEN = _debtShareToken;
+        DEBT_TOKEN = _debtToken;
     }
 
     function getData() external view returns (SLLBData[] memory data) {
@@ -154,10 +154,10 @@ contract SiloLendingLibBorrowTestData {
     function _init(SLLBData memory _src, string memory _name) private view {
         _src.name = _name;
 
-        _src.input.configData.protectedShareToken = protectedShareToken;
-        _src.input.configData.collateralShareToken = collateralShareToken;
-        _src.input.configData.debtShareToken = debtShareToken;
-        _src.input.configData.token = debtToken;
+        _src.input.configData.protectedShareToken = PROTECTED_SHARE_TOKEN;
+        _src.input.configData.collateralShareToken = COLLATERAL_SHARE_TOKEN;
+        _src.input.configData.debtShareToken = DEBT_SHARE_TOKEN;
+        _src.input.configData.token = DEBT_TOKEN;
 
         _src.input.configData.maxLtv = 0.8e4;
 

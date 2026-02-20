@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
@@ -10,10 +9,7 @@ import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
-import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
-import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
 
-import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 import {SiloConfigOverride} from "../../_common/fixtures/SiloFixture.sol";
 import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";

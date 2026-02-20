@@ -23,7 +23,7 @@ abstract contract ShareCollateralToken is ShareToken {
 
     /// @inheritdoc IVersioned
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "ShareCollateralToken 4.0.0";
+        return "ShareCollateralToken 4.1.3";
     }
 
     /// @dev Check if sender is solvent after the transfer

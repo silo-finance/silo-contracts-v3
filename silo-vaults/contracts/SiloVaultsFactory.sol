@@ -90,6 +90,6 @@ contract SiloVaultsFactory is Create2Factory, ISiloVaultsFactory, IVersioned {
 
     /// @inheritdoc IVersioned
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "SiloVaultsFactory 4.0.0";
+        return "SiloVaultsFactory 4.1.3";
     }
 }

@@ -211,7 +211,7 @@ contract SiloFactory is ISiloFactory, ERC721, Ownable2Step, IVersioned {
 
     /// @inheritdoc IVersioned
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "SiloFactory 4.0.0";
+        return "SiloFactory 4.1.3";
     }
 
     /// @inheritdoc ERC721

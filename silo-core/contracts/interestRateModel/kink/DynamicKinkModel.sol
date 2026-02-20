@@ -27,7 +27,7 @@ contract DynamicKinkModel is IDynamicKinkModel, IVersioned, Ownable1and2Steps, I
     using KinkMath for int96;
     using KinkMath for uint256;
 
-    string public constant VERSION = "DynamicKinkModel 3.14.0";
+    string public constant VERSION = "DynamicKinkModel 4.1.3";
 
     /// @dev DP in 18 decimal points used for integer calculations
     int256 internal constant _DP = int256(1e18);

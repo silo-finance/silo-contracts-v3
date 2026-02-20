@@ -202,12 +202,5 @@ okx = "${RPC_OKX}"
 sonic = { key = "${VERIFIER_API_KEY_SONIC}", chain = 146, url = "${VERIFIER_URL_SONIC}" }
 ink = { key = "", chain = 57073, url = "https://explorer.inkonchain.com/api/", verifier = "blockscout" }
 
-[lint]
-exclude_lints = [
-    "mixed-case-function",
-    "mixed-case-variable",
-    "unwrapped-modifier-logic",
-    "pascal-case-struct"
-]
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

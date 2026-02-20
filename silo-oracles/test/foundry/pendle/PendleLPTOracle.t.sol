@@ -85,7 +85,7 @@ contract PendleLPTOracleTest is Test {
 
     /*
     FOUNDRY_PROFILE=oracles forge test --mt test_LPTToAssetOracle_getPrice --ffi -vv
-     */
+    */
     function test_LPTToAssetOracle_getPrice() public {
         ISiloOracle underlyingOracle = ISiloOracle(0x8c5bb146f416De3fbcD8168cC844aCf4Aa2098c5); // USDC/USD
         address market = 0x3F5EA53d1160177445B1898afbB16da111182418; // AUSDC (14 Aug 2025)
@@ -97,11 +97,14 @@ contract PendleLPTOracleTest is Test {
 
         uint256 price = oracleAsset.quote(1e18, market);
         assertEq(price, 2049835019614218201342436720000);
+        assertEq(price, oracleAsset.quote(1e18, oracleAsset.baseToken()), "quote with baseToken");
+
+        assertEq(oracleAsset.VERSION(), "PendleLPTToAssetOracle 4.0.0", "VERSION");
     }
 
     /*
     FOUNDRY_PROFILE=oracles forge test --mt test_LPTToSyOracle_getPrice --ffi -vv
-     */
+    */
     function test_LPTToSyOracle_getPrice() public {
         ISiloOracle underlyingOracle = ISiloOracle(0x4D7262786976917f0d7a83d6Ef3089273e117cF7); // stS/USD
         address market = 0x3aeF1d372d0a7a7E482F465Bc14A42D78f920392; // stS (may 29 2025)
@@ -113,5 +116,8 @@ contract PendleLPTOracleTest is Test {
 
         uint256 price = oracleSy.quote(1e18, market);
         assertEq(price, 1115338829967733590);
+        assertEq(price, oracleSy.quote(1e18, oracleSy.baseToken()), "quote with baseToken");
+
+        assertEq(oracleSy.VERSION(), "PendleLPTToSyOracle 4.0.0", "VERSION");
     }
 }

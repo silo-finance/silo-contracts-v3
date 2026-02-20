@@ -17,6 +17,11 @@ contract PendleWrapperLPTToAssetOracle is PendleLPTToAssetOracle {
         LPT_WRAPPER = _lptWrapper;
     }
 
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure override virtual returns (string memory version) {
+        version = "PendleWrapperLPTToAssetOracle 4.0.0";
+    }
+
     function _getBaseToken() internal view override returns (address baseToken) {
         baseToken = address(LPT_WRAPPER);
     }

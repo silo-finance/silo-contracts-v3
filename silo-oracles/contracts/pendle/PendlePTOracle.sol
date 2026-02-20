@@ -2,17 +2,21 @@
 pragma solidity 0.8.28;
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {IPyYtLpOracleLike} from "silo-oracles/contracts/pendle/interfaces/IPyYtLpOracleLike.sol";
 import {IPendleMarketV3Like} from "silo-oracles/contracts/pendle/interfaces/IPendleMarketV3Like.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 import {IPendleSYTokenLike} from "silo-oracles/contracts/pendle/interfaces/IPendleSYTokenLike.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
+import {Aggregator} from "../_common/Aggregator.sol";
+
+// solhint-disable ordering
 
 /// @notice PendlePTOracle is an oracle, which multiplies the underlying PT token price by PtToSyRate from Pendle.
 /// This oracle must be deployed using PendlePTOracleFactory contract. PendlePTOracle decimals are equal to underlying
 /// oracle's decimals. TWAP duration is constant and equal to 30 minutes. UNDERLYING_ORACLE must return the price of
 /// PT token's underlying asset. Quote token of PendlePTOracle is equal to UNDERLYING_ORACLE quote token.
-contract PendlePTOracle is ISiloOracle {
+contract PendlePTOracle is ISiloOracle, Aggregator, IVersioned {
     /// @dev PtToSyRate unit of measurement.
     uint256 public constant PENDLE_RATE_PRECISION = 10 ** 18;
 
@@ -73,11 +77,17 @@ contract PendlePTOracle is ISiloOracle {
         QUOTE_TOKEN = _underlyingOracle.quoteToken();
     }
 
-    // @inheritdoc ISiloOracle
+    /// @inheritdoc ISiloOracle
     function beforeQuote(address) external virtual {}
 
-    // @inheritdoc ISiloOracle
-    function quote(uint256 _baseAmount, address _baseToken) external virtual view returns (uint256 quoteAmount) {
+    /// @inheritdoc ISiloOracle
+    function quote(uint256 _baseAmount, address _baseToken)
+        public
+        view
+        virtual
+        override(Aggregator, ISiloOracle)
+        returns (uint256 quoteAmount)
+    {
         require(_baseToken == PT_TOKEN, AssetNotSupported());
         uint256 rate = PENDLE_ORACLE.getPtToSyRate(MARKET, TWAP_DURATION);
 
@@ -95,9 +105,20 @@ contract PendlePTOracle is ISiloOracle {
         require(quoteAmount != 0, ZeroPrice());
     }
 
-    // @inheritdoc ISiloOracle
+    /// @inheritdoc ISiloOracle
     function quoteToken() external virtual view returns (address) {
         return QUOTE_TOKEN;
+    }
+
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure override returns (string memory version) {
+        version = "PendlePTOracle 4.0.0";
+    }
+
+    /// @inheritdoc Aggregator
+    function baseToken() public view virtual override returns (address token) {
+        return PT_TOKEN;
     }
 
     function getPtToken(address _market) public virtual view returns (address ptToken) {

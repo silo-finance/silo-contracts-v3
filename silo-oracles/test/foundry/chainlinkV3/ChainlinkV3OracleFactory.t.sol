@@ -78,6 +78,13 @@ contract ChainlinkV3OracleFactoryTest is ChainlinkV3Configs {
             235285547785,
             ", SPELL/USD price is ~$0.000403 => ETH@1716 => SPELL/ETH ~ 0.000403/1716 => 0.00000023"
         );
+
+        assertEq(price, oracle.quote(1e18, oracle.baseToken()), "quote with baseToken");
+    }
+
+    function test_ChainlinkV3Oracle_VERSION() public {
+        ChainlinkV3Oracle oracle = ORACLE_FACTORY.create(_dydxChainlinkV3Config(1e20, 0), bytes32(0));
+        assertEq(oracle.VERSION(), "ChainlinkV3Oracle 4.0.0", "VERSION");
     }
 
     /*

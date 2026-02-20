@@ -4,12 +4,16 @@ pragma solidity 0.8.28;
 import {Initializable} from  "openzeppelin5-upgradeable/proxy/utils/Initializable.sol";
 import {AggregatorV3Interface} from "chainlink/v0.8/interfaces/AggregatorV3Interface.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
+import {Aggregator} from "../_common/Aggregator.sol";
 
 import {OracleNormalization} from "../lib/OracleNormalization.sol";
 import {ChainlinkV3OracleConfig} from "./ChainlinkV3OracleConfig.sol";
 import {IChainlinkV3Oracle} from "../interfaces/IChainlinkV3Oracle.sol";
 
-contract ChainlinkV3Oracle is IChainlinkV3Oracle, ISiloOracle, Initializable {
+// solhint-disable ordering
+
+contract ChainlinkV3Oracle is IChainlinkV3Oracle, ISiloOracle, Initializable, Aggregator, IVersioned {
     ChainlinkV3OracleConfig public oracleConfig;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -26,7 +30,13 @@ contract ChainlinkV3Oracle is IChainlinkV3Oracle, ISiloOracle, Initializable {
 
     /// @inheritdoc ISiloOracle
     // solhint-disable-next-line code-complexity
-    function quote(uint256 _baseAmount, address _baseToken) external view virtual returns (uint256 quoteAmount) {
+    function quote(uint256 _baseAmount, address _baseToken)
+        public
+        view
+        virtual
+        override(Aggregator, ISiloOracle)
+        returns (uint256 quoteAmount)
+    {
         ChainlinkV3Config memory config = oracleConfig.getConfig();
 
         if (_baseToken != address(config.baseToken)) revert AssetNotSupported();
@@ -81,6 +91,18 @@ contract ChainlinkV3Oracle is IChainlinkV3Oracle, ISiloOracle, Initializable {
 
     function beforeQuote(address) external pure virtual override {
         // nothing to execute
+    }
+
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure virtual override returns (string memory version) {
+        version = "ChainlinkV3Oracle 4.0.0";
+    }
+
+    /// @inheritdoc Aggregator
+    function baseToken() public view virtual override returns (address token) {
+        ChainlinkV3Config memory config = oracleConfig.getConfig();
+        return address(config.baseToken);
     }
 
     function _getAggregatorPrice(AggregatorV3Interface _aggregator, uint256 /* _heartbeat */)

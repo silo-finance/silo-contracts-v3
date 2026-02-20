@@ -3,13 +3,17 @@ pragma solidity 0.8.28;
 
 import {Initializable} from  "openzeppelin5-upgradeable/proxy/utils/Initializable.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
 import {OracleNormalization} from "../lib/OracleNormalization.sol";
+import {Aggregator} from "../_common/Aggregator.sol";
 import {DIAOracleConfig} from "./DIAOracleConfig.sol";
 import {IDIAOracle} from "../interfaces/IDIAOracle.sol";
 import {IDIAOracleV2} from "../external/dia/IDIAOracleV2.sol";
 
-contract DIAOracle is ISiloOracle, IDIAOracle, Initializable {
+// solhint-disable ordering
+
+contract DIAOracle is ISiloOracle, IDIAOracle, Initializable, Aggregator, IVersioned {
     DIAOracleConfig public oracleConfig;
 
     /// @dev we accessing prices for assets by keys eg. "Jones/USD"
@@ -46,7 +50,13 @@ contract DIAOracle is ISiloOracle, IDIAOracle, Initializable {
 
     /// @inheritdoc ISiloOracle
     // solhint-disable-next-line code-complexity
-    function quote(uint256 _baseAmount, address _baseToken) external view virtual returns (uint256 quoteAmount) {
+    function quote(uint256 _baseAmount, address _baseToken)
+        public
+        view
+        virtual
+        override(Aggregator, ISiloOracle)
+        returns (uint256 quoteAmount)
+    {
         DIAOracleConfig cacheOracleConfig = oracleConfig;
         DIAConfig memory data = cacheOracleConfig.getConfig();
 
@@ -95,6 +105,18 @@ contract DIAOracle is ISiloOracle, IDIAOracle, Initializable {
 
     function beforeQuote(address) external pure virtual override {
         // nothing to execute
+    }
+
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure override returns (string memory version) {
+        version = "DIAOracle 4.0.0";
+    }
+
+    /// @inheritdoc Aggregator
+    function baseToken() public view virtual override returns (address token) {
+        IDIAOracle.DIAConfig memory config = oracleConfig.getConfig();
+        return config.baseToken;
     }
 
     /// @param _diaOracle IDIAOracleV2 oracle where price is stored

@@ -13,6 +13,11 @@ import {PendleLPTOracle} from "./PendleLPTOracle.sol";
 contract PendleLPTToSyOracle is PendleLPTOracle {
     constructor(ISiloOracle _underlyingOracle, address _market) PendleLPTOracle(_underlyingOracle, _market) {}
 
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure override virtual returns (string memory version) {
+        version = "PendleLPTToSyOracle 4.0.0";
+    }
+
     function _getRateLpToUnderlying() internal view override returns (uint256) {
         return PENDLE_ORACLE.getLpToSyRate(PENDLE_MARKET, TWAP_DURATION);
     }

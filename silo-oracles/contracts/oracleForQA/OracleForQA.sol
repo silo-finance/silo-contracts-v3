@@ -4,9 +4,14 @@ pragma solidity 0.8.28;
 
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
+import {Aggregator} from "../_common/Aggregator.sol";
 
-contract OracleForQA is ISiloOracle {
+// solhint-disable ordering
+
+contract OracleForQA is ISiloOracle, Aggregator, IVersioned {
     address public immutable QUOTE_TOKEN;
+    address public immutable BASE_TOKEN;
     uint256 public immutable BASE_DECIMALS;
     address public immutable ADMIN;
 
@@ -16,6 +21,7 @@ contract OracleForQA is ISiloOracle {
     error OnlyAdminCanSetPrice();
 
     constructor (address base, address _quote, address _admin, uint256 _initialPrice) {
+        BASE_TOKEN = base;
         QUOTE_TOKEN = _quote;
         BASE_DECIMALS = IERC20Metadata(base).decimals();
         ADMIN = _admin;
@@ -34,7 +40,13 @@ contract OracleForQA is ISiloOracle {
     }
 
     /// @inheritdoc ISiloOracle
-    function quote(uint256 _baseAmount, address _baseToken) external view virtual returns (uint256 quoteAmount) {
+    function quote(uint256 _baseAmount, address _baseToken)
+        public
+        view
+        virtual
+        override(Aggregator, ISiloOracle)
+        returns (uint256 quoteAmount)
+    {
         quoteAmount = _baseToken == QUOTE_TOKEN
             ? _baseAmount
             : _baseAmount * priceOfOneBaseToken / (10 ** BASE_DECIMALS);
@@ -44,5 +56,16 @@ contract OracleForQA is ISiloOracle {
 
     function beforeQuote(address) external pure virtual override {
         // nothing to execute
+    }
+
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure override returns (string memory version) {
+        version = "OracleForQA 4.0.0";
+    }
+
+    /// @inheritdoc Aggregator
+    function baseToken() public view virtual override returns (address token) {
+        return BASE_TOKEN;
     }
 }

@@ -6,12 +6,15 @@ import {OracleLibrary} from  "uniswap/v3-periphery/contracts/libraries/OracleLib
 import {IUniswapV3Pool} from  "uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
 import {RevertBytes} from  "../lib/RevertBytes.sol";
 import {IUniswapV3Oracle} from "../interfaces/IUniswapV3Oracle.sol";
 import {UniswapV3OracleConfig} from "./UniswapV3OracleConfig.sol";
 
-contract UniswapV3Oracle is ISiloOracle, IUniswapV3Oracle {
+// solhint-disable ordering
+
+contract UniswapV3Oracle is ISiloOracle, IUniswapV3Oracle, IVersioned {
     using RevertBytes for bytes;
 
     /// @dev Uniswap can revert with "Old" error when begin of TWAP period is older than oldest observation.
@@ -99,7 +102,7 @@ contract UniswapV3Oracle is ISiloOracle, IUniswapV3Oracle {
     ///
     /// recommended observations are = 30 min / blockTime
     function quote(uint256 _baseAmount, address _baseToken)
-        external
+        public
         view
         virtual
         override
@@ -140,6 +143,17 @@ contract UniswapV3Oracle is ISiloOracle, IUniswapV3Oracle {
 
     function beforeQuote(address) external pure virtual override {
         // nothing to execute
+    }
+
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure override returns (string memory version) {
+        version = "UniswapV3Oracle 4.0.0";
+    }
+
+    function baseToken() public view virtual returns (address token) {
+        UniswapV3Config memory config = oracleConfig.getConfig();
+        return config.baseToken;
     }
 
     /// @param _pool uniswap V3 pool address

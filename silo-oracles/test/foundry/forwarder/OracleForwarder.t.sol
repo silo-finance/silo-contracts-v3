@@ -102,7 +102,7 @@ contract OracleForwarderTest is Test {
 
         uint256 quote1 = forwarder.quote(1, address(0));
 
-        assertEq(quote1, _oracleMock1.QUOTE_AMOUNT());
+        assertEq(quote1, _oracleMock1.price());
 
         vm.prank(_owner);
         _oracleForwarder.setOracle(ISiloOracle(address(_oracleMock2)));

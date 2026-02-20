@@ -9,7 +9,7 @@ import {ERC4626Oracle} from "silo-oracles/contracts/erc4626/ERC4626Oracle.sol";
 import {ERC4626OracleHardcodeQuoteFactoryDeploy} from
     "silo-oracles/deploy/erc4626/ERC4626OracleHardcodeQuoteFactoryDeploy.sol";
 
-import {ERC4626OracleHardcodeQuoteFactory} from "silo-oracles/contracts/erc4626/ERC4626OracleHardcodeQuoteFactory.sol";
+import {ERC4626OracleHardcodeQuoteFactory, ERC4626OracleHardcodeQuote} from "silo-oracles/contracts/erc4626/ERC4626OracleHardcodeQuoteFactory.sol";
 
 import {IERC4626OracleHardcodeQuoteFactory} from
     "silo-oracles/contracts/interfaces/IERC4626OracleHardcodeQuoteFactory.sol";

@@ -48,6 +48,7 @@ contract RcompTestData is Test {
     function _readDataFromJson() internal view returns (RcompData[] memory) {
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/silo-core/test/foundry/data/Rcomptest.json");
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(path);
 
         return abi.decode(vm.parseJson(json, string(abi.encodePacked("."))), (RcompData[]));

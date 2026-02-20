@@ -46,6 +46,7 @@ contract RcurTestData is Test {
     function _readDataFromJson() internal view returns (RcurData[] memory) {
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/silo-core/test/foundry/data/Rcurtest.json");
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(path);
 
         return abi.decode(vm.parseJson(json, string(abi.encodePacked("."))), (RcurData[]));

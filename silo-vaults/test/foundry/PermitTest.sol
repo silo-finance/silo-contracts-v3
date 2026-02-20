@@ -110,7 +110,7 @@ contract PermitTest is IntegrationTest {
         vault.permit(permit.owner, permit.spender, permit.value, permit.deadline, v, r, s);
 
         vm.prank(spender);
-        vault.transferFrom(owner, spender, 1e18);
+        require(vault.transferFrom(owner, spender, 1e18), "transfer failed");
 
         assertEq(vault.balanceOf(owner), 0);
         assertEq(vault.balanceOf(spender), 1e18);
@@ -129,13 +129,16 @@ contract PermitTest is IntegrationTest {
         vault.permit(permit.owner, permit.spender, permit.value, permit.deadline, v, r, s);
 
         vm.prank(spender);
-        vault.transferFrom(owner, spender, 1e18);
+        require(vault.transferFrom(owner, spender, 1e18), "transfer failed");
 
         assertEq(vault.balanceOf(owner), 0);
         assertEq(vault.balanceOf(spender), 1e18);
         assertEq(vault.allowance(owner, spender), type(uint256).max);
     }
 
+    /*
+    FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt test_RevertWhen_InvalidAllowance -vvv
+    */
     function test_RevertWhen_InvalidAllowance(uint256 deadline) public {
         deadline = bound(deadline, block.timestamp, type(uint48).max);
 
@@ -154,9 +157,13 @@ contract PermitTest is IntegrationTest {
 
         vm.expectRevert();
         vm.prank(spender);
-        vault.transferFrom(owner, spender, 1e18); // attempt to transfer 1 vault
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        vault.transferFrom(owner, spender, 1e18);
     }
 
+    /*
+    FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt test_RevertWhen_InvalidBalance -vvv
+    */
     function test_RevertWhen_InvalidBalance(uint256 deadline) public {
         deadline = bound(deadline, block.timestamp, type(uint48).max);
 
@@ -175,6 +182,7 @@ contract PermitTest is IntegrationTest {
 
         vm.expectRevert();
         vm.prank(spender);
-        vault.transferFrom(owner, spender, 2e18); // attempt to transfer 2 tokens (owner only owns 1)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        vault.transferFrom(owner, spender, 2e18);
     }
 }

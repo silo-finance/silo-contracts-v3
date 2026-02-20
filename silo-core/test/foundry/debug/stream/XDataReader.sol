@@ -32,6 +32,7 @@ contract XDataReader is Test {
     function _readDataFromJson(string memory _fileName) internal view returns (Position[] memory) {
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/silo-core/test/foundry/data/stream/", _fileName);
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(path);
 
         return abi.decode(vm.parseJson(json, string(abi.encodePacked("."))), (Position[]));

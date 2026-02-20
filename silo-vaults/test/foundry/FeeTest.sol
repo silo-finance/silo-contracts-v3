@@ -14,7 +14,7 @@ import {EventsLib} from "../../contracts/libraries/EventsLib.sol";
 import {ConstantsLib} from "../../contracts/libraries/ConstantsLib.sol";
 
 import {IntegrationTest} from "./helpers/IntegrationTest.sol";
-import {CAP, NB_MARKETS, MIN_TEST_ASSETS, MAX_TEST_ASSETS, TIMELOCK} from "./helpers/BaseTest.sol";
+import {CAP, NB_MARKETS, MIN_TEST_ASSETS, MAX_TEST_ASSETS} from "./helpers/BaseTest.sol";
 
 uint256 constant FEE = 0.2 ether; // 20%
 

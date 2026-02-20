@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.28;
 
-import {IMethodReentrancyTest} from "../interfaces/IMethodReentrancyTest.sol";
-
 import {LiquidationCallByDefaultingReentrancyTest} from
     "../methods/silo-hook-v2/LiquidationCallByDefaultingReentrancyTest.sol";
 

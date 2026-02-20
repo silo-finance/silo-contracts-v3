@@ -23,7 +23,7 @@ contract MaxRedeemTest is MaxWithdrawCommon {
     forge test -vv --ffi --mt test_maxRedeem_zero
     */
     function test_maxRedeem_zero() public view {
-        uint256 maxRedeem = silo1.maxRedeem(borrower);
+        uint256 maxRedeem = silo1.maxRedeem(BORROWER);
         assertEq(maxRedeem, 0, "nothing to redeem");
     }
 
@@ -35,10 +35,10 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         vm.assume(_assets > 0);
         vm.assume(_assets2 > 0);
 
-        _deposit(_assets, borrower);
+        _deposit(_assets, BORROWER);
         _deposit(_assets2, address(1)); // any
 
-        uint256 maxRedeem = silo0.maxRedeem(borrower);
+        uint256 maxRedeem = silo0.maxRedeem(BORROWER);
         uint256 oneAsset = silo0.convertToShares(1, ISilo.AssetType.Collateral);
 
         assertLe(
@@ -59,14 +59,14 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         _createDebtOnSilo1(_collateral, _toBorrow);
 
         ISilo collateralSilo = silo0;
-        uint256 maxRedeem = collateralSilo.maxRedeem(borrower);
+        uint256 maxRedeem = collateralSilo.maxRedeem(BORROWER);
 
         (, address collateralShareToken,) = collateralSilo.config().getShareTokens(address(collateralSilo));
         assertLt(
-            maxRedeem, IShareToken(collateralShareToken).balanceOf(borrower), "with debt you can not withdraw all"
+            maxRedeem, IShareToken(collateralShareToken).balanceOf(BORROWER), "with debt you can not withdraw all"
         );
 
-        emit log_named_decimal_uint("LTV", collateralSilo.getLtv(borrower), 16);
+        emit log_named_decimal_uint("LTV", collateralSilo.getLtv(BORROWER), 16);
 
         _assertBorrowerCanNotRedeemMore(maxRedeem, 2);
     }
@@ -82,13 +82,13 @@ contract MaxRedeemTest is MaxWithdrawCommon {
 
         ISilo collateralSilo = silo0;
 
-        uint256 maxRedeem = collateralSilo.maxRedeem(borrower);
+        uint256 maxRedeem = collateralSilo.maxRedeem(BORROWER);
         (, address collateralShareToken,) = collateralSilo.config().getShareTokens(address(collateralSilo));
         assertLt(
-            maxRedeem, IShareToken(collateralShareToken).balanceOf(borrower), "with debt you can not withdraw all"
+            maxRedeem, IShareToken(collateralShareToken).balanceOf(BORROWER), "with debt you can not withdraw all"
         );
 
-        emit log_named_decimal_uint("LTV", collateralSilo.getLtv(borrower), 16);
+        emit log_named_decimal_uint("LTV", collateralSilo.getLtv(BORROWER), 16);
 
         _assertBorrowerCanNotRedeemMore(maxRedeem, 2);
     }
@@ -105,13 +105,13 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         emit log("----- time travel -------");
         ISilo collateralSilo = silo0;
 
-        uint256 maxRedeem = collateralSilo.maxRedeem(borrower);
+        uint256 maxRedeem = collateralSilo.maxRedeem(BORROWER);
         (, address collateralShareToken,) = collateralSilo.config().getShareTokens(address(collateralSilo));
         assertLt(
-            maxRedeem, IShareToken(collateralShareToken).balanceOf(borrower), "with debt you can not withdraw all"
+            maxRedeem, IShareToken(collateralShareToken).balanceOf(BORROWER), "with debt you can not withdraw all"
         );
 
-        emit log_named_decimal_uint("LTV", collateralSilo.getLtv(borrower), 16);
+        emit log_named_decimal_uint("LTV", collateralSilo.getLtv(BORROWER), 16);
 
         _assertBorrowerCanNotRedeemMore(maxRedeem, 3);
     }
@@ -119,10 +119,10 @@ contract MaxRedeemTest is MaxWithdrawCommon {
     function _assertBorrowerHasNothingToRedeem() internal view {
         (, address collateralShareToken,) = silo0.config().getShareTokens(address(silo0));
 
-        assertEq(silo0.maxRedeem(borrower), 0, "expect maxRedeem to be 0");
+        assertEq(silo0.maxRedeem(BORROWER), 0, "expect maxRedeem to be 0");
         uint256 oneAsset = silo0.convertToShares(1, ISilo.AssetType.Collateral);
         assertLe(
-            IShareToken(collateralShareToken).balanceOf(borrower), oneAsset, "expect share balance to be (almost) 0"
+            IShareToken(collateralShareToken).balanceOf(BORROWER), oneAsset, "expect share balance to be (almost) 0"
         );
     }
 
@@ -138,12 +138,12 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         ISilo collateralSilo = silo0;
 
         if (_maxRedeem > 0) {
-            vm.prank(borrower);
-            collateralSilo.redeem(_maxRedeem, borrower, borrower);
-            emit log_named_decimal_uint("LTV after additional redeem", collateralSilo.getLtv(borrower), 16);
+            vm.prank(BORROWER);
+            collateralSilo.redeem(_maxRedeem, BORROWER, BORROWER);
+            emit log_named_decimal_uint("LTV after additional redeem", collateralSilo.getLtv(BORROWER), 16);
         }
 
-        bool isSolvent = collateralSilo.isSolvent(borrower);
+        bool isSolvent = collateralSilo.isSolvent(BORROWER);
 
         if (!isSolvent) {
             assertEq(_maxRedeem, 0, "if user is insolvent, MAX should be always 0");
@@ -152,9 +152,9 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         uint256 counterExample = isSolvent ? _underestimate : 1;
         emit log_named_uint("=========== [counterexample] testing counterexample for maxRedeem with", counterExample);
 
-        vm.prank(borrower);
+        vm.prank(BORROWER);
         vm.expectRevert();
-        collateralSilo.redeem(counterExample, borrower, borrower);
+        collateralSilo.redeem(counterExample, BORROWER, BORROWER);
     }
 
     function _assertMaxRedeemIsZeroAtTheEnd() internal {
@@ -164,7 +164,7 @@ contract MaxRedeemTest is MaxWithdrawCommon {
     function _assertMaxRedeemIsZeroAtTheEnd(uint256 _underestimate) internal {
         emit log_named_uint("================= _assertMaxRedeemIsZeroAtTheEnd ================= +/-", _underestimate);
 
-        uint256 maxRedeem = silo0.maxRedeem(borrower);
+        uint256 maxRedeem = silo0.maxRedeem(BORROWER);
 
         assertLe(
             maxRedeem,

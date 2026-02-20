@@ -29,7 +29,7 @@ contract CantinaTicket239 is CantinaTicket {
         // 4: Alice repays all debt
         _repayShares(silo1.maxRepay(alice), silo1.maxRepayShares(alice), alice);
         assertEq(silo1.maxRepay(alice), 0, "no more debt");
-        assertEq(siloLens.getLtv(silo1, alice), 0, "LTV 0");
+        assertEq(SILO_LENS.getLtv(silo1, alice), 0, "LTV 0");
 
         uint256 amountAfterRepay = silo1.getCollateralAssets(); // get collat amount with interest
         assertEq(amountBeforeRepay, amountAfterRepay, "incorrect interest calculation");

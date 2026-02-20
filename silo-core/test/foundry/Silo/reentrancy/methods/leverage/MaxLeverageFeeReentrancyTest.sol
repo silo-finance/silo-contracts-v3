@@ -2,8 +2,6 @@
 pragma solidity ^0.8.28;
 
 import {RevenueModule} from "silo-core/contracts/leverage/modules/RevenueModule.sol";
-import {ILeverageRouter} from "silo-core/contracts/interfaces/ILeverageRouter.sol";
-import {LeverageRouter} from "silo-core/contracts/leverage/LeverageRouter.sol";
 import {MethodReentrancyTest} from "../MethodReentrancyTest.sol";
 import {TestStateLib} from "../../TestState.sol";
 

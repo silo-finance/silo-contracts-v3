@@ -8,7 +8,6 @@ import {Clones} from "openzeppelin5/proxy/Clones.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IPartialLiquidationByDefaulting.sol";
-import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 
 import {SiloHookV2} from "silo-core/contracts/hooks/SiloHookV2.sol";
 

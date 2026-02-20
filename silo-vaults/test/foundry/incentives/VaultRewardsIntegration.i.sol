@@ -11,11 +11,15 @@ import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {INotificationReceiver} from "../../../contracts/interfaces/INotificationReceiver.sol";
 
 import {VaultRewardsIntegrationSetup} from "./VaultRewardsIntegrationSetup.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
  FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc VaultRewardsIntegrationTest -vvv
 */
 contract VaultRewardsIntegrationTest is VaultRewardsIntegrationSetup {
+    using SafeCast for uint256;
+    using SafeCast for uint128;
+
     /*
      FOUNDRY_PROFILE=vaults_tests forge test --ffi --mt test_vaults_rewards_noRevert -vv
     */
@@ -64,7 +68,7 @@ contract VaultRewardsIntegrationTest is VaultRewardsIntegrationSetup {
         siloIncentivesController.createIncentivesProgram(DistributionTypes.IncentivesProgramCreationInput({
             name: "x",
             rewardToken: address(reward1),
-            emissionPerSecond: uint104(rewardsPerSec),
+            emissionPerSecond: rewardsPerSec.toUint104(),
             distributionEnd: uint40(block.timestamp + 10)
         }));
 
@@ -154,7 +158,7 @@ contract VaultRewardsIntegrationTest is VaultRewardsIntegrationSetup {
         siloIncentivesController.createIncentivesProgram(DistributionTypes.IncentivesProgramCreationInput({
             name: "x",
             rewardToken: address(reward1),
-            emissionPerSecond: uint104(rewardsPerSec),
+            emissionPerSecond: rewardsPerSec.toUint104(),
             distributionEnd: uint40(block.timestamp + 10)
         }));
 
@@ -221,7 +225,7 @@ contract VaultRewardsIntegrationTest is VaultRewardsIntegrationSetup {
         siloIncentivesController.createIncentivesProgram(DistributionTypes.IncentivesProgramCreationInput({
             name: "program1",
             rewardToken: address(reward1),
-            emissionPerSecond: uint104(rewardsPerSec),
+            emissionPerSecond: rewardsPerSec.toUint104(),
             distributionEnd: uint40(block.timestamp + 1)
         }));
 
@@ -259,7 +263,7 @@ contract VaultRewardsIntegrationTest is VaultRewardsIntegrationSetup {
         siloIncentivesController.createIncentivesProgram(DistributionTypes.IncentivesProgramCreationInput({
             name: "program1",
             rewardToken: address(reward1),
-            emissionPerSecond: uint104(_rewardsPerSec),
+            emissionPerSecond: _rewardsPerSec.toUint104(),
             distributionEnd: uint40(block.timestamp + 1)
         }));
 

@@ -2,9 +2,6 @@
 pragma solidity ^0.8.28;
 
 import {IERC4626, IERC20} from "openzeppelin5/interfaces/IERC4626.sol";
-import {ERC4626} from "openzeppelin5/token/ERC20/extensions/ERC4626.sol";
-import {Math} from "openzeppelin5/utils/math/Math.sol";
-import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 
 import {ErrorsLib} from "../../../contracts/libraries/ErrorsLib.sol";
 import {IdleVault} from "../../../contracts/IdleVault.sol";
@@ -91,7 +88,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
         if (donationAmount == 0) return;
 
         emit log_named_uint("executing donation attack with amount", donationAmount);
-        IERC20(idleMarket.asset()).transfer(address(idleMarket), donationAmount);
+        require(IERC20(idleMarket.asset()).transfer(address(idleMarket), donationAmount), "transfer failed");
     }
 
     /*
@@ -173,7 +170,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
 
         // here we have frontrun with donation
         if (_attackUsingHookBeforeDeposit) donationAmount = _donation;
-        else IERC20(idleMarket.asset()).transfer(address(idleMarket), _donation);
+        else require(IERC20(idleMarket.asset()).transfer(address(idleMarket), _donation), "transfer failed");
 
         vm.prank(SUPPLIER);
 
@@ -217,6 +214,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
         } catch (bytes memory data) {
             emit log("deposit reverted for SUPPLIER");
 
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
 
             if (
@@ -265,7 +263,7 @@ contract MarketLossTest is IBefore, IntegrationTest {
         vm.stopPrank();
 
         // inflate price, possible eg on before deposit
-        IERC20(idleMarket.asset()).transfer(address(idleMarket), donation);
+        require(IERC20(idleMarket.asset()).transfer(address(idleMarket), donation), "transfer failed");
 
         // simulate reallocation back
         vm.startPrank(address(vault));

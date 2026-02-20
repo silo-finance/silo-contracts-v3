@@ -94,6 +94,7 @@ contract SiloDeployTest is IntegrationTest {
 
     // AGGREGATOR=1INCH FOUNDRY_PROFILE=core_test forge test --ffi --mt test_encodeCallWithSalt -vv
     function test_encodeCallWithSalt() public pure {
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 salt = keccak256(bytes("some string"));
 
         IChainlinkV3Oracle.ChainlinkV3DeploymentConfig memory config;

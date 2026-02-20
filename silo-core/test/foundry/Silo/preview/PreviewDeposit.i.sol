@@ -13,12 +13,12 @@ import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
     forge test -vv --ffi --mc PreviewDepositTest
 */
 contract PreviewDepositTest is SiloLittleHelper, Test {
-    address immutable depositor;
-    address immutable borrower;
+    address immutable DEPOSITOR;
+    address immutable BORROWER;
 
     constructor() {
-        depositor = makeAddr("Depositor");
-        borrower = makeAddr("Borrower");
+        DEPOSITOR = makeAddr("Depositor");
+        BORROWER = makeAddr("Borrower");
     }
 
     function setUp() public {
@@ -36,7 +36,7 @@ contract PreviewDepositTest is SiloLittleHelper, Test {
         (ISilo.CollateralType cType, ISilo.AssetType aType) = _castToTypes(_defaultType, _type);
 
         uint256 previewShares = _defaultType ? silo0.previewDeposit(_assets) : silo0.previewDeposit(_assets, cType);
-        uint256 shares = _defaultType ? _deposit(_assets, depositor) : _deposit(_assets, depositor, cType);
+        uint256 shares = _defaultType ? _deposit(_assets, DEPOSITOR) : _deposit(_assets, DEPOSITOR, cType);
 
         assertEq(previewShares, shares, "previewDeposit must return as close but NOT more");
         assertEq(previewShares, silo0.convertToShares(_assets, aType), "previewDeposit == convertToShares");
@@ -52,13 +52,13 @@ contract PreviewDepositTest is SiloLittleHelper, Test {
 
         (ISilo.CollateralType cType, ISilo.AssetType aType) = _castToTypes(_defaultType, _type);
 
-        uint256 sharesBefore = _defaultType ? _deposit(_assets, depositor) : _deposit(_assets, depositor, cType);
+        uint256 sharesBefore = _defaultType ? _deposit(_assets, DEPOSITOR) : _deposit(_assets, DEPOSITOR, cType);
 
         vm.warp(block.timestamp + 365 days);
         silo0.accrueInterest();
 
         uint256 previewShares = _defaultType ? silo0.previewDeposit(_assets) : silo0.previewDeposit(_assets, cType);
-        uint256 gotShares = _defaultType ? _deposit(_assets, depositor) : _deposit(_assets, depositor, cType);
+        uint256 gotShares = _defaultType ? _deposit(_assets, DEPOSITOR) : _deposit(_assets, DEPOSITOR, cType);
 
         assertEq(previewShares, gotShares, "previewDeposit must return as close but NOT more");
         assertEq(previewShares, sharesBefore, "without interest shares must be the same");
@@ -76,15 +76,15 @@ contract PreviewDepositTest is SiloLittleHelper, Test {
         ISilo.CollateralType cType = _protected ? ISilo.CollateralType.Protected : ISilo.CollateralType.Collateral;
         ISilo.AssetType aType = _protected ? ISilo.AssetType.Protected : ISilo.AssetType.Collateral;
 
-        uint256 sharesBefore = _deposit(_assets, depositor, cType);
-        _depositForBorrow(_assets, depositor);
+        uint256 sharesBefore = _deposit(_assets, DEPOSITOR, cType);
+        _depositForBorrow(_assets, DEPOSITOR);
 
         if (_protected) {
-            _makeDeposit(silo1, token1, _assets, depositor, ISilo.CollateralType.Protected);
+            _makeDeposit(silo1, token1, _assets, DEPOSITOR, ISilo.CollateralType.Protected);
         }
 
-        _deposit(_assets / 10 == 0 ? 2 : _assets, borrower);
-        _borrow(_assets / 10 + 1, borrower); // +1 ensure we not borrowing 0
+        _deposit(_assets / 10 == 0 ? 2 : _assets, BORROWER);
+        _borrow(_assets / 10 + 1, BORROWER); // +1 ensure we not borrowing 0
 
         vm.warp(block.timestamp + 365 days);
 
@@ -99,11 +99,11 @@ contract PreviewDepositTest is SiloLittleHelper, Test {
 
         if (previewShares1 == 0) {
             // if preview is zero for `_assets`, then deposit should also reverts
-            _depositForBorrowRevert(_assets, depositor, cType, ISilo.InputZeroShares.selector);
+            _depositForBorrowRevert(_assets, DEPOSITOR, cType, ISilo.InputZeroShares.selector);
         } else {
             assertEq(
                 previewShares1,
-                _makeDeposit(silo1, token1, _assets, depositor, cType),
+                _makeDeposit(silo1, token1, _assets, DEPOSITOR, cType),
                 "previewDeposit with interest on the fly - must be as close but NOT more"
             );
         }
@@ -136,11 +136,11 @@ contract PreviewDepositTest is SiloLittleHelper, Test {
         emit log_named_uint("previewShares1", previewShares1);
 
         if (previewShares1 == 0) {
-            _depositForBorrowRevert(_assets, depositor, cType, ISilo.InputZeroShares.selector);
+            _depositForBorrowRevert(_assets, DEPOSITOR, cType, ISilo.InputZeroShares.selector);
         } else {
             assertEq(
                 previewShares1,
-                _makeDeposit(silo1, token1, _assets, depositor, cType),
+                _makeDeposit(silo1, token1, _assets, DEPOSITOR, cType),
                 "previewDeposit after accrueInterest() - as close, but NOT more"
             );
         }

@@ -2,7 +2,8 @@
 pragma solidity >=0.7.6 <0.9.0;
 pragma abicoder v2;
 
-import "./TokensGenerator.sol";
+import {TokensGenerator} from "./TokensGenerator.sol";
+import {IERC20} from "../interfaces/IERC20.sol";
 
 contract Whales is TokensGenerator {
     // asset => whale
@@ -35,7 +36,7 @@ contract Whales is TokensGenerator {
         } else {
             emit log_named_address("whale", whale);
             vm.prank(whale);
-            IERC20(_asset).transfer(_recipient, _amount);
+            require(IERC20(_asset).transfer(_recipient, _amount), "transfer failed");
         }
     }
 }

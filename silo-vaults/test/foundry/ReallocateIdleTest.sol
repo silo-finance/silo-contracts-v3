@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.28;
 
-import {IERC4626} from "openzeppelin5/token/ERC20/extensions/ERC4626.sol";
-
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
 
 import {MarketAllocation} from "../../contracts/interfaces/ISiloVault.sol";
@@ -36,11 +34,11 @@ contract ReallocateIdleTest is IntegrationTest {
         suppliedAssets[1] = bound(suppliedAssets[1], 1, CAP2);
         suppliedAssets[2] = bound(suppliedAssets[2], 1, CAP2);
 
-        allocations.push(MarketAllocation(idleMarket, 0));
-        allocations.push(MarketAllocation(allMarkets[0], suppliedAssets[0]));
-        allocations.push(MarketAllocation(allMarkets[1], suppliedAssets[1]));
-        allocations.push(MarketAllocation(allMarkets[2], suppliedAssets[2]));
-        allocations.push(MarketAllocation(idleMarket, type(uint256).max));
+        allocations.push(MarketAllocation({market: idleMarket, assets: 0}));
+        allocations.push(MarketAllocation({market: allMarkets[0], assets: suppliedAssets[0]}));
+        allocations.push(MarketAllocation({market: allMarkets[1], assets: suppliedAssets[1]}));
+        allocations.push(MarketAllocation({market: allMarkets[2], assets: suppliedAssets[2]}));
+        allocations.push(MarketAllocation({market: idleMarket, assets: type(uint256).max}));
 
         uint256 idleBefore = _idle();
 

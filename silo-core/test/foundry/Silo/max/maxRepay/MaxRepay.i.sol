@@ -16,12 +16,12 @@ contract MaxRepayTest is SiloLittleHelper, Test {
     uint256 internal constant _REAL_ASSETS_LIMIT = type(uint128).max;
 
     ISiloConfig siloConfig;
-    address immutable depositor;
-    address immutable borrower;
+    address immutable DEPOSITOR;
+    address immutable BORROWER;
 
     constructor() {
-        depositor = makeAddr("Depositor");
-        borrower = makeAddr("Borrower");
+        DEPOSITOR = makeAddr("Depositor");
+        BORROWER = makeAddr("Borrower");
     }
 
     function setUp() public {
@@ -32,10 +32,10 @@ contract MaxRepayTest is SiloLittleHelper, Test {
     forge test -vv --ffi --mt test_maxRepay_noDebt
     */
     function test_maxRepay_noDebt() public {
-        uint256 maxRepay = silo1.maxRepay(borrower);
+        uint256 maxRepay = silo1.maxRepay(BORROWER);
         assertEq(maxRepay, 0, "no debt - nothing to repay");
 
-        _depositForBorrow(11e18, borrower);
+        _depositForBorrow(11e18, BORROWER);
 
         _assertBorrowerHasNoDebt();
     }
@@ -48,10 +48,10 @@ contract MaxRepayTest is SiloLittleHelper, Test {
         uint256 toBorrow = _collateral / 3;
         _createDebt(_collateral, toBorrow);
 
-        uint256 maxRepay = silo1.maxRepay(borrower);
-        assertEq(maxRepay, toBorrow, "max repay is what was borrower if no interest");
+        uint256 maxRepay = silo1.maxRepay(BORROWER);
+        assertEq(maxRepay, toBorrow, "max repay is what was BORROWER if no interest");
 
-        _repay(maxRepay, borrower);
+        _repay(maxRepay, BORROWER);
         _assertBorrowerHasNoDebt();
     }
 
@@ -65,10 +65,10 @@ contract MaxRepayTest is SiloLittleHelper, Test {
 
         vm.warp(block.timestamp + 356 days);
 
-        uint256 maxRepay = silo1.maxRepay(borrower);
+        uint256 maxRepay = silo1.maxRepay(BORROWER);
         vm.assume(maxRepay > toBorrow); // we want interest
 
-        _repay(maxRepay, borrower);
+        _repay(maxRepay, BORROWER);
         _assertBorrowerHasNoDebt();
     }
 
@@ -76,9 +76,9 @@ contract MaxRepayTest is SiloLittleHelper, Test {
         vm.assume(_collateral > 0);
         vm.assume(_toBorrow > 0);
 
-        _depositForBorrow(_collateral, depositor);
-        _deposit(_collateral, borrower);
-        _borrow(_toBorrow, borrower);
+        _depositForBorrow(_collateral, DEPOSITOR);
+        _deposit(_collateral, BORROWER);
+        _borrow(_toBorrow, BORROWER);
 
         _ensureBorrowerHasDebt();
     }
@@ -86,14 +86,14 @@ contract MaxRepayTest is SiloLittleHelper, Test {
     function _ensureBorrowerHasDebt() internal view {
         (,, address debtShareToken) = silo1.config().getShareTokens(address(silo1));
 
-        assertGt(silo1.maxRepay(borrower), 0, "expect debt");
-        assertGt(IShareToken(debtShareToken).balanceOf(borrower), 0, "expect debtShareToken balance > 0");
+        assertGt(silo1.maxRepay(BORROWER), 0, "expect debt");
+        assertGt(IShareToken(debtShareToken).balanceOf(BORROWER), 0, "expect debtShareToken balance > 0");
     }
 
     function _assertBorrowerHasNoDebt() internal view {
         (,, address debtShareToken) = silo1.config().getShareTokens(address(silo1));
 
-        assertEq(silo1.maxRepay(borrower), 0, "expect maxRepay to be 0");
-        assertEq(IShareToken(debtShareToken).balanceOf(borrower), 0, "expect debtShareToken balance to be 0");
+        assertEq(silo1.maxRepay(BORROWER), 0, "expect maxRepay to be 0");
+        assertEq(IShareToken(debtShareToken).balanceOf(BORROWER), 0, "expect debtShareToken balance to be 0");
     }
 }

@@ -2,7 +2,6 @@
 pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
-import {console2} from "forge-std/console2.sol";
 
 import {DefaultingRepayLib} from "silo-core/contracts/hooks/defaulting/DefaultingRepayLib.sol";
 import {Actions} from "silo-core/contracts/lib/Actions.sol";
@@ -30,13 +29,13 @@ contract ShareDebtTokenMock is ShareDebtToken {
 }
 
 contract SiloAndConfigMock {
-    ShareDebtTokenMock public immutable debtShareToken;
-    MintableToken public immutable debtAsset;
+    ShareDebtTokenMock public immutable DEBT_SHARE_TOKEN;
+    MintableToken public immutable DEBT_ASSET;
 
     constructor() {
-        debtShareToken = new ShareDebtTokenMock();
-        debtAsset = new MintableToken(18);
-        debtAsset.setOnDemand(true);
+        DEBT_SHARE_TOKEN = new ShareDebtTokenMock();
+        DEBT_ASSET = new MintableToken(18);
+        DEBT_ASSET.setOnDemand(true);
     }
 
     function config() external view returns (ISiloConfig) {
@@ -50,7 +49,7 @@ contract SiloAndConfigMock {
     function accrueInterestForSilo(address /* _silo */ ) external pure {}
 
     function getDebtShareTokenAndAsset(address /* _silo */ ) external view returns (address, address) {
-        return (address(debtShareToken), address(debtAsset));
+        return (address(DEBT_SHARE_TOKEN), address(DEBT_ASSET));
     }
 }
 
@@ -112,8 +111,8 @@ contract DefaultingRepayLibTest is Test {
     SiloAndConfigMock siloAndConfigMockDefaulting = new SiloAndConfigMock();
 
     function setUp() public {
-        siloAndConfigMockActions.debtShareToken().mockIt(ISilo(address(siloAndConfigMockActions)));
-        siloAndConfigMockDefaulting.debtShareToken().mockIt(ISilo(address(siloAndConfigMockDefaulting)));
+        siloAndConfigMockActions.DEBT_SHARE_TOKEN().mockIt(ISilo(address(siloAndConfigMockActions)));
+        siloAndConfigMockDefaulting.DEBT_SHARE_TOKEN().mockIt(ISilo(address(siloAndConfigMockDefaulting)));
 
         defaultingRepayLibImpl.init(address(siloAndConfigMockActions));
         actionsLibImpl.init(address(siloAndConfigMockDefaulting));

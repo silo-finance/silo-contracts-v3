@@ -2,8 +2,9 @@
 pragma solidity >=0.7.6 <0.9.0;
 pragma abicoder v2;
 
-import "./Forking.sol";
-import "../interfaces/IERC20Metadata.sol"; // interfaces included BECAUSE OF 0.7.6
+import {Forking} from "./Forking.sol";
+import {IERC20} from "../interfaces/IERC20.sol";
+import {IERC20Metadata} from "../interfaces/IERC20Metadata.sol"; // interfaces included BECAUSE OF 0.7.6
 
 contract TokensGenerator is Forking {
     // token symbol => address

@@ -7,7 +7,6 @@ import {Strings} from "openzeppelin5/utils/Strings.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
-import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {PartialLiquidationExecLib} from "silo-core/contracts/hooks/liquidation/lib/PartialLiquidationExecLib.sol";
 
 import {SiloMock} from "../../../../../_mocks/SiloMock.sol";
@@ -237,6 +236,7 @@ contract GetExactLiquidationAmountsTest is GetExactLiquidationAmountsHelper {
                 : uint256(_debtUserBalanceOf - repayDebtAssets) * DECIMALS_POINTS
                     / uint256(_collateralUserBalanceOf - fromCollateral);
         } catch (bytes memory data) {
+            // forge-lint: disable-next-line(unsafe-typecast)
             errorType = bytes4(data);
         }
     }

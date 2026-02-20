@@ -16,12 +16,12 @@ import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 */
 contract PreviewWithdrawTest is SiloLittleHelper, Test {
     ISiloConfig siloConfig;
-    address immutable depositor;
-    address immutable borrower;
+    address immutable DEPOSITOR;
+    address immutable BORROWER;
 
     constructor() {
-        depositor = makeAddr("Depositor");
-        borrower = makeAddr("Borrower");
+        DEPOSITOR = makeAddr("Depositor");
+        BORROWER = makeAddr("Borrower");
     }
 
     function setUp() public {
@@ -132,8 +132,8 @@ contract PreviewWithdrawTest is SiloLittleHelper, Test {
 
         uint256 maxInput = _useRedeem()
             // we can not use balance of share token, because we not sure about liquidity
-            ? silo1.maxRedeem(depositor, _collateralType()) // _getShareToken().balanceOf(depositor)
-            : silo1.maxWithdraw(depositor, _collateralType());
+            ? silo1.maxRedeem(DEPOSITOR, _collateralType()) // _getShareToken().balanceOf(DEPOSITOR)
+            : silo1.maxWithdraw(DEPOSITOR, _collateralType());
 
         uint256 maxPreview = _getPreview(maxInput);
 
@@ -147,20 +147,20 @@ contract PreviewWithdrawTest is SiloLittleHelper, Test {
     function _depositForTestPreview(uint256 _assets) internal {
         _depositForBorrow({
             _assets: _assets,
-            _depositor: depositor,
+            _depositor: DEPOSITOR,
             _collateralType: _collateralType()
         });
     }
 
     function _createSiloUsage() internal {
-        _depositForBorrow(type(uint128).max, depositor);
+        _depositForBorrow(type(uint128).max, DEPOSITOR);
 
-        _deposit(type(uint128).max, borrower, _collateralType());
-        _borrow(type(uint64).max, borrower);
+        _deposit(type(uint128).max, BORROWER, _collateralType());
+        _borrow(type(uint64).max, BORROWER);
     }
 
     function _applyInterest() internal {
-        uint256 ltvBefore = siloLens.getLtv(silo1, borrower);
+        uint256 ltvBefore = SILO_LENS.getLtv(silo1, BORROWER);
         if (ltvBefore == 1) {
             // there is no way for this test to apply interest for 1 wei LTV
             return;
@@ -168,14 +168,14 @@ contract PreviewWithdrawTest is SiloLittleHelper, Test {
 
         vm.warp(block.timestamp + 200 days);
 
-        uint256 ltvAfter = siloLens.getLtv(silo1, borrower);
+        uint256 ltvAfter = SILO_LENS.getLtv(silo1, BORROWER);
 
         emit log_named_uint("ltvBefore", ltvBefore);
         emit log_named_uint("ltvAfter", ltvAfter);
 
         while (ltvAfter == ltvBefore) {
             vm.warp(block.timestamp + 500 days);
-            ltvAfter = siloLens.getLtv(silo1, borrower);
+            ltvAfter = SILO_LENS.getLtv(silo1, BORROWER);
         }
 
         emit log_named_uint("ltvAfter loop", ltvAfter);
@@ -185,11 +185,11 @@ contract PreviewWithdrawTest is SiloLittleHelper, Test {
 
     function _assertPreviewWithdraw(uint256 _preview, uint256 _assetsOrShares) internal {
         vm.assume(_preview > 0);
-        vm.prank(depositor);
+        vm.prank(DEPOSITOR);
 
         uint256 results = _useRedeem()
-            ? silo1.redeem(_assetsOrShares, depositor, depositor, _collateralType())
-            : silo1.withdraw(_assetsOrShares, depositor, depositor, _collateralType());
+            ? silo1.redeem(_assetsOrShares, DEPOSITOR, DEPOSITOR, _collateralType())
+            : silo1.withdraw(_assetsOrShares, DEPOSITOR, DEPOSITOR, _collateralType());
 
         assertGt(results, 0, "expect any withdraw amount > 0");
 

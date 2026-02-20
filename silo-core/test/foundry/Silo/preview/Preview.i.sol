@@ -15,12 +15,12 @@ contract PreviewTest is SiloLittleHelper, Test {
     uint256 constant DEPOSIT_BEFORE = 1e18 + 9876543211;
 
     ISiloConfig siloConfig;
-    address immutable depositor;
-    address immutable borrower;
+    address immutable DEPOSITOR;
+    address immutable BORROWER;
 
     constructor() {
-        depositor = makeAddr("Depositor");
-        borrower = makeAddr("Borrower");
+        DEPOSITOR = makeAddr("Depositor");
+        BORROWER = makeAddr("Borrower");
     }
 
     function setUp() public {
@@ -56,7 +56,7 @@ contract PreviewTest is SiloLittleHelper, Test {
             : silo1.previewBorrow(assetsOrSharesToBorrow);
 
         uint256 result =
-            _useShares ? _borrow(assetsOrSharesToBorrow, borrower) : _borrowShares(assetsOrSharesToBorrow, borrower);
+            _useShares ? _borrow(assetsOrSharesToBorrow, BORROWER) : _borrowShares(assetsOrSharesToBorrow, BORROWER);
 
         assertEq(preview, assetsOrSharesToBorrow, "previewBorrow shares are exact as amount when no interest");
         assertEq(preview, result, "previewBorrow - expect exact match");
@@ -83,7 +83,7 @@ contract PreviewTest is SiloLittleHelper, Test {
             ? silo1.previewBorrowShares(assetsOrSharesToBorrow)
             : silo1.previewBorrow(assetsOrSharesToBorrow);
         uint256 result =
-            _useShares ? _borrowShares(assetsOrSharesToBorrow, borrower) : _borrow(assetsOrSharesToBorrow, borrower);
+            _useShares ? _borrowShares(assetsOrSharesToBorrow, BORROWER) : _borrow(assetsOrSharesToBorrow, BORROWER);
 
         assertEq(
             preview,
@@ -107,7 +107,7 @@ contract PreviewTest is SiloLittleHelper, Test {
         // preview before debt creation
         uint256 preview = _useShares ? silo1.previewRepayShares(amountToUse) : silo1.previewRepay(amountToUse);
 
-        _createDebt(_assetsOrShares, borrower);
+        _createDebt(_assetsOrShares, BORROWER);
 
         assertEq(preview, amountToUse, "previewRepay == assets == shares, when no interest");
 
@@ -124,7 +124,7 @@ contract PreviewTest is SiloLittleHelper, Test {
         uint128 amountToUse = _repayFull ? _assetsOrShares : uint128(uint256(_assetsOrShares) * 37 / 100);
         vm.assume(amountToUse > 0);
 
-        _createDebt(_assetsOrShares, borrower);
+        _createDebt(_assetsOrShares, BORROWER);
 
         uint256 preview = _useShares ? silo1.previewRepayShares(amountToUse) : silo1.previewRepay(amountToUse);
 
@@ -146,7 +146,7 @@ contract PreviewTest is SiloLittleHelper, Test {
         uint128 amountToUse = _repayFull ? _assetsOrShares : uint128(uint256(_assetsOrShares) * 37 / 100);
         vm.assume(amountToUse > 0);
 
-        _createDebt(_assetsOrShares, borrower);
+        _createDebt(_assetsOrShares, BORROWER);
         vm.warp(block.timestamp + 100 days);
 
         uint256 preview = _useShares ? silo1.previewRepayShares(amountToUse) : silo1.previewRepay(amountToUse);
@@ -158,8 +158,8 @@ contract PreviewTest is SiloLittleHelper, Test {
         vm.assume(_preview > 0);
 
         uint256 repayResult = _useShares
-            ? _repayShares(type(uint256).max, _assetsOrShares, borrower)
-            : _repay(_assetsOrShares, borrower);
+            ? _repayShares(type(uint256).max, _assetsOrShares, BORROWER)
+            : _repay(_assetsOrShares, BORROWER);
 
         assertGt(repayResult, 0, "expect any repay amount > 0");
 
@@ -173,7 +173,7 @@ contract PreviewTest is SiloLittleHelper, Test {
     function _createBorrowCase(uint128 _assets) internal {
         address somebody = makeAddr("Somebody");
 
-        _deposit(_assets, borrower);
+        _deposit(_assets, BORROWER);
 
         // deposit to both silos
         _deposit(_assets, somebody);

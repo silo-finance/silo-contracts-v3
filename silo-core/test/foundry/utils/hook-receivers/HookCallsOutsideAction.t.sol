@@ -10,7 +10,6 @@ import {IERC3156FlashBorrower} from "silo-core/contracts/interfaces/IERC3156Flas
 import {IERC20R} from "silo-core/contracts/interfaces/IERC20R.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
-import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiver.sol";
 import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 
@@ -108,11 +107,11 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
 
         emit log("-- protectedShareToken.transfer --");
         vm.prank(borrower);
-        IERC20(protectedShareToken).transfer(depositor, 1);
+        require(IERC20(protectedShareToken).transfer(depositor, 1), "transfer failed");
 
         emit log("-- collateralShareToken.transfer --");
         vm.prank(borrower);
-        IERC20(collateralShareToken).transfer(depositor, 1);
+        require(IERC20(collateralShareToken).transfer(depositor, 1), "transfer failed");
 
         emit log("-- setReceiveApproval --");
         vm.prank(depositor);
@@ -120,7 +119,7 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
 
         emit log("-- debtShareToken.transfer --");
         vm.prank(borrower);
-        IERC20(debtShareToken).transfer(depositor, 1);
+        require(IERC20(debtShareToken).transfer(depositor, 1), "transfer failed");
 
         emit log("-- withdraw --");
         vm.prank(borrower);
@@ -202,7 +201,7 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
         external
         returns (bytes32)
     {
-        IERC20(_token).transfer(address(msg.sender), _amount);
+        require(IERC20(_token).transfer(address(msg.sender), _amount), "transfer failed");
         return FLASHLOAN_CALLBACK;
     }
 

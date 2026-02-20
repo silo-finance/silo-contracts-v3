@@ -46,7 +46,7 @@ contract SiloRouterPendleLPTsTest is Test {
         uint256 amount = 100e18;
 
         vm.prank(pendleLPWhale);
-        pendleLPToken.transfer(depositor, amount);
+        require(pendleLPToken.transfer(depositor, amount), "transfer failed");
 
         assertEq(pendleLPToken.balanceOf(depositor), amount, "Expect to have 100 pendle LP tokens");
 
@@ -76,7 +76,7 @@ contract SiloRouterPendleLPTsTest is Test {
         uint256 amount = 100e18;
 
         vm.prank(pendleLPWhale);
-        pendleLPToken.transfer(depositor, amount);
+        require(pendleLPToken.transfer(depositor, amount), "transfer failed");
 
         vm.prank(depositor);
         pendleLPToken.approve(address(wrapper), amount);
@@ -113,7 +113,7 @@ contract SiloRouterPendleLPTsTest is Test {
         uint256 amount = 100e18;
 
         vm.prank(pendleLPWhale);
-        pendleLPToken.transfer(depositor, amount);
+        require(pendleLPToken.transfer(depositor, amount), "transfer failed");
 
         vm.prank(depositor);
         pendleLPToken.approve(address(wrapper), amount);

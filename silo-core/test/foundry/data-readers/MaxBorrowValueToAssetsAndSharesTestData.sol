@@ -22,12 +22,12 @@ contract MaxBorrowValueToAssetsAndSharesTestData {
         Output output;
     }
 
-    address immutable debtToken;
+    address immutable DEBT_TOKEN;
 
     MBVData[] allData;
 
     constructor(address _debtToken) {
-        debtToken = _debtToken;
+        DEBT_TOKEN = _debtToken;
     }
 
     function getData() external returns (MBVData[] memory data) {
@@ -111,7 +111,7 @@ contract MaxBorrowValueToAssetsAndSharesTestData {
 
         allData[i].name = string(abi.encodePacked("#", toString(i), " ", _name));
 
-        allData[i].input.debtToken = debtToken;
+        allData[i].input.debtToken = DEBT_TOKEN;
     }
 
     function _clone(MBVData memory _src) private pure returns (MBVData memory dst) {

@@ -27,7 +27,7 @@ contract DexSwapOdosSonicTest is IntegrationTest {
 
         IERC20 sellToken = IERC20(getAddress(AddrKey.wS));
         vm.prank(whale);
-        sellToken.transfer(address(dex), 50e18);
+        require(sellToken.transfer(address(dex), 50e18), "transfer failed");
 
         IERC20 buyToken = IERC20(getAddress(AddrKey.WETH));
         address allowanceTarget = getAddress(AddrKey.ODOS_ROUTER);

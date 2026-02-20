@@ -4,7 +4,7 @@ pragma abicoder v2;
 
 import {IUniswapV3Pool} from "uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 
-import "./TokensGenerator.sol";
+import {TokensGenerator} from "./TokensGenerator.sol";
 
 contract UniswapPools is TokensGenerator {
     mapping(string => IUniswapV3Pool) public pools;

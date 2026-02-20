@@ -212,7 +212,7 @@ contract InterestRateModelV2 is IInterestRateModel, IInterestRateModelV2 {
     ) public pure virtual returns (uint256 rcur) {
         require(_interestRateTimestamp <= _blockTimestamp, InvalidTimestamps());
 
-        LocalVarsRCur memory _l = LocalVarsRCur(0,0,0,0,0,0,false); // struct for local vars to avoid "Stack too deep"
+        LocalVarsRCur memory _l = LocalVarsRCur({T: 0, u: 0, DP: 0, rp: 0, rlin: 0, ri: 0, overflow: false}); // struct for local vars to avoid "Stack too deep"
 
         (,,,_l.overflow) = calculateCompoundInterestRateWithOverflowDetection(
             _c,
@@ -296,7 +296,7 @@ contract InterestRateModelV2 is IInterestRateModel, IInterestRateModelV2 {
         Tcrit = _c.Tcrit;
 
         // struct for local vars to avoid "Stack too deep"
-        LocalVarsRComp memory _l = LocalVarsRComp(0,0,0,0,0,0,0,0,0,0);
+        LocalVarsRComp memory _l = LocalVarsRComp({T: 0, slopei: 0, rp: 0, slope: 0, r0: 0, rlin: 0, r1: 0, x: 0, rlin1: 0, u: 0});
 
         require(_interestRateTimestamp <= _blockTimestamp, InvalidTimestamps());
 

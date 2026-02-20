@@ -112,7 +112,7 @@ contract DynamicKinkModel is IDynamicKinkModel, IVersioned, Ownable1and2Steps, I
         _irmConfig = currentState.irmConfig;
         _modelState.k = currentState.k;
 
-        configsHistory[pendingConfig] = History(0, IDynamicKinkModelConfig(address(0)));
+        configsHistory[pendingConfig] = History({k: 0, irmConfig: IDynamicKinkModelConfig(address(0))});
 
         activateConfigAt = 0;
 

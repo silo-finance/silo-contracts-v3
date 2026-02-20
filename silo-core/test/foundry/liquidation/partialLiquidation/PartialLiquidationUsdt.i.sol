@@ -7,6 +7,8 @@ import {console2} from "forge-std/console2.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 
+import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
+
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
@@ -23,6 +25,8 @@ import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ManualLiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/ManualLiquidationHelper.sol";
 
 contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
+    using SafeERC20 for IERC20;
+
     uint256 constant DEPOSIT_AMOUNT = 1e6;
     uint256 constant MAX_AMOUNT = 1000e6;
 
@@ -118,6 +122,25 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
         }
 
         assertTrue(expctOnePartial, "expected one partial liquidation");
+    }
+
+    /*
+    AGGREGATOR=1INCH FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_safeIncreaseAllowance
+    */
+    function test_safeIncreaseAllowance() public {
+        /*
+        this line needs to be etstes for USDT:
+        
+        IERC20(debtConfig.token).safeIncreaseAllowance(debtConfig.silo, repayDebtAssets);
+        */
+
+        IERC20(address(usdt)).safeIncreaseAllowance(address(siloUsdt), 1);
+        IERC20(address(usdt)).safeIncreaseAllowance(address(siloUsdt), 1);
+        IERC20(address(usdt)).safeIncreaseAllowance(address(siloUsdt), 2);
+        IERC20(address(usdt)).safeIncreaseAllowance(address(siloUsdt), 0);
+        IERC20(address(usdt)).safeIncreaseAllowance(address(siloUsdt), 2);
+        IERC20(address(usdt)).safeIncreaseAllowance(address(siloUsdt), 2);
+        IERC20(address(usdt)).safeIncreaseAllowance(address(siloUsdt), 9);
     }
 
     function _dealTokens() internal {

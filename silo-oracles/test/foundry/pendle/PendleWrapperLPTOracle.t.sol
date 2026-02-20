@@ -97,7 +97,7 @@ contract PendleWrapperLPTOracle is Test {
     /*
     FOUNDRY_PROFILE=oracles forge test --mt test_wrapperLPTToAssetOracle_VERSION --ffi -vv
     */
-    function test_wrapperLPTToAssetOracle_VERSION() public {
+    function test_wrapperLPTToAssetOracle_VERSION() public pure {
         console2.log("TODO missing test");
     }
 
@@ -105,7 +105,7 @@ contract PendleWrapperLPTOracle is Test {
     /*
     FOUNDRY_PROFILE=oracles forge test --mt test_wrapperLPTToAssetOracle_baseToken --ffi -vv
     */
-    function test_wrapperLPTToAssetOracle_baseToken() public {
+    function test_wrapperLPTToAssetOracle_baseToken() public pure {
         console2.log("TODO missing test");
     }
     

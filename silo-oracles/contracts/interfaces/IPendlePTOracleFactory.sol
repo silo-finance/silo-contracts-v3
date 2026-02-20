@@ -2,7 +2,6 @@
 pragma solidity >=0.5.0;
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
-import {IPyYtLpOracleLike} from "silo-oracles/contracts/pendle/interfaces/IPyYtLpOracleLike.sol";
 
 interface IPendlePTOracleFactory {
     event PendlePTOracleCreated(ISiloOracle indexed pendlePTOracle);

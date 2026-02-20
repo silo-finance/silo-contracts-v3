@@ -114,7 +114,10 @@ contract UniswapV3Oracle is ISiloOracle, IUniswapV3Oracle {
 
         int24 timeWeightedAverageTick = _consult(config.pool, config.periodForAvgPrice);
 
+        // Safe: `_baseAmount` is bounded by `uint128` in the guard above.
+        // forge-lint: disable-next-line(unsafe-typecast)
         quoteAmount = OracleLibrary.getQuoteAtTick(
+            // forge-lint: disable-next-line(unsafe-typecast)
             timeWeightedAverageTick, uint128(_baseAmount), _baseToken, config.quoteToken
         );
 
@@ -182,6 +185,8 @@ contract UniswapV3Oracle is ISiloOracle, IUniswapV3Oracle {
         (uint32 period, int56[] memory tickCumulatives) = _calculatePeriodAndTicks(_pool, _periodForAvgPrice);
         int56 tickCumulativesDelta = tickCumulatives[1] - tickCumulatives[0];
 
+        // Safe: Uniswap V3 pool ticks are int24 by protocol design.
+        // forge-lint: disable-next-line(unsafe-typecast)
         timeWeightedAverageTick = int24(tickCumulativesDelta / period);
 
         // Always round to negative infinity

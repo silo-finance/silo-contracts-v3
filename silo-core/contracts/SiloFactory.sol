@@ -10,7 +10,7 @@ import {IShareTokenInitializable} from "./interfaces/IShareTokenInitializable.so
 import {ISiloFactory} from "./interfaces/ISiloFactory.sol";
 import {ISilo} from "./interfaces/ISilo.sol";
 import {IShareToken} from "./interfaces/IShareToken.sol";
-import {ISiloConfig, SiloConfig} from "./SiloConfig.sol";
+import {ISiloConfig} from "./SiloConfig.sol";
 import {Hook} from "./lib/Hook.sol";
 import {Views} from "./lib/Views.sol";
 import {CloneDeterministic} from "./lib/CloneDeterministic.sol";
@@ -211,7 +211,7 @@ contract SiloFactory is ISiloFactory, ERC721, Ownable2Step, IVersioned {
 
     /// @inheritdoc IVersioned
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "SiloFactory 4.0.0";
+        return "SiloFactory 4.1.3";
     }
 
     /// @inheritdoc ERC721

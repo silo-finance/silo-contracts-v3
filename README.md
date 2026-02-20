@@ -12,7 +12,7 @@ Immunefi bug bounty program is live, more details at https://immunefi.com/bug-bo
 ### Prepare local environment, run the tests
 
 ```shell
-# 1. Install Foundry 
+# 1. Install Foundry v1.4.4
 # https://book.getfoundry.sh/getting-started/installation
 
 # 2. Clone repository

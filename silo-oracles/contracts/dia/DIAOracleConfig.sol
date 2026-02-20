@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.28;
 
-import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
-import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
-
 import {IDIAOracle} from "../interfaces/IDIAOracle.sol";
 import {IDIAOracleV2} from "../external/dia/IDIAOracleV2.sol";
 import {Layer1OracleConfig} from "../_common/Layer1OracleConfig.sol";
@@ -39,6 +36,8 @@ contract DIAOracleConfig is Layer1OracleConfig {
         config.diaOracle = _DIA_ORACLEV2;
         config.baseToken = address(_BASE_TOKEN);
         config.quoteToken = address(_QUOTE_TOKEN);
+        // Safe: `_HEARTBEAT` is already stored as uint32-compatible config input.
+        // forge-lint: disable-next-line(unsafe-typecast)
         config.heartbeat = uint32(_HEARTBEAT);
         config.convertToQuote = _CONVERT_TO_QUOTE;
         config.normalizationDivider = _DECIMALS_NORMALIZATION_DIVIDER;

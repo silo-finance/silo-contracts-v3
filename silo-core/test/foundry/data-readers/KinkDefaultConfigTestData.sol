@@ -8,6 +8,8 @@ import {SafeCast} from "openzeppelin-contracts/contracts/utils/math/SafeCast.sol
 import {IDynamicKinkModel} from "../../../contracts/interfaces/IDynamicKinkModel.sol";
 
 contract KinkDefaultConfigTestData is Test {
+    using SafeCast for int256;
+    using SafeCast for uint256;
     // variable names must be in alphabetic order:
     struct Input {
         uint256 R100max;
@@ -59,6 +61,7 @@ contract KinkDefaultConfigTestData is Test {
     function _readUserInputDataFromJson() internal view returns (UserInputData[] memory data) {
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/silo-core/test/foundry/data/KinkDefaultConfigTests.json");
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(path);
 
         UserInputDataJson[] memory dataJson =
@@ -152,8 +155,8 @@ contract KinkDefaultConfigTestData is Test {
             u2: int256(_in.config.u2),
             ucrit: int256(_in.config.ucrit),
             rmin: int256(_in.config.rmin),
-            kmin: SafeCast.toInt96(int256(_in.config.kmin)),
-            kmax: SafeCast.toInt96(int256(_in.config.kmax)),
+            kmin: int256(_in.config.kmin).toInt96(),
+            kmax: int256(_in.config.kmax).toInt96(),
             alpha: int256(_in.config.alpha),
             cminus: int256(_in.config.cminus),
             cplus: int256(_in.config.cplus),
@@ -164,19 +167,19 @@ contract KinkDefaultConfigTestData is Test {
 
         // console2.log("input transform");
         _out.input = IDynamicKinkModel.UserFriendlyConfig({
-            ulow: SafeCast.toUint64(_in.input.ulow),
-            u1: SafeCast.toUint64(_in.input.u1),
-            u2: SafeCast.toUint64(_in.input.u2),
-            ucrit: SafeCast.toUint64(_in.input.ucrit),
-            rmin: SafeCast.toUint72(_in.input.Rmin),
-            rcritMin: SafeCast.toUint72(_in.input.Rcritmin),
-            rcritMax: SafeCast.toUint72(_in.input.Rcritmax),
-            r100: SafeCast.toUint72(_in.input.R100max),
-            tlow: SafeCast.toUint32(_in.input.Tlow),
-            t1: SafeCast.toUint32(_in.input.T1),
-            t2: SafeCast.toUint32(_in.input.T2),
-            tcrit: SafeCast.toUint32(_in.input.Tcrit),
-            tMin: SafeCast.toUint32(_in.input.Tmin)
+            ulow: _in.input.ulow.toUint64(),
+            u1: _in.input.u1.toUint64(),
+            u2: _in.input.u2.toUint64(),
+            ucrit: _in.input.ucrit.toUint64(),
+            rmin: _in.input.Rmin.toUint72(),
+            rcritMin: _in.input.Rcritmin.toUint72(),
+            rcritMax: _in.input.Rcritmax.toUint72(),
+            r100: _in.input.R100max.toUint72(),
+            tlow: _in.input.Tlow.toUint32(),
+            t1: _in.input.T1.toUint32(),
+            t2: _in.input.T2.toUint32(),
+            tcrit: _in.input.Tcrit.toUint32(),
+            tMin: _in.input.Tmin.toUint32()
         });
 
         _out.id = _in.id;

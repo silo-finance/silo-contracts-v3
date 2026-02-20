@@ -2,7 +2,7 @@
 pragma solidity >=0.7.6 <0.9.0;
 pragma abicoder v2;
 
-import "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 import {IForking} from "../interfaces/IForking.sol";
 
 contract Forking is IForking, Test {

@@ -39,6 +39,7 @@ library PendingLib {
     function update(PendingUint192 storage _pending, uint184 _newValue, uint256 _timelock) internal {
         _pending.value = _newValue;
         // Safe "unchecked" cast because timelock <= MAX_TIMELOCK.
+        // forge-lint: disable-next-line(unsafe-typecast)
         _pending.validAt = uint64(block.timestamp + _timelock);
     }
 
@@ -47,6 +48,7 @@ library PendingLib {
     function update(PendingAddress storage _pending, address _newValue, uint256 _timelock) internal {
         _pending.value = _newValue;
         // Safe "unchecked" cast because timelock <= MAX_TIMELOCK.
+        // forge-lint: disable-next-line(unsafe-typecast)
         _pending.validAt = uint64(block.timestamp + _timelock);
     }
 }

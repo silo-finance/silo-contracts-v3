@@ -101,11 +101,11 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
         currentSetup.initialized = true;
 
         currentSetup.ri =
-            ri > type(int112).max ? type(int112).max : ri < type(int112).min ? type(int112).min : int112(ri);
+            ri > type(int112).max ? type(int112).max : ri < type(int112).min ? type(int112).min : ri.toInt112();
 
         currentSetup.Tcrit = Tcrit > type(int112).max
             ? type(int112).max
-            : Tcrit < type(int112).min ? type(int112).min : int112(Tcrit);
+            : Tcrit < type(int112).min ? type(int112).min : Tcrit.toInt112();
     }
 
     /// @inheritdoc IInterestRateModel
@@ -178,7 +178,15 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
     ) public pure virtual returns (uint256 rcur) {
         if (_interestRateTimestamp > _blockTimestamp) revert InvalidTimestamps();
 
-        LocalVarsRCur memory _l = LocalVarsRCur(0, 0, 0, 0, 0, 0, false); // struct for local vars to avoid "Stack too deep"
+        LocalVarsRCur memory _l = LocalVarsRCur({
+            T: 0,
+            u: 0,
+            DP: 0,
+            rp: 0,
+            rlin: 0,
+            ri: 0,
+            overflow: false
+        }); // struct for local vars to avoid "Stack too deep"
 
         (,,, _l.overflow) = calculateCompoundInterestRateWithOverflowDetection(
             _c, _totalDeposits, _totalBorrowAmount, _interestRateTimestamp, _blockTimestamp
@@ -196,7 +204,7 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
         }
 
         _l.u = SiloMathLib.calculateUtilization(_DP, _totalDeposits, _totalBorrowAmount).toInt256();
-        _l.DP = int256(_DP);
+        _l.DP = _DP.toInt256();
 
         if (_l.u > _c.ucrit) {
             // rp := kcrit *(1 + Tcrit + beta *T)*( u0 - ucrit )
@@ -244,7 +252,18 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
         Tcrit = _c.Tcrit;
 
         // struct for local vars to avoid "Stack too deep"
-        LocalVarsRComp memory _l = LocalVarsRComp(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        LocalVarsRComp memory _l = LocalVarsRComp({
+            T: 0,
+            slopei: 0,
+            rp: 0,
+            slope: 0,
+            r0: 0,
+            rlin: 0,
+            r1: 0,
+            x: 0,
+            rlin1: 0,
+            u: 0
+        });
 
         if (_interestRateTimestamp > _blockTimestamp) revert InvalidTimestamps();
 
@@ -255,7 +274,7 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
             _l.T = (_blockTimestamp - _interestRateTimestamp).toInt256();
         }
 
-        int256 decimalPoints = int256(_DP);
+        int256 decimalPoints = _DP.toInt256();
 
         _l.u = SiloMathLib.calculateUtilization(_DP, _totalDeposits, _totalBorrowAmount).toInt256();
 
@@ -344,7 +363,7 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
             // but later on we can get overflow worse.
             overflow = true;
         } else {
-            rcompSigned = _x.exp() - int256(_DP);
+            rcompSigned = _x.exp() - _DP.toInt256();
             rcomp = rcompSigned > 0 ? rcompSigned.toUint256() : 0;
         }
 

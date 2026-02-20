@@ -9,11 +9,10 @@ import {SiloIncentivesController} from "silo-core/contracts/incentives/SiloIncen
 import {ISiloVault} from "silo-vaults/contracts/interfaces/ISiloVault.sol";
 import {IVaultIncentivesModule} from "silo-vaults/contracts/interfaces/IVaultIncentivesModule.sol";
 import {SiloIncentivesControllerCL} from "silo-vaults/contracts/incentives/claiming-logics/SiloIncentivesControllerCL.sol";
-import {Create2Factory} from "common/utils/Create2Factory.sol";
 import {SiloIncentivesControllerCLDeployer} from "silo-vaults/contracts/incentives/claiming-logics/SiloIncentivesControllerCLDeployer.sol";
 import {SiloIncentivesControllerCLDeployerDeploy} from "silo-vaults/deploy/SiloIncentivesControllerCLDeployerDeploy.s.sol";
 import {INotificationReceiver} from "silo-vaults/contracts/interfaces/INotificationReceiver.sol";
-import {Ownable2Step, Ownable} from "openzeppelin5/access/Ownable2Step.sol";
+import {Ownable} from "openzeppelin5/access/Ownable2Step.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";

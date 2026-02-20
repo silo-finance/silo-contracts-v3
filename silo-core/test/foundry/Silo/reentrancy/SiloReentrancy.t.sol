@@ -7,7 +7,6 @@ import {console2} from "forge-std/console2.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
-import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 
 import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
@@ -49,6 +48,7 @@ contract SiloReentrancyTest is Test {
 
         for (uint256 j = 0; j < methodRegistries.length; j++) {
             string memory abiPath = string.concat(root, methodRegistries[j].abiFile());
+            // forge-lint: disable-next-line(unsafe-cheatcode)
             string memory json = vm.readFile(abiPath);
 
             string[] memory keys = vm.parseJsonKeys(json, ".methodIdentifiers");

@@ -9,8 +9,6 @@ import {ShareCollateralToken} from "silo-core/contracts/utils/ShareCollateralTok
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
-import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
-
 import {SiloLittleHelper} from "../_common/SiloLittleHelper.sol";
 
 /*
@@ -23,12 +21,12 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
     ShareCollateralToken public shareCollateralToken1;
     ShareCollateralToken public shareProtectedToken1;
 
-    address immutable depositor;
-    address immutable receiver;
+    address immutable DEPOSITOR;
+    address immutable RECEIVER;
 
     constructor() {
-        depositor = makeAddr("depositor");
-        receiver = makeAddr("receiver");
+        DEPOSITOR = makeAddr("DEPOSITOR");
+        RECEIVER = makeAddr("RECEIVER");
     }
 
     function setUp() public {
@@ -73,10 +71,10 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
     }
 
     function _sToken_transfer_zero_whenDeposit(ISilo.CollateralType _collateralType) private {
-        _deposit(100, depositor, _collateralType);
+        _deposit(100, DEPOSITOR, _collateralType);
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        _token1(_collateralType).transfer(receiver, 0);
+        _token1(_collateralType).transfer(RECEIVER, 0);
     }
 
     /*
@@ -91,15 +89,15 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
     }
 
     function _sToken_transfer_withDeposits(ISilo.CollateralType _collateralType) private {
-        _depositForBorrow(100, depositor, _collateralType);
-        _deposit(100, depositor, _collateralType);
+        _depositForBorrow(100, DEPOSITOR, _collateralType);
+        _deposit(100, DEPOSITOR, _collateralType);
 
         IShareToken token1 = _token1(_collateralType);
 
-        vm.prank(depositor);
-        token1.transfer(receiver, 1);
+        vm.prank(DEPOSITOR);
+        require(token1.transfer(RECEIVER, 1), "transfer failed");
 
-        assertEq(_token1(_collateralType).balanceOf(receiver), 1, "transfer success");
+        assertEq(_token1(_collateralType).balanceOf(RECEIVER), 1, "transfer success");
     }
 
     /*
@@ -115,21 +113,21 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
     }
 
     function _sToken_transfer_whenSolvent(ISilo.CollateralType _collateralType) private {
-        _depositForBorrow(100, depositor, _collateralType);
-        _deposit(100, depositor, _collateralType);
+        _depositForBorrow(100, DEPOSITOR, _collateralType);
+        _deposit(100, DEPOSITOR, _collateralType);
 
         _depositForBorrow(10, makeAddr("any"));
-        _borrow(1, depositor);
+        _borrow(1, DEPOSITOR);
 
-        assertTrue(silo1.isSolvent(depositor), "expect solvent user");
+        assertTrue(silo1.isSolvent(DEPOSITOR), "expect solvent user");
 
-        vm.startPrank(depositor);
+        vm.startPrank(DEPOSITOR);
 
-        _token0(_collateralType).transfer(receiver, 1);
-        assertEq(_token0(_collateralType).balanceOf(receiver), 1, "transfer0 success");
+        _token0(_collateralType).transfer(RECEIVER, 1);
+        assertEq(_token0(_collateralType).balanceOf(RECEIVER), 1, "transfer0 success");
 
-        _token1(_collateralType).transfer(receiver, 1);
-        assertEq(_token1(_collateralType).balanceOf(receiver), 1, "transfer1 success");
+        _token1(_collateralType).transfer(RECEIVER, 1);
+        assertEq(_token1(_collateralType).balanceOf(RECEIVER), 1, "transfer1 success");
 
         vm.stopPrank();
     }
@@ -146,27 +144,28 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
     }
 
     function _sToken_transfer_NotSolvent(ISilo.CollateralType _collateralType) private {
-        _depositForBorrow(1e18, depositor, _collateralType);
-        _deposit(1e18, depositor, _collateralType);
+        _depositForBorrow(1e18, DEPOSITOR, _collateralType);
+        _deposit(1e18, DEPOSITOR, _collateralType);
 
         _depositForBorrow(0.75e18, makeAddr("any"));
-        _borrow(0.75e18, depositor);
+        _borrow(0.75e18, DEPOSITOR);
 
         vm.warp(block.timestamp + 20000 days);
 
-        assertFalse(silo1.isSolvent(depositor), "expect NOT solvent user");
+        assertFalse(silo1.isSolvent(DEPOSITOR), "expect NOT solvent user");
 
         IShareToken token0 = _token0(_collateralType);
         IShareToken token1 = _token1(_collateralType);
 
-        vm.startPrank(depositor);
+        vm.startPrank(DEPOSITOR);
 
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
-        token0.transfer(receiver, 1);
-        assertEq(token0.balanceOf(receiver), 0, "transfer0 success");
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        token0.transfer(RECEIVER, 1);
+        assertEq(token0.balanceOf(RECEIVER), 0, "transfer0 success");
 
-        token1.transfer(receiver, 1);
-        assertEq(token1.balanceOf(receiver), 1, "transfer1 success");
+        require(token1.transfer(RECEIVER, 1), "transfer failed");
+        assertEq(token1.balanceOf(RECEIVER), 1, "transfer1 success");
 
         vm.stopPrank();
     }
@@ -186,31 +185,31 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
         address spender = makeAddr("Spender");
         uint256 amount = 100e18;
 
-        _depositForBorrow(amount, depositor, _collateralType);
-        _deposit(amount, depositor, _collateralType);
+        _depositForBorrow(amount, DEPOSITOR, _collateralType);
+        _deposit(amount, DEPOSITOR, _collateralType);
 
         _depositForBorrow(10, makeAddr("any"));
-        _borrow(1, depositor);
+        _borrow(1, DEPOSITOR);
 
-        assertTrue(silo1.isSolvent(depositor), "expect solvent user");
+        assertTrue(silo1.isSolvent(DEPOSITOR), "expect solvent user");
 
         IShareToken shareToken = _token0(_collateralType);
 
-        vm.prank(depositor);
+        vm.prank(DEPOSITOR);
         shareToken.approve(spender, amount);
 
         vm.prank(spender);
-        shareToken.transferFrom(depositor, receiver, 1);
-        assertEq(shareToken.balanceOf(receiver), 1, "transfer0 success");
+        require(shareToken.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
+        assertEq(shareToken.balanceOf(RECEIVER), 1, "transfer0 success");
 
         shareToken = _token1(_collateralType);
 
-        vm.prank(depositor);
+        vm.prank(DEPOSITOR);
         shareToken.approve(spender, amount);
 
         vm.prank(spender);
-        shareToken.transferFrom(depositor, receiver, 1);
-        assertEq(shareToken.balanceOf(receiver), 1, "transfer1 success");
+        require(shareToken.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
+        assertEq(shareToken.balanceOf(RECEIVER), 1, "transfer1 success");
     }
 
     /*
@@ -227,33 +226,34 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
     function _sToken_transferFrom_NotSolvent(ISilo.CollateralType _collateralType) private {
         address spender = makeAddr("Spender");
 
-        _depositForBorrow(1e18, depositor, _collateralType);
-        _deposit(1e18, depositor, _collateralType);
+        _depositForBorrow(1e18, DEPOSITOR, _collateralType);
+        _deposit(1e18, DEPOSITOR, _collateralType);
 
         _depositForBorrow(0.75e18, makeAddr("any"));
-        _borrow(0.75e18, depositor);
+        _borrow(0.75e18, DEPOSITOR);
 
         vm.warp(block.timestamp + 20000 days);
 
-        assertFalse(silo1.isSolvent(depositor), "expect NOT solvent user");
+        assertFalse(silo1.isSolvent(DEPOSITOR), "expect NOT solvent user");
 
         IShareToken token0 = _token0(_collateralType);
         IShareToken token1 = _token1(_collateralType);
 
-        vm.prank(depositor);
+        vm.prank(DEPOSITOR);
         token0.approve(spender, 1);
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
-        token0.transferFrom(depositor, receiver, 1);
-        assertEq(token0.balanceOf(receiver), 0, "transferFrom0 success");
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        token0.transferFrom(DEPOSITOR, RECEIVER, 1);
+        assertEq(token0.balanceOf(RECEIVER), 0, "transferFrom0 success");
 
-        vm.prank(depositor);
+        vm.prank(DEPOSITOR);
         token1.approve(spender, 1);
 
         vm.prank(spender);
-        token1.transferFrom(depositor, receiver, 1);
-        assertEq(token1.balanceOf(receiver), 1, "transferFrom1 success");
+        require(token1.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
+        assertEq(token1.balanceOf(RECEIVER), 1, "transferFrom1 success");
     }
 
     function _token0(ISilo.CollateralType _collateralType) private view returns (ShareCollateralToken) {

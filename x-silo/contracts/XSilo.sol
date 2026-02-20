@@ -8,7 +8,7 @@ import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 
 import {XSiloManagement, INotificationReceiver} from "./modules/XSiloManagement.sol";
 import {XRedeemPolicy} from "./modules/XRedeemPolicy.sol";
-import {Stream, IStream} from "./modules/Stream.sol";
+import {IStream} from "./modules/Stream.sol";
 
 contract XSilo is ERC4626, XSiloManagement, XRedeemPolicy {
     error ZeroShares();

@@ -3,8 +3,6 @@ pragma solidity ^0.8.20;
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
-import {ILiquidationHelper} from "../../interfaces/ILiquidationHelper.sol";
-
 import {RevertLib} from "../../lib/RevertLib.sol";
 
 /// @dev Based on demo contract that swaps its ERC20 balance for another ERC20.

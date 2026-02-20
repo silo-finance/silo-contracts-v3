@@ -3,16 +3,12 @@ pragma solidity ^0.8.28;
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
-import {LeverageUsingSiloFlashloanWithGeneralSwap} from
-    "silo-core/contracts/leverage/LeverageUsingSiloFlashloanWithGeneralSwap.sol";
 import {LeverageRouter} from "silo-core/contracts/leverage/LeverageRouter.sol";
 import {ILeverageUsingSiloFlashloan} from "silo-core/contracts/interfaces/ILeverageUsingSiloFlashloan.sol";
 import {IGeneralSwapModule} from "silo-core/contracts/interfaces/IGeneralSwapModule.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
-import {ICrossReentrancyGuard} from "silo-core/contracts/interfaces/ICrossReentrancyGuard.sol";
-import {MethodReentrancyTest} from "../MethodReentrancyTest.sol";
-import {TestStateLib} from "../../TestState.sol";
 import {TransientReentrancy} from "silo-core/contracts/hooks/_common/TransientReentrancy.sol";
+import {TestStateLib} from "../../TestState.sol";
 import {OpenLeveragePositionReentrancyTest} from "./OpenLeveragePositionReentrancyTest.sol";
 
 contract CloseLeveragePositionReentrancyTest is OpenLeveragePositionReentrancyTest {

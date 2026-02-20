@@ -27,38 +27,38 @@ contract MaxLiquidationCapTest is MaxLiquidationCommon {
         _assertBorrowerIsNotSolvent(false);
 
         (uint256 collateralToLiquidate, uint256 maxDebtToCover, bool sTokenRequired) =
-            partialLiquidation.maxLiquidation(borrower);
+            partialLiquidation.maxLiquidation(BORROWER);
 
         emit log_named_uint("         getLiquidity #1", silo0.getLiquidity());
         emit log_named_uint("collateralToLiquidate #1", collateralToLiquidate);
 
         assertTrue(!sTokenRequired, "sTokenRequired NOT required because it is partial liquidation");
 
-        vm.startPrank(depositor);
-        silo0.borrow(silo0.maxBorrow(depositor), depositor, depositor);
+        vm.startPrank(DEPOSITOR);
+        silo0.borrow(silo0.maxBorrow(DEPOSITOR), DEPOSITOR, DEPOSITOR);
         vm.stopPrank();
         emit log_named_uint("getLiquidity after borrow", silo0.getLiquidity());
 
-        (collateralToLiquidate, maxDebtToCover, sTokenRequired) = partialLiquidation.maxLiquidation(borrower);
+        (collateralToLiquidate, maxDebtToCover, sTokenRequired) = partialLiquidation.maxLiquidation(BORROWER);
         assertTrue(sTokenRequired, "sTokenRequired IS required because we borrowed on silo0");
 
         vm.expectRevert(ISilo.NotEnoughLiquidity.selector);
         partialLiquidation.liquidationCall(
             address(token0),
             address(token1),
-            borrower,
+            BORROWER,
             maxDebtToCover,
             false // receiveStoken
         );
 
         _deposit(collateralToLiquidate - silo0.getLiquidity(), address(1));
 
-        (,, sTokenRequired) = partialLiquidation.maxLiquidation(borrower);
+        (,, sTokenRequired) = partialLiquidation.maxLiquidation(BORROWER);
         assertTrue(sTokenRequired, "sTokenRequired is still required because of -2");
 
         _deposit(2, address(1));
 
-        (collateralToLiquidate, maxDebtToCover, sTokenRequired) = partialLiquidation.maxLiquidation(borrower);
+        (collateralToLiquidate, maxDebtToCover, sTokenRequired) = partialLiquidation.maxLiquidation(BORROWER);
         assertTrue(
             !sTokenRequired, "sTokenRequired NOT required because we have 'collateralToLiquidate + 2' in silo0"
         );
@@ -69,7 +69,7 @@ contract MaxLiquidationCapTest is MaxLiquidationCommon {
         partialLiquidation.liquidationCall(
             address(token0),
             address(token1),
-            borrower,
+            BORROWER,
             maxDebtToCover,
             false // receiveStoken
         );

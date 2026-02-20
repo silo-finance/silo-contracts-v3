@@ -36,6 +36,7 @@ import {SiloStorageLib} from "./lib/SiloStorageLib.sol";
 contract Silo is ISilo, ShareCollateralToken {
     using SafeERC20 for IERC20;
 
+    // forge-lint: disable-next-line(screaming-snake-case-immutable)
     ISiloFactory public immutable factory;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -56,7 +57,7 @@ contract Silo is ISilo, ShareCollateralToken {
     /// @inheritdoc IVersioned
     // solhint-disable-next-line func-name-mixedcase
     function VERSION() external pure virtual override returns (string memory) {
-        return "Silo 4.0.0";
+        return "Silo 4.1.3";
     }
 
     /// @inheritdoc ISilo

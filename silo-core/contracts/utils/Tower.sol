@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 
-import "openzeppelin5/access/Ownable.sol";
+import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
 /// @title Tower
 /// @notice Utility contract that stores addresses of any contracts
@@ -68,6 +68,7 @@ contract Tower is Ownable {
     /// @param _key string key
     /// @return bytes32 representation of the `_key`
     function makeKey(string calldata _key) public pure virtual returns (bytes32) {
+        // forge-lint: disable-next-line(asm-keccak256)
         return keccak256(abi.encodePacked(_key));
     }
 }

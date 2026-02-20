@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.28;
 
-import "../../../constants/Arbitrum.sol";
+import {DIA_ORACLE_V2} from "../../../constants/Arbitrum.sol";
 
 import {Clones} from "openzeppelin5/proxy/Clones.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";

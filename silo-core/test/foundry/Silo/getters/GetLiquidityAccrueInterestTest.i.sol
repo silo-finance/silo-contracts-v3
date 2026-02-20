@@ -14,12 +14,12 @@ import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 contract GetLiquidityAccrueInterestTest is SiloLittleHelper, Test {
     ISiloConfig siloConfig;
 
-    address immutable depositor;
-    address immutable borrower;
+    address immutable DEPOSITOR;
+    address immutable BORROWER;
 
     constructor() {
-        depositor = makeAddr("Depositor");
-        borrower = makeAddr("Borrower");
+        DEPOSITOR = makeAddr("Depositor");
+        BORROWER = makeAddr("Borrower");
     }
 
     function setUp() public {
@@ -44,8 +44,8 @@ contract GetLiquidityAccrueInterestTest is SiloLittleHelper, Test {
     function test_liquidity_whenDeposit(uint128 _assets) public {
         vm.assume(_assets > 0);
 
-        if (_assets > 1) _deposit(_assets / 2, depositor, ISilo.CollateralType.Protected);
-        _deposit(_assets, depositor);
+        if (_assets > 1) _deposit(_assets / 2, DEPOSITOR, ISilo.CollateralType.Protected);
+        _deposit(_assets, DEPOSITOR);
 
         assertEq(silo0.getLiquidity(), _assets, "[0] expect liquidity");
         assertEq(silo0.getLiquidity(), _assets, "[0] expect collateral liquidity, no interest");
@@ -68,7 +68,7 @@ contract GetLiquidityAccrueInterestTest is SiloLittleHelper, Test {
     function test_liquidity_whenProtected(uint256 _assets) public {
         vm.assume(_assets > 0 && _assets < type(uint128).max);
 
-        _deposit(_assets, depositor, ISilo.CollateralType.Protected);
+        _deposit(_assets, DEPOSITOR, ISilo.CollateralType.Protected);
 
         assertEq(silo0.getLiquidity(), 0, "[0] expect liquidity");
         assertEq(silo0.getLiquidity(), 0, "[0] expect no collateral liquidity, no interest");
@@ -93,11 +93,11 @@ contract GetLiquidityAccrueInterestTest is SiloLittleHelper, Test {
         vm.assume(_toBorrow > 0);
         vm.assume(_toBorrow < _toDeposit / 2);
 
-        _makeDeposit(silo1, token1, _toDeposit / 2, depositor, ISilo.CollateralType.Protected);
-        _depositForBorrow(_toDeposit, depositor);
+        _makeDeposit(silo1, token1, _toDeposit / 2, DEPOSITOR, ISilo.CollateralType.Protected);
+        _depositForBorrow(_toDeposit, DEPOSITOR);
 
-        _deposit(_toDeposit, borrower);
-        _borrow(_toBorrow, borrower);
+        _deposit(_toDeposit, BORROWER);
+        _borrow(_toBorrow, BORROWER);
 
         assertEq(silo0.getLiquidity(), _toDeposit, "[0] expect collateral, no interest");
 
@@ -123,12 +123,12 @@ contract GetLiquidityAccrueInterestTest is SiloLittleHelper, Test {
         uint256 protectedDeposit0 = _toDeposit / 2;
         uint256 protectedDeposit1 = _toDeposit / 2 + 1;
 
-        _makeDeposit(silo1, token1, protectedDeposit1, depositor, ISilo.CollateralType.Protected);
-        _depositForBorrow(_toDeposit, depositor);
+        _makeDeposit(silo1, token1, protectedDeposit1, DEPOSITOR, ISilo.CollateralType.Protected);
+        _depositForBorrow(_toDeposit, DEPOSITOR);
 
-        _deposit(protectedDeposit0, borrower, ISilo.CollateralType.Protected);
-        _deposit(_toDeposit, borrower);
-        _borrow(_toBorrow, borrower);
+        _deposit(protectedDeposit0, BORROWER, ISilo.CollateralType.Protected);
+        _deposit(_toDeposit, BORROWER);
+        _borrow(_toBorrow, BORROWER);
 
         vm.warp(block.timestamp + 100 days);
 

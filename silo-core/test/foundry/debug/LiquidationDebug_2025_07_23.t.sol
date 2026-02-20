@@ -16,8 +16,8 @@ import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 FOUNDRY_PROFILE=core_test forge test --mc LiquidationDebug_2025_07_23 --ffi -vvv
 */
 contract LiquidationDebug_2025_07_23 is IntegrationTest {
-    SiloLens internal constant lens = SiloLens(0xB95AD415b0fcE49f84FbD5B26b14ec7cf4822c69);
-    IPartialLiquidation internal constant hook = IPartialLiquidation(0xDdBa71380230a3a5ab7094d9c774A6C5852a0fFC);
+    SiloLens internal constant LENS = SiloLens(0xB95AD415b0fcE49f84FbD5B26b14ec7cf4822c69);
+    IPartialLiquidation internal constant HOOK = IPartialLiquidation(0xDdBa71380230a3a5ab7094d9c774A6C5852a0fFC);
     // ILiquidationHelper constant internal helper = ILiquidationHelper(0xd98C025cf5d405FE3385be8C9BE64b219EC750F8);
     ILiquidationHelper internal helper;
     address internal swapAllowanceHolder = 0xaC041Df48dF9791B0654f1Dbbf2CC8450C5f2e9D;
@@ -26,7 +26,7 @@ contract LiquidationDebug_2025_07_23 is IntegrationTest {
     function setUp() public {
         vm.label(weth, "WETH");
         vm.label(address(helper), "LiquidationHelper");
-        vm.label(address(hook), "IPartialLiquidation");
+        vm.label(address(HOOK), "IPartialLiquidation");
         vm.label(swapAllowanceHolder, "SWAP AllowanceHolder");
 
         vm.createSelectFork(vm.envString("RPC_SONIC"), 39843039 - 5);
@@ -67,7 +67,7 @@ contract LiquidationDebug_2025_07_23 is IntegrationTest {
         vm.label(address(flashLoanFrom), "flashLoanFrom");
 
         ILiquidationHelper.LiquidationData memory liquidation = ILiquidationHelper.LiquidationData({
-            hook: hook,
+            hook: HOOK,
             collateralAsset: 0x79bbF4508B1391af3A0F4B30bb5FC4aa9ab0E07C,
             user: user
         });
@@ -91,7 +91,7 @@ contract LiquidationDebug_2025_07_23 is IntegrationTest {
         console2.log("debt silo: ", debtCfg.silo);
         console2.log("collateral Liquidation Threshold: ", collateralCfg.lt);
         console2.log(".     debt Liquidation Threshold: ", debtCfg.lt);
-        console2.log("                        user LTV: ", lens.getUserLTV(silo, user));
+        console2.log("                        user LTV: ", LENS.getUserLTV(silo, user));
 
         vm.prank(0x0665609124CC2a958Cf0ED582eE132076243B6Da);
         helper.executeLiquidation({

@@ -23,8 +23,8 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
     function test_maxLiquidation_noDebt() public {
         _assertBorrowerIsSolvent();
 
-        _depositForBorrow(11e18, borrower);
-        _deposit(11e18, borrower);
+        _depositForBorrow(11e18, BORROWER);
+        _deposit(11e18, BORROWER);
 
         _assertBorrowerIsSolvent();
     }
@@ -52,12 +52,12 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
 
         _createDebtForBorrower(_collateral);
 
-        // for same asset interest increasing slower, because borrower is also depositor, also LT is higher
+        // for same asset interest increasing slower, because BORROWER is also DEPOSITOR, also LT is higher
         _moveTimeUntilInsolvent();
 
         _assertBorrowerIsNotSolvent(_BAD_DEBT);
 
-        (,,, bool fullLiquidation) = siloLens.maxLiquidation(silo1, partialLiquidation, borrower);
+        (,,, bool fullLiquidation) = SILO_LENS.maxLiquidation(silo1, partialLiquidation, BORROWER);
 
         _executeLiquidationAndRunChecks(_receiveSToken);
 
@@ -81,17 +81,17 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
         // to test max, we want to provide higher `_maxDebtToCover` and we expect not higher results
         uint256 maxDebtToCover = type(uint256).max;
 
-        (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(borrower);
+        (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(BORROWER);
 
         emit log_named_decimal_uint("[MaxLiquidation] collateralToLiquidate", collateralToLiquidate, 18);
         emit log_named_decimal_uint("[MaxLiquidation] debtToRepay", debtToRepay, 16);
-        emit log_named_decimal_uint("[MaxLiquidation] ltv before", silo0.getLtv(borrower), 16);
+        emit log_named_decimal_uint("[MaxLiquidation] ltv before", silo0.getLtv(BORROWER), 16);
 
         (withdrawCollateral, repayDebtAssets) = partialLiquidation.liquidationCall(
-            address(token0), address(token1), borrower, maxDebtToCover, _receiveSToken
+            address(token0), address(token1), BORROWER, maxDebtToCover, _receiveSToken
         );
 
-        emit log_named_decimal_uint("[MaxLiquidation] ltv after", silo0.getLtv(borrower), 16);
+        emit log_named_decimal_uint("[MaxLiquidation] ltv after", silo0.getLtv(BORROWER), 16);
 
         assertEq(debtToRepay, repayDebtAssets, "[MaxLiquidation] debt: maxLiquidation == result");
         _assertEqDiff(withdrawCollateral, collateralToLiquidate, "[MaxLiquidation] collateral: max == result");

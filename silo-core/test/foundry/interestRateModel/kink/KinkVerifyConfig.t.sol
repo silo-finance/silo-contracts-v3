@@ -7,11 +7,13 @@ import {
     DynamicKinkModel, IDynamicKinkModel
 } from "../../../../contracts/interestRateModel/kink/DynamicKinkModel.sol";
 import {KinkCommonTest} from "./KinkCommon.t.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
 FOUNDRY_PROFILE=core_test forge test --mc KinkVerifyConfigTest -vv
 */
 contract KinkVerifyConfigTest is KinkCommonTest {
+    using SafeCast for int256;
     function setUp() public {
         irm = new DynamicKinkModel();
     }
@@ -114,7 +116,9 @@ contract KinkVerifyConfigTest is KinkCommonTest {
         vm.expectRevert(IDynamicKinkModel.InvalidKmin.selector);
         irm.verifyConfig(config);
 
-        config.kmin = int96(UNIVERSAL_LIMIT) + 1;
+        // UNIVERSAL_LIMIT is verified to fit in int96 (see test_kink_constants).
+        // Adding 1 intentionally causes overflow to test validation.
+        config.kmin = UNIVERSAL_LIMIT.toInt96() + 1;
         vm.expectRevert(IDynamicKinkModel.InvalidKmin.selector);
         irm.verifyConfig(config);
 
@@ -122,11 +126,11 @@ contract KinkVerifyConfigTest is KinkCommonTest {
         vm.expectRevert(IDynamicKinkModel.InvalidKmax.selector);
         irm.verifyConfig(config);
 
-        config.kmax = int96(UNIVERSAL_LIMIT) + 1;
+        config.kmax = UNIVERSAL_LIMIT.toInt96() + 1;
         vm.expectRevert(IDynamicKinkModel.InvalidKmax.selector);
         irm.verifyConfig(config);
 
-        config.kmax = int96(UNIVERSAL_LIMIT); // valid value
+        config.kmax = UNIVERSAL_LIMIT.toInt96(); // valid value
         irm.verifyConfig(config);
 
         // ----
@@ -210,8 +214,8 @@ contract KinkVerifyConfigTest is KinkCommonTest {
         config.u2 = _DP;
         config.ucrit = _DP;
         config.rmin = _DP;
-        config.kmin = int96(UNIVERSAL_LIMIT);
-        config.kmax = int96(UNIVERSAL_LIMIT);
+        config.kmin = UNIVERSAL_LIMIT.toInt96();
+        config.kmax = UNIVERSAL_LIMIT.toInt96();
         config.alpha = UNIVERSAL_LIMIT;
         config.cminus = UNIVERSAL_LIMIT;
         config.cplus = UNIVERSAL_LIMIT;

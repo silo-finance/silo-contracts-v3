@@ -4,7 +4,6 @@ pragma solidity ^0.8.28;
 
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 
-import {PendingAddress} from "./PendingLib.sol";
 import {ISiloVault} from "../interfaces/ISiloVault.sol";
 import {FlowCapsConfig} from "../interfaces/IPublicAllocator.sol";
 

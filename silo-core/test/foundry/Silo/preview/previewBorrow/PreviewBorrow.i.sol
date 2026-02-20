@@ -13,12 +13,12 @@ import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 */
 contract PreviewBorrowTest is SiloLittleHelper, Test {
     ISiloConfig siloConfig;
-    address immutable depositor;
-    address immutable borrower;
+    address immutable DEPOSITOR;
+    address immutable BORROWER;
 
     constructor() {
-        depositor = makeAddr("Depositor");
-        borrower = makeAddr("Borrower");
+        DEPOSITOR = makeAddr("Depositor");
+        BORROWER = makeAddr("Borrower");
     }
 
     function setUp() public {
@@ -91,8 +91,8 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
         _createScenario(_assetsOrShares, true, _interest);
 
         uint256 maxInput = _borrowShares()
-            ? silo1.maxBorrowShares(borrower)
-            : silo1.maxBorrow(borrower);
+            ? silo1.maxBorrowShares(BORROWER)
+            : silo1.maxBorrow(BORROWER);
 
         uint256 maxPreview = _getBorrowPreview(maxInput);
 
@@ -109,7 +109,7 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
 
     function _createScenario(uint256 _borrowerInput, bool _creteDebt, bool _interest) internal {
         // deposit small amount at begin, because with MAX128 is hard to generate interest
-        _depositForBorrow(type(uint64).max, depositor);
+        _depositForBorrow(type(uint64).max, DEPOSITOR);
 
         if (_creteDebt) {
             address otherBorrower = makeAddr("otherBorrower");
@@ -120,14 +120,14 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
             if (_interest) _applyInterest();
         }
 
-        _deposit(_borrowerInput, borrower, _collateralType());
-        _depositForBorrow(type(uint128).max - type(uint64).max, depositor);
+        _deposit(_borrowerInput, BORROWER, _collateralType());
+        _depositForBorrow(type(uint128).max - type(uint64).max, DEPOSITOR);
     }
 
     function _applyInterest() internal {
         address otherBorrower = makeAddr("otherBorrower");
 
-        uint256 ltvBefore = siloLens.getLtv(silo1, otherBorrower);
+        uint256 ltvBefore = SILO_LENS.getLtv(silo1, otherBorrower);
 
         if (ltvBefore == 1) {
             // there is no way for this test to apply interest for 1 wei LTV
@@ -137,14 +137,14 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
         uint256 warpTime = 10 days;
         vm.warp(block.timestamp + warpTime);
 
-        uint256 ltvAfter = siloLens.getLtv(silo1, otherBorrower);
+        uint256 ltvAfter = SILO_LENS.getLtv(silo1, otherBorrower);
 
         emit log_named_uint("ltvBefore", ltvBefore);
         emit log_named_uint("ltvAfter", ltvAfter);
 
         while (ltvAfter == ltvBefore) {
             vm.warp(block.timestamp + warpTime);
-            ltvAfter = siloLens.getLtv(silo1, otherBorrower);
+            ltvAfter = SILO_LENS.getLtv(silo1, otherBorrower);
         }
 
         emit log_named_uint("ltvAfter loop", ltvAfter);
@@ -156,8 +156,8 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
         vm.assume(_preview > 0);
 
         uint256 results = _borrowShares()
-            ? _borrowShares(_assetsOrShares, borrower)
-            : _borrow(_assetsOrShares, borrower);
+            ? _borrowShares(_assetsOrShares, BORROWER)
+            : _borrow(_assetsOrShares, BORROWER);
 
         uint256 conversionResults = _borrowShares()
             ? silo1.convertToAssets(_assetsOrShares, ISilo.AssetType.Debt)

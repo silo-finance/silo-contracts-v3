@@ -2,7 +2,6 @@
 pragma solidity 0.8.28;
 
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
-import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {SignedMath} from "openzeppelin5/utils/math/SignedMath.sol";
 import {Initializable} from "openzeppelin5/proxy/utils/Initializable.sol";
 
@@ -28,7 +27,7 @@ contract DynamicKinkModel is IDynamicKinkModel, IVersioned, Ownable1and2Steps, I
     using KinkMath for int96;
     using KinkMath for uint256;
 
-    string public constant VERSION = "DynamicKinkModel 3.14.0";
+    string public constant VERSION = "DynamicKinkModel 4.1.3";
 
     /// @dev DP in 18 decimal points used for integer calculations
     int256 internal constant _DP = int256(1e18);
@@ -113,7 +112,7 @@ contract DynamicKinkModel is IDynamicKinkModel, IVersioned, Ownable1and2Steps, I
         _irmConfig = currentState.irmConfig;
         _modelState.k = currentState.k;
 
-        configsHistory[pendingConfig] = History(0, IDynamicKinkModelConfig(address(0)));
+        configsHistory[pendingConfig] = History({k: 0, irmConfig: IDynamicKinkModelConfig(address(0))});
 
         activateConfigAt = 0;
 

@@ -18,25 +18,25 @@ import {SiloLendingLibImpl} from "../../_common/SiloLendingLibImpl.sol";
 */
 contract BorrowTest is Test {
     // solhint-disable immutable-vars-naming
-    TokenMock public immutable protectedShareToken;
-    TokenMock public immutable collateralShareToken;
-    TokenMock public immutable debtShareToken;
-    TokenMock public immutable debtToken;
+    TokenMock public immutable PROTECTED_SHARE_TOKEN;
+    TokenMock public immutable COLLATERAL_SHARE_TOKEN;
+    TokenMock public immutable DEBT_SHARE_TOKEN;
+    TokenMock public immutable DEBT_TOKEN;
 
-    SiloLendingLibBorrowTestData public immutable tests;
+    SiloLendingLibBorrowTestData public immutable TESTS;
     // solhint-enable immutable-vars-naming
 
     constructor() {
-        protectedShareToken = new TokenMock(makeAddr("protectedShareToken"));
-        collateralShareToken = new TokenMock(makeAddr("collateralShareToken"));
-        debtShareToken = new TokenMock(makeAddr("debtShareToken"));
-        debtToken = new TokenMock(makeAddr("debtToken"));
+        PROTECTED_SHARE_TOKEN = new TokenMock(makeAddr("PROTECTED_SHARE_TOKEN"));
+        COLLATERAL_SHARE_TOKEN = new TokenMock(makeAddr("COLLATERAL_SHARE_TOKEN"));
+        DEBT_SHARE_TOKEN = new TokenMock(makeAddr("DEBT_SHARE_TOKEN"));
+        DEBT_TOKEN = new TokenMock(makeAddr("DEBT_TOKEN"));
 
-        tests = new SiloLendingLibBorrowTestData(
-            protectedShareToken.ADDRESS(),
-            collateralShareToken.ADDRESS(),
-            debtShareToken.ADDRESS(),
-            debtToken.ADDRESS()
+        TESTS = new SiloLendingLibBorrowTestData(
+            PROTECTED_SHARE_TOKEN.ADDRESS(),
+            COLLATERAL_SHARE_TOKEN.ADDRESS(),
+            DEBT_SHARE_TOKEN.ADDRESS(),
+            DEBT_TOKEN.ADDRESS()
         );
     }
 
@@ -47,7 +47,7 @@ contract BorrowTest is Test {
         SiloLendingLibImpl impl = new SiloLendingLibImpl();
 
         ISiloConfig.ConfigData memory configData;
-        configData.debtShareToken = makeAddr("debtShareToken");
+        configData.debtShareToken = makeAddr("DEBT_SHARE_TOKEN");
 
         vm.mockCall(configData.debtShareToken, abi.encodeWithSelector(IERC20.totalSupply.selector), abi.encode(0));
 
@@ -70,7 +70,7 @@ contract BorrowTest is Test {
     forge test -vv --mt test_borrow_loop
     */
     function test_borrow_loop() public {
-        SiloLendingLibBorrowTestData.SLLBData[] memory testDatas = tests.getData();
+        SiloLendingLibBorrowTestData.SLLBData[] memory testDatas = TESTS.getData();
         SiloLendingLibImpl impl = new SiloLendingLibImpl();
 
         for (uint256 i; i < testDatas.length; i++) {
@@ -79,13 +79,13 @@ contract BorrowTest is Test {
             bool txReverts = testDatas[i].output.reverts != bytes4(0);
 
             if (testDatas[i].mocks.debtSharesTotalSupplyMock) {
-                debtShareToken.totalSupplyMock(testDatas[i].mocks.debtSharesTotalSupply, !txReverts);
+                DEBT_SHARE_TOKEN.totalSupplyMock(testDatas[i].mocks.debtSharesTotalSupply, !txReverts);
             }
 
             if (testDatas[i].output.borrowedShare != 0) {
-                debtToken.transferMock(testDatas[i].input.receiver, testDatas[i].output.borrowedAssets);
+                DEBT_TOKEN.transferMock(testDatas[i].input.receiver, testDatas[i].output.borrowedAssets);
 
-                debtShareToken.mintMock(
+                DEBT_SHARE_TOKEN.mintMock(
                     testDatas[i].input.borrower, testDatas[i].input.spender, testDatas[i].output.borrowedShare
                 );
             }

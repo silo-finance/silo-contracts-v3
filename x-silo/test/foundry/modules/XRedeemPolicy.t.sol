@@ -11,7 +11,9 @@ import {IERC20Errors} from "openzeppelin5/interfaces/draft-IERC6093.sol";
 import {XSiloAndStreamDeploy} from "x-silo/deploy/XSiloAndStreamDeploy.s.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
 
-import {XSilo, XRedeemPolicy, Stream, ERC20, IStream} from "../../../contracts/XSilo.sol";
+import {XSilo} from "../../../contracts/XSilo.sol";
+import {XRedeemPolicy} from "../../../contracts/modules/XRedeemPolicy.sol";
+import {Stream, IStream} from "../../../contracts/modules/Stream.sol";
 import {IXRedeemPolicy} from "../../../contracts/interfaces/IXRedeemPolicy.sol";
 
 /*

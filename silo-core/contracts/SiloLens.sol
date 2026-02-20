@@ -8,7 +8,6 @@ import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {Utils} from "silo-foundry-utils/lib/Utils.sol";
 
 import {ISiloLens, ISilo} from "./interfaces/ISiloLens.sol";
-import {IShareToken} from "./interfaces/IShareToken.sol";
 import {ISiloConfig} from "./interfaces/ISiloConfig.sol";
 import {IPartialLiquidation} from "./interfaces/IPartialLiquidation.sol";
 import {IInterestRateModel} from "./interfaces/IInterestRateModel.sol";
@@ -25,7 +24,7 @@ contract SiloLens is ISiloLens, IVersioned {
     uint256 internal constant _PRECISION_DECIMALS = 1e18;
 
     /// @notice version contains the contract name and release version
-    string public constant VERSION = "SiloLens 4.0.0";
+    string public constant VERSION = "SiloLens 4.1.3";
 
     /// @inheritdoc ISiloLens
     function getVersion(address _contract) external view returns (string memory version) {
@@ -307,6 +306,8 @@ contract SiloLens is ISiloLens, IVersioned {
             bytes memory originalProgramName = bytes(originalProgramsNames[i]);
 
             if (_isTokenAddress(originalProgramName)) {
+                // Safe: `_isTokenAddress` ensures this byte array has exactly 20 bytes.
+                // forge-lint: disable-next-line(unsafe-typecast)
                 address token = address(bytes20(originalProgramName));
                 programsNames[i] = Strings.toHexString(token);
             } else {
@@ -325,6 +326,8 @@ contract SiloLens is ISiloLens, IVersioned {
     function _isTokenAddress(bytes memory _name) private view returns (bool isToken) {
         if (_name.length != 20) return false;
 
+        // Safe: the length check above guarantees exactly 20 bytes.
+        // forge-lint: disable-next-line(unsafe-typecast)
         address token = address(bytes20(_name));
 
         if (Utils.getCodeAt(token).length == 0) return false;

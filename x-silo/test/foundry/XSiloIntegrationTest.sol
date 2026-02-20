@@ -3,15 +3,13 @@ pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
-import {ERC20Mock} from "openzeppelin5/mocks/token/ERC20Mock.sol";
 import {IERC20} from "openzeppelin5/interfaces/IERC20.sol";
-import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {XSiloAndStreamDeploy} from "x-silo/deploy/XSiloAndStreamDeploy.s.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
 import {XSilo} from "x-silo/contracts/XSilo.sol";
 import {Stream} from "x-silo/contracts/modules/Stream.sol";
-import {SiloCoreContracts, SiloCoreDeployments} from "silo-core/common/SiloCoreContracts.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {DistributionTypes} from "silo-core/contracts/incentives/lib/DistributionTypes.sol";
 import {INotificationReceiver} from "silo-vaults/contracts/interfaces/INotificationReceiver.sol";
@@ -25,6 +23,7 @@ import {
  FOUNDRY_PROFILE=x_silo forge test --ffi --mc XSiloIntegrationTest -vv
 */
 contract XSiloIntegrationTest is Test {
+    using SafeCast for uint256;
     address public constant SILO_WHALE = 0xE641Dca2E131FA8BFe1D7931b9b040e3fE0c5BDc;
     address public constant USDC_WHALE = 0x578Ee1ca3a8E1b54554Da1Bf7C583506C4CD11c6;
 
@@ -64,9 +63,9 @@ contract XSiloIntegrationTest is Test {
         userInitialSiloBalance = whaleBalance / 10;
 
         vm.startPrank(SILO_WHALE);
-        siloTokenV2.transfer(user1, userInitialSiloBalance);
-        siloTokenV2.transfer(user2, userInitialSiloBalance);
-        siloTokenV2.transfer(dao, userInitialSiloBalance);
+        require(siloTokenV2.transfer(user1, userInitialSiloBalance), "transfer failed");
+        require(siloTokenV2.transfer(user2, userInitialSiloBalance), "transfer failed");
+        require(siloTokenV2.transfer(dao, userInitialSiloBalance), "transfer failed");
         vm.stopPrank();
 
         SiloIncentivesControllerFactoryDeploy factoryDeploy = new SiloIncentivesControllerFactoryDeploy();
@@ -138,7 +137,7 @@ contract XSiloIntegrationTest is Test {
         stream.setEmissions(emissionPerSecond, distributionEnd);
 
         vm.prank(dao);
-        siloTokenV2.transfer(address(stream), INCENTIVE_DURATION * emissionPerSecond);
+        require(siloTokenV2.transfer(address(stream), INCENTIVE_DURATION * emissionPerSecond), "transfer failed");
     }
 
     function _siloIncentivesControllerConfiguration() internal {
@@ -149,8 +148,8 @@ contract XSiloIntegrationTest is Test {
         input = DistributionTypes.IncentivesProgramCreationInput({
             name: "test",
             rewardToken: address(usdcToken),
-            emissionPerSecond: uint104(emissionPerSecond),
-            distributionEnd: uint40(distributionEnd)
+            emissionPerSecond: emissionPerSecond.toUint104(),
+            distributionEnd: distributionEnd.toUint40()
         });
 
         vm.prank(dao);
@@ -158,7 +157,7 @@ contract XSiloIntegrationTest is Test {
 
         assertGe(usdcToken.balanceOf(USDC_WHALE), INCENTIVE_DURATION * emissionPerSecond, "whale don't have tokens");
         vm.prank(USDC_WHALE);
-        usdcToken.transfer(address(controller), INCENTIVE_DURATION * emissionPerSecond);
+        require(usdcToken.transfer(address(controller), INCENTIVE_DURATION * emissionPerSecond), "transfer failed");
 
         vm.prank(dao);
         xSilo.setNotificationReceiver(INotificationReceiver(address(controller)), true);

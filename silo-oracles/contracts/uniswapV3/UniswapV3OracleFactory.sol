@@ -131,6 +131,8 @@ contract UniswapV3OracleFactory is OracleFactory, Create2Factory {
         if (address(_config.pool) == address(0)) revert("EmptyPool");
         if (_config.quoteToken == address(0)) revert("EmptyQuoteToken");
 
+        // Safe: guarded above by `cardinality <= type(uint16).max`.
+        // forge-lint: disable-next-line(unsafe-typecast)
         return uint16(cardinality);
     }
 

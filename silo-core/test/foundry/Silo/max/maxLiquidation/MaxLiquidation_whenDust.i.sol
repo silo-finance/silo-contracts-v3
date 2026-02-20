@@ -54,11 +54,11 @@ contract MaxLiquidationDustTest is MaxLiquidationCommon {
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
     {
         (uint256 collateralToLiquidate, uint256 debtToRepay, bool sTokenRequired) =
-            partialLiquidation.maxLiquidation(borrower);
+            partialLiquidation.maxLiquidation(BORROWER);
 
         assertTrue(!sTokenRequired, "sTokenRequired not required");
 
-        emit log_named_decimal_uint("[DustLiquidation] ltv before", silo0.getLtv(borrower), 16);
+        emit log_named_decimal_uint("[DustLiquidation] ltv before", silo0.getLtv(BORROWER), 16);
         emit log_named_uint("[DustLiquidation] debtToRepay", debtToRepay);
         emit log_named_uint("[DustLiquidation] collateralToLiquidate", collateralToLiquidate);
 
@@ -67,13 +67,13 @@ contract MaxLiquidationDustTest is MaxLiquidationCommon {
         uint256 maxDebtToCover = debtToRepay % 2 == 0 ? type(uint256).max : debtToRepay;
 
         (withdrawCollateral, repayDebtAssets) = partialLiquidation.liquidationCall(
-            address(token0), address(token1), borrower, maxDebtToCover, _receiveSToken
+            address(token0), address(token1), BORROWER, maxDebtToCover, _receiveSToken
         );
 
         emit log_named_uint("[DustLiquidation] withdrawCollateral", withdrawCollateral);
         emit log_named_uint("[DustLiquidation] repayDebtAssets", repayDebtAssets);
 
-        assertEq(silo0.getLtv(borrower), 0, "[DustLiquidation] expect full liquidation with dust");
+        assertEq(silo0.getLtv(BORROWER), 0, "[DustLiquidation] expect full liquidation with dust");
         assertEq(debtToRepay, repayDebtAssets, "[DustLiquidation] debt: maxLiquidation == result");
 
         _assertEqDiff(

@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.0;
 
-import {Test} from "forge-std/Test.sol";
-
 import {Initializable} from "openzeppelin5-upgradeable/proxy/utils/Initializable.sol";
 
 import {IPTLinearOracleConfig} from "silo-oracles/contracts/interfaces/IPTLinearOracleConfig.sol";
@@ -13,10 +11,6 @@ import {PTLinearOracle} from "silo-oracles/contracts/pendle/linear/PTLinearOracl
 
 import {PTLinearOracleFactory} from "silo-oracles/contracts/pendle/linear/PTLinearOracleFactory.sol";
 
-import {IPendleMarketV3Like} from "silo-oracles/contracts/pendle/interfaces/IPendleMarketV3Like.sol";
-import {IPendleSYTokenLike} from "silo-oracles/contracts/pendle/interfaces/IPendleSYTokenLike.sol";
-import {IPendlePTLike} from "silo-oracles/contracts/pendle/interfaces/IPendlePTLike.sol";
-
 import {SparkLinearDiscountOracleFactoryMock} from "./_common/SparkLinearDiscountOracleFactoryMock.sol";
 import {PTLinearMocks} from "./_common/PTLinearMocks.sol";
 
@@ -24,10 +18,10 @@ import {PTLinearMocks} from "./_common/PTLinearMocks.sol";
     FOUNDRY_PROFILE=oracles forge test --mc PTLinearOracleFactoryTest --ffi -vv
 */
 contract PTLinearOracleFactoryTest is PTLinearMocks {
-    PTLinearOracleFactory immutable factory;
+    PTLinearOracleFactory immutable FACTORY;
 
     constructor() {
-        factory = new PTLinearOracleFactory(address(new SparkLinearDiscountOracleFactoryMock()));
+        FACTORY = new PTLinearOracleFactory(address(new SparkLinearDiscountOracleFactoryMock()));
     }
 
     function setUp() public {
@@ -46,16 +40,16 @@ contract PTLinearOracleFactoryTest is PTLinearMocks {
 
         _doAllNecessaryMockCalls();
 
-        address predictedAddress = factory.predictAddress(_config, _deployer, _externalSalt);
+        address predictedAddress = FACTORY.predictAddress(_config, _deployer, _externalSalt);
 
         vm.prank(_deployer);
-        address oracle = address(factory.create(_config, _externalSalt));
+        address oracle = address(FACTORY.create(_config, _externalSalt));
 
         assertEq(oracle, predictedAddress, "Predicted address does not match");
 
-        address oracle2 = address(factory.create(_config, _externalSalt));
+        address oracle2 = address(FACTORY.create(_config, _externalSalt));
 
-        address predictedAddress2 = factory.predictAddress(_config, _deployer, _externalSalt);
+        address predictedAddress2 = FACTORY.predictAddress(_config, _deployer, _externalSalt);
 
         assertEq(
             predictedAddress, predictedAddress2, "predicted addresses should be the same if we reuse the same config"
@@ -73,15 +67,15 @@ contract PTLinearOracleFactoryTest is PTLinearMocks {
     {
         _doAllNecessaryMockCalls();
 
-        bytes32 configId = factory.hashConfig(_config);
+        bytes32 configId = FACTORY.hashConfig(_config);
 
-        address existingOracle = factory.resolveExistingOracle(configId);
+        address existingOracle = FACTORY.resolveExistingOracle(configId);
 
         assertEq(existingOracle, address(0), "No existing oracle should be found");
 
-        address oracle = address(factory.create(_config, bytes32(0)));
+        address oracle = address(FACTORY.create(_config, bytes32(0)));
 
-        existingOracle = factory.resolveExistingOracle(configId);
+        existingOracle = FACTORY.resolveExistingOracle(configId);
         assertEq(existingOracle, address(oracle), "Existing oracle should be found");
     }
 
@@ -96,10 +90,10 @@ contract PTLinearOracleFactoryTest is PTLinearMocks {
         _doAllNecessaryMockCalls();
 
         vm.prank(_deployer);
-        address oracle1 = address(factory.create(_config, _externalSalt));
+        address oracle1 = address(FACTORY.create(_config, _externalSalt));
 
         // deployer does not matter here, because we use the same config
-        address oracle2 = address(factory.create(_config, bytes32(0)));
+        address oracle2 = address(FACTORY.create(_config, bytes32(0)));
 
         assertEq(oracle1, oracle2, "Oracle addresses should be the same if we reuse the same config");
     }
@@ -124,15 +118,15 @@ contract PTLinearOracleFactoryTest is PTLinearMocks {
         uint256 snapshot = vm.snapshotState();
 
         vm.prank(_eoa1);
-        address oracle1 = address(factory.create(_config1, bytes32(0)));
+        address oracle1 = address(FACTORY.create(_config1, bytes32(0)));
 
         vm.prank(_eoa2);
-        address oracle2 = address(factory.create(_config2, bytes32(0)));
+        address oracle2 = address(FACTORY.create(_config2, bytes32(0)));
 
         vm.revertToState(snapshot);
 
         vm.prank(_eoa1); // user1 but config2
-        address oracle3 = address(factory.create(_config2, bytes32(0)));
+        address oracle3 = address(FACTORY.create(_config2, bytes32(0)));
 
         assertNotEq(oracle1, oracle2, "Oracle addresses should be different if we reorg");
         assertEq(oracle1, oracle3, "Oracle addresses should be the same for same user");
@@ -147,7 +141,7 @@ contract PTLinearOracleFactoryTest is PTLinearMocks {
     {
         _doAllNecessaryMockCalls();
 
-        factory.createAndVerifyOracleConfig(_config);
+        FACTORY.createAndVerifyOracleConfig(_config);
     }
 
     /*
@@ -160,15 +154,15 @@ contract PTLinearOracleFactoryTest is PTLinearMocks {
 
         config.maxYield = 1e18;
         vm.expectRevert(abi.encodeWithSelector(IPTLinearOracleFactory.InvalidMaxYield.selector));
-        factory.createAndVerifyOracleConfig(config);
+        FACTORY.createAndVerifyOracleConfig(config);
 
         config.maxYield = 0.3e18;
 
         vm.expectRevert(abi.encodeWithSelector(IPTLinearOracleFactory.AddressZero.selector));
-        factory.createAndVerifyOracleConfig(config);
+        FACTORY.createAndVerifyOracleConfig(config);
 
         vm.expectRevert(abi.encodeWithSelector(IPTLinearOracleFactory.AddressZero.selector));
-        factory.createAndVerifyOracleConfig(config);
+        FACTORY.createAndVerifyOracleConfig(config);
 
         config.hardcodedQuoteToken = makeAddr("quoteToken");
         config.ptToken = makeAddr("ptToken");
@@ -176,25 +170,25 @@ contract PTLinearOracleFactoryTest is PTLinearMocks {
         _mockExpiry(makeAddr("ptToken"), 0);
 
         vm.expectRevert(abi.encodeWithSelector(IPTLinearOracleFactory.MaturityDateInvalid.selector));
-        factory.createAndVerifyOracleConfig(config);
+        FACTORY.createAndVerifyOracleConfig(config);
 
         _mockExpiry(makeAddr("ptToken"), block.timestamp - 1);
         vm.expectRevert(abi.encodeWithSelector(IPTLinearOracleFactory.MaturityDateIsInThePast.selector));
-        factory.createAndVerifyOracleConfig(config);
+        FACTORY.createAndVerifyOracleConfig(config);
 
         _mockExpiry(makeAddr("ptToken"), block.timestamp + 1);
         vm.expectRevert(abi.encodeWithSelector(IPTLinearOracleFactory.NormalizationDividerTooLarge.selector));
-        factory.createAndVerifyOracleConfig(config);
+        FACTORY.createAndVerifyOracleConfig(config);
 
         _mockDecimals(config.ptToken, 0);
-        factory.createAndVerifyOracleConfig(config);
+        FACTORY.createAndVerifyOracleConfig(config);
     }
 
     /*
     FOUNDRY_PROFILE=oracles forge test --mt test_ptLinear_hashConfig --ffi -vv
     */
     function test_ptLinear_hashConfig_fuzz(IPTLinearOracleFactory.DeploymentConfig memory _config) public view {
-        bytes32 configId = factory.hashConfig(_config);
+        bytes32 configId = FACTORY.hashConfig(_config);
 
         assertEq(configId, keccak256(abi.encode(_config)), "Config hash should match");
     }
@@ -203,7 +197,7 @@ contract PTLinearOracleFactoryTest is PTLinearMocks {
     FOUNDRY_PROFILE=oracles forge test --mt test_ptLinear_implementation_canNotBeInit --ffi -vv
     */
     function test_ptLinear_implementation_canNotBeInit() public {
-        address implementation = address(factory.ORACLE_IMPLEMENTATION());
+        address implementation = address(FACTORY.ORACLE_IMPLEMENTATION());
 
         vm.expectRevert(abi.encodeWithSelector(Initializable.InvalidInitialization.selector));
         IPTLinearOracle(implementation).initialize(IPTLinearOracleConfig(address(1)));
@@ -229,7 +223,7 @@ contract PTLinearOracleFactoryTest is PTLinearMocks {
 
         _doAllNecessaryMockCalls();
 
-        address oracle = address(factory.create(config, bytes32(0)));
+        address oracle = address(FACTORY.create(config, bytes32(0)));
 
         vm.expectRevert(abi.encodeWithSelector(Initializable.InvalidInitialization.selector));
         IPTLinearOracle(oracle).initialize(IPTLinearOracleConfig(address(1)));
@@ -244,7 +238,7 @@ contract PTLinearOracleFactoryTest is PTLinearMocks {
     {
         _doAllNecessaryMockCalls();
 
-        IPTLinearOracle oracle = factory.create(_config, bytes32(0));
+        IPTLinearOracle oracle = FACTORY.create(_config, bytes32(0));
         IPTLinearOracleConfig.OracleConfig memory cfg = oracle.oracleConfig().getConfig();
 
         assertEq(cfg.linearOracle, makeAddr("sparkLinearDiscountOracle"), "Linear oracle should match");

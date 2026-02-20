@@ -4,16 +4,11 @@ pragma solidity ^0.8.28;
 import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
-import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {SiloVault} from "../../../contracts/SiloVault.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 
-import {IIncentivesClaimingLogic} from "../../../contracts/interfaces/IIncentivesClaimingLogic.sol";
-import {SiloIncentivesControllerCLFactory} from
-    "../../../contracts/incentives/claiming-logics/SiloIncentivesControllerCLFactory.sol";
-import {SiloVaultsContracts, SiloVaultsDeployments} from "silo-vaults/common/SiloVaultsContracts.sol";
 import {IVaultIncentivesModule} from "../../../contracts/interfaces/IVaultIncentivesModule.sol";
 
 import {RescueWAVAX} from "silo-vaults/contracts/utils/RescueWAVAX.sol";
@@ -130,7 +125,7 @@ contract RescueTokensFromVault is Test {
         IERC20 asset = IERC20Metadata(VAULT.asset());
 
         vm.prank(usdtWhale);
-        asset.transfer(address(this), 100e6);
+        require(asset.transfer(address(this), 100e6), "transfer failed");
 
         asset.approve(address(VAULT), 100e6);
         VAULT.deposit(100e6, address(this));

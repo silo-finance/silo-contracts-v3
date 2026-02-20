@@ -9,16 +9,11 @@ import {PendleLPTOracle} from "silo-oracles/contracts/pendle/lp-tokens/PendleLPT
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IPendleLPWrapperLike} from "silo-oracles/contracts/pendle/interfaces/IPendleLPWrapperLike.sol";
 
-import {PendleWrapperLPTToSyOracle} from
-    "silo-oracles/contracts/pendle/lp-tokens/wrappers/PendleWrapperLPTToSyOracle.sol";
 import {ChainlinkV3OracleFactory} from "silo-oracles/contracts/chainlinkV3/ChainlinkV3OracleFactory.sol";
 import {SiloVirtualAsset8DecimalsDeploy} from "silo-oracles/deploy/SiloVirtualAsset8DecimalsDeploy.s.sol";
 import {SiloOraclesContracts} from "silo-oracles/deploy/SiloOraclesContracts.sol";
-import {OraclesDeployments, OracleConfig} from "silo-oracles/deploy/OraclesDeployments.sol";
+import {OracleConfig} from "silo-oracles/deploy/OraclesDeployments.sol";
 import {ChainlinkV3OracleDeploy} from "silo-oracles/deploy/chainlink-v3-oracle/ChainlinkV3OracleDeploy.s.sol";
-
-import {PendleWrapperLPTToAssetOracle} from
-    "silo-oracles/contracts/pendle/lp-tokens/wrappers/PendleWrapperLPTToAssetOracle.sol";
 
 import {PendleWrapperLPTToSyOracleFactory} from
     "silo-oracles/contracts/pendle/lp-tokens/wrappers/PendleWrapperLPTToSyOracleFactory.sol";
@@ -44,6 +39,7 @@ contract PendleWrapperLPTOracle is Test {
     IPendleOracleHelper public constant PENDLE_ORACLE =
         IPendleOracleHelper(0x9a9Fa8338dd5E5B2188006f1Cd2Ef26d921650C2);
 
+    // forge-lint: disable-next-line(screaming-snake-case-const)
     IPendleLPWrapperLike public constant sUSDe_WRAPPER =
         IPendleLPWrapperLike(0xaB025d7b57B0902A2797599F3eB07477400e62B0); // Sep
 

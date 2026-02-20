@@ -2,19 +2,15 @@
 pragma solidity 0.8.28;
 
 import {console2} from "forge-std/console2.sol";
-import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 import {UserState} from "./UserState.sol";
 
-import {LiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/LiquidationHelper.sol";
-import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 
 import {ILiquidationHelper} from "silo-core/contracts/interfaces/ILiquidationHelper.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {SiloHookV1} from "silo-core/contracts/hooks/SiloHookV1.sol";
-import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 
 /*
 FOUNDRY_PROFILE=core_test forge test --mc LiquidationDebug_2025_10_15_Sonic4 --ffi -vvv
@@ -75,7 +71,7 @@ contract LiquidationDebug_2025_10_15_Sonic4 is UserState {
         ILiquidationHelper.DexSwapInput[] memory dexSwapInput = new ILiquidationHelper.DexSwapInput[](1);
         dexSwapInput[0] = ILiquidationHelper.DexSwapInput({
             sellToken: collateralCfg.token,
-            allowanceTarget: swapAllowanceHolder,
+            allowanceTarget: SWAP_ALLOWANCE_HOLDER,
             swapCallData: hex"83bd37f90001039e2fb66102314ce7b64ce5ce3e5183bc94ad380001d3dce716f3ef535c5ff8d041c1a41c3bd89b97ae07238508106a23cd0207bf07ae1400013a5d6a7aab7c1b681892bdc3667c76a5e4116ba30001cd806c9cd224a185724c54acf79e5593f479f55e0001f363c6d369888f5367e9f1ad7b6a7dae133e8740000000000301020300030101000102011eff00000000000000000000000000000000000000cd806c9cd224a185724c54acf79e5593f479f55e039e2fb66102314ce7b64ce5ce3e5183bc94ad38000000000000000000000000000000000000000000000000"
         });
 
@@ -85,7 +81,7 @@ contract LiquidationDebug_2025_10_15_Sonic4 is UserState {
         // }
 
         vm.prank(0x0665609124CC2a958Cf0ED582eE132076243B6Da);
-        helper.executeLiquidation({
+        HELPER.executeLiquidation({
             _flashLoanFrom: flashLoanFrom,
             _debtAsset: debtCfg.token,
             _maxDebtToCover: ISilo(debtCfg.silo).maxRepay(user),

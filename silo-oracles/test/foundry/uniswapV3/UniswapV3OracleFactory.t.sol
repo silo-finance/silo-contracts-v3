@@ -2,14 +2,18 @@
 pragma solidity >=0.7.6 <0.9.0;
 pragma abicoder v2;
 
-import "forge-std/Test.sol";
-
 import {IUniswapV3PoolState} from "uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState.sol";
 import {IUniswapV3PoolImmutables} from "uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables.sol";
 
-import "../../../constants/Ethereum.sol";
-import "../_common/UniswapPools.sol";
-import "../../../contracts/uniswapV3/UniswapV3OracleFactory.sol";
+import {UNISWAPV3_FACTORY} from "../../../constants/Ethereum.sol";
+import {UniswapPools} from "../_common/UniswapPools.sol";
+import {UniswapV3OracleFactory} from "../../../contracts/uniswapV3/UniswapV3OracleFactory.sol";
+import {UniswapV3Oracle} from "../../../contracts/uniswapV3/UniswapV3Oracle.sol";
+import {UniswapV3OracleConfig} from "../../../contracts/uniswapV3/UniswapV3OracleConfig.sol";
+import {IUniswapV3Oracle} from "../../../contracts/interfaces/IUniswapV3Oracle.sol";
+import {IERC20BalanceOf} from "../../../contracts/interfaces/IERC20BalanceOf.sol";
+import {IUniswapV3Factory} from "uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
+import {IUniswapV3Pool} from "uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 
 /*
     FOUNDRY_PROFILE=oracles forge test -vv --mc UniswapV3OracleFactoryTest
@@ -22,6 +26,8 @@ contract UniswapV3OracleFactoryTest is UniswapPools {
     address constant TOKEN_B = address(2);
     uint32 constant PERIOD_FOR_AVG_PRICE = 1800;
     uint8 constant BLOCK_TIME = 120;
+    // Safe: PERIOD_FOR_AVG_PRICE * 10 / BLOCK_TIME = 1800 * 10 / 120 = 150, which fits in uint16 (max 65535)
+    // forge-lint: disable-next-line(unsafe-typecast)
     uint16 constant REQUIRED_CARDINALITY = uint16(uint256(PERIOD_FOR_AVG_PRICE) * 10 / BLOCK_TIME);
 
     address constant POOL = address(0x99999);

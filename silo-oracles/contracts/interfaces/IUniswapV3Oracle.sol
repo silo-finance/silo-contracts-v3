@@ -2,7 +2,6 @@
 pragma solidity >=0.5.0;
 
 import {IUniswapV3Pool} from "uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
-import {IUniswapV3Factory} from  "uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import {UniswapV3OracleConfig} from "../uniswapV3/UniswapV3OracleConfig.sol";
 
 interface IUniswapV3Oracle {

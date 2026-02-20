@@ -66,6 +66,7 @@ contract WithdrawAllowanceTest is SiloLittleHelper, Test {
 
         address shareToken = _type == ISilo.CollateralType.Collateral ? collateralShareToken : protectedShareToken;
         vm.prank(DEPOSITOR);
+        // forge-lint: disable-next-line(divide-before-multiply)
         IShareToken(shareToken).approve(address(this), (ASSETS / 2) * SiloMathLib._DECIMALS_OFFSET_POW);
 
         assertEq(token0.balanceOf(RECEIVER), 0, "no balance before");

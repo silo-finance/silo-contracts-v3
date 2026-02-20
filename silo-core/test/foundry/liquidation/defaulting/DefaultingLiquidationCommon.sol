@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.28;
 
-import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
 import {Math} from "openzeppelin5/utils/math/Math.sol";
@@ -27,6 +26,7 @@ import {DummyOracle} from "silo-core/test/foundry/_common/DummyOracle.sol";
 import {DefaultingLiquidationAsserts} from "./common/DefaultingLiquidationAsserts.sol";
 import {RevertLib} from "silo-core/contracts/lib/RevertLib.sol";
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
 - anything with decimals? don't think so, we only transfer shares
@@ -38,6 +38,8 @@ FOUNDRY_PROFILE=core_test forge test --ffi --mc DefaultingLiquidationBorrowable 
 
 */
 abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
+    using SafeCast for int256;
+
     using SiloLensLib for ISilo;
 
     function setUp() public virtual {
@@ -525,6 +527,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         ) {
             // nothing to do
         } catch (bytes memory data) {
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
             bytes4 returnZeroShares = bytes4(keccak256(abi.encodePacked("ReturnZeroShares()")));
 
@@ -668,6 +671,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         ) {
             // nothing to do
         } catch (bytes memory data) {
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
             bytes4 returnZeroShares = bytes4(keccak256(abi.encodePacked("ReturnZeroShares()")));
             if (errorType == returnZeroShares) {
@@ -997,8 +1001,10 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         vm.assume(_priceDropPercentage > 0.0005e18);
 
         // 0.5% to 20% price drop cap
+        // forge-lint: disable-next-line(unsafe-typecast)
         int256 dropPercentage = int256(uint256(_priceDropPercentage) % 0.2e18);
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         uint256 targetPrice = _calculateNewPrice(uint64(oracle0.price()), -int64(dropPercentage));
 
         _addLiquidity(Math.max(_collateral, _protected));

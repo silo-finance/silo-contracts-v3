@@ -9,8 +9,6 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
-import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
-
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 import {Rounding} from "silo-core/contracts/lib/Rounding.sol";
@@ -235,6 +233,7 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
             withdrawCollateral = assets;
         } catch (bytes memory e) {
             if (_isToAssetsConvertionError(e)) {
+                // forge-lint: disable-next-line(erc20-unchecked-transfer)
                 IERC20(_shareToken).transfer(msg.sender, _shares);
             } else {
                 RevertLib.revertBytes(e, string(""));
@@ -244,6 +243,8 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
 
     /// @dev this method detect if error is caused by unable to convert shares to assets eg 999 shares => 0 assets
     function _isToAssetsConvertionError(bytes memory _error) internal pure returns (bool) {
+        // Safe: this cast is executed only when `_error.length == 4`.
+        // forge-lint: disable-next-line(unsafe-typecast)
         return _error.length == 4 && bytes4(_error) == ISilo.ReturnZeroAssets.selector;
     }
 }

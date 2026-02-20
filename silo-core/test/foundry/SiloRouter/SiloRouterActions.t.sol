@@ -2,7 +2,6 @@
 pragma solidity ^0.8.28;
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
-import {IERC20Errors} from "openzeppelin5/interfaces/draft-IERC6093.sol";
 import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {Pausable} from "openzeppelin5/utils/Pausable.sol";
@@ -10,10 +9,8 @@ import {ReentrancyGuardUpgradeable} from "openzeppelin5-upgradeable/utils/Reentr
 
 import {SiloRouterV2Deploy} from "silo-core/deploy/SiloRouterV2Deploy.s.sol";
 import {SiloRouterV2} from "silo-core/contracts/silo-router/SiloRouterV2.sol";
-import {SiloDeployments, SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
-import {ISiloRouterV2} from "silo-core/contracts/interfaces/ISiloRouterV2.sol";
 import {SiloRouterV2Implementation} from "silo-core/contracts/silo-router/SiloRouterV2Implementation.sol";
 import {IWrappedNativeToken} from "silo-core/contracts/interfaces/IWrappedNativeToken.sol";
 import {ShareTokenDecimalsPowLib} from "../_common/ShareTokenDecimalsPowLib.sol";
@@ -75,10 +72,10 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         (protectedToken1, collateralToken1, debtToken1) = ISiloConfig(siloConfig).getShareTokens(silo1);
 
         vm.prank(wsWhale);
-        IERC20(token0).transfer(depositor, _TOKEN0_AMOUNT);
+        require(IERC20(token0).transfer(depositor, _TOKEN0_AMOUNT), "transfer failed");
 
         vm.prank(wsWhale);
-        IERC20(token0).transfer(borrower, _TOKEN0_AMOUNT);
+        require(IERC20(token0).transfer(borrower, _TOKEN0_AMOUNT), "transfer failed");
 
         vm.prank(depositor);
         IERC20(token0).approve(address(router), type(uint256).max);
@@ -170,7 +167,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         uint256 someAmount = _S_BALANCE + 1;
 
         vm.prank(wsWhale);
-        nativeToken.transfer(address(router), someAmount);
+        require(nativeToken.transfer(address(router), someAmount), "transfer failed");
 
         address receiver = makeAddr("Receiver");
 
@@ -210,7 +207,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         assertEq(nativeToken.balanceOf(address(this)), 0, "Account should not have any native tokens");
 
         vm.prank(wsWhale);
-        nativeToken.transfer(address(router), _S_BALANCE);
+        require(nativeToken.transfer(address(router), _S_BALANCE), "transfer failed");
 
         address anyAddress = makeAddr("AnyAddress");
 
@@ -422,7 +419,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_siloRouterV2_borrowNativeAndUnwrapFlow
     function test_siloRouterV2_borrowNativeAndUnwrapFlow() public {
         vm.prank(wethWhale);
-        IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT);
+        require(IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT), "transfer failed");
 
         vm.prank(borrower);
         IERC20(token1).approve(address(silo1), _TOKEN1_AMOUNT);
@@ -453,7 +450,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_siloRouterV2_repayFlow
     function test_siloRouterV2_repayFlow() public {
         vm.prank(wethWhale);
-        IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT);
+        require(IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT), "transfer failed");
 
         vm.prank(borrower);
         IERC20(token1).approve(address(silo1), _TOKEN1_AMOUNT);
@@ -494,7 +491,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_siloRouterV2_repayNativeWrapFlow
     function test_siloRouterV2_repayNativeWrapFlow() public {
         vm.prank(wethWhale);
-        IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT);
+        require(IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT), "transfer failed");
 
         vm.prank(borrower);
         IERC20(token1).approve(address(silo1), _TOKEN1_AMOUNT);
@@ -533,7 +530,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_siloRouterV2_repayAllFlow
     function test_siloRouterV2_repayAllFlow() public {
         vm.prank(wethWhale);
-        IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT);
+        require(IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT), "transfer failed");
 
         vm.prank(borrower);
         IERC20(token1).approve(address(silo1), _TOKEN1_AMOUNT);
@@ -565,7 +562,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_siloRouterV2_repayAllNativeFlow
     function test_siloRouterV2_repayAllNativeFlow() public {
         vm.prank(wethWhale);
-        IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT);
+        require(IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT), "transfer failed");
 
         vm.prank(borrower);
         IERC20(token1).approve(address(silo1), _TOKEN1_AMOUNT);

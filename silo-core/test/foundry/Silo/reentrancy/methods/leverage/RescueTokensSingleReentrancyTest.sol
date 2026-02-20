@@ -2,16 +2,12 @@
 pragma solidity ^0.8.28;
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
-import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {ReentrancyGuard} from "openzeppelin5/utils/ReentrancyGuard.sol";
 import {Vm} from "forge-std/Vm.sol";
 
 import {RescueModule} from "silo-core/contracts/leverage/modules/RescueModule.sol";
 import {MethodReentrancyTest} from "../MethodReentrancyTest.sol";
 import {TestStateLib} from "../../TestState.sol";
-import {MaliciousToken} from "../../MaliciousToken.sol";
-import {LeverageUsingSiloFlashloanWithGeneralSwap} from
-    "silo-core/contracts/leverage/LeverageUsingSiloFlashloanWithGeneralSwap.sol";
 import {ILeverageRouter} from "silo-core/contracts/interfaces/ILeverageRouter.sol";
 
 contract RescueTokensSingleReentrancyTest is MethodReentrancyTest {

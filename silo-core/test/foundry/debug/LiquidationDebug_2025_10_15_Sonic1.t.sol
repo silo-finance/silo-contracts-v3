@@ -16,7 +16,7 @@ import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 FOUNDRY_PROFILE=core_test forge test --mc LiquidationDebug_2025_10_15_Sonic1 --ffi -vvv
 */
 contract LiquidationDebug_2025_10_15_Sonic1 is IntegrationTest {
-    SiloLens internal constant lens = SiloLens(0xB95AD415b0fcE49f84FbD5B26b14ec7cf4822c69);
+    SiloLens internal constant LENS = SiloLens(0xB95AD415b0fcE49f84FbD5B26b14ec7cf4822c69);
     // IPartialLiquidation constant internal hook = IPartialLiquidation(0xDdBa71380230a3a5ab7094d9c774A6C5852a0fFC);
     // ILiquidationHelper constant internal helper = ILiquidationHelper(0xf363c6d369888f5367e9f1ad7b6a7dae133e8740);
     ILiquidationHelper internal helper;
@@ -115,7 +115,7 @@ contract LiquidationDebug_2025_10_15_Sonic1 is IntegrationTest {
         console2.log("      debt asset: ", debtCfg.token);
         console2.log("collateral Liquidation Threshold: ", collateralCfg.lt);
         console2.log("      debt Liquidation Threshold: ", debtCfg.lt);
-        console2.log("                        user LTV: ", lens.getUserLTV(ISilo(debtCfg.silo), _user));
+        console2.log("                        user LTV: ", LENS.getUserLTV(ISilo(debtCfg.silo), _user));
         console2.log("user solvent?: ", ISilo(debtCfg.silo).isSolvent(_user));
 
         IPartialLiquidation hook = IPartialLiquidation(collateralCfg.hookReceiver);

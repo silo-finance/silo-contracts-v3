@@ -37,10 +37,10 @@ contract TransferReentrancyTest is MethodReentrancyTest {
         TestStateLib.enableReentrancy();
 
         vm.prank(depositor);
-        ShareToken(collateral).transfer(receiver, depositAmount);
+        require(ShareToken(collateral).transfer(receiver, depositAmount), "transfer failed 13");
 
         vm.prank(depositor);
-        ShareToken(protected).transfer(receiver, depositAmount);
+        require(ShareToken(protected).transfer(receiver, depositAmount), "transfer failed 14");
     }
 
     function verifyReentrancy() external {
@@ -51,17 +51,21 @@ contract TransferReentrancyTest is MethodReentrancyTest {
         (address protected, address collateral,) = config.getShareTokens(address(silo0));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareToken(collateral).transfer(address(0), 0);
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareToken(protected).transfer(address(0), 0);
 
         (protected, collateral,) = config.getShareTokens(address(silo1));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareToken(collateral).transfer(address(0), 0);
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareToken(protected).transfer(address(0), 0);
     }
 

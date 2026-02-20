@@ -3,8 +3,6 @@ pragma solidity ^0.8.0;
 
 import {Test} from "forge-std/Test.sol";
 
-import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
-
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ILiquidationHelper} from "silo-core/contracts/interfaces/ILiquidationHelper.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";

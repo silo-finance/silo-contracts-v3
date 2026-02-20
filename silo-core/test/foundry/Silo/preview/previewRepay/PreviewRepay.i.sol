@@ -12,12 +12,12 @@ import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 */
 contract PreviewRepayTest is SiloLittleHelper, Test {
     ISiloConfig siloConfig;
-    address immutable depositor;
-    address immutable borrower;
+    address immutable DEPOSITOR;
+    address immutable BORROWER;
 
     constructor() {
-        depositor = makeAddr("Depositor");
-        borrower = makeAddr("Borrower");
+        DEPOSITOR = makeAddr("Depositor");
+        BORROWER = makeAddr("Borrower");
     }
 
     function setUp() public {
@@ -98,10 +98,10 @@ contract PreviewRepayTest is SiloLittleHelper, Test {
         internal
         returns (uint256 maxRepay)
     {
-        _depositForBorrow(uint256(type(uint112).max) * 2, depositor);
+        _depositForBorrow(uint256(type(uint112).max) * 2, DEPOSITOR);
 
-        _deposit(_borrowerInput, borrower);
-        _borrow(uint256(_borrowerInput) * 3 / 4, borrower);
+        _deposit(_borrowerInput, BORROWER);
+        _borrow(uint256(_borrowerInput) * 3 / 4, BORROWER);
 
         if (_otherBorrower) {
             address otherBorrower = makeAddr("otherBorrower");
@@ -116,7 +116,7 @@ contract PreviewRepayTest is SiloLittleHelper, Test {
     }
 
     function _applyInterest() internal {
-        uint256 ltvBefore = siloLens.getLtv(silo1, borrower);
+        uint256 ltvBefore = SILO_LENS.getLtv(silo1, BORROWER);
 
         if (ltvBefore == 1) {
             // there is no way for this test to apply interest for 1 wei LTV
@@ -126,11 +126,11 @@ contract PreviewRepayTest is SiloLittleHelper, Test {
         uint256 warpTime = 20 days;
         vm.warp(block.timestamp + warpTime);
 
-        uint256 ltvAfter = siloLens.getLtv(silo1, borrower);
+        uint256 ltvAfter = SILO_LENS.getLtv(silo1, BORROWER);
 
         while (ltvAfter == ltvBefore) {
             vm.warp(block.timestamp + warpTime);
-            ltvAfter = siloLens.getLtv(silo1, borrower);
+            ltvAfter = SILO_LENS.getLtv(silo1, BORROWER);
         }
 
         emit log_named_uint("ltvAfter loop", ltvAfter);
@@ -142,14 +142,14 @@ contract PreviewRepayTest is SiloLittleHelper, Test {
         vm.assume(_preview > 0);
 
         uint256 results =
-            _useShares() ? _repayShares(_preview, _assetsOrShares, borrower) : _repay(_assetsOrShares, borrower);
+            _useShares() ? _repayShares(_preview, _assetsOrShares, BORROWER) : _repay(_assetsOrShares, BORROWER);
 
         assertGt(results, 0, "expect any borrow amount > 0");
         assertEq(_preview, results, "preview should give us exact result");
     }
 
     function _getMaxRepay() internal view virtual returns (uint256 max) {
-        max = _useShares() ? silo1.maxRepayShares(borrower) : silo1.maxRepay(borrower);
+        max = _useShares() ? silo1.maxRepayShares(BORROWER) : silo1.maxRepay(BORROWER);
     }
 
     function _getRepayPreview(uint256 _assetsOrShares) internal view virtual returns (uint256 preview) {

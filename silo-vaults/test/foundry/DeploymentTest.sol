@@ -3,7 +3,6 @@ pragma solidity ^0.8.28;
 
 import {ConstantsLib} from "../../contracts/libraries/ConstantsLib.sol";
 import {ISiloVault} from "../../contracts/interfaces/ISiloVault.sol";
-import {SiloVault} from "../../contracts/SiloVault.sol";
 
 import {IntegrationTest} from "./helpers/IntegrationTest.sol";
 

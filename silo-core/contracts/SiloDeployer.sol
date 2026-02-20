@@ -254,6 +254,8 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
 
         require(success && data.length == 32, FailedToCreateAnOracle(factory));
 
+        // Safe: `data` length is exactly 32 bytes and encodes an EVM address in the low 20 bytes.
+        // forge-lint: disable-next-line(unsafe-typecast)
         _oracle = address(uint160(uint256(bytes32(data))));
     }
 

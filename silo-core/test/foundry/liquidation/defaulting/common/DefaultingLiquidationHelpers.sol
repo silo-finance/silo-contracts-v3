@@ -4,10 +4,10 @@ pragma solidity ^0.8.28;
 import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
-import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
@@ -29,6 +29,8 @@ import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 
 abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     using SiloLensLib for ISilo;
+    using SafeCast for uint256;
+    using SafeCast for int256;
 
     struct UserState {
         uint256 colalteralShares;
@@ -228,7 +230,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     }
 
     function _isOracleThrowing(address _borrower) internal view returns (bool throwing, uint256 ltv) {
-        try siloLens.getLtv(silo0, _borrower) returns (uint256 _ltv) {
+        try SILO_LENS.getLtv(silo0, _borrower) returns (uint256 _ltv) {
             throwing = false;
             ltv = _ltv;
         } catch {
@@ -237,7 +239,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     }
 
     function _printLtv(address _user) internal returns (uint256 ltv) {
-        try siloLens.getLtv(silo0, _user) returns (uint256 _ltv) {
+        try SILO_LENS.getLtv(silo0, _user) returns (uint256 _ltv) {
             ltv = _ltv;
             emit log_named_decimal_uint(string.concat(vm.getLabel(_user), " LTV [%]"), ltv, 16);
         } catch {
@@ -372,8 +374,13 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         bytes4 indexOverflowSelector = IDistributionManager.IndexOverflow.selector;
         bytes4 emissionForTimeDeltaOverflowSelector = IDistributionManager.EmissionForTimeDeltaOverflow.selector;
 
+        // Safe: extracting first 4 bytes from error bytes to compare with error selectors.
+        // Error selectors are always 4 bytes, so casting is safe.
+        // forge-lint: disable-next-line(unsafe-typecast)
         if (
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4(_err) == newIndexOverflowSelector || bytes4(_err) == indexOverflowSelector
+                // forge-lint: disable-next-line(unsafe-typecast)
                 || bytes4(_err) == emissionForTimeDeltaOverflowSelector
         ) {
             overflowing = true;
@@ -443,8 +450,9 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     {
         _changePricePercentage %= 1e18;
 
-        int256 diff = int256(uint256(_initialPrice)) * _changePricePercentage / 1e18;
-        newPrice = uint64(int64(int256(uint256(_initialPrice)) + diff));
+        int256 diff = uint256(_initialPrice).toInt256() * _changePricePercentage / 1e18;
+        int256 sum = uint256(_initialPrice).toInt256() + diff;
+        newPrice = sum.toUint256().toUint64();
     }
 
     /// @dev make sure it does not throw!

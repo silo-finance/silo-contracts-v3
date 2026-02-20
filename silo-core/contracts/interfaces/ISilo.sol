@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.5.0;
 
-import {IERC4626, IERC20, IERC20Metadata} from "openzeppelin5/interfaces/IERC4626.sol";
+import {IERC4626, IERC20} from "openzeppelin5/interfaces/IERC4626.sol";
 
 import {IERC3156FlashLender} from "./IERC3156FlashLender.sol";
 import {ISiloConfig} from "./ISiloConfig.sol";
 import {ISiloFactory} from "./ISiloFactory.sol";
-
-import {IHookReceiver} from "./IHookReceiver.sol";
 
 // solhint-disable ordering
 interface ISilo is IERC20, IERC4626, IERC3156FlashLender {

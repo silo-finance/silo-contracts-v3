@@ -13,17 +13,17 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 FOUNDRY_PROFILE=core_test forge test -vv --mc ShareDebtTokenNotInitializedTest
 */
 contract ShareDebtTokenNotInitializedTest is Test {
-    ShareDebtToken public immutable sToken;
+    ShareDebtToken public immutable S_TOKEN;
 
     constructor() {
-        sToken = ShareDebtToken(Clones.clone(address(new ShareDebtToken())));
+        S_TOKEN = ShareDebtToken(Clones.clone(address(new ShareDebtToken())));
     }
 
     /*
     FOUNDRY_PROFILE=core_test forge test -vvv --mt test_sToken_noInit_silo
     */
     function test_sToken_noInit_silo() public view {
-        assertEq(address(sToken.silo()), address(0));
+        assertEq(address(S_TOKEN.silo()), address(0));
     }
 
     /*
@@ -31,12 +31,12 @@ contract ShareDebtTokenNotInitializedTest is Test {
     */
     function test_sToken_noInit_mint_zero() public {
         vm.expectRevert(IShareToken.OnlySilo.selector); // silo is 0
-        sToken.mint(address(1), address(1), 1);
+        S_TOKEN.mint(address(1), address(1), 1);
 
         // counterexample
         vm.prank(address(0));
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        sToken.mint(address(1), address(1), 0);
+        S_TOKEN.mint(address(1), address(1), 0);
     }
 
     /*
@@ -44,11 +44,11 @@ contract ShareDebtTokenNotInitializedTest is Test {
     */
     function test_sToken_noInit_mint() public {
         vm.expectRevert(IShareToken.OnlySilo.selector); // silo is 0
-        sToken.mint(address(1), address(1), 3);
+        S_TOKEN.mint(address(1), address(1), 3);
 
         vm.expectRevert(Hook.InvalidTokenType.selector);
         vm.prank(address(0));
-        sToken.mint(address(1), address(1), 3);
+        S_TOKEN.mint(address(1), address(1), 3);
     }
 
     /*
@@ -56,11 +56,11 @@ contract ShareDebtTokenNotInitializedTest is Test {
     */
     function test_sToken_noInit_burn() public {
         vm.expectRevert(IShareToken.OnlySilo.selector); // silo is 0
-        sToken.burn(address(1), address(1), 0);
+        S_TOKEN.burn(address(1), address(1), 0);
 
         // counterexample
         vm.prank(address(0));
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
-        sToken.burn(address(1), address(1), 0);
+        S_TOKEN.burn(address(1), address(1), 0);
     }
 }

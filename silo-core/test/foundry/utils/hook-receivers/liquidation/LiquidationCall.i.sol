@@ -2,7 +2,6 @@
 pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
-import {console2} from "forge-std/console2.sol";
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
@@ -149,7 +148,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         vm.warp(block.timestamp + 365 days);
 
-        uint256 ltv = siloLens.getLtv(silo0, BORROWER);
+        uint256 ltv = SILO_LENS.getLtv(silo0, BORROWER);
         assertGt(ltv, 1e18, "expect bad debt for this test");
 
         (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(BORROWER);
@@ -649,7 +648,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         emit log_named_decimal_uint("borrower debt", maxRepay, 18);
 
-        uint256 collateralBalanceOfUnderlying = siloLens.collateralBalanceOfUnderlying(silo0, BORROWER);
+        uint256 collateralBalanceOfUnderlying = SILO_LENS.collateralBalanceOfUnderlying(silo0, BORROWER);
 
         emit log_named_decimal_uint("borrower collateral", collateralBalanceOfUnderlying, 18);
         emit log_named_decimal_uint("collateralToLiquidate", collateralToLiquidate, 18);
@@ -697,7 +696,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         // Get max liquidation from SiloLens (corrected implementation)
         // We can pass either silo0 or silo1
         (uint256 collateralToLiquidateLens, uint256 debtToRepayLens, bool sTokenRequiredLens,) =
-            siloLens.maxLiquidation(silo1, partialLiquidation, protectedBorrower);
+            SILO_LENS.maxLiquidation(silo1, partialLiquidation, protectedBorrower);
 
         // Verify the bug: Hook says sTokenRequired=true because liquidity is 0
         assertTrue(sTokenRequiredHook, "Hook should incorrectly report sTokenRequired=true due to zero liquidity");

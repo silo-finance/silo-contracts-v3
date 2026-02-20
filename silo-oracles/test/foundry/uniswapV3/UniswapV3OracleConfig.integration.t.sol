@@ -4,10 +4,10 @@ pragma abicoder v2;
 
 import {IUniswapV3Factory} from "uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 
-import "../../../constants/Ethereum.sol";
-import "../../../contracts/uniswapV3/UniswapV3OracleConfig.sol";
-import "../_common/UniswapPools.sol";
-import "../../../contracts/uniswapV3/UniswapV3OracleFactory.sol";
+import {UNISWAPV3_FACTORY} from "../../../constants/Ethereum.sol";
+import {UniswapPools} from "../_common/UniswapPools.sol";
+import {UniswapV3OracleFactory} from "../../../contracts/uniswapV3/UniswapV3OracleFactory.sol";
+import {IUniswapV3Oracle} from "../../../contracts/interfaces/IUniswapV3Oracle.sol";
 
 /*
     FOUNDRY_PROFILE=oracles forge test -vv --match-contract UniswapV3OracleConfigIntegrationTest
@@ -15,6 +15,8 @@ import "../../../contracts/uniswapV3/UniswapV3OracleFactory.sol";
 contract UniswapV3OracleConfigIntegrationTest is UniswapPools {
     uint32 constant PERIOD_FOR_AVG_PRICE = 1800;
     uint8 constant BLOCK_TIME = 120;
+    // Safe: PERIOD_FOR_AVG_PRICE * 10 / BLOCK_TIME = 1800 * 10 / 120 = 150, which fits in uint16 (max 65535)
+    // forge-lint: disable-next-line(unsafe-typecast)
     uint16 constant REQUIRED_CARDINALITY = uint16(uint256(PERIOD_FOR_AVG_PRICE) * 10 / BLOCK_TIME);
 
     uint256 constant UKY_CREATION_BLOCK = 17736675;

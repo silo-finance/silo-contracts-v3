@@ -20,30 +20,30 @@ contract MaxLiquidationLTV100FullWithChunksTest is MaxLiquidationLTV100FullTest 
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
     {
         (uint256 totalCollateralToLiquidate, uint256 totalDebtToCover,) =
-            partialLiquidation.maxLiquidation(borrower);
+            partialLiquidation.maxLiquidation(BORROWER);
 
-        emit log_named_decimal_uint("[LTV100FullWithChunks] ltv before", silo0.getLtv(borrower), 16);
+        emit log_named_decimal_uint("[LTV100FullWithChunks] ltv before", silo0.getLtv(BORROWER), 16);
 
         for (uint256 i; i < 6; i++) {
             emit log_named_uint("[LTV100FullWithChunks] case ------------------------", i);
 
-            emit log_named_string("isSolvent", silo0.isSolvent(borrower) ? "YES" : "NO");
+            emit log_named_string("isSolvent", silo0.isSolvent(BORROWER) ? "YES" : "NO");
 
-            (uint256 collateralToLiquidate, uint256 maxDebtToCover,) = partialLiquidation.maxLiquidation(borrower);
+            (uint256 collateralToLiquidate, uint256 maxDebtToCover,) = partialLiquidation.maxLiquidation(BORROWER);
             emit log_named_uint("[LTV100FullWithChunks] collateralToLiquidate", collateralToLiquidate);
             if (maxDebtToCover == 0) continue;
 
-            (,,, bool fullLiquidation) = siloLens.maxLiquidation(silo1, partialLiquidation, borrower);
+            (,,, bool fullLiquidation) = SILO_LENS.maxLiquidation(silo1, partialLiquidation, BORROWER);
             assertTrue(fullLiquidation, "[LTV100FullWithChunks] fullLiquidation flag is UP when LTV is 100%");
 
             if (collateralToLiquidate == 0) {
-                assertGe(silo0.getLtv(borrower), 1e18, "if we don't have collateral we expect bad debt");
+                assertGe(silo0.getLtv(BORROWER), 1e18, "if we don't have collateral we expect bad debt");
                 continue;
             }
 
             {
                 // too deep
-                bool isSolvent = silo0.isSolvent(borrower);
+                bool isSolvent = silo0.isSolvent(BORROWER);
 
                 if (isSolvent && maxDebtToCover != 0) revert("if we solvent there should be no liquidation");
                 if (!isSolvent && maxDebtToCover == 0) revert("if we NOT solvent there should be a liquidation");

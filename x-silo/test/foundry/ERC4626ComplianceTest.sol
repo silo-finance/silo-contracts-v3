@@ -5,7 +5,7 @@ import {ERC4626Test} from "a16z-erc4626-tests/ERC4626.test.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {ERC20Mock} from "openzeppelin5/mocks/token/ERC20Mock.sol";
 
-import {XSilo, XRedeemPolicy, ERC20} from "../../contracts/XSilo.sol";
+import {XSilo} from "../../contracts/XSilo.sol";
 import {XSiloAndStreamDeploy} from "x-silo/deploy/XSiloAndStreamDeploy.s.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
 

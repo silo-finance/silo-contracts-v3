@@ -193,7 +193,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
 
         vm.warp(block.timestamp + 1000 days);
 
-        assertLt(siloLens.getUserLTV(silo1, user), 0.9e18, "we want case when there is no bad debt");
+        assertLt(SILO_LENS.getUserLTV(silo1, user), 0.9e18, "we want case when there is no bad debt");
         assertFalse(silo1.isSolvent(user), "we want example with inSolvent user");
 
         _closeLeverageExample();
@@ -470,7 +470,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
 
         // emit log_named_decimal_uint("totalUserCollateral", totalUserCollateral, 18);
         // emit log_named_decimal_uint("leverage", totalUserCollateral * 100 / depositAmount, 2);
-        emit log_named_decimal_uint("LTV", siloLens.getUserLTV(silo0, user), 16);
+        emit log_named_decimal_uint("LTV", SILO_LENS.getUserLTV(silo0, user), 16);
 
         _assertThereIsNoDebtApprovals(user);
         _assertNoApprovalsFromLeverage({_checkSwap: true});
@@ -503,7 +503,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
             _approveAssets: false // we dont want approval, we will use ETH
         });
 
-        assertEq(siloLens.getUserLTV(silo0, user), 0, "user has no position");
+        assertEq(SILO_LENS.getUserLTV(silo0, user), 0, "user has no position");
 
         vm.startPrank(user);
 
@@ -538,7 +538,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
 
         vm.stopPrank();
 
-        assertEq(siloLens.getUserLTV(silo0, user), 0.67792014100738933e18, "user has leverage position");
+        assertEq(SILO_LENS.getUserLTV(silo0, user), 0.67792014100738933e18, "user has leverage position");
 
         _assertThereIsNoDebtApprovals(user);
         _assertNoApprovalsFromLeverage({_checkSwap: true});
@@ -552,7 +552,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         _open_leverage_native_pass(ISilo.CollateralType.Collateral);
 
         assertEq(
-            siloLens.getUserLTV(silo0, wallet.addr),
+            SILO_LENS.getUserLTV(silo0, wallet.addr),
             0.67792014100738933e18,
             "sanity check: user has leverage position"
         );
@@ -567,7 +567,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         _open_leverage_native_pass(ISilo.CollateralType.Protected);
 
         assertEq(
-            siloLens.getUserLTV(silo0, wallet.addr),
+            SILO_LENS.getUserLTV(silo0, wallet.addr),
             0.67792014100738933e18,
             "sanity check: user has leverage position"
         );
@@ -600,7 +600,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
             _approveAssets: false // we dont want approval, we will use ETH
         });
 
-        assertEq(siloLens.getUserLTV(silo0, user), 0, "user has no position");
+        assertEq(SILO_LENS.getUserLTV(silo0, user), 0, "user has no position");
 
         vm.prank(user);
         leverageRouter.openLeveragePosition{value: depositArgs.amount}({
@@ -655,7 +655,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
             _approveAssets: false
         });
 
-        assertEq(siloLens.getUserLTV(silo0, user), 0, "user has no position");
+        assertEq(SILO_LENS.getUserLTV(silo0, user), 0, "user has no position");
 
         vm.startPrank(user);
 
@@ -668,7 +668,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
 
         vm.stopPrank();
 
-        assertEq(siloLens.getUserLTV(silo0, user), 0.67792014100738933e18, "user has leverage position");
+        assertEq(SILO_LENS.getUserLTV(silo0, user), 0.67792014100738933e18, "user has leverage position");
 
         _assertThereIsNoDebtApprovals(user);
         _assertNoApprovalsFromLeverage({_checkSwap: true});
@@ -1091,6 +1091,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
                 depositWithdrawn: silo0.previewRedeem(
                     IERC20(shareCollateral).balanceOf(_user), _closeArgs.collateralType
                 ),
+                // forge-lint: disable-next-line(divide-before-multiply)
                 swapAmountOut: (flashAmount * 111 / 100) * 99 / 100,
                 flashloanAmount: flashAmount,
                 flashloanFee: _flashFee(ISilo(_closeArgs.flashloanTarget), flashAmount),
@@ -1256,6 +1257,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         uint256 _deadline,
         address _token
     ) internal view returns (uint8 v, bytes32 r, bytes32 s) {
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 structHash = keccak256(abi.encode(_PERMIT_TYPEHASH, _signer, _spender, _value, _nonce, _deadline));
 
         bytes32 domainSeparator = IERC20Permit(_token).DOMAIN_SEPARATOR();

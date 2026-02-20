@@ -12,8 +12,6 @@ import {ERC4626OracleHardcodeQuoteFactory} from "silo-oracles/contracts/erc4626/
 
 import {IERC4626OracleHardcodeQuoteFactory} from
     "silo-oracles/contracts/interfaces/IERC4626OracleHardcodeQuoteFactory.sol";
-
-import {ERC4626OracleHardcodeQuote} from "silo-oracles/contracts/erc4626/ERC4626OracleHardcodeQuote.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 
 // FOUNDRY_PROFILE=oracles forge test --mc ERC4626OracleHardcodeQuoteTest

@@ -64,6 +64,7 @@ contract PermitReentrancyTest is ShareTokenMethodReentrancyTest {
         address _shareToken
     ) internal view returns (uint8 v, bytes32 r, bytes32 s) {
         bytes32 structHash =
+            // forge-lint: disable-next-line(asm-keccak256)
             keccak256(abi.encode(_PERMIT_TYPEHASH, _signer.addr, _spender, _value, _nonce, _deadline));
 
         bytes32 domainSeparator = ShareToken(_shareToken).DOMAIN_SEPARATOR();

@@ -5,11 +5,9 @@ import {Test} from "forge-std/Test.sol";
 
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
-import {SiloStorageLib} from "silo-core/contracts/lib/SiloStorageLib.sol";
 
 import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 
-import {Silo} from "silo-core/contracts/Silo.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
 import {SiloHarness} from "silo-core/test/foundry/_mocks/SiloHarness.sol";
 

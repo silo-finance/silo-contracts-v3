@@ -17,7 +17,7 @@ import {SiloFixture, SiloConfigOverride} from "./fixtures/SiloFixture.sol";
 import {SiloFixture} from "./fixtures/SiloFixture.sol";
 
 abstract contract SiloLittleHelper is CommonBase {
-    SiloLens immutable siloLens;
+    SiloLens immutable SILO_LENS;
 
     MintableToken token0;
     MintableToken token1;
@@ -28,7 +28,7 @@ abstract contract SiloLittleHelper is CommonBase {
     ISiloFactory siloFactory;
 
     constructor() {
-        siloLens = new SiloLens();
+        SILO_LENS = new SiloLens();
     }
 
     function __init(MintableToken _token0, MintableToken _token1, ISilo _silo0, ISilo _silo1) internal {
@@ -276,14 +276,14 @@ abstract contract SiloLittleHelper is CommonBase {
 
         console.log("borrowerCollateralSilo", _siloConfig.borrowerCollateralSilo(_borrower));
 
-        console.log("[silo0] debtBalanceOfUnderlying", siloLens.debtBalanceOfUnderlying(silo0, _borrower));
-        console.log("[silo1] debtBalanceOfUnderlying", siloLens.debtBalanceOfUnderlying(silo1, _borrower));
+        console.log("[silo0] debtBalanceOfUnderlying", SILO_LENS.debtBalanceOfUnderlying(silo0, _borrower));
+        console.log("[silo1] debtBalanceOfUnderlying", SILO_LENS.debtBalanceOfUnderlying(silo1, _borrower));
 
         console.log(
-            "[silo0] collateralBalanceOfUnderlying", siloLens.collateralBalanceOfUnderlying(silo0, _borrower)
+            "[silo0] collateralBalanceOfUnderlying", SILO_LENS.collateralBalanceOfUnderlying(silo0, _borrower)
         );
         console.log(
-            "[silo1] collateralBalanceOfUnderlying", siloLens.collateralBalanceOfUnderlying(silo1, _borrower)
+            "[silo1] collateralBalanceOfUnderlying", SILO_LENS.collateralBalanceOfUnderlying(silo1, _borrower)
         );
     }
 }

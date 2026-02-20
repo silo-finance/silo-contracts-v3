@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.28;
 
-import {Test} from "forge-std/Test.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 
-import {TestERC20} from "silo-core/test/invariants/utils/mocks/TestERC20.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {PendlePTToAssetOracle} from "silo-oracles/contracts/pendle/PendlePTToAssetOracle.sol";
-import {IPendlePTOracleFactory} from "silo-oracles/contracts/interfaces/IPendlePTOracleFactory.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {PendlePTToAssetOracleFactory} from "silo-oracles/contracts/pendle/PendlePTToAssetOracleFactory.sol";
 import {PendlePTToAssetOracle} from "silo-oracles/contracts/pendle/PendlePTToAssetOracle.sol";
@@ -17,7 +14,6 @@ import {Forking} from "silo-oracles/test/foundry/_common/Forking.sol";
 import {IPyYtLpOracleLike} from "silo-oracles/contracts/pendle/interfaces/IPyYtLpOracleLike.sol";
 import {SiloOracleMockReturnSame} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMockReturnSame.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
-import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 
 /*
     FOUNDRY_PROFILE=oracles forge test -vv --match-contract PendlePTToAssetOracleTest --ffi

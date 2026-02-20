@@ -7,7 +7,6 @@ import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {TestERC20} from "silo-core/test/invariants/utils/mocks/TestERC20.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {OracleScaler} from "silo-oracles/contracts/scaler/OracleScaler.sol";
-import {IOracleScalerFactory} from "silo-oracles/contracts/interfaces/IOracleScalerFactory.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {OracleScalerFactory} from "silo-oracles/contracts/scaler/OracleScalerFactory.sol";
 import {OracleScalerDeploy} from "silo-oracles/deploy/oracle-scaler/OracleScalerDeploy.s.sol";

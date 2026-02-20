@@ -5,7 +5,6 @@ import {Test} from "forge-std/Test.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
 import {OracleForwarderFactoryDeploy} from "silo-oracles/deploy/OracleForwarderFactoryDeploy.sol";
-import {OracleForwarderFactory} from "silo-oracles/contracts/forwarder/OracleForwarderFactory.sol";
 import {IOracleForwarderFactory} from "silo-oracles/contracts/interfaces/IOracleForwarderFactory.sol";
 import {IOracleForwarder} from "silo-oracles/contracts/interfaces/IOracleForwarder.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";

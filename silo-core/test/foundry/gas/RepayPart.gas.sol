@@ -3,8 +3,6 @@ pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 
-import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
-
 import {Gas} from "./Gas.sol";
 
 /*

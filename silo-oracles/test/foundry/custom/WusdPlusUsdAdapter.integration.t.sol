@@ -7,7 +7,6 @@ import {WusdPlusUsdAdapter} from "silo-oracles/contracts/custom/WusdPlusUsdAdapt
 import {WusdPlusUsdAdapterDeploy} from "silo-oracles/deploy/WusdPlusUsdAdapterDeploy.sol";
 
 import {IChainlinkV3Oracle} from "silo-oracles/contracts/interfaces/IChainlinkV3Oracle.sol";
-import {IChainlinkV3Factory} from "silo-oracles/contracts/interfaces/IChainlinkV3Factory.sol";
 import {ChainlinkV3Oracle} from "silo-oracles/contracts/chainlinkV3/ChainlinkV3Oracle.sol";
 import {ChainlinkV3OracleFactory} from "silo-oracles/contracts/chainlinkV3/ChainlinkV3OracleFactory.sol";
 

@@ -14,11 +14,14 @@ import {ShareTokenLib} from "silo-core/contracts/lib/ShareTokenLib.sol";
 import {SiloConfigMock} from "../../_mocks/SiloConfigMock.sol";
 import {SiloFactoryMock} from "../../_mocks/SiloFactoryMock.sol";
 import {TokenMock} from "../../_mocks/TokenMock.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
 FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc WithdrawFeesTest
 */
 contract WithdrawFeesTest is Test {
+    using SafeCast for uint256;
+
     uint256 public constant NO_PROTECTED_ASSETS = 0;
 
     ISiloConfig public config;
@@ -170,7 +173,7 @@ contract WithdrawFeesTest is Test {
 
         token.balanceOfMock(address(this), siloBalance);
 
-        _$().daoAndDeployerRevenue = uint192(siloBalance); // fees are the same as balance
+        _$().daoAndDeployerRevenue = siloBalance.toUint192(); // fees are the same as balance
 
         uint256 protectedAssets = siloBalance / 3; // the third part of the balance is protected
 
@@ -200,7 +203,7 @@ contract WithdrawFeesTest is Test {
 
         token.balanceOfMock(address(this), siloBalance);
 
-        _$().daoAndDeployerRevenue = uint192(siloBalance); // fees are the same as balance
+        _$().daoAndDeployerRevenue = siloBalance.toUint192(); // fees are the same as balance
 
         token.transferResultFalseMock(deployer, siloBalance / 2); // transfer to deployer fails
         token.transferMock(dao, siloBalance); // dao gets all fees as transfer to deployer fails

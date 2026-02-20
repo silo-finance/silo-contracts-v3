@@ -14,10 +14,10 @@ contract MulDivOverflow {
     forge test -vv --mc MulDivOverflowTest
 */
 contract MulDivOverflowTest is Test {
-    MulDivOverflow immutable mulDivOverflow;
+    MulDivOverflow immutable MUL_DIV_OVERFLOW;
 
     constructor() {
-        mulDivOverflow = new MulDivOverflow();
+        MUL_DIV_OVERFLOW = new MulDivOverflow();
     }
 
     /*
@@ -27,8 +27,8 @@ contract MulDivOverflowTest is Test {
     function test_mulOverflow_fuzz(uint256 _a, uint256 _b, uint256 _c) public view {
         vm.assume(_c != 0);
 
-        try mulDivOverflow.mulDiv(_a, _b, _c) {
             SiloMathLib.mulDivOverflow(_a, _b, _c);
+        try MUL_DIV_OVERFLOW.mulDiv(_a, _b, _c) {
             assertTrue(true, "no overflow");
         } catch {
             assertEq(SiloMathLib.mulDivOverflow(_a, _b, _c), 0, "0 on overflow");

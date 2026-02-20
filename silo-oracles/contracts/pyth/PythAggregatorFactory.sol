@@ -10,6 +10,7 @@ import {PythAggregatorV3} from "pyth-sdk-solidity/PythAggregatorV3.sol";
 /// permissionless. Duplicates of aggregators are not allowed. 
 contract PythAggregatorFactory is Create2Factory, IPythAggregatorFactory {
     /// @inheritdoc IPythAggregatorFactory
+    // forge-lint: disable-next-line(screaming-snake-case-immutable)
     address public immutable override pyth;
 
     /// @inheritdoc IPythAggregatorFactory

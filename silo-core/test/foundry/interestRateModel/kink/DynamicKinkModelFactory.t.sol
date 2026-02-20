@@ -4,24 +4,23 @@ pragma solidity ^0.8.0;
 import {console2} from "forge-std/console2.sol";
 
 import {Math} from "openzeppelin5/utils/math/Math.sol";
-import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
-import {RevertLib} from "silo-core/contracts/lib/RevertLib.sol";
 
 import {
     DynamicKinkModel, IDynamicKinkModel
 } from "../../../../contracts/interestRateModel/kink/DynamicKinkModel.sol";
-import {IDynamicKinkModelConfig} from "../../../../contracts/interestRateModel/kink/DynamicKinkModelConfig.sol";
 import {DynamicKinkModelFactory} from "../../../../contracts/interestRateModel/kink/DynamicKinkModelFactory.sol";
 import {IDynamicKinkModelFactory} from "../../../../contracts/interfaces/IDynamicKinkModelFactory.sol";
 import {IInterestRateModel} from "../../../../contracts/interfaces/IInterestRateModel.sol";
 
-import {ISilo} from "../../../../contracts/interfaces/ISilo.sol";
 import {KinkCommonTest} from "./KinkCommon.t.sol";
 
 import {RandomLib} from "../../_common/RandomLib.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 contract DynamicKinkFactoryMock is DynamicKinkModelFactory {
+    using SafeCast for uint256;
+
     constructor() DynamicKinkModelFactory(new DynamicKinkModel()) {}
 
     function castConfig(IDynamicKinkModel.UserFriendlyConfig calldata _default)
@@ -131,6 +130,7 @@ contract DynamicKinkModelFactoryTest is KinkCommonTest {
     function test_kink_generateConfig_reverts() public {
         IDynamicKinkModel.UserFriendlyConfig memory userCfg;
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         userCfg.u1 = uint64(DP);
         vm.expectRevert(IDynamicKinkModel.InvalidU1.selector);
         FACTORY.generateConfig(userCfg);
@@ -145,10 +145,12 @@ contract DynamicKinkModelFactoryTest is KinkCommonTest {
         vm.expectRevert(IDynamicKinkModel.InvalidU2.selector);
         FACTORY.generateConfig(userCfg);
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         userCfg.ucrit = uint64(DP);
         vm.expectRevert(IDynamicKinkModel.InvalidUcrit.selector);
         FACTORY.generateConfig(userCfg);
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         userCfg.ucrit = uint64(DP - 1);
         vm.expectRevert(IDynamicKinkModel.InvalidRcritMin.selector);
         FACTORY.generateConfig(userCfg);
@@ -214,7 +216,9 @@ contract DynamicKinkModelFactoryTest is KinkCommonTest {
 
         IDynamicKinkModel.UserFriendlyConfigInt memory _out = factory.castConfig(_in);
 
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 hashIn = keccak256(abi.encode(_in));
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 hashOut = keccak256(abi.encode(_out));
 
         assertEq(hashIn, hashOut, "castConfig fail In != Out");

@@ -10,7 +10,6 @@ import {Address} from "openzeppelin5/utils/Address.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 
 import {ISiloConfig} from "../interfaces/ISiloConfig.sol";
-import {IInterestRateModelV2} from "../interfaces/IInterestRateModelV2.sol";
 import {ISilo} from "../interfaces/ISilo.sol";
 import {IShareToken} from "../interfaces/IShareToken.sol";
 import {IERC3156FlashBorrower} from "../interfaces/IERC3156FlashBorrower.sol";
@@ -331,6 +330,7 @@ library Actions {
         require(_amount <= Views.maxFlashLoan(_token), FlashLoanNotPossible());
 
         // cast safe, because we checked `fee > type(uint192).max`
+        // forge-lint: disable-next-line(unsafe-typecast)
         SiloStorageLib.getSiloStorage().daoAndDeployerRevenue += uint192(fee);
 
         IERC20(_token).safeTransfer(address(_receiver), _amount);
@@ -388,6 +388,7 @@ library Actions {
         if (earnedFees > availableLiquidity) earnedFees = availableLiquidity;
 
         // we will never underflow because earnedFees max value is `daoAndDeployerRevenue`
+        // forge-lint: disable-next-line(unsafe-typecast)
         unchecked { $.daoAndDeployerRevenue -= uint192(earnedFees); }
 
         daoRevenue = earnedFees;

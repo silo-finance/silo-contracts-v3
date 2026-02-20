@@ -2,16 +2,19 @@
 pragma solidity 0.8.28;
 
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
-import {X33ToUsdAdapter, IERC4626, AggregatorV3Interface} from "silo-oracles/contracts/custom/X33ToUsdAdapter.sol";
+import {X33ToUsdAdapter, AggregatorV3Interface} from "silo-oracles/contracts/custom/X33ToUsdAdapter.sol";
 import {Forking} from "silo-oracles/test/foundry/_common/Forking.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {X33ToUsdAdapterDeploy} from "silo-oracles/deploy/X33ToUsdAdapterDeploy.sol";
 import {PythAggregatorV3} from "pyth-sdk-solidity/PythAggregatorV3.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
     FOUNDRY_PROFILE=oracles forge test -vv --match-contract X33ToUsdAdapterTest --ffi
 */
 contract X33ToUsdAdapterTest is Forking {
+    using SafeCast for uint256;
+    using SafeCast for int256;
     uint256 constant TEST_BLOCK = 16052525;
     IERC20Metadata constant X33 = IERC20Metadata(0x3333111A391cC08fa51353E9195526A70b333333);
     AggregatorV3Interface constant SHADOW_USD_FEED = AggregatorV3Interface(0x7216D86aed9832B2A5A3c2ca34F9a097F66b53D4);
@@ -95,7 +98,7 @@ contract X33ToUsdAdapterTest is Forking {
         assertEq(updatedAt, underlyingUpdatedAt);
         assertEq(answeredInRound, underlyingAnsweredInRound);
 
-        assertEq(answer, underlyingAnswer * int256(vaultRate) / (2 * 10 ** 18));
+        assertEq(answer, underlyingAnswer * vaultRate.toInt256() / (2 * 10 ** 18));
         assertEq(answer, 63_5435_1516, "answer is ~63$ with 8 decimals");
         assertEq(underlyingAnswer, 94_0111_1515, "underlying feed answer is ~94$ with 8 decimals");
     }

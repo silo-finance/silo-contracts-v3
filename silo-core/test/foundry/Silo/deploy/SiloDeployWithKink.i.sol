@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.28;
 
-import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
-import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
-import {Deployments} from "silo-foundry-utils/lib/Deployments.sol";
 import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";

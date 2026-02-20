@@ -3,13 +3,10 @@ pragma solidity 0.8.28;
 
 import {Ownable2Step, Ownable} from "openzeppelin5/access/Ownable2Step.sol";
 
-import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
-
 import {INotificationReceiver} from "silo-vaults/contracts/interfaces/INotificationReceiver.sol";
 
 import {IXSiloManagement} from "../interfaces/IXSiloManagement.sol";
 import {IStream} from "../interfaces/IStream.sol";
-import {XRedeemPolicy} from "./XRedeemPolicy.sol";
 
 abstract contract XSiloManagement is IXSiloManagement, Ownable2Step {
     IStream public stream;

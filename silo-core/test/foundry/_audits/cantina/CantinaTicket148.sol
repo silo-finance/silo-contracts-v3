@@ -108,7 +108,7 @@ contract CantinaTicket148 is CantinaTicket {
         //Alice borrowed funds
         uint256 aliceProfit = USDC.balanceOf(alice);
         vm.startPrank(alice);
-        USDC.transfer(address(this), aliceProfit);
+        require(USDC.transfer(address(this), aliceProfit), "transfer failed");
         vm.stopPrank();
 
         console.log("Alice's profit:", aliceProfit);

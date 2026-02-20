@@ -2,7 +2,6 @@
 pragma solidity 0.8.28;
 
 import {Initializable} from  "openzeppelin5-upgradeable/proxy/utils/Initializable.sol";
-import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {AggregatorV3Interface} from "chainlink/v0.8/interfaces/AggregatorV3Interface.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 
@@ -99,6 +98,8 @@ contract ChainlinkV3Oracle is IChainlinkV3Oracle, ISiloOracle, Initializable {
         ) = _aggregator.latestRoundData();
 
         if (aggregatorPrice > 0) {
+            // Safe: negative values are filtered out by the `aggregatorPrice > 0` check.
+            // forge-lint: disable-next-line(unsafe-typecast)
             return (true, uint256(aggregatorPrice));
         }
 

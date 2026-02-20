@@ -59,6 +59,8 @@ contract InterestRateModelV2Factory is Create2Factory, IInterestRateModelV2Facto
     /// @inheritdoc IInterestRateModelV2Factory
     // solhint-disable-next-line code-complexity
     function verifyConfig(IInterestRateModelV2.Config calldata _config) public view virtual {
+        // Safe: `DP` is 1e18 and always fits in int256.
+        // forge-lint: disable-next-line(unsafe-typecast)
         int256 dp = int256(DP);
 
         require(_config.uopt > 0 && _config.uopt < dp, IInterestRateModelV2.InvalidUopt());

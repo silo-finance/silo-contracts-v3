@@ -64,6 +64,7 @@ contract DefaultingSiloLogicTest is Test {
         $.totalAssets[ISilo.AssetType.Collateral] = _collateralAssets;
         $.totalAssets[ISilo.AssetType.Debt] = _debtAssets;
 
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 fractionsHash = keccak256(abi.encode(_fractions));
 
         console2.log("collateralAssets before", $.totalAssets[ISilo.AssetType.Collateral]);

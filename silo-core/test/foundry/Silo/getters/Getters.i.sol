@@ -57,7 +57,7 @@ contract GettersTest is SiloLittleHelper, Test {
     */
     function test_silo_getFeesAndFeeReceivers() public view {
         (address daoFeeReceiver, address deployerFeeReceiver, uint256 daoFee, uint256 deployerFee) =
-            siloLens.getFeesAndFeeReceivers(silo0);
+            SILO_LENS.getFeesAndFeeReceivers(silo0);
 
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
         address deployer = vm.addr(deployerPrivateKey);
@@ -71,7 +71,7 @@ contract GettersTest is SiloLittleHelper, Test {
         assertEq(daoFee, 0.15e18, "daoFee");
         assertEq(deployerFee, 0.1e18, "deployerFee");
 
-        (daoFeeReceiver, deployerFeeReceiver, daoFee, deployerFee) = siloLens.getFeesAndFeeReceivers(silo1);
+        (daoFeeReceiver, deployerFeeReceiver, daoFee, deployerFee) = SILO_LENS.getFeesAndFeeReceivers(silo1);
 
         assertEq(daoFeeReceiver, deployer, "daoFeeReceiver 1");
         assertEq(

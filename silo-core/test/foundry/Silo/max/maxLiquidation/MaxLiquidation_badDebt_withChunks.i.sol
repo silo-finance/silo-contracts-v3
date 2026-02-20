@@ -39,42 +39,42 @@ contract MaxLiquidationBadDebtWithChunksTest is MaxLiquidationBadDebtTest {
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
     {
         (uint256 totalCollateralToLiquidate, uint256 totalDebtToCover,) =
-            partialLiquidation.maxLiquidation(borrower);
+            partialLiquidation.maxLiquidation(BORROWER);
 
-        emit log_named_decimal_uint("[BadDebtWithChunks] ltv before", silo0.getLtv(borrower), 16);
+        emit log_named_decimal_uint("[BadDebtWithChunks] ltv before", silo0.getLtv(BORROWER), 16);
         emit log_named_uint("[BadDebtWithChunks] totalCollateralToLiquidate", totalCollateralToLiquidate);
         emit log_named_uint("[BadDebtWithChunks] totalDebtToCover", totalDebtToCover);
 
         for (uint256 i; i < 5; i++) {
             emit log_named_uint("[BadDebtWithChunks] case ------------------------", i);
-            emit log_named_decimal_uint("ltv", silo0.getLtv(borrower), 16);
+            emit log_named_decimal_uint("ltv", silo0.getLtv(BORROWER), 16);
 
-            if (silo0.getLtv(borrower) <= 1e18) break; // not bad debt anymore
+            if (silo0.getLtv(BORROWER) <= 1e18) break; // not bad debt anymore
 
             {
                 // too deep
-                bool isSolvent = silo0.isSolvent(borrower);
+                bool isSolvent = silo0.isSolvent(BORROWER);
                 emit log_named_string("isSolvent", isSolvent ? "YES" : "NO");
 
                 if (isSolvent) break;
             }
 
             emit log_named_uint(
-                "collateralBalanceOfUnderlying", siloLens.collateralBalanceOfUnderlying(silo1, borrower)
+                "collateralBalanceOfUnderlying", SILO_LENS.collateralBalanceOfUnderlying(silo1, BORROWER)
             );
-            emit log_named_uint("debtBalanceOfUnderlying", siloLens.debtBalanceOfUnderlying(silo1, borrower));
+            emit log_named_uint("debtBalanceOfUnderlying", SILO_LENS.debtBalanceOfUnderlying(silo1, BORROWER));
             emit log_named_uint("total(collateral).assets", silo1.getTotalAssetsStorage(ISilo.AssetType.Collateral));
             emit log_named_uint("getCollateralAssets()", silo1.getCollateralAssets());
 
             uint256 collateralToLiquidate;
             uint256 maxDebtToCover;
-            (collateralToLiquidate, maxDebtToCover,) = partialLiquidation.maxLiquidation(borrower);
+            (collateralToLiquidate, maxDebtToCover,) = partialLiquidation.maxLiquidation(BORROWER);
 
             emit log_named_uint("[BadDebtWithChunks] collateralToLiquidate", collateralToLiquidate);
             emit log_named_uint("[BadDebtWithChunks] maxDebtToCover", maxDebtToCover);
 
             if (collateralToLiquidate == 0) {
-                assertGt(silo0.getLtv(borrower), 1e18, "when no collateral we expect bad debt");
+                assertGt(silo0.getLtv(BORROWER), 1e18, "when no collateral we expect bad debt");
                 continue;
             }
 
@@ -93,7 +93,7 @@ contract MaxLiquidationBadDebtWithChunksTest is MaxLiquidationBadDebtTest {
             repayDebtAssets += partialDebt;
         }
 
-        emit log_named_decimal_uint("ltv", silo0.getLtv(borrower), 16);
+        emit log_named_decimal_uint("ltv", silo0.getLtv(BORROWER), 16);
 
         // sum of chunk liquidation can be smaller than one max/total, because with chunks we can get to the point
         // where user became solvent and the margin we have for max liquidation will not be used

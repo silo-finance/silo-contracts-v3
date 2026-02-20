@@ -18,6 +18,7 @@ library PRBMathSD59x18 {
     int256 internal constant _HALF_SCALE = 5e17;
 
     /// @dev The maximum value a signed 59.18-decimal fixed-point number can have.
+    // forge-lint: disable-next-line(screaming-snake-case-const)
     int256 internal constant _MAX_SD59x18 = 57896044618658097711785492504343953926634992332820282019728792003956564819967;
 
     /// @dev How many trailing decimals can be represented.
@@ -82,6 +83,8 @@ library PRBMathSD59x18 {
 
             unchecked {
                 // Convert x to the 128.128-bit fixed-point format.
+                // Safe: we are in the `x >= 0` branch and `x < 128e18`, so both casts are bounded.
+                // forge-lint: disable-next-line(unsafe-typecast)
                 uint256 x128x128 = (uint256(x) << 128) / uint256(_SCALE);
 
                 // Safe to convert the result to int256 directly because the maximum input allowed is 128e18.

@@ -75,6 +75,8 @@ contract ERC1820Registry {
     function getInterfaceImplementer(address _addr, bytes32 _interfaceHash) external view returns (address) {
         address addr = _addr == address(0) ? msg.sender : _addr;
         if (isERC165Interface(_interfaceHash)) {
+            // Safe: `isERC165Interface` ensures only the first 4 bytes are used.
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 erc165InterfaceHash = bytes4(_interfaceHash);
             return implementsERC165Interface(addr, erc165InterfaceHash) ? addr : address(0);
         }
@@ -131,6 +133,7 @@ contract ERC1820Registry {
     /// @param _interfaceName Name of the interface.
     /// @return The keccak256 hash of an interface name.
     function interfaceHash(string calldata _interfaceName) external pure returns (bytes32) {
+        // forge-lint: disable-next-line(asm-keccak256)
         return keccak256(abi.encodePacked(_interfaceName));
     }
 

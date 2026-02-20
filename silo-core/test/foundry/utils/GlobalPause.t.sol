@@ -12,7 +12,6 @@ import {PausableMock} from "../_mocks/PausableMock.sol";
 import {GnosisSafeMock} from "../_mocks/GnosisSafeMock.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {Ownable2Step} from "openzeppelin5/access/Ownable2Step.sol";
-import {Pausable} from "openzeppelin5/utils/Pausable.sol";
 
 /*
 FOUNDRY_PROFILE=core_test forge test --ffi -vv --mc GlobalPauseTest

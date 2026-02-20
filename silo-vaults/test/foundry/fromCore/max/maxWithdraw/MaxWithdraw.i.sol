@@ -7,17 +7,17 @@ import {VaultsLittleHelper} from "../../_common/VaultsLittleHelper.sol";
     FOUNDRY_PROFILE=vaults_tests forge test -vv --ffi --mc MaxWithdrawTest
 */
 contract MaxWithdrawTest is VaultsLittleHelper {
-    address immutable depositor;
+    address immutable DEPOSITOR;
 
     constructor() {
-        depositor = makeAddr("Depositor");
+        DEPOSITOR = makeAddr("Depositor");
     }
     
     /*
     forge test -vv --ffi --mt test_maxWithdraw_zero
     */
     function test_maxWithdraw_zero() public view {
-        uint256 maxWithdraw = vault.maxWithdraw(depositor);
+        uint256 maxWithdraw = vault.maxWithdraw(DEPOSITOR);
         assertEq(maxWithdraw, 0, "nothing to withdraw");
     }
 
@@ -32,10 +32,10 @@ contract MaxWithdrawTest is VaultsLittleHelper {
         vm.assume(_assets > 0);
         vm.assume(_assets2 > 0);
 
-        _deposit(_assets, depositor);
+        _deposit(_assets, DEPOSITOR);
         _deposit(_assets2, address(1)); // any
 
-        uint256 maxWithdraw = vault.maxWithdraw(depositor);
+        uint256 maxWithdraw = vault.maxWithdraw(DEPOSITOR);
         assertEq(maxWithdraw, _assets, "max withdraw == _assets if no interest");
 
         _assertDepositorCanNotWithdrawMore(maxWithdraw);
@@ -57,7 +57,7 @@ contract MaxWithdrawTest is VaultsLittleHelper {
 
         _reduceLiquidity(_collateral, reduced);
 
-        uint256 maxWithdraw = vault.maxWithdraw(depositor);
+        uint256 maxWithdraw = vault.maxWithdraw(DEPOSITOR);
         assertLt(maxWithdraw, _collateral, "with debt you can not withdraw all");
 
         _assertDepositorCanNotWithdrawMore(maxWithdraw, 1);
@@ -71,11 +71,11 @@ contract MaxWithdrawTest is VaultsLittleHelper {
     function test_maxWithdraw_whenInterest_fuzz(uint128 _collateral) public {
         vm.assume(_collateral > 0);
 
-        vault.deposit(_collateral, depositor);
+        vault.deposit(_collateral, DEPOSITOR);
 
         _createInterest();
 
-        uint256 maxWithdraw = vault.maxWithdraw(depositor);
+        uint256 maxWithdraw = vault.maxWithdraw(DEPOSITOR);
         assertGt(maxWithdraw, _collateral, "expect to earn because we have interest in silo");
 
         _assertDepositorCanNotWithdrawMore(maxWithdraw, 3);
@@ -93,16 +93,16 @@ contract MaxWithdrawTest is VaultsLittleHelper {
         emit log_named_uint("=== QA [_assertDepositorCanNotWithdrawMore] _underestimate:", _underestimate);
 
         if (_maxWithdraw > 0) {
-            vm.prank(depositor);
-            vault.withdraw(_maxWithdraw, depositor, depositor);
+            vm.prank(DEPOSITOR);
+            vault.withdraw(_maxWithdraw, DEPOSITOR, DEPOSITOR);
         }
 
         uint256 counterExample = _underestimate;
         emit log_named_uint("=========== [counterexample] testing counterexample for maxWithdraw with", counterExample);
 
-        vm.prank(depositor);
+        vm.prank(DEPOSITOR);
         vm.expectRevert();
-        vault.withdraw(counterExample, depositor, depositor);
+        vault.withdraw(counterExample, DEPOSITOR, DEPOSITOR);
     }
 
     function _assertMaxWithdrawIsZeroAtTheEnd() internal {
@@ -112,7 +112,7 @@ contract MaxWithdrawTest is VaultsLittleHelper {
     function _assertMaxWithdrawIsZeroAtTheEnd(uint256 _underestimate) internal {
         emit log_named_uint("================= _assertMaxWithdrawIsZeroAtTheEnd ================= +/-", _underestimate);
 
-        uint256 maxWithdraw = vault.maxWithdraw(depositor);
+        uint256 maxWithdraw = vault.maxWithdraw(DEPOSITOR);
 
         assertLe(
             maxWithdraw,
@@ -122,7 +122,7 @@ contract MaxWithdrawTest is VaultsLittleHelper {
     }
 
     function _reduceLiquidity(uint256 _depositAssets, uint256 _toBorrow) internal {
-        _deposit(_depositAssets, depositor);
+        _deposit(_depositAssets, DEPOSITOR);
 
         address borrower = makeAddr("Borrower");
 
@@ -133,8 +133,8 @@ contract MaxWithdrawTest is VaultsLittleHelper {
     }
 
     function _createInterest() internal {
-        vm.prank(depositor);
-        vault.deposit(type(uint128).max, depositor);
+        vm.prank(DEPOSITOR);
+        vault.deposit(type(uint128).max, DEPOSITOR);
 
         address borrower = makeAddr("Borrower");
 

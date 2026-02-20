@@ -5,12 +5,12 @@ import {ERC20} from "openzeppelin5/token/ERC20/ERC20.sol";
 import {ERC20Permit} from "openzeppelin5/token/ERC20/extensions/ERC20Permit.sol";
 
 contract MintableToken is ERC20, ERC20Permit {
-    uint8 private immutable _decimals;
+    uint8 private immutable _DECIMALS;
 
     bool onDemand;
 
     constructor(uint8 _setDecimals) ERC20("a", "b") ERC20Permit("MintableToken") {
-        _decimals = _setDecimals;
+        _DECIMALS = _setDecimals;
     }
 
     function mint(address _owner, uint256 _amount) external virtual {
@@ -26,7 +26,7 @@ contract MintableToken is ERC20, ERC20Permit {
     }
 
     function decimals() public view virtual override returns (uint8) {
-        return _decimals;
+        return _DECIMALS;
     }
 
     function mintOnDemand(address _owner, uint256 _amount) public virtual {

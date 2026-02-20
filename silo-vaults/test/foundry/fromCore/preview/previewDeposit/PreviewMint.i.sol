@@ -9,10 +9,10 @@ import {VaultsLittleHelper} from "../../_common/VaultsLittleHelper.sol";
 contract PreviewMintTest is VaultsLittleHelper {
     uint256 constant DEPOSIT_BEFORE = 1e18 + 9876543211;
 
-    address immutable depositor;
+    address immutable DEPOSITOR;
 
     constructor() {
-        depositor = makeAddr("Depositor");
+        DEPOSITOR = makeAddr("Depositor");
     }
 
     /*
@@ -61,9 +61,9 @@ contract PreviewMintTest is VaultsLittleHelper {
     function _createInterest() internal {
         uint256 assets = 1e18 + 123456789; // some not even number
 
-        vm.startPrank(depositor);
-        _silo0().deposit(assets, depositor);
-        _silo1().deposit(assets, depositor);
+        vm.startPrank(DEPOSITOR);
+        _silo0().deposit(assets, DEPOSITOR);
+        _silo1().deposit(assets, DEPOSITOR);
         vm.stopPrank();
 
         address borrower = makeAddr("Borrower");
@@ -101,7 +101,7 @@ contract PreviewMintTest is VaultsLittleHelper {
 
         uint256 previewMint = vault.previewMint(_shares);
 
-        uint256 depositedAssets = vault.mint(_shares, depositor);
+        uint256 depositedAssets = vault.mint(_shares, DEPOSITOR);
 
         assertEq(previewMint, depositedAssets, "previewMint == depositedAssets, NOT fewer");
 

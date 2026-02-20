@@ -123,7 +123,7 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         // Solvency check is ignored for share token transfer as a user has no debt.
         // Expect transaction without revert as `beforeQuote` is not called.
         vm.prank(depositor);
-        IShareToken(collateral).transfer(borrower, depositAssets);
+        require(IShareToken(collateral).transfer(borrower, depositAssets), "transfer failed");
     }
 
     /*
@@ -144,6 +144,7 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
 
         vm.prank(borrower);
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         IShareToken(collateral).transfer(depositor, depositAssets * SiloMathLib._DECIMALS_OFFSET_POW);
     }
 
@@ -168,7 +169,7 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
 
         // Expect transaction without revert as user is solvent after transfer.
         vm.prank(borrower);
-        IShareToken(collateral).transfer(depositor, transferAmount);
+        require(IShareToken(collateral).transfer(depositor, transferAmount), "transfer failed");
     }
 
     /*
@@ -188,7 +189,7 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         // Solvency check is ignored for share token transfer as deposit is not collateral.
         // Expect transaction without revert as `beforeQuote` is not called.
         vm.prank(borrower);
-        IShareToken(collateral).transfer(depositor, depositAssets);
+        require(IShareToken(collateral).transfer(depositor, depositAssets), "transfer failed");
     }
 
     /*

@@ -10,11 +10,14 @@ import {DistributionTypes} from "silo-core/contracts/incentives/lib/Distribution
 
 import {MintableToken} from "../../_common/MintableToken.sol";
 import {CantinaTicket} from "./CantinaTicket.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc CantinaTicket195
 */
 contract CantinaTicket195 is CantinaTicket {
+    using SafeCast for uint256;
+
     SiloIncentivesControllerCompatible internal _controller;
 
     address internal _owner = makeAddr("Owner");
@@ -58,8 +61,8 @@ contract CantinaTicket195 is CantinaTicket {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
-                distributionEnd: uint40(block.timestamp + 200),
-                emissionPerSecond: uint104(emissionPerSecond)
+                distributionEnd: (block.timestamp + 200).toUint40(),
+                emissionPerSecond: emissionPerSecond.toUint104()
             })
         );
 

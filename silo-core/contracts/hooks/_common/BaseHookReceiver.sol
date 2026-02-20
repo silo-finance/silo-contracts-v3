@@ -54,7 +54,7 @@ abstract contract BaseHookReceiver is IHookReceiver, Initializable {
     /// @param _hooksBefore Hooks before
     /// @param _hooksAfter Hooks after
     function _setHookConfig(address _silo, uint24 _hooksBefore, uint24 _hooksAfter) internal virtual {
-        _hookConfig[_silo] = HookConfig(_hooksBefore, _hooksAfter);
+        _hookConfig[_silo] = HookConfig({hooksBefore: _hooksBefore, hooksAfter: _hooksAfter});
         emit HookConfigured(_silo, _hooksBefore, _hooksAfter);
 
         ISilo(_silo).updateHooks();

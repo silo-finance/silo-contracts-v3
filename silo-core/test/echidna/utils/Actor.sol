@@ -16,11 +16,11 @@ import {PropertiesAsserts} from "properties/util/PropertiesHelper.sol";
 contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
     bytes32 internal constant _FLASHLOAN_CALLBACK = keccak256("ERC3156FlashBorrower.onFlashLoan");
 
-    TestERC20Token immutable token0;
-    TestERC20Token immutable token1;
-    Silo immutable vault0;
-    Silo immutable vault1;
-    PartialLiquidation immutable liquidationModule;
+    TestERC20Token immutable TOKEN0;
+    TestERC20Token immutable TOKEN1;
+    Silo immutable VAULT0;
+    Silo immutable VAULT1;
+    PartialLiquidation immutable LIQUIDATION_MODULE;
 
     mapping(address => uint256) public tokensDepositedCollateral;
     mapping(address => uint256) public tokensDepositedProtected;
@@ -30,11 +30,11 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
     mapping(address => uint256) public debtMinted;
 
     constructor(Silo _vault0, Silo _vault1) {
-        vault0 = _vault0;
-        vault1 = _vault1;
-        token0 = TestERC20Token(address(_vault0.asset()));
-        token1 = TestERC20Token(address(_vault1.asset()));
-        liquidationModule = PartialLiquidation(_vault0.config().getConfig(address(_vault0)).hookReceiver);
+        VAULT0 = _vault0;
+        VAULT1 = _vault1;
+        TOKEN0 = TestERC20Token(address(_vault0.asset()));
+        TOKEN1 = TestERC20Token(address(_vault1.asset()));
+        LIQUIDATION_MODULE = PartialLiquidation(_vault0.config().getConfig(address(_vault0)).hookReceiver);
     }
 
     function deposit(bool _vaultZero, uint256 _assets) public returns (uint256 shares) {
@@ -72,7 +72,7 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
     }
 
     function withdraw(bool _vaultZero, uint256 _assets) external returns (uint256 shares) {
-        Silo vault = _vaultZero ? vault0 : vault1;
+        Silo vault = _vaultZero ? VAULT0 : VAULT1;
         shares = vault.withdraw(_assets, address(this), address(this));
         _accountForClosedPosition(ISilo.CollateralType.Collateral, _vaultZero, _assets, shares);
     }
@@ -81,13 +81,13 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
         external
         returns (uint256 shares)
     {
-        Silo vault = _vaultZero ? vault0 : vault1;
+        Silo vault = _vaultZero ? VAULT0 : VAULT1;
         shares = vault.withdraw(_assets, address(this), address(this), _assetType);
         _accountForClosedPosition(_assetType, _vaultZero, _assets, shares);
     }
 
     function redeem(bool _vaultZero, uint256 _shares) external returns (uint256 assets) {
-        Silo vault = _vaultZero ? vault0 : vault1;
+        Silo vault = _vaultZero ? VAULT0 : VAULT1;
         assets = vault.redeem(_shares, address(this), address(this));
         _accountForClosedPosition(ISilo.CollateralType.Collateral, _vaultZero, assets, _shares);
     }
@@ -96,25 +96,25 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
         external
         returns (uint256 assets)
     {
-        Silo vault = _vaultZero ? vault0 : vault1;
+        Silo vault = _vaultZero ? VAULT0 : VAULT1;
         assets = vault.redeem(_shares, address(this), address(this), _assetType);
         _accountForClosedPosition(_assetType, _vaultZero, assets, _shares);
     }
 
     function borrow(bool _vaultZero, uint256 _assets) external returns (uint256 shares) {
-        Silo vault = _vaultZero ? vault0 : vault1;
+        Silo vault = _vaultZero ? VAULT0 : VAULT1;
         shares = vault.borrow(_assets, address(this), address(this));
         _accountForOpenedDebt(_vaultZero, _assets, shares);
     }
 
     function borrowShares(bool _vaultZero, uint256 _shares) external returns (uint256 assets) {
-        Silo vault = _vaultZero ? vault0 : vault1;
+        Silo vault = _vaultZero ? VAULT0 : VAULT1;
         assets = vault.borrowShares(_shares, address(this), address(this));
         _accountForOpenedDebt(_vaultZero, assets, _shares);
     }
 
     function repay(bool _vaultZero, uint256 _assets) external returns (uint256 shares) {
-        Silo vault = _vaultZero ? vault0 : vault1;
+        Silo vault = _vaultZero ? VAULT0 : VAULT1;
         _approveFunds(_vaultZero, _assets, address(vault));
         shares = vault.repay(_assets, address(this));
         _accountForClosedDebt(_vaultZero, _assets, shares);
@@ -130,15 +130,15 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
         external
         returns (uint256 assets)
     {
-        Silo vault = _vaultZero ? vault0 : vault1;
+        Silo vault = _vaultZero ? VAULT0 : VAULT1;
         assets = vault.transitionCollateral(_shares, address(this), withdrawType);
         _accountForClosedPosition(withdrawType, _vaultZero, assets, _shares);
         _accountForOpenedPosition(withdrawType, _vaultZero, assets, _shares);
     }
 
     function flashLoan(bool _vaultZero, uint256 _amount) public returns (bool success) {
-        Silo vault = _vaultZero ? vault0 : vault1;
-        return vault.flashLoan(this, address(_vaultZero ? token0 : token1), _amount, "");
+        Silo vault = _vaultZero ? VAULT0 : VAULT1;
+        return vault.flashLoan(this, address(_vaultZero ? TOKEN0 : TOKEN1), _amount, "");
     }
 
     function liquidationCall(address borrower, uint256 debtToCover, bool receiveSToken, ISiloConfig config)
@@ -147,7 +147,7 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
         (ISiloConfig.ConfigData memory collateralConfig, ISiloConfig.ConfigData memory debtConfig) =
             config.getConfigsForSolvency(borrower);
 
-        liquidationModule.liquidationCall(
+        LIQUIDATION_MODULE.liquidationCall(
             collateralConfig.token, debtConfig.token, borrower, debtToCover, receiveSToken
         );
     }
@@ -159,11 +159,11 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
         uint256 _fee,
         bytes calldata // _data
     ) external returns (bytes32) {
-        _requireTotalCap(_token == address(token0), _amount + _fee);
+        _requireTotalCap(_token == address(TOKEN0), _amount + _fee);
 
         assert(_initiator == address(this));
 
-        _fund(_token == address(token0), _amount + _fee);
+        _fund(_token == address(TOKEN0), _amount + _fee);
         TestERC20Token(_token).approve(msg.sender, _amount + _fee);
         return _FLASHLOAN_CALLBACK;
     }
@@ -174,7 +174,7 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
         uint256 _tokensDeposited,
         uint256 _sharesMinted
     ) internal {
-        address vault = _vaultZero ? address(vault0) : address(vault1);
+        address vault = _vaultZero ? address(VAULT0) : address(VAULT1);
 
         if (_assetType == ISilo.CollateralType.Collateral) {
             tokensDepositedCollateral[vault] += _tokensDeposited;
@@ -186,7 +186,7 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
     }
 
     function _accountForOpenedDebt(bool _vaultZero, uint256 _tokensDeposited, uint256 _sharesMinted) internal {
-        address vault = _vaultZero ? address(vault0) : address(vault1);
+        address vault = _vaultZero ? address(VAULT0) : address(VAULT1);
 
         tokensBorrowed[vault] += _tokensDeposited;
         debtMinted[vault] += _sharesMinted;
@@ -203,7 +203,7 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
         uint256, /* _tokensReceived */
         uint256 /* _sharesBurned */
     ) internal pure {
-        // address vault = _vaultZero ? address(vault0) : address(vault1);
+        // address vault = _vaultZero ? address(VAULT0) : address(VAULT1);
 
         // note: The below code can lead to false positives since it does not account for interest.
         // In order to properly check these properties it needs to be modified so the accounting is correct.
@@ -227,7 +227,7 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
     }
 
     function _prepareForDeposit(bool _vaultZero, uint256 amount) internal returns (Silo vault) {
-        vault = _vaultZero ? vault0 : vault1;
+        vault = _vaultZero ? VAULT0 : VAULT1;
         _fund(_vaultZero, amount);
         _approveFunds(_vaultZero, amount, address(vault));
     }
@@ -236,7 +236,7 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
         internal
         returns (Silo vault, uint256 amount)
     {
-        vault = _vaultZero ? vault0 : vault1;
+        vault = _vaultZero ? VAULT0 : VAULT1;
         amount = vault.previewMint(_shares, _assetType);
 
         _prepareForDeposit(_vaultZero, amount);
@@ -246,15 +246,15 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
         internal
         returns (Silo vault, uint256 amount)
     {
-        vault = _vaultZero ? vault0 : vault1;
+        vault = _vaultZero ? VAULT0 : VAULT1;
         amount = vault.previewRepayShares(_shares);
 
         _approveFunds(_vaultZero, amount, address(vault));
     }
 
     function _prepareForLiquidationRepay(bool _vaultZero, uint256 debtToRepay) internal returns (Silo vault) {
-        vault = _vaultZero ? vault0 : vault1;
-        TestERC20Token token = _vaultZero ? token0 : token1;
+        vault = _vaultZero ? VAULT0 : VAULT1;
+        TestERC20Token token = _vaultZero ? TOKEN0 : TOKEN1;
 
         uint256 balance = token.balanceOf(address(this));
 
@@ -270,7 +270,7 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
     }
 
     function _fund(bool _vaultZero, uint256 _amount) internal {
-        TestERC20Token token = _vaultZero ? token0 : token1;
+        TestERC20Token token = _vaultZero ? TOKEN0 : TOKEN1;
         uint256 balance = token.balanceOf(address(this));
 
         if (balance < _amount) {
@@ -279,12 +279,12 @@ contract Actor is PropertiesAsserts, IERC3156FlashBorrower {
     }
 
     function _approveFunds(bool _vaultZero, uint256 amount, address vault) internal {
-        TestERC20Token token = _vaultZero ? token0 : token1;
+        TestERC20Token token = _vaultZero ? TOKEN0 : TOKEN1;
         token.approve(vault, amount);
     }
 
     function _requireTotalCap(bool _vaultZero, uint256 requiredBalance) internal view {
-        TestERC20Token token = _vaultZero ? token0 : token1;
+        TestERC20Token token = _vaultZero ? TOKEN0 : TOKEN1;
         uint256 balance = token.balanceOf(address(this));
 
         if (balance < requiredBalance) {

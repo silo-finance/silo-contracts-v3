@@ -8,9 +8,7 @@ import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {IERC4626} from "forge-std/interfaces/IERC4626.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
-import {Math} from "openzeppelin5/utils/math/Math.sol";
 
-import {SiloIncentivesControllerFactory} from "silo-core/contracts/incentives/SiloIncentivesControllerFactory.sol";
 import {SiloIncentivesControllerFactoryDeploy} from "silo-core/deploy/SiloIncentivesControllerFactoryDeploy.s.sol";
 import {ISiloIncentivesControllerFactory} from
     "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
@@ -109,7 +107,9 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
         uint256 snapshot = vm.snapshot();
 
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 sonicHash = keccak256(abi.encodePacked("sonic"));
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 networkHash = keccak256(abi.encodePacked(_networkKey));
 
         for (uint256 i = 0; i < deployedSiloConfigs[_networkKey].length; i++) {
@@ -205,7 +205,7 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
             uint256 siloBalance = IERC20(IERC4626(silo0).asset()).balanceOf(silo0);
             emit log_named_decimal_uint("silo balance before stealing", siloBalance, decimals0);
             vm.prank(silo0);
-            asset0.transfer(user, siloBalance / 1000);
+            require(asset0.transfer(user, siloBalance / 1000), "transfer failed");
             token0stolen = true;
         }
 
@@ -216,7 +216,7 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
             uint256 siloBalance = IERC20(IERC4626(silo1).asset()).balanceOf(silo1);
             emit log_named_decimal_uint("silo balance before stealing", siloBalance, decimals1);
             vm.prank(silo1);
-            asset1.transfer(user, siloBalance / 1000);
+            require(asset1.transfer(user, siloBalance / 1000), "transfer failed");
             token1stolen = true;
         }
 
@@ -430,6 +430,7 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
             return true;
         } catch (bytes memory e) {
             bytes32 alreadyConfiguredHash =
+                // forge-lint: disable-next-line(asm-keccak256)
                 keccak256(abi.encodeWithSelector(IGaugeHookReceiver.GaugeAlreadyConfigured.selector));
 
             if (keccak256(e) == alreadyConfiguredHash) {
@@ -447,9 +448,11 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
         vm.prank(owner);
         try hookReceiver.removeGauge(IShareToken(_silo)) {
+            // forge-lint: disable-next-line(asm-keccak256)
             console2.log("Gauge removed successfully!");
             return true;
         } catch (bytes memory e) {
+            // forge-lint: disable-next-line(asm-keccak256)
             bytes32 cantRemoveActiveGaugeHash = keccak256(abi.encodeWithSelector(CantRemoveActiveGauge.selector));
 
             if (keccak256(e) == cantRemoveActiveGaugeHash) {
@@ -473,6 +476,7 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
     function _parseSiloDeployments() internal {
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/silo-core/deploy/silo/_siloDeployments.json");
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(path);
 
         networks = vm.parseJsonKeys(json, ".");

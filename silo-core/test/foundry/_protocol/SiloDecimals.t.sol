@@ -13,13 +13,13 @@ import {SiloFixture} from "../_common/fixtures/SiloFixture.sol";
 import {MintableToken} from "../_common/MintableToken.sol";
 
 contract Oracle is ISiloOracle {
-    uint256 immutable baseDecimals;
+    uint256 immutable BASE_DECIMALS;
     uint256 priceOfOneBaseToken;
 
     address public quoteToken;
 
     constructor(uint8 _baseDecimals, address _quoteToken) {
-        baseDecimals = _baseDecimals;
+        BASE_DECIMALS = _baseDecimals;
         quoteToken = _quoteToken;
     }
 
@@ -30,7 +30,7 @@ contract Oracle is ISiloOracle {
     }
 
     function quote(uint256 _baseAmount, address /* _baseToken */ ) external view returns (uint256 quoteAmount) {
-        return _baseAmount * priceOfOneBaseToken / (10 ** baseDecimals);
+        return _baseAmount * priceOfOneBaseToken / (10 ** BASE_DECIMALS);
     }
 }
 

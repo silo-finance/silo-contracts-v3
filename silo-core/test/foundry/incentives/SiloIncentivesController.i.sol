@@ -2,9 +2,8 @@
 pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
-import {Ownable} from "openzeppelin5/access/Ownable.sol";
-import {ERC20Mock} from "openzeppelin5/mocks/token/ERC20Mock.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 import {DistributionTypes} from "silo-core/contracts/incentives/lib/DistributionTypes.sol";
@@ -61,6 +60,7 @@ contract HookContract {
  FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc SiloIncentivesControllerTest
 */
 contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
+    using SafeCast for uint256;
     SiloIncentivesControllerCompatible internal _controller;
 
     address internal _notifier;
@@ -135,8 +135,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
-                distributionEnd: uint40(block.timestamp + 100),
-                emissionPerSecond: uint104(emissionPerSecond)
+                distributionEnd: (block.timestamp + 100).toUint40(),
+                emissionPerSecond: emissionPerSecond.toUint104()
             })
         );
 
@@ -194,7 +194,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 7e7;
 
         vm.startPrank(address(hook));
-        _controller.immediateDistribution(address(_rewardToken), uint104(immediateDistribution));
+        _controller.immediateDistribution(address(_rewardToken), immediateDistribution);
         vm.stopPrank();
 
         vm.warp(block.timestamp + 50);
@@ -242,8 +242,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
-                distributionEnd: uint40(block.timestamp + 100),
-                emissionPerSecond: uint104(emissionPerSecond) // it will not distribute less than 1e3, most likely because of offset
+                distributionEnd: (block.timestamp + 100).toUint40(),
+                emissionPerSecond: emissionPerSecond.toUint104() // it will not distribute less than 1e3, most likely because of offset
             })
         );
 
@@ -283,7 +283,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 7e7;
 
         vm.startPrank(address(hook));
-        _controller.immediateDistribution(address(_rewardToken), uint104(immediateDistribution));
+        _controller.immediateDistribution(address(_rewardToken), immediateDistribution);
         vm.stopPrank();
 
         string[] memory names = new string[](2);
@@ -359,8 +359,8 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
-                distributionEnd: uint40(block.timestamp + 100),
-                emissionPerSecond: uint104(emissionPerSecond) // it will not distribute less than 1e3, most likely because of offset
+                distributionEnd: (block.timestamp + 100).toUint40(),
+                emissionPerSecond: emissionPerSecond.toUint104() // it will not distribute less than 1e3, most likely because of offset
             })
         );
 
@@ -402,7 +402,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         string memory immediateProgramName = Strings.toHexString(address(_anotherRewardToken));
 
         vm.startPrank(address(hook));
-        _controller.immediateDistribution(address(_anotherRewardToken), uint104(immediateDistribution));
+        _controller.immediateDistribution(address(_anotherRewardToken), immediateDistribution);
         vm.stopPrank();
 
         assertEq(
@@ -468,7 +468,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
-                distributionEnd: uint40(block.timestamp + 100),
+                distributionEnd: (block.timestamp + 100).toUint40(),
                 emissionPerSecond: uint104(0)
             })
         );
@@ -491,7 +491,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 33e7;
 
         vm.startPrank(address(hook));
-        _controller.immediateDistribution(address(_rewardToken), uint104(immediateDistribution));
+        _controller.immediateDistribution(address(_rewardToken), immediateDistribution);
         vm.stopPrank();
 
         assertEq(

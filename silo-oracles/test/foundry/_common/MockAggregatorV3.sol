@@ -5,16 +5,16 @@ import {AggregatorV3Interface} from "chainlink/v0.8/interfaces/AggregatorV3Inter
 
 /// @dev MockAggregatorV3 is AggregatorV3Interface for QA purposes only, must never be deployed.
 contract MockAggregatorV3 is AggregatorV3Interface {
-    int256 public immutable mockedAnswer;
-    uint8 public immutable mockedDecimals;
+    int256 public immutable MOCKED_ANSWER;
+    uint8 public immutable MOCKED_DECIMALS;
 
     constructor(int256 _answer, uint8 _decimals) {
-        mockedAnswer = _answer;
-        mockedDecimals = _decimals;
+        MOCKED_ANSWER = _answer;
+        MOCKED_DECIMALS = _decimals;
     }
 
     function decimals() external view virtual override returns (uint8) {
-        return mockedDecimals;
+        return MOCKED_DECIMALS;
     }
 
     function description() external view virtual override returns (string memory) {
@@ -33,7 +33,7 @@ contract MockAggregatorV3 is AggregatorV3Interface {
         returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)
     {
         roundId = 54321;
-        answer = mockedAnswer;
+        answer = MOCKED_ANSWER;
         startedAt = block.timestamp;
         updatedAt = block.timestamp;
         answeredInRound = 123;
@@ -47,7 +47,7 @@ contract MockAggregatorV3 is AggregatorV3Interface {
         returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)
     {
         roundId = 54321;
-        answer = mockedAnswer;
+        answer = MOCKED_ANSWER;
         startedAt = block.timestamp;
         updatedAt = block.timestamp;
         answeredInRound = 1234;

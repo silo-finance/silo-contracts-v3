@@ -4,13 +4,13 @@ pragma solidity ^0.8.10;
 import {MintableToken} from "../../_common/MintableToken.sol";
 
 contract WETH {
-    MintableToken immutable wrapped;
+    MintableToken immutable WRAPPED;
 
     constructor(MintableToken _wrapped) {
-        wrapped = _wrapped;
+        WRAPPED = _wrapped;
     }
 
     function deposit() external payable {
-        wrapped.mint(msg.sender, msg.value);
+        WRAPPED.mint(msg.sender, msg.value);
     }
 }

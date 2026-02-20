@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 
 import {SafeCast} from "openzeppelin-contracts/contracts/utils/math/SafeCast.sol";
 import {IDynamicKinkModel} from "../../../contracts/interfaces/IDynamicKinkModel.sol";
 
 contract KinkRcurTestData is Test {
+    using SafeCast for int256;
     // must be in alphabetic order
     struct InputRcur {
         int256 currentTime;
@@ -47,6 +48,7 @@ contract KinkRcurTestData is Test {
     function _readDataFromJsonRcur() internal view returns (RcurData[] memory data) {
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/silo-core/test/foundry/data/KinkRcurtest.json");
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(path);
 
         data = abi.decode(vm.parseJson(json, string(abi.encodePacked(".tests"))), (RcurData[]));
@@ -93,14 +95,14 @@ contract KinkRcurTestData is Test {
         c.cminus = _data.constants.cminus;
         c.cplus = _data.constants.cplus;
         c.dmax = _data.constants.dmax;
-        c.kmax = SafeCast.toInt96(_data.constants.kmax);
-        c.kmin = SafeCast.toInt96(_data.constants.kmin);
+        c.kmax = _data.constants.kmax.toInt96();
+        c.kmin = _data.constants.kmin.toInt96();
         c.rmin = _data.constants.rmin;
         c.u1 = _data.constants.u1;
         c.u2 = _data.constants.u2;
         c.ucrit = _data.constants.ucrit;
         c.ulow = _data.constants.ulow;
 
-        state.k = SafeCast.toInt96(_data.input.lastSlope);
+        state.k = _data.input.lastSlope.toInt96();
     }
 }

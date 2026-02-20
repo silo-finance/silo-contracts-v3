@@ -7,7 +7,7 @@ import {XSilo} from "x-silo/contracts/XSilo.sol";
 import {IXRedeemPolicy} from "x-silo/contracts/interfaces/IXRedeemPolicy.sol";
 
 // Libraries
-import "forge-std/console.sol";
+import {console} from "forge-std/console.sol";
 
 // Test Contracts
 import {Actor} from "../../utils/Actor.sol";

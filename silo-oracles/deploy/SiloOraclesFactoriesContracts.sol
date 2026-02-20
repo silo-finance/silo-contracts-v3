@@ -20,6 +20,7 @@ library SiloOraclesFactoriesContracts {
     string public constant PENDLE_WRAPPER_LPT_TO_ASSET_ORACLE_FACTORY = "PendleWrapperLPTToAssetOracleFactory.sol";
     string public constant PENDLE_WRAPPER_LPT_TO_SY_ORACLE_FACTORY = "PendleWrapperLPTToSyOracleFactory.sol";
     string public constant PT_LINEAR_ORACLE_FACTORY = "PTLinearOracleFactory.sol";
+    string public constant MANAGEABLE_ORACLE_FACTORY = "ManageableOracleFactory.sol";
 }
 
 library SiloOraclesFactoriesDeployments {

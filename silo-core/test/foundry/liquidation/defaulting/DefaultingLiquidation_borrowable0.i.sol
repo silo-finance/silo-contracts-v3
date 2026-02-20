@@ -13,6 +13,7 @@ import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
 import {DefaultingLiquidationCommon} from "./DefaultingLiquidationCommon.sol";
 
 /*
+FOUNDRY_PROFILE=core_test forge test --ffi --mc DefaultingLiquidationBorrowable0Test -vv
 tests for one way markets, borrowable token is 0
 */
 contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {

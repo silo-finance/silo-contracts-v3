@@ -18,11 +18,16 @@ import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
 import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 import {MintableToken} from "../../_common/MintableToken.sol";
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
+import {IUSDT} from "../../_common/IUSDT.sol";
+import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 
 contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
     address depositor = makeAddr("Depositor");
     address borrowerUsdt = makeAddr("BorrowerUSDT");
     address borrowerUsdc = makeAddr("BorrowerUSDC");
+
+    IUSDT usdt;
+    SiloLens siloLens;
 
     function setUp() public {
         vm.createSelectFork(vm.envString("RPC_MAINNET"), 24498300);
@@ -33,6 +38,7 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
         token1 = MintableToken(getAddress("USDC"));
         vm.label(address(token0), "USDT");
         vm.label(address(token1), "USDC");
+        usdt = IUSDT(getAddress("USDT"));
 
         SiloConfigOverride memory overrides;
         overrides.token0 = address(token0);
@@ -43,6 +49,8 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
         SiloFixture siloFixture = new SiloFixture();
 
         (, silo0, silo1,,,) = siloFixture.deploy_local(overrides);
+
+        siloLens = new SiloLens();
     }
 
     /*
@@ -51,46 +59,56 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
     function test_setup() public {
         _dealTokens();
 
-        // _depositTo(silo0, depositor);
-        // _depositTo(silo1, depositor);
+        _depositUsdt(depositor);
+        _depositTo(silo1, depositor);
 
-        // _borrowFrom(silo0, borrowerUsdc);
-        // _borrowFrom(silo1, borrowerUsdt);
+        _depositUsdt(borrowerUsdc);
+        _depositTo(silo1, borrowerUsdt);
 
-        // vm.warp(block.timestamp + 300 days);
+        _borrowFrom(silo1, borrowerUsdc);
+        emit log_named_decimal_uint("borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
 
-        // assertFalse(silo0.isSolvent(borrowerUsdt), "Borrower USDT is still solvent");
-        // assertFalse(silo0.isSolvent(borrowerUsdc), "Borrower USDC is still solvent");
+        _borrowFrom(silo0, borrowerUsdt);
+        emit log_named_decimal_uint("borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
+
+        vm.warp(block.timestamp + 300 days);
+
+        emit log_named_decimal_uint("borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
+        emit log_named_decimal_uint("borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
+
+        assertFalse(silo0.isSolvent(borrowerUsdt), "Borrower USDT is still solvent");
+        assertFalse(silo0.isSolvent(borrowerUsdc), "Borrower USDC is still solvent");
     }
 
     function _dealTokens() internal {
-        console2.log("dealing tokens", address(silo0.asset()));
-        address usdtWhale = 0xCECD6c10c2B02E735A327554E3110B2BE8Bb26FC;
-        _dealToken(usdtWhale, token0);
+        deal(address(token0), depositor, 10e6);
+        deal(address(token0), borrowerUsdc, 10e6);
+        deal(address(token0), borrowerUsdt, 10e6);
 
-        // console2.log("dealing tokens", address(silo1.asset()));
-        // address usdcWhale = 0xaB851a4FD55E040B3958064028EB9EdDcBCdA33b;
-        // _dealToken(usdcWhale, token1);
-    }
+        deal(address(token1), depositor, 10e6);
+        deal(address(token1), borrowerUsdc, 10e6);
+        deal(address(token1), borrowerUsdt, 10e6);
 
-    function _dealToken(address _whale, IERC20 _token) internal {
-        console2.log("dealing token", address(_token));
-        emit log_named_decimal_uint("whale balance", _token.balanceOf(_whale), 6);
+        emit log_named_decimal_uint("depositor balance", token0.balanceOf(depositor), 6);
+        emit log_named_decimal_uint("borrowerUsdc balance", token0.balanceOf(borrowerUsdc), 6);
+        emit log_named_decimal_uint("borrowerUsdt balance", token0.balanceOf(borrowerUsdt), 6);
 
-        vm.prank(_whale);
-        _token.transfer(depositor, 10e6);
-
-        // vm.prank(_whale);
-        // _token.transfer(borrowerUsdc, 10e6);
-
-        // vm.prank(_whale);
-        // _token.transfer(borrowerUsdt, 10e6);
+        emit log_named_decimal_uint("depositor balance", token1.balanceOf(depositor), 6);
+        emit log_named_decimal_uint("borrowerUsdc balance", token1.balanceOf(borrowerUsdc), 6);
+        emit log_named_decimal_uint("borrowerUsdt balance", token1.balanceOf(borrowerUsdt), 6);
     }
 
     function _depositTo(ISilo _silo, address _depositor) internal {
         vm.startPrank(_depositor);
-        IERC20(_silo.asset()).approve(address(_silo), 1e6);
-        _silo.deposit(1e6, _depositor);
+        IERC20(_silo.asset()).approve(address(_silo), 10e6);
+        _silo.deposit(10e6, _depositor);
+        vm.stopPrank();
+    }
+    
+    function _depositUsdt(address _depositor) internal {
+        vm.startPrank(_depositor);
+        usdt.approve(address(silo0), 10e6);
+        silo0.deposit(10e6, _depositor);
         vm.stopPrank();
     }
 
@@ -99,15 +117,13 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
 
         ISilo collateralSilo = address(_debtSilo) == address(silo0) ? silo1 : silo0;
 
-        IERC20(collateralSilo.asset()).approve(address(collateralSilo), 1e6);
-        collateralSilo.deposit(1e6, _borrower);
-        
         uint256 maxBorrow = _debtSilo.maxBorrow(_borrower);
-        _borrow(maxBorrow, _borrower);
+        console2.log("maxBorrow", maxBorrow);
+        _debtSilo.borrow(maxBorrow, _borrower, _borrower);
 
         uint256 maxWithdraw = collateralSilo.maxWithdraw(_borrower);
+        console2.log("maxWithdraw", maxWithdraw);
         collateralSilo.withdraw(maxWithdraw, _borrower, _borrower);
-
         vm.stopPrank();
     }
 }

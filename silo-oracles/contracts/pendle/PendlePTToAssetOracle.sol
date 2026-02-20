@@ -2,11 +2,15 @@
 pragma solidity 0.8.28;
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {IPyYtLpOracleLike} from "silo-oracles/contracts/pendle/interfaces/IPyYtLpOracleLike.sol";
 import {IPendleMarketV3Like} from "silo-oracles/contracts/pendle/interfaces/IPendleMarketV3Like.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 import {IPendleSYTokenLike} from "silo-oracles/contracts/pendle/interfaces/IPendleSYTokenLike.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
+import {Aggregator} from "../_common/Aggregator.sol";
+
+// solhint-disable ordering
 
 /// @notice PendlePTToAssetOracle is an oracle, which multiplies the SY.assetInfo() asset price by PtToAssetRate.
 /// This oracle must be deployed using PendlePTToAssetOracleFactory contract. TWAP duration is constant and equal
@@ -16,7 +20,7 @@ import {Math} from "openzeppelin5/utils/math/Math.sol";
 /// This oracle must be used for Pendle PT tokens with rebasing underlying assets and other cases with SY-to-asset
 /// rate not equal to 100%. These cases are described here
 /// https://docs.pendle.finance/Developers/Contracts/StandardizedYield#non-standard-sys
-contract PendlePTToAssetOracle is ISiloOracle {
+contract PendlePTToAssetOracle is ISiloOracle, Aggregator, IVersioned {
     /// @dev PtToAssetRate unit of measurement.
     uint256 public constant PENDLE_RATE_PRECISION = 10 ** 18;
 
@@ -80,11 +84,17 @@ contract PendlePTToAssetOracle is ISiloOracle {
         QUOTE_TOKEN = _underlyingOracle.quoteToken();
     }
 
-    // @inheritdoc ISiloOracle
+    /// @inheritdoc ISiloOracle
     function beforeQuote(address) external virtual {}
 
-    // @inheritdoc ISiloOracle
-    function quote(uint256 _baseAmount, address _baseToken) external virtual view returns (uint256 quoteAmount) {
+    /// @inheritdoc ISiloOracle
+    function quote(uint256 _baseAmount, address _baseToken)
+        public
+        view
+        virtual
+        override(Aggregator, ISiloOracle)
+        returns (uint256 quoteAmount)
+    {
         require(_baseToken == PT_TOKEN, AssetNotSupported());
         uint256 rate = PENDLE_ORACLE.getPtToAssetRate(MARKET, TWAP_DURATION);
 
@@ -102,13 +112,20 @@ contract PendlePTToAssetOracle is ISiloOracle {
         require(quoteAmount != 0, ZeroPrice());
     }
 
-    // @inheritdoc ISiloOracle
+    /// @inheritdoc ISiloOracle
     function quoteToken() external virtual view returns (address) {
         return QUOTE_TOKEN;
     }
 
-    /// @dev an oracle base token. This is equal to PT token address.
-    function baseToken() external virtual view returns (address) {
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure override returns (string memory version) {
+        version = "PendlePTToAssetOracle 4.0.0";
+    }
+
+    /// @inheritdoc Aggregator
+    /// @dev This is equal to PT token address.
+    function baseToken() public view virtual override returns (address token) {
         return PT_TOKEN;
     }
 

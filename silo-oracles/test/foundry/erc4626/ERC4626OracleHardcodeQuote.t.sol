@@ -3,6 +3,7 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
+import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {ERC4626Oracle} from "silo-oracles/contracts/erc4626/ERC4626Oracle.sol";
 
 import {ERC4626OracleHardcodeQuoteFactoryDeploy} from
@@ -65,6 +66,19 @@ contract ERC4626OracleHardcodeQuoteTest is Test {
     // FOUNDRY_PROFILE=oracles forge test --mt test_ERC4626OracleHardcodeQuote_quoteToken -vvv
     function test_ERC4626OracleHardcodeQuote_quoteToken() public view {
         assertEq(oracle.quoteToken(), quoteToken);
+    }
+
+    function test_ERC4626OracleHardcodeQuote_VERSION() public view {
+        assertEq(ERC4626OracleHardcodeQuote(address(oracle)).VERSION(), "ERC4626OracleHardcodeQuote 4.0.0", "VERSION");
+    }
+
+    function test_ERC4626OracleHardcodeQuote_baseToken() public view {
+        ERC4626OracleHardcodeQuote hardcodeOracle = ERC4626OracleHardcodeQuote(address(oracle));
+        address baseTokenAddr = hardcodeOracle.baseToken();
+        assertEq(baseTokenAddr, address(vault), "baseToken");
+
+        uint256 amount = 10 ** IERC20Metadata(baseTokenAddr).decimals();
+        oracle.quote(amount, baseTokenAddr);
     }
 
     // FOUNDRY_PROFILE=oracles forge test --mt test_ERC4626OracleHardcodeQuote_beforeQuote -vvv

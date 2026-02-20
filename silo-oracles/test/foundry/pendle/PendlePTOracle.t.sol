@@ -73,6 +73,24 @@ contract PendlePTOracleTest is Forking {
         assertTrue(factory.createdInFactory(factory.create(underlyingOracle, market, bytes32(0))));
     }
 
+    /*
+    FOUNDRY_PROFILE=oracles forge test --mt test_PendlePTOracle_VERSION -vv
+    */
+    function test_PendlePTOracle_VERSION() public view {
+        assertEq(oracle.VERSION(), "PendlePTOracle 4.0.0", "VERSION");
+    }
+
+    /*
+    FOUNDRY_PROFILE=oracles forge test --mt test_PendlePTOracle_baseToken -vv
+    */
+    function test_PendlePTOracle_baseToken() public view {
+        address baseTokenAddr = oracle.baseToken();
+        assertEq(baseTokenAddr, ptToken, "baseToken");
+
+        uint256 amount = 10 ** IERC20Metadata(baseTokenAddr).decimals();
+        oracle.quote(amount, baseTokenAddr);
+    }
+
     function test_PendlePTOracle_constructor_state() public view {
         assertEq(oracle.PENDLE_RATE_PRECISION(), 10 ** 18);
         assertEq(oracle.TWAP_DURATION(), 1800);

@@ -11,7 +11,7 @@ import {IPTLinearOracleFactory} from "silo-oracles/contracts/interfaces/IPTLinea
 
 import {PTLinearMocks} from "./_common/PTLinearMocks.sol";
 import {PTLinearOracle} from "silo-oracles/contracts/pendle/linear/PTLinearOracle.sol";
-
+import {Aggregator} from "silo-oracles/contracts/_common/Aggregator.sol";
 import {SparkLinearDiscountOracleFactoryMock} from "./_common/SparkLinearDiscountOracleFactoryMock.sol";
 import {ISparkLinearDiscountOracle} from "silo-oracles/contracts/pendle/interfaces/ISparkLinearDiscountOracle.sol";
 
@@ -44,6 +44,9 @@ contract PTLinearOracleTest is PTLinearMocks {
         uint256 price = oracle.quote(1e18, makeAddr("ptToken"));
 
         assertEq(price, mockedPrice, "Mocked PT price");
+
+        address baseToken = Aggregator(address(oracle)).baseToken();
+        assertEq(price, oracle.quote(1e18, baseToken), "quote with baseToken");
 
         _mockDecimals();
 
@@ -81,6 +84,14 @@ contract PTLinearOracleTest is PTLinearMocks {
     function test_ptLinear_version() public {
         AggregatorV3Interface oracle = AggregatorV3Interface(address(_createOracle()));
         assertEq(oracle.version(), 1, "Version should match");
+    }
+
+    /*
+    FOUNDRY_PROFILE=oracles forge test --mt test_ptLinear_VERSION --ffi -vv
+    */
+    function test_ptLinear_VERSION() public {
+        PTLinearOracle oracle = PTLinearOracle(address(_createOracle()));
+        assertEq(oracle.VERSION(), "PTLinearOracle 4.0.0", "VERSION");
     }
 
     /*

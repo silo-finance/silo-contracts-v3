@@ -20,6 +20,7 @@ import {MintableToken} from "../../_common/MintableToken.sol";
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 import {IUSDT} from "../../_common/IUSDT.sol";
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
+import {ManualLiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/ManualLiquidationHelper.sol";
 
 contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
     address depositor = makeAddr("Depositor");
@@ -28,6 +29,8 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
 
     IUSDT usdt;
     SiloLens siloLens;
+
+    ManualLiquidationHelper manualLiquidation;
 
     function setUp() public {
         vm.createSelectFork(vm.envString("RPC_MAINNET"), 24498300);
@@ -51,6 +54,7 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
         (, silo0, silo1,,,) = siloFixture.deploy_local(overrides);
 
         siloLens = new SiloLens();
+        manualLiquidation = new ManualLiquidationHelper(AddrLib.getAddress("WETH"), payable(address(this)));
     }
 
     /*
@@ -73,21 +77,33 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
 
         vm.warp(block.timestamp + 300 days);
 
-        emit log_named_decimal_uint("borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
-        emit log_named_decimal_uint("borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
+        emit log_named_decimal_uint("insolvent borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
+        emit log_named_decimal_uint("insolvent borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
 
         assertFalse(silo0.isSolvent(borrowerUsdt), "Borrower USDT is still solvent");
         assertFalse(silo0.isSolvent(borrowerUsdc), "Borrower USDC is still solvent");
+
+        usdt.approve(address(manualLiquidation), 10e6);
+        token1.approve(address(manualLiquidation), 10e6);
+
+        manualLiquidation.executeLiquidation(silo0, borrowerUsdt);
+        emit log_named_decimal_uint("solvent borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
+
+        manualLiquidation.executeLiquidation(silo1, borrowerUsdc);
+        emit log_named_decimal_uint("solvent borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
     }
 
     function _dealTokens() internal {
         deal(address(token0), depositor, 10e6);
         deal(address(token0), borrowerUsdc, 10e6);
         deal(address(token0), borrowerUsdt, 10e6);
+        deal(address(token0), address(this), 10e6);
 
         deal(address(token1), depositor, 10e6);
         deal(address(token1), borrowerUsdc, 10e6);
         deal(address(token1), borrowerUsdt, 10e6);
+        deal(address(token1), address(this), 10e6);
+
 
         emit log_named_decimal_uint("depositor balance", token0.balanceOf(depositor), 6);
         emit log_named_decimal_uint("borrowerUsdc balance", token0.balanceOf(borrowerUsdc), 6);

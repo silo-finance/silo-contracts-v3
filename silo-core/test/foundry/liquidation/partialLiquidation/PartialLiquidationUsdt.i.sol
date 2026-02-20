@@ -23,12 +23,19 @@ import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ManualLiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/ManualLiquidationHelper.sol";
 
 contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
+    uint256 constant DEPOSIT_AMOUNT = 1e6;
+    uint256 constant MAX_AMOUNT = 1000e6;
+
     address depositor = makeAddr("Depositor");
     address borrowerUsdt = makeAddr("BorrowerUSDT");
     address borrowerUsdc = makeAddr("BorrowerUSDC");
 
     IUSDT usdt;
+    IERC20 usdc;
     SiloLens siloLens;
+
+    ISilo siloUsdc;
+    ISilo siloUsdt;
 
     ManualLiquidationHelper manualLiquidation;
 
@@ -37,15 +44,15 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
 
         AddrLib.init();
 
-        token0 = MintableToken(getAddress("USDT"));
-        token1 = MintableToken(getAddress("USDC"));
-        vm.label(address(token0), "USDT");
-        vm.label(address(token1), "USDC");
         usdt = IUSDT(getAddress("USDT"));
+        usdc = IERC20(getAddress("USDC"));
 
         SiloConfigOverride memory overrides;
-        overrides.token0 = address(token0);
-        overrides.token1 = address(token1);
+        (overrides.token0, overrides.token1) = _getTokensAddresses();
+        token0 = MintableToken(overrides.token0);
+        token1 = MintableToken(overrides.token1);
+        vm.label(address(token0), token0.symbol());
+        vm.label(address(token1), token1.symbol());
 
         overrides.configName = SiloConfigsNames.SILO_MOCKED;
 
@@ -55,6 +62,8 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
 
         siloLens = new SiloLens();
         manualLiquidation = new ManualLiquidationHelper(AddrLib.getAddress("WETH"), payable(address(this)));
+
+        (siloUsdc, siloUsdt) = silo0.asset() == address(usdt) ? (silo1, silo0) : (silo0, silo1);
     }
 
     /*
@@ -64,15 +73,15 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
         _dealTokens();
 
         _depositUsdt(depositor);
-        _depositTo(silo1, depositor);
+        _depositUsdc(depositor);
 
         _depositUsdt(borrowerUsdc);
-        _depositTo(silo1, borrowerUsdt);
+        _depositUsdc(borrowerUsdt);
 
-        _borrowFrom(silo1, borrowerUsdc);
+        _borrowFrom(siloUsdc, borrowerUsdc);
         emit log_named_decimal_uint("borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
 
-        _borrowFrom(silo0, borrowerUsdt);
+        _borrowFrom(siloUsdt, borrowerUsdt);
         emit log_named_decimal_uint("borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
 
         vm.warp(block.timestamp + 300 days);
@@ -83,26 +92,44 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
         assertFalse(silo0.isSolvent(borrowerUsdt), "Borrower USDT is still solvent");
         assertFalse(silo0.isSolvent(borrowerUsdc), "Borrower USDC is still solvent");
 
-        usdt.approve(address(manualLiquidation), 10e6);
-        token1.approve(address(manualLiquidation), 10e6);
+        usdt.approve(address(manualLiquidation), MAX_AMOUNT);
+        usdc.approve(address(manualLiquidation), MAX_AMOUNT);
 
-        manualLiquidation.executeLiquidation(silo0, borrowerUsdt);
+        manualLiquidation.executeLiquidation(siloUsdt, borrowerUsdt);
         emit log_named_decimal_uint("solvent borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
 
-        manualLiquidation.executeLiquidation(silo1, borrowerUsdc);
+        manualLiquidation.executeLiquidation(siloUsdc, borrowerUsdc);
         emit log_named_decimal_uint("solvent borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
+
+        vm.warp(block.timestamp + 3000 days);
+
+        bool expctOnePartial;
+
+        if (!silo0.isSolvent(borrowerUsdc)) {
+            expctOnePartial = true;
+            manualLiquidation.executeLiquidation(siloUsdc, borrowerUsdc);
+            emit log_named_decimal_uint("final borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
+        }
+
+        if (!silo0.isSolvent(borrowerUsdt)) {
+            expctOnePartial = true;
+            manualLiquidation.executeLiquidation(siloUsdt, borrowerUsdt);
+            emit log_named_decimal_uint("final borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
+        }
+
+        assertTrue(expctOnePartial, "expected one partial liquidation");
     }
 
     function _dealTokens() internal {
-        deal(address(token0), depositor, 10e6);
-        deal(address(token0), borrowerUsdc, 10e6);
-        deal(address(token0), borrowerUsdt, 10e6);
-        deal(address(token0), address(this), 10e6);
+        deal(address(token0), depositor, MAX_AMOUNT);
+        deal(address(token0), borrowerUsdc, MAX_AMOUNT);
+        deal(address(token0), borrowerUsdt, MAX_AMOUNT);
+        deal(address(token0), address(this), MAX_AMOUNT);
 
-        deal(address(token1), depositor, 10e6);
-        deal(address(token1), borrowerUsdc, 10e6);
-        deal(address(token1), borrowerUsdt, 10e6);
-        deal(address(token1), address(this), 10e6);
+        deal(address(token1), depositor, MAX_AMOUNT);
+        deal(address(token1), borrowerUsdc, MAX_AMOUNT);
+        deal(address(token1), borrowerUsdt, MAX_AMOUNT);
+        deal(address(token1), address(this), MAX_AMOUNT);
 
 
         emit log_named_decimal_uint("depositor balance", token0.balanceOf(depositor), 6);
@@ -114,17 +141,17 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
         emit log_named_decimal_uint("borrowerUsdt balance", token1.balanceOf(borrowerUsdt), 6);
     }
 
-    function _depositTo(ISilo _silo, address _depositor) internal {
+    function _depositUsdc(address _depositor) internal {
         vm.startPrank(_depositor);
-        IERC20(_silo.asset()).approve(address(_silo), 10e6);
-        _silo.deposit(10e6, _depositor);
+        usdc.approve(address(siloUsdc), DEPOSIT_AMOUNT);
+        siloUsdc.deposit(DEPOSIT_AMOUNT, _depositor);
         vm.stopPrank();
     }
     
     function _depositUsdt(address _depositor) internal {
         vm.startPrank(_depositor);
-        usdt.approve(address(silo0), 10e6);
-        silo0.deposit(10e6, _depositor);
+        usdt.approve(address(siloUsdt), DEPOSIT_AMOUNT);
+        siloUsdt.deposit(DEPOSIT_AMOUNT, _depositor);
         vm.stopPrank();
     }
 
@@ -141,5 +168,9 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
         console2.log("maxWithdraw", maxWithdraw);
         collateralSilo.withdraw(maxWithdraw, _borrower, _borrower);
         vm.stopPrank();
+    }
+
+    function _getTokensAddresses() internal virtual returns (address tokenForSilo0, address tokenForSilo1) {
+        return (getAddress("USDT"), getAddress("USDC"));
     }
 }

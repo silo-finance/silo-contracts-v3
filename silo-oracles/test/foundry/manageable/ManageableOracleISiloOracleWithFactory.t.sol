@@ -15,7 +15,7 @@ contract ManageableOracleISiloOracleWithFactoryTest is ManageableOracleISiloOrac
     function _createManageableOracle() internal override returns (ISiloOracle manageableOracle) {
         (address mockFactory, bytes memory initData) = _mockOracleFactoryAndInitData(address(oracleMock));
 
-        manageableOracle = ISiloOracle(address(factory.create(mockFactory, initData, owner, timelock, bytes32(0))));
+        manageableOracle = ISiloOracle(address(factory.create(mockFactory, initData, owner, TIMELOCK, bytes32(0))));
     }
 
     function _mockOracleFactoryAndInitData(address _oracle)

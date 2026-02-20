@@ -23,6 +23,8 @@ contract ManageableOracleISiloOracleWithOracleTest is ManageableOracleISiloOracl
 
         console2.log("address(factory)", address(factory));
 
+        // forge-lint: disable-start(unsafe-cheatcode)
+
         AddrLib.init();
         AddrLib.setAddress(SiloOraclesFactoriesContracts.MANAGEABLE_ORACLE_FACTORY, address(factory));
         vm.setEnv("BASE_TOKEN", "BASE_TOKEN_FOR_TEST");
@@ -31,11 +33,12 @@ contract ManageableOracleISiloOracleWithOracleTest is ManageableOracleISiloOracl
         vm.setEnv("OWNER", "OWNER_FOR_TEST");
         AddrLib.setAddress("OWNER_FOR_TEST", owner);
 
-        vm.setEnv("TIMELOCK", vm.toString(timelock));
+        vm.setEnv("TIMELOCK", vm.toString(TIMELOCK));
         vm.setEnv("EXTERNAL_SALT", vm.toString(bytes32(0)));
 
         vm.setEnv("UNDERLYING_ORACLE", "UNDERLYING_ORACLE_FOR_TEST");
         AddrLib.setAddress("UNDERLYING_ORACLE_FOR_TEST", address(oracleMock));
+        // forge-lint: disable-end(unsafe-cheatcode)
 
         vm.mockCall(
             address(oracleMock.quoteToken()),

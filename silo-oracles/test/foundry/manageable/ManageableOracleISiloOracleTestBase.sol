@@ -3,18 +3,16 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 
-import {ManageableOracleFactory} from "silo-oracles/contracts/manageable/ManageableOracleFactory.sol";
 import {IManageableOracleFactory} from "silo-oracles/contracts/interfaces/IManageableOracleFactory.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IERC20Metadata} from "silo-oracles/test/foundry/interfaces/IERC20Metadata.sol";
 
 import {SiloOracleMock1} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMock1.sol";
-import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 import {ManageableOracleFactoryDeploy} from "silo-oracles/deploy/manageable/ManageableOracleFactoryDeploy.s.sol";
 
 abstract contract ManageableOracleISiloOracleTestBase is Test {
     address internal owner = makeAddr("Owner");
-    uint32 internal constant timelock = 1 days;
+    uint32 internal constant TIMELOCK = 1 days;
     address internal baseToken;
 
     IManageableOracleFactory internal factory;

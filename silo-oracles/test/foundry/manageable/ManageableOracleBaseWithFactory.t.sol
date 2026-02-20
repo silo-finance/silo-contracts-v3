@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.28;
 
-import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IManageableOracle} from "silo-oracles/contracts/interfaces/IManageableOracle.sol";
 
 import {ManageableOracleBase} from "silo-oracles/test/foundry/manageable/ManageableOracleBase.sol";
@@ -14,7 +13,7 @@ contract ManageableOracleBaseWithFactoryTest is ManageableOracleBase {
     function _createManageableOracle() internal override returns (IManageableOracle manageableOracle) {
         (address mockFactory, bytes memory initData) = _mockOracleFactoryAndInitData(address(oracleMock));
 
-        manageableOracle = factory.create(mockFactory, initData, owner, timelock, bytes32(0));
+        manageableOracle = factory.create(mockFactory, initData, owner, TIMELOCK, bytes32(0));
     }
 
     function _mockOracleFactoryAndInitData(address _oracle)

@@ -4,12 +4,10 @@ pragma solidity 0.8.28;
 import {Test} from "forge-std/Test.sol";
 
 import {ManageableOracleFactory} from "silo-oracles/contracts/manageable/ManageableOracleFactory.sol";
-import {IManageableOracleFactory} from "silo-oracles/contracts/interfaces/IManageableOracleFactory.sol";
 import {IManageableOracle} from "silo-oracles/contracts/interfaces/IManageableOracle.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {SiloOracleMock1} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMock1.sol";
-import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 
 /*
  FOUNDRY_PROFILE=oracles forge test --mc ManageableOracleFactoryTest

@@ -13,7 +13,6 @@ import {IManageableOracle} from "silo-oracles/contracts/interfaces/IManageableOr
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IERC20Metadata} from "silo-oracles/test/foundry/interfaces/IERC20Metadata.sol";
 import {SiloOracleMock1} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMock1.sol";
-import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 
 import {MockOracleFactory} from "./common/MockOracleFactory.sol";
@@ -23,7 +22,7 @@ import {MockOracleFactory} from "./common/MockOracleFactory.sol";
 */
 contract ManageableOracleInitTest is Test {
     address internal owner = makeAddr("Owner");
-    uint32 internal constant timelock = 1 days;
+    uint32 internal constant TIMELOCK = 1 days;
     address internal baseToken;
 
     IManageableOracleFactory internal factory;
@@ -44,10 +43,10 @@ contract ManageableOracleInitTest is Test {
     function test_ManageableOracle_cannotInitializeTwice_withOracle() public {
         // Create ManageableOracle through factory
         IManageableOracle manageableOracle =
-            factory.create(ISiloOracle(address(oracleMock)), owner, timelock, bytes32(0));
+            factory.create(ISiloOracle(address(oracleMock)), owner, TIMELOCK, bytes32(0));
 
         vm.expectRevert(Initializable.InvalidInitialization.selector);
-        manageableOracle.initialize(ISiloOracle(address(oracleMock)), owner, timelock);
+        manageableOracle.initialize(ISiloOracle(address(oracleMock)), owner, TIMELOCK);
     }
 
     /*
@@ -60,7 +59,7 @@ contract ManageableOracleInitTest is Test {
 
         // Try to call initialize - should revert with InvalidInitialization (because _disableInitializers was called in constructor)
         vm.expectRevert(Initializable.InvalidInitialization.selector);
-        manageableOracle.initialize(ISiloOracle(address(oracleMock)), owner, timelock);
+        manageableOracle.initialize(ISiloOracle(address(oracleMock)), owner, TIMELOCK);
     }
 
     /*
@@ -77,7 +76,7 @@ contract ManageableOracleInitTest is Test {
     */
     function test_ManageableOracle_create_withOracle_getters() public {
         IManageableOracle manageableOracle =
-            factory.create(ISiloOracle(address(oracleMock)), owner, timelock, bytes32(0));
+            factory.create(ISiloOracle(address(oracleMock)), owner, TIMELOCK, bytes32(0));
 
         _assertGettersAfterCreate(manageableOracle);
     }
@@ -88,7 +87,7 @@ contract ManageableOracleInitTest is Test {
     function test_ManageableOracle_create_withFactory_getters() public {
         (address mockFactory, bytes memory initData) = _mockOracleFactoryAndInitData(address(oracleMock));
 
-        IManageableOracle manageableOracle = factory.create(mockFactory, initData, owner, timelock, bytes32(0));
+        IManageableOracle manageableOracle = factory.create(mockFactory, initData, owner, TIMELOCK, bytes32(0));
 
         _assertGettersAfterCreate(manageableOracle);
     }
@@ -105,7 +104,7 @@ contract ManageableOracleInitTest is Test {
         );
 
         vm.expectRevert(TokenHelper.TokenIsNotAContract.selector);
-        manageableOracle.initialize(ISiloOracle(address(oracleMock)), owner, timelock);
+        manageableOracle.initialize(ISiloOracle(address(oracleMock)), owner, TIMELOCK);
     }
 
     /*
@@ -116,12 +115,12 @@ contract ManageableOracleInitTest is Test {
         IManageableOracle manageableOracle = _clonedOracle();
 
         vm.expectRevert(IManageableOracle.ZeroOwner.selector);
-        manageableOracle.initialize(ISiloOracle(address(oracleMock)), address(0), timelock);
+        manageableOracle.initialize(ISiloOracle(address(oracleMock)), address(0), TIMELOCK);
     }
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_ManageableOracle_initialize_revert_InvalidTimelock_tooLow
-        Test that initialize reverts when timelock is too low
+        Test that initialize reverts when TIMELOCK is too low
     */
     function test_ManageableOracle_initialize_revert_InvalidTimelock_tooLow() public {
         IManageableOracle manageableOracle = _clonedOracle();
@@ -134,7 +133,7 @@ contract ManageableOracleInitTest is Test {
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_ManageableOracle_initialize_revert_InvalidTimelock_tooHigh
-        Test that initialize reverts when timelock is too high
+        Test that initialize reverts when TIMELOCK is too high
     */
     function test_ManageableOracle_initialize_revert_InvalidTimelock_tooHigh() public {
         IManageableOracle manageableOracle = _clonedOracle();
@@ -155,7 +154,7 @@ contract ManageableOracleInitTest is Test {
         vm.mockCall(baseToken, abi.encodeWithSelector(IERC20Metadata.decimals.selector), abi.encode(0));
 
         vm.expectRevert(IManageableOracle.BaseTokenDecimalsMustBeGreaterThanZero.selector);
-        manageableOracle.initialize(ISiloOracle(address(oracleMock)), owner, timelock);
+        manageableOracle.initialize(ISiloOracle(address(oracleMock)), owner, TIMELOCK);
     }
 
     /*
@@ -177,7 +176,7 @@ contract ManageableOracleInitTest is Test {
         );
 
         vm.expectRevert(IManageableOracle.OracleQuoteFailed.selector);
-        manageableOracle.initialize(ISiloOracle(oracleMockZeroQuote), owner, timelock);
+        manageableOracle.initialize(ISiloOracle(oracleMockZeroQuote), owner, TIMELOCK);
     }
 
     function _mockOracleFactoryAndInitData(address _oracle)
@@ -197,7 +196,7 @@ contract ManageableOracleInitTest is Test {
         (address pendingOracleValue, uint64 pendingOracleValidAt) = _oracle.pendingOracle();
         assertEq(pendingOracleValue, address(0), "invalid pendingOracle value");
         assertEq(pendingOracleValidAt, 0, "invalid pendingOracle validAt");
-        assertEq(_oracle.timelock(), timelock, "invalid timelock");
+        assertEq(_oracle.timelock(), TIMELOCK, "invalid TIMELOCK");
 
         (uint192 pendingTimelockValue, uint64 pendingTimelockValidAt) = _oracle.pendingTimelock();
         assertEq(pendingTimelockValue, 0, "invalid pendingTimelock value");

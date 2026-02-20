@@ -58,9 +58,9 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
     }
 
     /*
-    AGGREGATOR=1INCH FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_setup
+    AGGREGATOR=1INCH FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_usdt_usdt_liquidation
     */
-    function test_setup() public {
+    function test_usdt_usdt_liquidation() public {
         _dealTokens();
 
         _depositUsdt(depositor);

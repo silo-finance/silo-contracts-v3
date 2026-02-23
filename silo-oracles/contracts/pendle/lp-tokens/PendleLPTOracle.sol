@@ -2,10 +2,14 @@
 pragma solidity 0.8.28;
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {IPendleOracleHelper} from "silo-oracles/contracts/pendle/interfaces/IPendleOracleHelper.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
+import {Aggregator} from "../../_common/Aggregator.sol";
 
-abstract contract PendleLPTOracle is ISiloOracle {
+// solhint-disable ordering
+
+abstract contract PendleLPTOracle is ISiloOracle, Aggregator, IVersioned {
     /// @dev getLpToSyRate unit of measurement.
     uint256 public constant PENDLE_RATE_PRECISION = 10 ** 18;
 
@@ -68,7 +72,13 @@ abstract contract PendleLPTOracle is ISiloOracle {
     function beforeQuote(address) external virtual {}
 
     /// @inheritdoc ISiloOracle
-    function quote(uint256 _baseAmount, address _baseToken) external virtual view returns (uint256 quoteAmount) {
+    function quote(uint256 _baseAmount, address _baseToken)
+        public
+        view
+        virtual
+        override(Aggregator, ISiloOracle)
+        returns (uint256 quoteAmount)
+    {
         require(_baseToken == _getBaseToken(), AssetNotSupported());
 
         quoteAmount = UNDERLYING_ORACLE.quote(_baseAmount, UNDERLYING_TOKEN);
@@ -78,14 +88,25 @@ abstract contract PendleLPTOracle is ISiloOracle {
     }
 
     /// @inheritdoc ISiloOracle
-    function quoteToken() external virtual view returns (address) {
+    function quoteToken() external view virtual returns (address) {
         return QUOTE_TOKEN;
     }
 
-    function _getBaseToken() internal virtual view returns (address baseToken) {
-        baseToken = PENDLE_MARKET;
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure virtual override returns (string memory version) {
+        version = "PendleLPTOracle 4.0.0";
     }
 
-    function _getRateLpToUnderlying() internal virtual view returns (uint256);
-    function _getUnderlyingToken() internal virtual view returns (address);
+    /// @inheritdoc Aggregator
+    function baseToken() public view virtual override returns (address token) {
+        return _getBaseToken();
+    }
+
+    function _getBaseToken() internal view virtual returns (address token) {
+        token = PENDLE_MARKET;
+    }
+
+    function _getRateLpToUnderlying() internal view virtual returns (uint256);
+    function _getUnderlyingToken() internal view virtual returns (address);
 }

@@ -32,6 +32,14 @@ contract UniswapV3OracleTest is UniswapPools {
         PRICE_PROVIDER = factory.create(config, bytes32(0));
     }
 
+    function test_UniswapV3Oracle_VERSION() public view {
+        assertEq(PRICE_PROVIDER.VERSION(), "UniswapV3Oracle 4.0.0", "VERSION");
+    }
+
+    function test_UniswapV3Oracle_baseToken() public view {
+        assertEq(PRICE_PROVIDER.baseToken(), address(tokens["WETH"]), "baseToken");
+    }
+
     /*
         FOUNDRY_PROFILE=oracles forge test -vvv --mt test_UniswapV3Oracle_price_Overflow
     */

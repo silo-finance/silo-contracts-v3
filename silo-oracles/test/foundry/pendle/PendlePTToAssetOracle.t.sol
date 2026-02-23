@@ -48,6 +48,13 @@ contract PendlePTToAssetOracleTest is Forking {
         oracle = PendlePTToAssetOracle(address(oracleDeploy.run()));
     }
 
+    /*
+    FOUNDRY_PROFILE=oracles forge test -vv --mt test_PendlePTToAssetOracle_VERSION
+    */
+    function test_PendlePTToAssetOracle_VERSION() public view {
+        assertEq(oracle.VERSION(), "PendlePTToAssetOracle 4.0.0", "VERSION");
+    }
+
     function test_PendlePTToAssetOracle_factory_pendleOracle() public view {
         assertEq(address(factory.PENDLE_ORACLE()), address(pendleOracle), "pendle oracle is set right");
     }
@@ -163,9 +170,16 @@ contract PendlePTToAssetOracleTest is Forking {
         assertEq(oracle.quoteToken(), oracle.QUOTE_TOKEN());
     }
 
+    /*
+    FOUNDRY_PROFILE=oracles forge test --mt test_PendlePTToAssetOracle_baseToken --ffi -vv
+    */
     function test_PendlePTToAssetOracle_baseToken() public view {
-        assertEq(oracle.baseToken(), oracle.PT_TOKEN());
-        assertEq(oracle.baseToken(), ptToken);
+        address baseTokenAddr = oracle.baseToken();
+        assertEq(baseTokenAddr, oracle.PT_TOKEN());
+        assertEq(baseTokenAddr, ptToken);
+
+        uint256 amount = 10 ** IERC20Metadata(baseTokenAddr).decimals();
+        oracle.quote(amount, baseTokenAddr);
     }
 
     function test_PendlePTToAssetOracle_getPtToken() public view {

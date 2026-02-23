@@ -26,12 +26,14 @@ import {SiloVirtualAsset8DecimalsDeploy} from "./SiloVirtualAsset8DecimalsDeploy
 /*
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_BNB --broadcast --verify
+        --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify
 
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_AVALANCHE \
+        --ffi --rpc-url $RPC_INJECTIVE \
         --verify \
+        --verifier blockscout \
+        --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
         --resume
 */
@@ -65,11 +67,11 @@ contract MainnetDeploy is CommonDeploy {
 
         // oracleForwarderFactoryDeploy.run();
         chainlinkV3OracleFactoryDeploy.run();
-        diaOracleFactoryDeploy.run();
+        // diaOracleFactoryDeploy.run();
 
-        erc4626OracleFactoryDeploy.run();
-        erc4626OracleHardcodeQuoteFactoryDeploy.run();
-        erc4626OracleWithUnderlyingFactoryDeploy.run();
+        // erc4626OracleFactoryDeploy.run();
+        // erc4626OracleHardcodeQuoteFactoryDeploy.run();
+        // erc4626OracleWithUnderlyingFactoryDeploy.run();
 
         manageableOracleFactoryDeploy.run();
 
@@ -82,7 +84,7 @@ contract MainnetDeploy is CommonDeploy {
         // pendleLPTToAssetOracleFactoryDeploy.run();
         // pendleWrapperLPTToAssetOracleFactoryDeploy.run();
         // pendleWrapperLPTToSyOracleFactoryDeploy.run();
-        ptLinearOracleFactoryDeploy.run();
+        // ptLinearOracleFactoryDeploy.run();
 
         // siloVirtualAsset8DecimalsDeploy.run();
 

@@ -84,7 +84,7 @@ contract MainnetDeploy is CommonDeploy {
         // pendleWrapperLPTToSyOracleFactoryDeploy.run();
         ptLinearOracleFactoryDeploy.run();
 
-        siloVirtualAsset8DecimalsDeploy.run();
+        // siloVirtualAsset8DecimalsDeploy.run();
 
         // UniswapV3 oracle deploy scripts are pinned to solc 0.7.6 and must be run separately.
     }

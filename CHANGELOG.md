@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.1.4] - 2026-02-23
+### Fixed
+- redeploy vaults factory for changes made in release 4.0.0
+- deploy vaults for BNB, Base and OKX
+
 ## [4.1.3] - 2026-02-20
 ### Fixed
 - fixes forge linter issues

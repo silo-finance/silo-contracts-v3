@@ -28,7 +28,7 @@ import {WstEthToStEthAdapterMainnetDeploy} from "./WstEthToStEthAdapterMainnetDe
 /*
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_OKX --broadcast --verify
+        --ffi --rpc-url $RPC_OPTIMISM --broadcast --verify
 
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
@@ -70,15 +70,15 @@ contract MainnetDeploy is CommonDeploy {
 
         // oracleForwarderFactoryDeploy.run();
         chainlinkV3OracleFactoryDeploy.run();
-        diaOracleFactoryDeploy.run();
+        // diaOracleFactoryDeploy.run();
 
-        erc4626OracleFactoryDeploy.run();
-        erc4626OracleHardcodeQuoteFactoryDeploy.run();
-        erc4626OracleWithUnderlyingFactoryDeploy.run();
+        // erc4626OracleFactoryDeploy.run();
+        // erc4626OracleHardcodeQuoteFactoryDeploy.run();
+        // erc4626OracleWithUnderlyingFactoryDeploy.run();
 
         manageableOracleFactoryDeploy.run();
 
-        oracleScalerFactoryDeploy.run();
+        // oracleScalerFactoryDeploy.run();
         // pythAggregatorFactoryDeploy.run();
 
         // pendlePTOracleFactoryDeploy.run();

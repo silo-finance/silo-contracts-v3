@@ -28,7 +28,7 @@ import {WstEthToStEthAdapterMainnetDeploy} from "./WstEthToStEthAdapterMainnetDe
 /*
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_OPTIMISM --broadcast --verify
+        --ffi --rpc-url $RPC_SONIC --broadcast --verify
 
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
@@ -47,12 +47,6 @@ contract MainnetDeploy is CommonDeploy {
         PythAggregatorFactoryDeploy pythAggregatorFactoryDeploy = new PythAggregatorFactoryDeploy();
         OracleScalerFactoryDeploy oracleScalerFactoryDeploy = new OracleScalerFactoryDeploy();
 
-        ERC4626OracleFactoryDeploy erc4626OracleFactoryDeploy = new ERC4626OracleFactoryDeploy();
-        ERC4626OracleHardcodeQuoteFactoryDeploy erc4626OracleHardcodeQuoteFactoryDeploy =
-            new ERC4626OracleHardcodeQuoteFactoryDeploy();
-        ERC4626OracleWithUnderlyingFactoryDeploy erc4626OracleWithUnderlyingFactoryDeploy =
-            new ERC4626OracleWithUnderlyingFactoryDeploy();
-
         PendlePTOracleFactoryDeploy pendlePTOracleFactoryDeploy = new PendlePTOracleFactoryDeploy();
         PendlePTToAssetOracleFactoryDeploy pendlePTToAssetOracleFactoryDeploy = new PendlePTToAssetOracleFactoryDeploy();
         // PendleLPTToSyOracleFactoryDeploy pendleLPTToSyOracleFactoryDeploy = new PendleLPTToSyOracleFactoryDeploy();
@@ -68,26 +62,35 @@ contract MainnetDeploy is CommonDeploy {
         SiloVirtualAsset8DecimalsDeploy siloVirtualAsset8DecimalsDeploy = new SiloVirtualAsset8DecimalsDeploy();
         WstEthToStEthAdapterMainnetDeploy wstEthToStEthAdapterMainnetDeploy = new WstEthToStEthAdapterMainnetDeploy();
 
-        // oracleForwarderFactoryDeploy.run();
         chainlinkV3OracleFactoryDeploy.run();
-        // diaOracleFactoryDeploy.run();
+        diaOracleFactoryDeploy.run();
 
-        // erc4626OracleFactoryDeploy.run();
-        // erc4626OracleHardcodeQuoteFactoryDeploy.run();
-        // erc4626OracleWithUnderlyingFactoryDeploy.run();
+        { // too deep
+            ERC4626OracleFactoryDeploy erc4626OracleFactoryDeploy = new ERC4626OracleFactoryDeploy();
+            ERC4626OracleHardcodeQuoteFactoryDeploy erc4626OracleHardcodeQuoteFactoryDeploy =
+                new ERC4626OracleHardcodeQuoteFactoryDeploy();
+            ERC4626OracleWithUnderlyingFactoryDeploy erc4626OracleWithUnderlyingFactoryDeploy =
+                new ERC4626OracleWithUnderlyingFactoryDeploy();
+
+            erc4626OracleFactoryDeploy.run();
+            erc4626OracleHardcodeQuoteFactoryDeploy.run();
+            erc4626OracleWithUnderlyingFactoryDeploy.run();
+        }
 
         manageableOracleFactoryDeploy.run();
 
-        // oracleScalerFactoryDeploy.run();
-        // pythAggregatorFactoryDeploy.run();
+        oracleForwarderFactoryDeploy.run();
+        oracleScalerFactoryDeploy.run();
 
-        // pendlePTOracleFactoryDeploy.run();
-        // pendlePTToAssetOracleFactoryDeploy.run();
+        pendlePTOracleFactoryDeploy.run();
+        pendlePTToAssetOracleFactoryDeploy.run();
         // pendleLPTToSyOracleFactoryDeploy.run();
         // pendleLPTToAssetOracleFactoryDeploy.run();
         // pendleWrapperLPTToAssetOracleFactoryDeploy.run();
         // pendleWrapperLPTToSyOracleFactoryDeploy.run();
-        // ptLinearOracleFactoryDeploy.run();
+        ptLinearOracleFactoryDeploy.run();
+
+        pythAggregatorFactoryDeploy.run();
 
         // siloVirtualAsset8DecimalsDeploy.run();
         // wstEthToStEthAdapterMainnetDeploy.run();

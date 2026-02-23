@@ -23,10 +23,12 @@ import {PTLinearOracleFactoryDeploy} from "./pendle/PTLinearOracleFactoryDeploy.
 
 import {ManageableOracleFactoryDeploy} from "./manageable/ManageableOracleFactoryDeploy.s.sol";
 import {SiloVirtualAsset8DecimalsDeploy} from "./SiloVirtualAsset8DecimalsDeploy.s.sol";
+import {WstEthToStEthAdapterMainnetDeploy} from "./WstEthToStEthAdapterMainnetDeploy.sol";
+
 /*
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify
+        --ffi --rpc-url $RPC_MAINNET --broadcast --verify
 
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
@@ -53,7 +55,7 @@ contract MainnetDeploy is CommonDeploy {
 
         PendlePTOracleFactoryDeploy pendlePTOracleFactoryDeploy = new PendlePTOracleFactoryDeploy();
         PendlePTToAssetOracleFactoryDeploy pendlePTToAssetOracleFactoryDeploy = new PendlePTToAssetOracleFactoryDeploy();
-        PendleLPTToSyOracleFactoryDeploy pendleLPTToSyOracleFactoryDeploy = new PendleLPTToSyOracleFactoryDeploy();
+        // PendleLPTToSyOracleFactoryDeploy pendleLPTToSyOracleFactoryDeploy = new PendleLPTToSyOracleFactoryDeploy();
         PendleLPTToAssetOracleFactoryDeploy pendleLPTToAssetOracleFactoryDeploy =
             new PendleLPTToAssetOracleFactoryDeploy();
         PendleWrapperLPTToAssetOracleFactoryDeploy pendleWrapperLPTToAssetOracleFactoryDeploy =
@@ -64,29 +66,31 @@ contract MainnetDeploy is CommonDeploy {
 
         ManageableOracleFactoryDeploy manageableOracleFactoryDeploy = new ManageableOracleFactoryDeploy();
         SiloVirtualAsset8DecimalsDeploy siloVirtualAsset8DecimalsDeploy = new SiloVirtualAsset8DecimalsDeploy();
+        WstEthToStEthAdapterMainnetDeploy wstEthToStEthAdapterMainnetDeploy = new WstEthToStEthAdapterMainnetDeploy();
 
         // oracleForwarderFactoryDeploy.run();
         chainlinkV3OracleFactoryDeploy.run();
-        // diaOracleFactoryDeploy.run();
+        diaOracleFactoryDeploy.run();
 
-        // erc4626OracleFactoryDeploy.run();
-        // erc4626OracleHardcodeQuoteFactoryDeploy.run();
-        // erc4626OracleWithUnderlyingFactoryDeploy.run();
+        erc4626OracleFactoryDeploy.run();
+        erc4626OracleHardcodeQuoteFactoryDeploy.run();
+        erc4626OracleWithUnderlyingFactoryDeploy.run();
 
         manageableOracleFactoryDeploy.run();
 
         oracleScalerFactoryDeploy.run();
         // pythAggregatorFactoryDeploy.run();
 
-        // pendlePTOracleFactoryDeploy.run();
-        // pendlePTToAssetOracleFactoryDeploy.run();
+        pendlePTOracleFactoryDeploy.run();
+        pendlePTToAssetOracleFactoryDeploy.run();
         // pendleLPTToSyOracleFactoryDeploy.run();
         // pendleLPTToAssetOracleFactoryDeploy.run();
         // pendleWrapperLPTToAssetOracleFactoryDeploy.run();
-        // pendleWrapperLPTToSyOracleFactoryDeploy.run();
-        // ptLinearOracleFactoryDeploy.run();
+        pendleWrapperLPTToSyOracleFactoryDeploy.run();
+        ptLinearOracleFactoryDeploy.run();
 
         // siloVirtualAsset8DecimalsDeploy.run();
+        wstEthToStEthAdapterMainnetDeploy.run();
 
         // UniswapV3 oracle deploy scripts are pinned to solc 0.7.6 and must be run separately.
     }

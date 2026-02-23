@@ -28,7 +28,7 @@ import {WstEthToStEthAdapterMainnetDeploy} from "./WstEthToStEthAdapterMainnetDe
 /*
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_MAINNET --broadcast --verify
+        --ffi --rpc-url $RPC_OKX --broadcast --verify
 
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
@@ -81,16 +81,16 @@ contract MainnetDeploy is CommonDeploy {
         oracleScalerFactoryDeploy.run();
         // pythAggregatorFactoryDeploy.run();
 
-        pendlePTOracleFactoryDeploy.run();
-        pendlePTToAssetOracleFactoryDeploy.run();
+        // pendlePTOracleFactoryDeploy.run();
+        // pendlePTToAssetOracleFactoryDeploy.run();
         // pendleLPTToSyOracleFactoryDeploy.run();
         // pendleLPTToAssetOracleFactoryDeploy.run();
         // pendleWrapperLPTToAssetOracleFactoryDeploy.run();
-        pendleWrapperLPTToSyOracleFactoryDeploy.run();
-        ptLinearOracleFactoryDeploy.run();
+        // pendleWrapperLPTToSyOracleFactoryDeploy.run();
+        // ptLinearOracleFactoryDeploy.run();
 
         // siloVirtualAsset8DecimalsDeploy.run();
-        wstEthToStEthAdapterMainnetDeploy.run();
+        // wstEthToStEthAdapterMainnetDeploy.run();
 
         // UniswapV3 oracle deploy scripts are pinned to solc 0.7.6 and must be run separately.
     }

@@ -57,6 +57,8 @@ contract SiloVaultsVerifier is CommonDeploy {
         if (deployerVaultsFactory != getDeployedAddress(SiloVaultsContracts.SILO_VAULTS_FACTORY)) {
             errorsCounter++;
             _logError("SiloVaultDeployer.SILO_VAULTS_FACTORY is not expected", deployerVaultsFactory);
+        } else {
+            console2.log(SUCCESS_SYMBOL, "SiloVaultDeployer.SILO_VAULTS_FACTORY is expected", deployerVaultsFactory);
         }
 
         address deployerCLFactory = address(siloVaultsDeployer.SILO_INCENTIVES_CONTROLLER_CL_FACTORY());
@@ -65,6 +67,8 @@ contract SiloVaultsVerifier is CommonDeploy {
         if (deployerCLFactory != clFactory) {
             errorsCounter++;
             _logError("SiloVaultDeployer.SILO_INCENTIVES_CONTROLLER_CL_FACTORY is not expected", deployerCLFactory);
+        } else {
+            console2.log(SUCCESS_SYMBOL, "SiloVaultDeployer.SILO_INCENTIVES_CONTROLLER_CL_FACTORY is expected", deployerCLFactory);
         }
 
         address deployerIdleVaultsFactory = address(siloVaultsDeployer.IDLE_VAULTS_FACTORY());
@@ -73,6 +77,8 @@ contract SiloVaultsVerifier is CommonDeploy {
         if (deployerIdleVaultsFactory != idleVaultsFactory) {
             errorsCounter++;
             _logError("SiloVaultDeployer.IDLE_VAULTS_FACTORY is not expected", deployerIdleVaultsFactory);
+        } else {
+            console2.log(SUCCESS_SYMBOL, "SiloVaultDeployer.IDLE_VAULTS_FACTORY is expected", deployerIdleVaultsFactory);
         }
 
         SiloIncentivesControllerCLDeployer clDeployer = SiloIncentivesControllerCLDeployer(
@@ -84,6 +90,8 @@ contract SiloVaultsVerifier is CommonDeploy {
         if (clDeployersFactory != clFactory) {
             errorsCounter++;
             _logError("SiloIncentivesControllerCLDeployer.CL_FACTORY is not expected", clDeployersFactory);
+        } else {
+            console2.log(SUCCESS_SYMBOL, "SiloIncentivesControllerCLDeployer.CL_FACTORY is expected", clDeployersFactory);
         }
     }
 
@@ -95,6 +103,8 @@ contract SiloVaultsVerifier is CommonDeploy {
             if (deployedContract == address(0)) {
                 errorsCounter++;
                 console2.log(FAIL_SYMBOL, "Can't find deployment for", allVaultsContractsNames[i]);
+            } else {
+                console2.log(SUCCESS_SYMBOL, "Deployment for", allVaultsContractsNames[i], "exists");
             }
         }
     }

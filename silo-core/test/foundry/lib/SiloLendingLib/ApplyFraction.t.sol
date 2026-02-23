@@ -6,7 +6,6 @@ import {Test} from "forge-std/Test.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {SiloLendingLib} from "silo-core/contracts/lib/SiloLendingLib.sol";
 import {SiloStorageLib} from "silo-core/contracts/lib/SiloStorageLib.sol";
-import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
 
 /*
    FOUNDRY_PROFILE=core-test forge test -vv --mc ApplyFraction

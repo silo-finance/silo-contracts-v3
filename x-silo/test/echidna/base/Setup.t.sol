@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "forge-std/console2.sol";
+import {console2} from "forge-std/console2.sol";
 
 // Contracts
 import {XSilo} from "x-silo/contracts/XSilo.sol";

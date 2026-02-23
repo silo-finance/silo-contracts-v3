@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.1.3] - 2026-02-20
+### Fixed
+- fixes forge linter issues
+
 ## [4.1.2] - 2026-02-18
 ### Updated
 - update list of Silo implementation addresses

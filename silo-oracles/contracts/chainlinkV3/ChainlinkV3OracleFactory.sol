@@ -1,16 +1,13 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.28;
 
-import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {Clones} from "openzeppelin5/proxy/Clones.sol";
-import {AggregatorV3Interface} from "chainlink/v0.8/interfaces/AggregatorV3Interface.sol";
 
 import {Create2Factory} from "common/utils/Create2Factory.sol";
 import {OracleFactory} from "../_common/OracleFactory.sol";
 import {IChainlinkV3Oracle} from "../interfaces/IChainlinkV3Oracle.sol";
 import {ChainlinkV3Oracle} from "../chainlinkV3/ChainlinkV3Oracle.sol";
 import {ChainlinkV3OracleConfig} from "../chainlinkV3/ChainlinkV3OracleConfig.sol";
-import {OracleNormalization} from "../lib/OracleNormalization.sol";
 
 contract ChainlinkV3OracleFactory is Create2Factory, OracleFactory {
     constructor() OracleFactory(address(new ChainlinkV3Oracle())) {

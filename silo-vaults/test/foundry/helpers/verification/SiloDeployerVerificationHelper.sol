@@ -7,11 +7,9 @@ import {console} from "gitmodules/forge-std/src/console.sol";
 import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
-import {Strings} from "openzeppelin5/utils/Strings.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
 import {SiloVaultsContracts, SiloVaultsDeployments} from "silo-vaults/common/SiloVaultsContracts.sol";
-import {ISiloVaultDeployer} from "silo-vaults/contracts/interfaces/ISiloVaultDeployer.sol";
 import {ISiloVaultBase} from "silo-vaults/contracts/interfaces/ISiloVault.sol";
 import {SiloIncentivesController} from "silo-core/contracts/incentives/SiloIncentivesController.sol";
 

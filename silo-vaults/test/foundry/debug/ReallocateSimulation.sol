@@ -38,7 +38,7 @@ contract ReallocateSimulationTest is Test {
         uint256 vaultAssets = _printVaultBalance(fromSilo, address(vault));
 
         vm.prank(wSWhale); // give wS tokens to multisig
-        wS.transfer(multisig, vaultAssets);
+        require(wS.transfer(multisig, vaultAssets), "transfer failed");
 
 
         console2.log("vault assets", vaultAssets / 1e18);

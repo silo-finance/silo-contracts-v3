@@ -12,12 +12,15 @@ import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfac
 
 import {IntegrationTest} from "../helpers/IntegrationTest.sol";
 import {CAP} from "../helpers/BaseTest.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 
 /*
  FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc VaultsSiloIncentivesTest -vvv
 */
 contract VaultsSiloIncentivesTest is IntegrationTest {
+    using SafeCast for uint256;
+
     MintableToken reward1 = new MintableToken(18);
 
     ISiloIncentivesController vaultIncentivesController;
@@ -74,7 +77,7 @@ contract VaultsSiloIncentivesTest is IntegrationTest {
         vaultIncentivesController.createIncentivesProgram(DistributionTypes.IncentivesProgramCreationInput({
             name: "x",
             rewardToken: address(reward1),
-            emissionPerSecond: uint104(rewardsPerSec),
+            emissionPerSecond: rewardsPerSec.toUint104(),
             distributionEnd: uint40(block.timestamp + 10)
         }));
 

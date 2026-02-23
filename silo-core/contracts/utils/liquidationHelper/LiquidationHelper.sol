@@ -6,11 +6,9 @@ import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 import {IERC3156FlashBorrower} from "../../interfaces/IERC3156FlashBorrower.sol";
-import {IPartialLiquidation} from "../../interfaces/IPartialLiquidation.sol";
 import {ILiquidationHelper} from "../../interfaces/ILiquidationHelper.sol";
 
 import {ISilo} from "../../interfaces/ISilo.sol";
-import {ISiloConfig} from "../../interfaces/ISiloConfig.sol";
 import {IWrappedNativeToken} from "../../interfaces/IWrappedNativeToken.sol";
 
 import {DexSwap} from "./DexSwap.sol";

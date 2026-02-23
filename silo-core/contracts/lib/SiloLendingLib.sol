@@ -157,6 +157,7 @@ library SiloLendingLib {
 
         // we operating on chunks (fees) of real tokens, so overflow should not happen
         // fee is simply too small to overflow on cast to uint192, even if, we will get lower fee
+        // forge-lint: disable-next-line(unsafe-typecast)
         unchecked { $.daoAndDeployerRevenue += uint192(totalFees); }
     }
 

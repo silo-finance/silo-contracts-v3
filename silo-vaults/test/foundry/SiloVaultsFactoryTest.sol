@@ -9,9 +9,7 @@ import {Create2Factory} from "common/utils/Create2Factory.sol";
 
 import {IIncentivesClaimingLogic} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogic.sol";
 import {IIncentivesClaimingLogicFactory} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogicFactory.sol";
-import {SiloVault} from "../../contracts/SiloVault.sol";
 import {SiloVaultsFactory} from "../../contracts/SiloVaultsFactory.sol";
-import {VaultIncentivesModule} from "../../contracts/incentives/VaultIncentivesModule.sol";
 import {ISiloVault} from "../../contracts/interfaces/ISiloVault.sol";
 import {EventsLib} from "../../contracts/libraries/EventsLib.sol";
 import {ConstantsLib} from "../../contracts/libraries/ConstantsLib.sol";

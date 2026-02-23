@@ -26,17 +26,17 @@ contract MaxLiquidationDustWithChunksTest is MaxLiquidationDustTest {
         {
             // too deep
             bool sTokenRequired;
-            (collateralToLiquidate, maxDebtToCover, sTokenRequired) = partialLiquidation.maxLiquidation(borrower);
+            (collateralToLiquidate, maxDebtToCover, sTokenRequired) = partialLiquidation.maxLiquidation(BORROWER);
             assertTrue(!sTokenRequired, "sTokenRequired not required");
         }
 
         emit log_named_decimal_uint("[DustWithChunks] collateralToLiquidate", collateralToLiquidate, 18);
         emit log_named_decimal_uint("[DustWithChunks] maxDebtToCover", maxDebtToCover, 18);
-        emit log_named_decimal_uint("[DustWithChunks] ltv before", silo0.getLtv(borrower), 16);
+        emit log_named_decimal_uint("[DustWithChunks] ltv before", silo0.getLtv(BORROWER), 16);
 
         for (uint256 i; i < 5; i++) {
             emit log_named_uint("[DustWithChunks] case ------------------------", i);
-            bool isSolvent = silo0.isSolvent(borrower);
+            bool isSolvent = silo0.isSolvent(BORROWER);
 
             if (isSolvent) revert("it should be NOT possible to liquidate with chunk, so why user solvent?");
 
@@ -54,7 +54,7 @@ contract MaxLiquidationDustWithChunksTest is MaxLiquidationDustTest {
         vm.expectRevert(IPartialLiquidation.FullLiquidationRequired.selector);
 
         partialLiquidation.liquidationCall(
-            address(token0), address(token1), borrower, _maxDebtToCover, _receiveSToken
+            address(token0), address(token1), BORROWER, _maxDebtToCover, _receiveSToken
         );
     }
 

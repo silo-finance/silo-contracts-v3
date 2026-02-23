@@ -2,7 +2,6 @@
 
 pragma solidity 0.8.28;
 
-import {Create2} from "openzeppelin5/utils/Create2.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 
 import {IIncentivesClaimingLogic} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogic.sol";
@@ -91,6 +90,6 @@ contract SiloVaultsFactory is Create2Factory, ISiloVaultsFactory, IVersioned {
 
     /// @inheritdoc IVersioned
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "SiloVaultsFactory 4.0.0";
+        return "SiloVaultsFactory 4.1.3";
     }
 }

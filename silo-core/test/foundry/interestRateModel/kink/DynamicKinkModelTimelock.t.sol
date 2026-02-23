@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
-import {console2} from "forge-std/console2.sol";
 
 import {
     DynamicKinkModel, IDynamicKinkModel

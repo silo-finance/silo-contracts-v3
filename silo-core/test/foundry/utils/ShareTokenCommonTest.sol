@@ -6,14 +6,11 @@ import {Vm} from "forge-std/Vm.sol";
 import {MessageHashUtils} from "openzeppelin5/utils/cryptography/MessageHashUtils.sol";
 import {ERC20PermitUpgradeable} from "openzeppelin5-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 
-import {IERC20R} from "silo-core/contracts/interfaces/IERC20R.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {SiloLittleHelper} from "silo-core/test/foundry/_common/SiloLittleHelper.sol";
-import {SiloMathLib} from "silo-core/contracts/lib/SiloERC4626Lib.sol";
-import {Hook} from "silo-core/contracts/lib/Hook.sol";
 
 // solhint-disable ordering
 
@@ -182,11 +179,13 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
     }
 
     function _domainSeparator(IShareToken _shareToken) internal view {
+        /// forge-lint: disable-start(asm-keccak256)
         bytes32 expectedDomainSeparator = keccak256(
             abi.encode(
                 _TYPE_HASH, keccak256(bytes(_NAME)), keccak256(bytes(_VERSION)), block.chainid, address(_shareToken)
             )
         );
+        /// forge-lint: disable-end(asm-keccak256)
 
         bytes32 domainSeparator = ERC20PermitUpgradeable(address(_shareToken)).DOMAIN_SEPARATOR();
 
@@ -467,6 +466,7 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
         uint256 _deadline,
         address _shareToken
     ) internal view returns (uint8 v, bytes32 r, bytes32 s) {
+        // forge-lint: disable-next-line(asm-keccak256)
         bytes32 structHash = keccak256(abi.encode(_PERMIT_TYPEHASH, _signer, _spender, _value, _nonce, _deadline));
 
         bytes32 domainSeparator = ERC20PermitUpgradeable(_shareToken).DOMAIN_SEPARATOR();

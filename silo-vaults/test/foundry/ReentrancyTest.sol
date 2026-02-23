@@ -8,7 +8,6 @@ import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 
 import {IIncentivesClaimingLogic} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogic.sol";
 import {IIncentivesClaimingLogicFactory} from "silo-vaults/contracts/interfaces/IIncentivesClaimingLogicFactory.sol";
-import {SiloVault} from "../../contracts/SiloVault.sol";
 import {ISiloVault, MarketAllocation} from "../../contracts/interfaces/ISiloVault.sol";
 import {ERC1820Registry} from "../../contracts/mocks/ERC1820Registry.sol";
 import {ERC777Mock, IERC1820Registry} from "../../contracts/mocks/ERC777Mock.sol";

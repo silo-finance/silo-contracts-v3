@@ -7,11 +7,14 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {SiloLendingLib} from "silo-core/contracts/lib/SiloLendingLib.sol";
 import {SiloStorageLib} from "silo-core/contracts/lib/SiloStorageLib.sol";
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 /*
    FOUNDRY_PROFILE=core_test forge test -vv --mc ApplyFraction2
 */
 contract ApplyFraction2 is Test {
+    using SafeCast for uint256;
+
     function setUp() public {
         ISilo.SiloStorage storage $ = SiloStorageLib.getSiloStorage();
 
@@ -85,7 +88,7 @@ contract ApplyFraction2 is Test {
         // we operating on chunks (fees) of real tokens, so overflow should not happen
         // fee is simply too small to overflow on cast to uint192, even if, we will get lower fee
         unchecked {
-            $.daoAndDeployerRevenue += uint192(totalFees);
+            $.daoAndDeployerRevenue += totalFees.toUint192();
         }
     }
 }

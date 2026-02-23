@@ -3,18 +3,17 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 
-import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 
 import {ERC20Mock} from "openzeppelin5/mocks/token/ERC20Mock.sol";
-import {IERC20Errors} from "openzeppelin5/interfaces/draft-IERC6093.sol";
 
 import {XSiloAndStreamDeploy} from "x-silo/deploy/XSiloAndStreamDeploy.s.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
 
-import {XSilo, XRedeemPolicy, Stream, ERC20} from "../../contracts/XSilo.sol";
+import {XSilo} from "../../contracts/XSilo.sol";
+import {Stream} from "../../contracts/modules/Stream.sol";
 
 /*
 FOUNDRY_PROFILE=x_silo forge test -vv --ffi --mc XSiloTest
@@ -57,6 +56,7 @@ contract XSiloTest is Test {
         _convert(address(this), 10);
 
         vm.expectRevert(XSilo.SelfTransferNotAllowed.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         xSilo.transfer(address(this), 1);
     }
 
@@ -69,6 +69,7 @@ contract XSiloTest is Test {
         _convert(address(this), 10);
 
         vm.expectRevert(XSilo.ZeroTransfer.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         xSilo.transfer(address(2), 0);
     }
 
@@ -92,7 +93,7 @@ contract XSiloTest is Test {
         assertEq(xSilo.balanceOf(spender), 0, "spender balance should be 0");
 
         vm.prank(spender);
-        xSilo.transferFrom(user, spender, xSiloAmount);
+        require(xSilo.transferFrom(user, spender, xSiloAmount), "transfer failed");
 
         assertEq(xSilo.balanceOf(user), 0, "user balance should be 0");
         assertEq(xSilo.balanceOf(spender), xSiloAmount, "spender balance should be xSiloAmount");

@@ -3,16 +3,12 @@ pragma solidity ^0.8.28;
 
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 import {Ownable} from "openzeppelin5/access/Ownable2Step.sol";
-import {Strings} from "openzeppelin5/utils/Strings.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 
-import {DistributionTypes} from "silo-core/contracts/incentives/lib/DistributionTypes.sol";
 import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
-import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
-import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 
 import {SiloIncentivesControllerCL} from "../../../contracts/incentives/claiming-logics/SiloIncentivesControllerCL.sol";

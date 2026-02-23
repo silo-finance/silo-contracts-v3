@@ -5,7 +5,6 @@ import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 
-import {Rounding} from "silo-core/contracts/lib/Rounding.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
@@ -87,7 +86,7 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
         emit log_named_decimal_uint("ratio 1.0 assets : %s shares", silo0.convertToShares(10 ** decimals0), decimals0);
 
         emit log_named_decimal_uint(
-            "collateral value", siloLens.calculateCollateralValue(siloConfig, borrower), decimals0
+            "collateral value", SILO_LENS.calculateCollateralValue(siloConfig, borrower), decimals0
         );
 
         uint256 maxWithdraw = silo0.maxWithdraw(borrower);
@@ -172,15 +171,16 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
 
         (address protectedShareToken,, address debtShareToken) = silo0.config().getShareTokens(address(silo0));
 
-        emit log_named_decimal_uint("ltv", siloLens.getLtv(silo0, borrower), 16);
+        emit log_named_decimal_uint("ltv", SILO_LENS.getLtv(silo0, borrower), 16);
         console2.log("shares", IShareToken(protectedShareToken).balanceOf(borrower));
 
         vm.prank(borrower);
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         IShareToken(protectedShareToken).transfer(address(1), 1);
         vm.stopPrank();
 
-        emit log_named_decimal_uint("ltv after transfer", siloLens.getLtv(silo0, borrower), 16);
+        emit log_named_decimal_uint("ltv after transfer", SILO_LENS.getLtv(silo0, borrower), 16);
         console2.log("shares", IShareToken(protectedShareToken).balanceOf(borrower));
 
         _mockQuote(minAmount, 8e9 * minAmount); // price DROP
@@ -188,7 +188,7 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
         assertFalse(silo1.isSolvent(borrower), "borrower should be ready to liquidate");
 
         {
-            emit log_named_decimal_uint("ltv", siloLens.getLtv(silo0, borrower), 16);
+            emit log_named_decimal_uint("ltv", SILO_LENS.getLtv(silo0, borrower), 16);
 
             vm.expectRevert(abi.encodeWithSelector(IPartialLiquidation.NoRepayAssets.selector));
             partialLiquidation.liquidationCall(
@@ -199,7 +199,7 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
             _mockQuote(minAmount, 7.7e9 * minAmount); // price DROP
             _mockQuote(maxWithdraw, 7.7e9 * maxWithdraw); // price DROP
 
-            emit log_named_decimal_uint("ltv", siloLens.getLtv(silo0, borrower), 16);
+            emit log_named_decimal_uint("ltv", SILO_LENS.getLtv(silo0, borrower), 16);
         }
 
         partialLiquidation.liquidationCall(

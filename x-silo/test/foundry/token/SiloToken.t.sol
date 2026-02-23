@@ -4,7 +4,6 @@ pragma solidity 0.8.28;
 import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 import {SiloToken} from "x-silo/contracts/token/SiloToken.sol";
 import {ERC20Burnable} from "openzeppelin5/token/ERC20/extensions/ERC20Burnable.sol";
-import {IERC20} from "gitmodules/openzeppelin-contracts-5/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "openzeppelin5/access/Ownable2Step.sol";
 import {ERC20Capped} from "openzeppelin5/token/ERC20/extensions/ERC20Capped.sol";
 import {Pausable} from "gitmodules/openzeppelin-contracts-5/contracts/utils/Pausable.sol";
@@ -137,7 +136,7 @@ contract SiloTokenTest is IntegrationTest {
         address receiver = address(123);
         assertEq(token.balanceOf(receiver), 0);
         vm.prank(SILO_V1_WHALE);
-        token.transfer(receiver, mintAmount);
+        require(token.transfer(receiver, mintAmount), "transfer failed");
         assertEq(token.balanceOf(receiver), mintAmount);
     }
 

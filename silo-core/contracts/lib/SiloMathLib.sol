@@ -362,6 +362,8 @@ library SiloMathLib {
             // integral is amount above 1e18 after adding _currentFraction and remainder
             integral = (_currentFraction + remainder) / _PRECISION_DECIMALS;
             // fraction is what we get below 1e18
+            // Safe: modulo by `_PRECISION_DECIMALS` guarantees value <= 1e18 - 1, far below uint64 max.
+            // forge-lint: disable-next-line(unsafe-typecast)
             fraction = uint64((_currentFraction + remainder) % _PRECISION_DECIMALS);
         }
     }

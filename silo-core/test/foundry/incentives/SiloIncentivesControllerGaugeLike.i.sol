@@ -3,7 +3,6 @@ pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 
-import {ERC20Mock} from "openzeppelin5/mocks/token/ERC20Mock.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";

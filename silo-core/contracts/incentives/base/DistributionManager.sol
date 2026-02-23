@@ -5,7 +5,6 @@ pragma solidity 0.8.28;
 // solhint-disable ordering
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
-import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
 
@@ -14,7 +13,6 @@ import {EnumerableSet} from "openzeppelin5/utils/structs/EnumerableSet.sol";
 
 import {ISiloIncentivesController} from "../interfaces/ISiloIncentivesController.sol";
 import {IDistributionManager} from "../interfaces/IDistributionManager.sol";
-import {DistributionTypes} from "../lib/DistributionTypes.sol";
 import {TokenHelper} from "../../lib/TokenHelper.sol";
 import {AddressUtilsLib} from "../../lib/AddressUtilsLib.sol";
 /**
@@ -101,13 +99,13 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
     {
         bytes32 incentivesProgramId = getProgramId(_incentivesProgram);
 
-        details = IncentiveProgramDetails(
-            incentivesPrograms[incentivesProgramId].index,
-            incentivesPrograms[incentivesProgramId].rewardToken,
-            incentivesPrograms[incentivesProgramId].emissionPerSecond,
-            incentivesPrograms[incentivesProgramId].lastUpdateTimestamp,
-            incentivesPrograms[incentivesProgramId].distributionEnd
-        );
+        details = IncentiveProgramDetails({
+            index: incentivesPrograms[incentivesProgramId].index,
+            rewardToken: incentivesPrograms[incentivesProgramId].rewardToken,
+            emissionPerSecond: incentivesPrograms[incentivesProgramId].emissionPerSecond,
+            lastUpdateTimestamp: incentivesPrograms[incentivesProgramId].lastUpdateTimestamp,
+            distributionEnd: incentivesPrograms[incentivesProgramId].distributionEnd
+        });
     }
 
     /// @inheritdoc IDistributionManager

@@ -13,12 +13,12 @@ import {OraclesDeployments} from "../OraclesDeployments.sol";
 /*
 ETHERSCAN_API_KEY=$ARBISCAN_API_KEY \
 FOUNDRY_PROFILE=oracles \
-BASE=wS \
-QUOTE=USDC.e \
-ADMIN=0x0000000000000000000000000000000000000000 \
-INITIAL_PRICE=0.09e18 \
+BASE=WETH \
+QUOTE=USDC \
+ADMIN=0xa90914762709441d557De208bAcE1edB1A3968b2 \
+INITIAL_PRICE=1860e18 \
     forge script silo-oracles/deploy/oracleForQA/OracleForQADeploy.s.sol \
-    --ffi --rpc-url $RPC_SONIC --broadcast --verify
+    --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify
  */
 contract OracleForQADeploy is CommonDeploy {
     function run() public returns (OracleForQA oracle) {

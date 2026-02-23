@@ -36,7 +36,10 @@ jobs:
                     RPC_OPTIMISM,
                     RPC_AVALANCHE,
                     RPC_MAINNET,
-                    RPC_INJECTIVE
+                    RPC_INJECTIVE,
+                    RPC_BNB,
+                    RPC_BASE,
+                    RPC_OKX
                ]
 
         runs-on: ubuntu-latest

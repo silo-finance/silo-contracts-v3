@@ -25,7 +25,7 @@ contract PTLinearOracleFactoryDeploy is CommonDeploy {
 
         address pendleLinearOracleFactory =
             AddrLib.getAddress(ChainsLib.chainAlias(), AddrKey.PENDLE_SPARK_LINEAR_DISCOUNT_FACTORY);
-        console2.log("pendleLinearOracleFactory", pendleLinearOracleFactory);
+        console2.log("PENDLE_SPARK_LINEAR_DISCOUNT_FACTORY", pendleLinearOracleFactory);
         require(pendleLinearOracleFactory != address(0), "pendleLinearOracleFactory is not set");
 
         vm.startBroadcast(deployerPrivateKey);

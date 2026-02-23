@@ -26,7 +26,7 @@ import {SiloVirtualAsset8DecimalsDeploy} from "./SiloVirtualAsset8DecimalsDeploy
 /*
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify
+        --ffi --rpc-url $RPC_AVALANCHE --broadcast --verify
 
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \

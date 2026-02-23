@@ -21,10 +21,12 @@ import {PendleWrapperLPTToAssetOracleFactoryDeploy} from "./pendle/PendleWrapper
 import {PendleWrapperLPTToSyOracleFactoryDeploy} from "./pendle/PendleWrapperLPTToSyOracleFactoryDeploy.s.sol";
 import {PTLinearOracleFactoryDeploy} from "./pendle/PTLinearOracleFactoryDeploy.s.sol";
 
+import {ManageableOracleFactoryDeploy} from "./manageable/ManageableOracleFactoryDeploy.s.sol";
+import {SiloVirtualAsset8DecimalsDeploy} from "./SiloVirtualAsset8DecimalsDeploy.s.sol";
 /*
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_SONIC --broadcast --verify
+        --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify
 
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/MainnetDeploy.s.sol \
@@ -58,15 +60,21 @@ contract MainnetDeploy is CommonDeploy {
             new PendleWrapperLPTToSyOracleFactoryDeploy();
         PTLinearOracleFactoryDeploy ptLinearOracleFactoryDeploy = new PTLinearOracleFactoryDeploy();
 
+        ManageableOracleFactoryDeploy manageableOracleFactoryDeploy = new ManageableOracleFactoryDeploy();
+        SiloVirtualAsset8DecimalsDeploy siloVirtualAsset8DecimalsDeploy = new SiloVirtualAsset8DecimalsDeploy();
+
         // oracleForwarderFactoryDeploy.run();
         chainlinkV3OracleFactoryDeploy.run();
         diaOracleFactoryDeploy.run();
-        // pythAggregatorFactoryDeploy.run();
-        oracleScalerFactoryDeploy.run();
 
         erc4626OracleFactoryDeploy.run();
         erc4626OracleHardcodeQuoteFactoryDeploy.run();
         erc4626OracleWithUnderlyingFactoryDeploy.run();
+
+        manageableOracleFactoryDeploy.run();
+
+        oracleScalerFactoryDeploy.run();
+        // pythAggregatorFactoryDeploy.run();
 
         // pendlePTOracleFactoryDeploy.run();
         // pendlePTToAssetOracleFactoryDeploy.run();
@@ -75,6 +83,8 @@ contract MainnetDeploy is CommonDeploy {
         // pendleWrapperLPTToAssetOracleFactoryDeploy.run();
         // pendleWrapperLPTToSyOracleFactoryDeploy.run();
         ptLinearOracleFactoryDeploy.run();
+
+        siloVirtualAsset8DecimalsDeploy.run();
 
         // UniswapV3 oracle deploy scripts are pinned to solc 0.7.6 and must be run separately.
     }

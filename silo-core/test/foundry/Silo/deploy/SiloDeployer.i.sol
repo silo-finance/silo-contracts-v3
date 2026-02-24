@@ -14,7 +14,7 @@ import {IDynamicKinkModelFactory} from "silo-core/contracts/interfaces/IDynamicK
 import {SiloDeployer} from "silo-core/contracts/SiloDeployer.sol";
 
 /*
-FOUNDRY_PROFILE=core_test RPC_URL=$RPC_BASE forge test -vv --ffi --mc SiloDeployerIntegrationTest
+FOUNDRY_PROFILE=core_test RPC_URL=$RPC_SONIC forge test -vv --ffi --mc SiloDeployerIntegrationTest
 
 It check if SiloDeployer is using newest/current contract addresses
 */
@@ -72,6 +72,8 @@ contract SiloDeployerIntegrationTest is Test {
 
         if (chainId == ChainsLib.AVALANCHE_CHAIN_ID) {
             return SiloDeployer(0xcf8d34CffF69F8d4ab388395E24EF9c46f9a8992);
+        } else if (chainId == ChainsLib.INK_CHAIN_ID) {
+            return SiloDeployer(address(0));
         } else if (chainId == ChainsLib.SONIC_CHAIN_ID) {
             return SiloDeployer(0x931e59f06b83dD3d9A622FD4537989B6C63B9bde);
         } else if (chainId == ChainsLib.MAINNET_CHAIN_ID) {
@@ -83,7 +85,7 @@ contract SiloDeployerIntegrationTest is Test {
         } else if (chainId == ChainsLib.INJECTIVE_CHAIN_ID) {
             return SiloDeployer(0x931e59f06b83dD3d9A622FD4537989B6C63B9bde);
         } else if (chainId == ChainsLib.BASE_CHAIN_ID) {
-            return SiloDeployer(0x315a8319e94eFF8aa5FB11923c32E73Fca00E479);
+            return SiloDeployer(address(0));
         } else if (chainId == ChainsLib.BNB_CHAIN_ID) {
             return SiloDeployer(0xB2886994d8E7d84759b6e08D465094E71BfBad67);
         } else if (chainId == ChainsLib.OKX_CHAIN_ID) {
@@ -142,7 +144,6 @@ contract SiloDeployerIntegrationTest is Test {
     }
 
     function _getDeployedAddress(string memory _contractName) internal returns (address deployedAddress) {
-        console2.log("looking for ", _contractName, " on ", ChainsLib.chainAlias());
         deployedAddress = SiloCoreDeployments.get(_contractName, ChainsLib.chainAlias());
     }
 

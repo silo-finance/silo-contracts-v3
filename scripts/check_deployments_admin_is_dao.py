@@ -9,7 +9,7 @@ getRoleMember(DEFAULT_ADMIN_ROLE, 0). DEFAULT_ADMIN_ROLE = bytes32(0).
 If the contract has no such methods (revert) -> SKIP. If admin != DAO -> FAIL.
 
 Output and behaviour mirror check_deployments_owner_is_dao.py: one line per
-contract ([OK] / [SKIP] / [FAIL]), no summary, exit 1 if any FAIL.
+contract ([OK] / [skip] / [FAIL]), no summary, exit 1 if any FAIL.
 
 Usage:
 
@@ -190,6 +190,8 @@ def main() -> int:
         print(f"No deployments found for chain={chain}, components={components}", file=sys.stderr)
         return 0
 
+    deployments.sort(key=lambda x: (x[0], x[1]))  # alphabetical: component, then contract name
+
     has_failure = False
 
     for component, contract_name, address in deployments:
@@ -198,12 +200,12 @@ def main() -> int:
             continue
 
         if contract_name in CONTRACTS_EXCLUDED:
-            print(f"[SKIP] {component} {contract_name} excluded from check")
+            print(f"[skip] {component} {contract_name} excluded from check")
             continue
 
         admin = eth_call_admin(rpc_url, address)
         if admin is None:
-            print(f"[SKIP] {component} {contract_name} no DEFAULT_ADMIN_ROLE / getRoleMember")
+            print(f"[skip] {component} {contract_name} no DEFAULT_ADMIN_ROLE / getRoleMember")
             continue
 
         if admin == dao_address:

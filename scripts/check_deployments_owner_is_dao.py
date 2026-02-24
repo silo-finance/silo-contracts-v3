@@ -207,6 +207,8 @@ def main() -> int:
         print(f"No deployments found for chain={chain}, components={components}", file=sys.stderr)
         return 0
 
+    deployments.sort(key=lambda x: (x[0], x[1]))  # alphabetical: component, then contract name
+
     has_failure = False
 
     for component, contract_name, address in deployments:
@@ -215,12 +217,12 @@ def main() -> int:
             continue
 
         if contract_name in CONTRACTS_EXCLUDED:
-            print(f"[SKIP] {component} {contract_name} excluded from check")
+            print(f"[skip] {component} {contract_name} excluded from check")
             continue
 
         owner = eth_call_owner(rpc_url, address)
         if owner is None:
-            print(f"[SKIP] {component} {contract_name} no owner()")
+            print(f"[skip] {component} {contract_name} no owner()")
             continue
 
         if owner == dao_address:

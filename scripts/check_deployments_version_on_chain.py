@@ -2,11 +2,11 @@
 """
 CI script: for each deployed contract (silo-core deployments) that has a VERSION
 in the repo (function VERSION() or constant VERSION), check that the contract
-on-chain returns the same version via SiloLens.getVersion(address).
+on-chain returns the same version via SiloLens.getVersions(address[]).
 
 - [ ok ]: component contract_name version
 - [skip]: component contract_name (no VERSION in repo)
-- [FAIL]: component contract_name version_expected version_on_chain
+- [FAIL]: component expected version_expected on_chain version_on_chain
 
 Output is sorted alphabetically by contract name. Uses same chain/RPC/env as
 check_deployments_owner_is_dao.py.
@@ -25,8 +25,8 @@ from pathlib import Path
 
 # getVersions(address[]) selector
 GET_VERSIONS_SELECTOR = "0xf58e82b5"
-# getVersion(address) selector (fallback when getVersions fails or decode fails)
-GET_VERSION_SELECTOR = "0xc3f82bc3"
+# DynamicKinkModelFactory.IRM() getter (public immutable)
+IRM_SELECTOR = "0x1e75db16"
 CONTRACTS_ROOT = Path("silo-core/contracts")
 DEPLOYMENTS_ROOT = Path("silo-core/deployments")
 
@@ -61,6 +61,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--chain", required=True, help="Chain name (e.g. arbitrum_one, mainnet).")
     p.add_argument("--rpc-url", default=None, help="RPC URL. If not set, uses env from CHAIN_TO_RPC_ENV.")
     p.add_argument("--dry-run", action="store_true", help="Only list contracts and expected versions, no RPC.")
+    p.add_argument("--verbose", action="store_true", help="Print raw RPC response on getVersions (for debugging read failed).")
     return p.parse_args()
 
 
@@ -127,6 +128,12 @@ def get_silo_lens_address(repo_root: Path, chain: str) -> str | None:
 
 
 def _eth_call(rpc_url: str, to: str, data: str) -> str | None:
+    result, _ = _eth_call_with_error(rpc_url, to, data)
+    return result
+
+
+def _eth_call_with_error(rpc_url: str, to: str, data: str) -> tuple[str | None, str | None]:
+    """Like _eth_call but returns (result, error_message). error_message is set when RPC returns error."""
     to = to if to.startswith("0x") else "0x" + to
     payload = {
         "jsonrpc": "2.0",
@@ -146,11 +153,13 @@ def _eth_call(rpc_url: str, to: str, data: str) -> str | None:
         )
         with urlopen(req, timeout=30) as resp:
             body = json.loads(resp.read().decode("utf-8"))
-    except (HTTPError, URLError, OSError, json.JSONDecodeError, KeyError):
-        return None
-    if body.get("error"):
-        return None
-    return (body.get("result") or "").strip() or None
+    except (HTTPError, URLError, OSError, json.JSONDecodeError, KeyError) as e:
+        return None, str(e)
+    err = body.get("error")
+    if err:
+        msg = err.get("message", err) if isinstance(err, dict) else str(err)
+        return None, msg
+    return (body.get("result") or "").strip() or None, None
 
 
 def _abi_decode_string_at(hex_data: str, byte_offset: int) -> str | None:
@@ -192,8 +201,11 @@ def _abi_decode_string_array(hex_result: str) -> list[str | None]:
         if elem_offset_hex + 64 > len(hex_result):
             out.append(None)
             continue
+        # For dynamic arrays of dynamic types, element offsets are relative to
+        # the start of element-head section (right after array length).
         elem_offset = int(hex_result[elem_offset_hex : elem_offset_hex + 64], 16)
-        s = _abi_decode_string_at(hex_result, elem_offset)
+        elem_absolute_offset = array_offset + 32 + elem_offset
+        s = _abi_decode_string_at(hex_result, elem_absolute_offset)
         out.append(s)
     return out
 
@@ -201,8 +213,8 @@ def _abi_decode_string_array(hex_result: str) -> list[str | None]:
 def _encode_address_array(addresses: list[str]) -> str:
     """ABI-encode address[] for getVersions(address[]) calldata (after selector)."""
     n = len(addresses)
-    # offset to array = 32 (one word)
-    offset_hex = "0" * 63 + "20"
+    # offset to array = 32 (one word) = 64 hex chars
+    offset_hex = "0" * 62 + "20"
     length_hex = hex(n)[2:].zfill(64)
     parts = [offset_hex, length_hex]
     for a in addresses:
@@ -211,47 +223,70 @@ def _encode_address_array(addresses: list[str]) -> str:
     return "".join(parts)
 
 
-def _abi_decode_single_string(hex_result: str) -> str | None:
-    """Decode ABI-encoded single string: word0 = offset to data, at offset: length (32b) then utf8."""
-    if not hex_result or len(hex_result) < 2 + 128:
-        return None
-    h = hex_result[2:] if hex_result.startswith("0x") else hex_result
+def _debug_decode_layout(hex_result: str) -> None:
+    """Print ABI layout hint for first words (offset, length, first elem offset) to stderr."""
+    h = hex_result.strip().removeprefix("0x")
+    if len(h) < 128:
+        print("[verbose] decode layout: result too short for ABI", file=sys.stderr)
+        return
     try:
-        offset_bytes = int(h[0:64], 16)
-        offset_hex = offset_bytes * 2
-        if len(h) < offset_hex + 64:
-            return None
-        length = int(h[offset_hex : offset_hex + 64], 16)
-        if length == 0:
-            return ""
-        start = offset_hex + 64
-        if len(h) < start + length * 2:
-            return None
-        return bytes.fromhex(h[start : start + length * 2]).decode("utf-8")
-    except (ValueError, UnicodeDecodeError):
-        return None
+        array_offset = int(h[0:64], 16)
+        base = array_offset * 2
+        length = int(h[base : base + 64], 16) if base + 64 <= len(h) else -1
+        print(f"[verbose] decode layout: array_offset={array_offset} (0x{array_offset:x}) length={length}", file=sys.stderr)
+        if length > 0 and base + 64 + 64 <= len(h):
+            first_elem_offset = int(h[base + 64 : base + 128], 16)
+            print(f"[verbose] decode layout: first elem offset={first_elem_offset} (0x{first_elem_offset:x})", file=sys.stderr)
+    except ValueError as e:
+        print(f"[verbose] decode layout parse error: {e}", file=sys.stderr)
 
 
-def get_version_on_chain(rpc_url: str, lens_address: str, contract_address: str) -> str | None:
-    """Call SiloLens.getVersion(contract_address), return decoded string or None (fallback)."""
-    addr_hex = contract_address.lower().replace("0x", "").zfill(64)
-    data = GET_VERSION_SELECTOR + addr_hex
-    result = _eth_call(rpc_url, lens_address, data)
-    return _abi_decode_single_string(result) if result else None
-
-
-def get_versions_on_chain(rpc_url: str, lens_address: str, addresses: list[str]) -> list[str | None]:
+def get_versions_on_chain(
+    rpc_url: str, lens_address: str, addresses: list[str], *, verbose: bool = False
+) -> list[str | None]:
     """Call SiloLens.getVersions(addresses), return list of decoded strings (same order as addresses)."""
     if not addresses:
         return []
     data = GET_VERSIONS_SELECTOR + _encode_address_array(addresses)
-    result = _eth_call(rpc_url, lens_address, data)
+    if verbose:
+        print(f"[verbose] getVersions: lens={lens_address} addresses={len(addresses)}", file=sys.stderr)
+        print(f"[verbose] first 2 addrs: {addresses[:2]}", file=sys.stderr)
+        result, err = _eth_call_with_error(rpc_url, lens_address, data)
+        if err:
+            print(f"[verbose] RPC error: {err}", file=sys.stderr)
+        print(f"[verbose] result: len={len(result) if result else 0}", file=sys.stderr)
+        if result:
+            cap = 1500
+            print(f"[verbose] raw hex (first {min(cap, len(result))} chars): {result[:cap]}", file=sys.stderr)
+    else:
+        result = _eth_call(rpc_url, lens_address, data)
     if result is None:
+        if not verbose:
+            print("getVersions failed (RPC error or revert). Run with --verbose for details.", file=sys.stderr)
         return [None] * len(addresses)
     decoded = _abi_decode_string_array(result)
-    if len(decoded) != len(addresses) or all(v is None for v in decoded):
+    if verbose:
+        print(f"[verbose] decode: len(decoded)={len(decoded)} expected={len(addresses)}", file=sys.stderr)
+        if decoded:
+            for i, v in enumerate(decoded[:3]):
+                print(f"[verbose] decoded[{i}] = {repr(v)}", file=sys.stderr)
+        if len(decoded) != len(addresses) or all(v is None for v in decoded):
+            _debug_decode_layout(result)
+    if len(decoded) != len(addresses):
+        if not verbose:
+            print("getVersions returned data but decode length mismatch. Run with --verbose.", file=sys.stderr)
         return [None] * len(addresses)
-    return decoded
+    # getVersion always returns a string (e.g. "legacy" on catch); treat decode failure as "legacy"
+    return [v if v is not None and v != "" else "legacy" for v in decoded]
+
+
+def call_factory_irm(rpc_url: str, factory_address: str) -> str | None:
+    """Call DynamicKinkModelFactory.IRM(), return implementation address (DynamicKinkModel) or None."""
+    result = _eth_call(rpc_url, factory_address, IRM_SELECTOR)
+    if not result or len(result) < 64:
+        return None
+    h = result[2:] if result.startswith("0x") else result
+    return "0x" + h[-40:].lower()
 
 
 def main() -> int:
@@ -275,6 +310,9 @@ def main() -> int:
     if not args.dry_run and not silo_lens:
         print(f"SiloLens not deployed for chain={chain}", file=sys.stderr)
         return 2
+    if args.verbose and not args.dry_run:
+        rpc_display = (rpc_url[:50] + "..." if rpc_url and len(rpc_url) > 50 else rpc_url) if rpc_url else "(none)"
+        print(f"[verbose] chain={chain} SiloLens={silo_lens} rpc={rpc_display}", file=sys.stderr)
 
     # Build expected version per contract (only for those with VERSION in repo)
     deployments_by_name = {name: addr for name, addr in deployments}
@@ -289,17 +327,32 @@ def main() -> int:
     has_failure = False
     component = "core"  # this script checks silo-core deployments only
 
-    # One RPC call: getVersions(address[]) for all versioned contracts; fallback to getVersion per contract if needed
+    dkm_impl_name = "DynamicKinkModel (via DynamicKinkModelFactory.IRM)"
+    dkm_expected: str | None = None
+    if "DynamicKinkModelFactory" in deployments_by_name:
+        dkm_src = find_contract_source(repo_root, "DynamicKinkModel")
+        dkm_expected = extract_version_from_sol(dkm_src) if dkm_src else None
+
+    # One RPC call: getVersions(address[]) for all versioned contracts + IRM address if applicable.
+    # Build explicit (name, address) pairs in sorted order so name and result stay paired.
     versioned_names = sorted(expected_by_name.keys())
+    name_addr_pairs = [(n, deployments_by_name[n]) for n in versioned_names]
     on_chain_by_name: dict[str, str | None] = {}
-    if not args.dry_run and versioned_names:
-        addresses = [deployments_by_name[n] for n in versioned_names]
-        on_chain_list = get_versions_on_chain(rpc_url, silo_lens, addresses)
-        if len(on_chain_list) == len(addresses) and not all(v is None for v in on_chain_list):
-            on_chain_by_name = dict(zip(versioned_names, on_chain_list))
-        else:
-            for name, addr in zip(versioned_names, addresses):
-                on_chain_by_name[name] = get_version_on_chain(rpc_url, silo_lens, addr)
+    if not args.dry_run:
+        addresses = [addr for _, addr in name_addr_pairs]
+        irm_addr: str | None = None
+        if dkm_expected:
+            irm_addr = call_factory_irm(rpc_url, deployments_by_name["DynamicKinkModelFactory"])
+            if irm_addr:
+                addresses.append(irm_addr)
+        if addresses:
+            on_chain_list = get_versions_on_chain(rpc_url, silo_lens, addresses, verbose=args.verbose)
+            n_versioned = len(name_addr_pairs)
+            versions_for_versioned = on_chain_list[:n_versioned]
+            for (name, _), version in zip(name_addr_pairs, versions_for_versioned):
+                on_chain_by_name[name] = version
+            if dkm_expected and len(addresses) > n_versioned and len(on_chain_list) == len(addresses):
+                on_chain_by_name[dkm_impl_name] = on_chain_list[-1]
 
     for name in sorted(deployments_by_name.keys()):
         expected = expected_by_name.get(name)
@@ -318,14 +371,31 @@ def main() -> int:
 
         on_chain = on_chain_by_name.get(name)
         if on_chain is None:
-            print(f"[FAIL] {component} {name} expected {expected} on_chain (read failed)")
+            print(f"[FAIL] {component} expected {expected} on_chain (read failed) {addr}")
             has_failure = True
             continue
         if on_chain == expected:
             print(f"[ ok ] {component} {name} {expected}")
             continue
-        print(f"[FAIL] {component} {name} expected {expected} on_chain {on_chain}")
+        print(f"[FAIL] {component} expected {expected} on_chain {on_chain} {addr}")
         has_failure = True
+
+    # Custom check: DynamicKinkModel version via DynamicKinkModelFactory.IRM() (version fetched in same batch above)
+    if "DynamicKinkModelFactory" in deployments_by_name and dkm_expected is not None:
+        if args.dry_run:
+            print(f"[dry-run] {component} {dkm_impl_name} {dkm_expected}")
+        else:
+            dkm_on_chain = on_chain_by_name.get(dkm_impl_name)
+            if dkm_on_chain is None:
+                irm_addr_for_fail = irm_addr if irm_addr else "(IRM address unknown)"
+                print(f"[FAIL] {component} expected {dkm_expected} on_chain (read failed) {irm_addr_for_fail}")
+                has_failure = True
+            elif dkm_on_chain == dkm_expected:
+                print(f"[ ok ] {component} {dkm_impl_name} {dkm_expected}")
+            else:
+                irm_addr_fail = irm_addr if irm_addr else "(IRM address unknown)"
+                print(f"[FAIL] {component} expected {dkm_expected} on_chain {dkm_on_chain} {irm_addr_fail}")
+                has_failure = True
 
     if args.dry_run:
         print(f"Dry-run: {len(expected_by_name)} versioned, {len(deployments_by_name) - len(expected_by_name)} skipped.")

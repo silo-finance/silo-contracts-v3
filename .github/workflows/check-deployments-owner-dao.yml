@@ -2,7 +2,7 @@
 # Owner: every contract with owner() must have owner == DAO.
 # Admin: every contract with DEFAULT_ADMIN_ROLE (AccessControl) must have admin == DAO.
 
-name: Check deployments owner and admin is DAO
+name: Check deployments owner, admin, version on-chain
 
 on:
   push:
@@ -14,6 +14,7 @@ on:
       - common/addresses/**
       - scripts/check_deployments_owner_is_dao.py
       - scripts/check_deployments_admin_is_dao.py
+      - scripts/check_deployments_version_on_chain.py
       - .github/workflows/check-deployments-owner-dao.yml
   pull_request:
     branches: [master]
@@ -24,6 +25,7 @@ on:
       - common/addresses/**
       - scripts/check_deployments_owner_is_dao.py
       - scripts/check_deployments_admin_is_dao.py
+      - scripts/check_deployments_version_on_chain.py
       - .github/workflows/check-deployments-owner-dao.yml
 
 env:
@@ -62,7 +64,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Check deployment owners are DAO (${{ matrix.chain }})
+      - name: Check if owners are DAO (${{ matrix.chain }})
         run: python3 scripts/check_deployments_owner_is_dao.py --chain ${{ matrix.chain }}
 
   admin-is-dao:
@@ -88,5 +90,31 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Check deployment admins are DAO (${{ matrix.chain }})
+      - name: Check if admins are DAO (${{ matrix.chain }})
         run: python3 scripts/check_deployments_admin_is_dao.py --chain ${{ matrix.chain }}
+
+  version-on-chain:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chain:
+          - arbitrum_one
+          - avalanche
+          - base
+          - bnb
+          - ink
+          - mainnet
+          - okx
+          - optimism
+          - sonic
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check versions on-chain (${{ matrix.chain }})
+        run: python3 scripts/check_deployments_version_on_chain.py --chain ${{ matrix.chain }}

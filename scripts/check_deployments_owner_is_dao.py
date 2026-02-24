@@ -35,6 +35,8 @@ from pathlib import Path
 
 # owner() selector: first 4 bytes of keccak256("owner()")
 OWNER_SELECTOR = "0x8da5cb5b"
+# pendingOwner() selector (Ownable2Step)
+PENDING_OWNER_SELECTOR = "0xe30c3978"
 
 # Component name -> deployments path relative to repo root
 COMPONENT_PATHS = {
@@ -195,6 +197,50 @@ def eth_call_owner(rpc_url: str, contract_address: str) -> str | None:
     return None
 
 
+def eth_call_pending_owner(rpc_url: str, contract_address: str) -> str | None:
+    """
+    Call pendingOwner() on contract via eth_call (Ownable2Step).
+    Returns pending owner address (lowercase) or None if call reverts/fails or no pending owner.
+    """
+    payload = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "eth_call",
+        "params": [
+            {
+                "to": contract_address if contract_address.startswith("0x") else "0x" + contract_address,
+                "data": PENDING_OWNER_SELECTOR,
+            },
+            "latest",
+        ],
+    }
+    try:
+        from urllib.request import Request, urlopen
+        from urllib.error import HTTPError, URLError
+
+        req = Request(
+            rpc_url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urlopen(req, timeout=30) as resp:
+            body = json.loads(resp.read().decode("utf-8"))
+    except (HTTPError, URLError, OSError, json.JSONDecodeError, KeyError):
+        return None
+
+    if body.get("error"):
+        return None
+
+    result = (body.get("result") or "").strip()
+    if not result or result == "0x" or len(result) < 64:
+        return None
+    addr = "0x" + result[-40:].lower()
+    if addr == "0x" + "0" * 40:
+        return None
+    return addr
+
+
 def main() -> int:
     args = parse_args()
     chain = args.chain.strip()
@@ -265,6 +311,13 @@ def main() -> int:
             print(f"[FAIL] {component} {contract_name} owner {owner} not in common/addresses/{chain}.json (expected DAO)")
         else:
             print(f"[FAIL] {component} {contract_name} owner is {key} ({owner}), expected DAO")
+        pending = eth_call_pending_owner(rpc_url, address)
+        if pending:
+            pending_key = addr_to_key.get(pending)
+            if pending_key is not None:
+                print(f"       -> pending owner: {pending_key}")
+            else:
+                print(f"       -> pending owner: unknown ({pending})")
         has_failure = True
         fail_count += 1
         failed_contracts.append((component, contract_name))

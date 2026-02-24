@@ -1,0 +1,64 @@
+# Run owner-is-DAO check when any deployment artifact changes.
+# Verifies that every deployed contract (core, oracle, vaults) that has owner()
+# has owner == DAO from common/addresses for that chain.
+
+name: Check deployments owner is DAO
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - silo-core/deployments/**
+      - silo-oracles/deployments/**
+      - silo-vaults/deployments/**
+      - common/addresses/**
+      - scripts/check_deployments_owner_is_dao.py
+      - .github/workflows/check-deployments-owner-dao.yml
+  pull_request:
+    branches: [master]
+    paths:
+      - silo-core/deployments/**
+      - silo-oracles/deployments/**
+      - silo-vaults/deployments/**
+      - common/addresses/**
+      - scripts/check_deployments_owner_is_dao.py
+      - .github/workflows/check-deployments-owner-dao.yml
+
+env:
+  RPC_MAINNET: ${{ secrets.RPC_MAINNET }}
+  RPC_ARBITRUM: ${{ secrets.RPC_ARBITRUM }}
+  RPC_OPTIMISM: ${{ secrets.RPC_OPTIMISM }}
+  RPC_SONIC: ${{ secrets.RPC_SONIC }}
+  RPC_AVALANCHE: ${{ secrets.RPC_AVALANCHE }}
+  RPC_INK: ${{ secrets.RPC_INK }}
+  RPC_BASE: ${{ secrets.RPC_BASE }}
+  RPC_BNB: ${{ secrets.RPC_BNB }}
+  RPC_OKX: ${{ secrets.RPC_OKX }}
+  RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
+
+jobs:
+  owner-is-dao:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chain:
+          - arbitrum_one
+          - avalanche
+          - base
+          - bnb
+          - ink
+          - mainnet
+          - okx
+          - optimism
+          - sonic
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check deployment owners are DAO (${{ matrix.chain }})
+        run: python3 scripts/check_deployments_owner_is_dao.py --chain ${{ matrix.chain }}

@@ -215,6 +215,9 @@ def main() -> int:
     deployments.sort(key=lambda x: (x[0], x[1]))  # alphabetical: component, then contract name
 
     has_failure = False
+    skip_count = 0
+    ok_count = 0
+    fail_count = 0
 
     for component, contract_name, address, abi in deployments:
         if args.dry_run:
@@ -223,19 +226,23 @@ def main() -> int:
 
         if contract_name in CONTRACTS_EXCLUDED:
             print(f"[skip] {component} {contract_name} excluded from check")
+            skip_count += 1
             continue
 
         if not abi_has_access_control_admin(abi):
             print(f"[skip] {component} {contract_name} no AccessControl")
+            skip_count += 1
             continue
 
         admin = eth_call_admin(rpc_url, address)
         if admin is None:
             print(f"[skip] {component} {contract_name} getRoleMember call failed")
+            skip_count += 1
             continue
 
         if admin == dao_address:
             print(f"[ ok ] {component} {contract_name} admin is DAO")
+            ok_count += 1
             continue
 
         key = addr_to_key.get(admin)
@@ -244,11 +251,13 @@ def main() -> int:
         else:
             print(f"[FAIL] {component} {contract_name} admin is {key} ({admin}), expected DAO")
         has_failure = True
+        fail_count += 1
 
     if args.dry_run:
         print(f"Dry-run: would check {len(deployments)} deployments for chain={chain}.")
         return 0
 
+    print(f"Summary: skipped={skip_count} ok={ok_count} fail={fail_count}")
     return 1 if has_failure else 0
 
 

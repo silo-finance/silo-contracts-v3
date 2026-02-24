@@ -325,6 +325,9 @@ def main() -> int:
                 expected_by_name[name] = v
 
     has_failure = False
+    skip_count = 0
+    ok_count = 0
+    fail_count = 0
     component = "core"  # this script checks silo-core deployments only
 
     dkm_impl_name = "DynamicKinkModel (via DynamicKinkModelFactory.IRM)"
@@ -363,6 +366,7 @@ def main() -> int:
                 print(f"[dry-run] skip {component} {name} (no VERSION)")
             else:
                 print(f"[skip] {component} {name}")
+                skip_count += 1
             continue
 
         if args.dry_run:
@@ -373,12 +377,15 @@ def main() -> int:
         if on_chain is None:
             print(f"[FAIL] {component} expected {expected} on_chain (read failed) {addr}")
             has_failure = True
+            fail_count += 1
             continue
         if on_chain == expected:
             print(f"[ ok ] {component} {name} {expected}")
+            ok_count += 1
             continue
         print(f"[FAIL] {component} expected {expected} on_chain {on_chain} {addr}")
         has_failure = True
+        fail_count += 1
 
     # Custom check: DynamicKinkModel version via DynamicKinkModelFactory.IRM() (version fetched in same batch above)
     if "DynamicKinkModelFactory" in deployments_by_name and dkm_expected is not None:
@@ -390,17 +397,21 @@ def main() -> int:
                 irm_addr_for_fail = irm_addr if irm_addr else "(IRM address unknown)"
                 print(f"[FAIL] {component} expected {dkm_expected} on_chain (read failed) {irm_addr_for_fail}")
                 has_failure = True
+                fail_count += 1
             elif dkm_on_chain == dkm_expected:
                 print(f"[ ok ] {component} {dkm_impl_name} {dkm_expected}")
+                ok_count += 1
             else:
                 irm_addr_fail = irm_addr if irm_addr else "(IRM address unknown)"
                 print(f"[FAIL] {component} expected {dkm_expected} on_chain {dkm_on_chain} {irm_addr_fail}")
                 has_failure = True
+                fail_count += 1
 
     if args.dry_run:
         print(f"Dry-run: {len(expected_by_name)} versioned, {len(deployments_by_name) - len(expected_by_name)} skipped.")
         return 0
 
+    print(f"Summary: skipped={skip_count} ok={ok_count} fail={fail_count}")
     return 1 if has_failure else 0
 
 

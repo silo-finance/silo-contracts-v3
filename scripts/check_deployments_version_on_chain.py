@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-CI script: for each deployed contract (silo-core deployments) that has a VERSION
-in the repo (function VERSION() or constant VERSION), check that the contract
-on-chain returns the same version via SiloLens.getVersions(address[]).
+CI script: for each deployed contract (core/oracle/vaults deployments) that has
+a VERSION in the repo (function VERSION() or constant VERSION), check that the
+contract on-chain returns the same version via SiloLens.getVersions(address[]).
 
 - [ ok ]: component contract_name version
 - [skip]: component contract_name (no VERSION in repo)
@@ -27,8 +27,33 @@ from pathlib import Path
 GET_VERSIONS_SELECTOR = "0xf58e82b5"
 # DynamicKinkModelFactory.IRM() getter (public immutable)
 IRM_SELECTOR = "0x1e75db16"
-CONTRACTS_ROOT = Path("silo-core/contracts")
-DEPLOYMENTS_ROOT = Path("silo-core/deployments")
+# OracleFactory.ORACLE_IMPLEMENTATION() getter (public immutable)
+ORACLE_IMPLEMENTATION_SELECTOR = "0xa8f39f66"
+
+# SiloDeployer immutable getters: (display_name, selector, contract_name for expected version)
+SILO_DEPLOYER_GETTERS: list[tuple[str, str, str]] = [
+    ("InterestRateModelV2Factory (via SiloDeployer.IRM_CONFIG_FACTORY)", "0x28cdfde0", "InterestRateModelV2Factory"),
+    ("DynamicKinkModelFactory (via SiloDeployer.DYNAMIC_KINK_MODEL_FACTORY)", "0x0ec00513", "DynamicKinkModelFactory"),
+    ("SiloFactory (via SiloDeployer.SILO_FACTORY)", "0x5956617c", "SiloFactory"),
+    ("Silo (via SiloDeployer.SILO_IMPL)", "0xdb35c403", "Silo"),
+    ("ShareProtectedCollateralToken (via SiloDeployer.SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL)", "0xc2bcfc51", "ShareProtectedCollateralToken"),
+    ("ShareDebtToken (via SiloDeployer.SHARE_DEBT_TOKEN_IMPL)", "0x654ec411", "ShareDebtToken"),
+]
+
+COMPONENT_PATHS: dict[str, dict[str, str]] = {
+    "core": {
+        "contracts_root": "silo-core/contracts",
+        "deployments_root": "silo-core/deployments",
+    },
+    "oracle": {
+        "contracts_root": "silo-oracles/contracts",
+        "deployments_root": "silo-oracles/deployments",
+    },
+    "vaults": {
+        "contracts_root": "silo-vaults/contracts",
+        "deployments_root": "silo-vaults/deployments",
+    },
+}
 
 CHAIN_TO_RPC_ENV: dict[str, str] = {
     "arbitrum_one": "RPC_ARBITRUM",
@@ -50,6 +75,17 @@ _RE_VERSION_RETURN = re.compile(
     r'function\s+VERSION\s*\([^)]*\)[^{]*\{[^}]*?return\s+"([^"]+)"\s*;',
     re.MULTILINE | re.DOTALL,
 )
+_RE_VERSION_ASSIGN = re.compile(
+    r'function\s+VERSION\s*\([^)]*\)[^{]*\{[^}]*?=\s*"([^"]+)"\s*;',
+    re.MULTILINE | re.DOTALL,
+)
+_RE_ORACLE_IMPLEMENTATION_TYPE = re.compile(
+    r"\b([A-Za-z_][A-Za-z0-9_]*)\s+public\s+immutable\s+ORACLE_IMPLEMENTATION\b"
+)
+_RE_ORACLE_FACTORY_NEW_IMPL = re.compile(
+    r"OracleFactory\s*\(\s*address\s*\(\s*new\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(",
+    re.MULTILINE,
+)
 
 
 
@@ -60,14 +96,19 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--chain", required=True, help="Chain name (e.g. arbitrum_one, mainnet).")
     p.add_argument("--rpc-url", default=None, help="RPC URL. If not set, uses env from CHAIN_TO_RPC_ENV.")
+    p.add_argument(
+        "--components",
+        default="core,oracle,vaults",
+        help="Comma-separated list: core,oracle,vaults. Default: core,oracle,vaults",
+    )
     p.add_argument("--dry-run", action="store_true", help="Only list contracts and expected versions, no RPC.")
     p.add_argument("--verbose", action="store_true", help="Print raw RPC response on getVersions (for debugging read failed).")
     return p.parse_args()
 
 
-def find_contract_source(repo_root: Path, contract_name: str) -> Path | None:
-    """Return path to ContractName.sol under silo-core/contracts, or None."""
-    base = repo_root / CONTRACTS_ROOT
+def find_contract_source(repo_root: Path, contract_name: str, contracts_root: Path) -> Path | None:
+    """Return path to ContractName.sol under component contracts root, or None."""
+    base = repo_root / contracts_root
     candidates = list(base.rglob(f"{contract_name}.sol"))
     for c in candidates:
         if c.stem == contract_name:
@@ -84,18 +125,23 @@ def extract_version_from_sol(sol_path: Path) -> str | None:
     m = _RE_VERSION_RETURN.search(text)
     if m:
         return m.group(1).strip()
+    m = _RE_VERSION_ASSIGN.search(text)
+    if m:
+        return m.group(1).strip()
     m = _RE_VERSION_CONST.search(text)
     if m:
         return m.group(1).strip()
     return None
 
 
-def collect_deployments(repo_root: Path, chain: str) -> list[tuple[str, str]]:
-    """(contract_name, address) for silo-core/deployments/<chain>/*.json, sorted by name."""
-    base = repo_root / DEPLOYMENTS_ROOT / chain
+def collect_deployments(
+    repo_root: Path, chain: str, deployments_root: Path
+) -> list[tuple[str, str, list[dict] | None]]:
+    """(contract_name, address, abi) for <deployments_root>/<chain>/*.json, sorted by name."""
+    base = repo_root / deployments_root / chain
     if not base.exists():
         return []
-    out: list[tuple[str, str]] = []
+    out: list[tuple[str, str, list[dict] | None]] = []
     for j in base.glob("*.json"):
         try:
             data = json.loads(j.read_text(encoding="utf-8"))
@@ -104,7 +150,8 @@ def collect_deployments(repo_root: Path, chain: str) -> list[tuple[str, str]]:
                 name = j.stem
                 if name.endswith(".sol"):
                     name = name[:-4]
-                out.append((name, addr.lower()))
+                abi = data.get("abi")
+                out.append((name, addr.lower(), abi if isinstance(abi, list) else None))
         except (json.JSONDecodeError, OSError):
             continue
     out.sort(key=lambda x: x[0])
@@ -113,7 +160,7 @@ def collect_deployments(repo_root: Path, chain: str) -> list[tuple[str, str]]:
 
 def get_silo_lens_address(repo_root: Path, chain: str) -> str | None:
     """SiloLens deployment address for chain, or None."""
-    base = repo_root / DEPLOYMENTS_ROOT / chain
+    base = repo_root / Path(COMPONENT_PATHS["core"]["deployments_root"]) / chain
     j = base / "SiloLens.sol.json"
     if not j.exists():
         return None
@@ -241,6 +288,22 @@ def _debug_decode_layout(hex_result: str) -> None:
         print(f"[verbose] decode layout parse error: {e}", file=sys.stderr)
 
 
+def abi_has_zero_arg_function(abi: list[dict] | None, function_name: str) -> bool:
+    if not abi:
+        return False
+    for item in abi:
+        if not isinstance(item, dict):
+            continue
+        if item.get("type") != "function":
+            continue
+        if item.get("name") != function_name:
+            continue
+        inputs = item.get("inputs")
+        if isinstance(inputs, list) and len(inputs) == 0:
+            return True
+    return False
+
+
 def get_versions_on_chain(
     rpc_url: str, lens_address: str, addresses: list[str], *, verbose: bool = False
 ) -> list[str | None]:
@@ -289,10 +352,38 @@ def call_factory_irm(rpc_url: str, factory_address: str) -> str | None:
     return "0x" + h[-40:].lower()
 
 
+def call_zero_arg_address_getter(rpc_url: str, contract_address: str, selector: str) -> str | None:
+    result = _eth_call(rpc_url, contract_address, selector)
+    if not result or len(result) < 64:
+        return None
+    h = result[2:] if result.startswith("0x") else result
+    return "0x" + h[-40:].lower()
+
+
+def find_oracle_impl_contract_name(factory_src: Path) -> str | None:
+    """Infer oracle implementation contract name from factory source."""
+    try:
+        text = factory_src.read_text(encoding="utf-8")
+    except OSError:
+        return None
+    m_new = _RE_ORACLE_FACTORY_NEW_IMPL.search(text)
+    if m_new:
+        return m_new.group(1)
+    m = _RE_ORACLE_IMPLEMENTATION_TYPE.search(text)
+    if m and m.group(1).lower() != "address":
+        return m.group(1)
+    return None
+
+
 def main() -> int:
     args = parse_args()
     repo_root = Path(__file__).resolve().parents[1]
     chain = args.chain.strip()
+    components = [c.strip() for c in args.components.split(",") if c.strip()]
+    for c in components:
+        if c not in COMPONENT_PATHS:
+            print(f"Unknown component: {c}. Allowed: {list(COMPONENT_PATHS.keys())}", file=sys.stderr)
+            return 2
 
     rpc_env = CHAIN_TO_RPC_ENV.get(chain)
     rpc_url = args.rpc_url or (os.environ.get(rpc_env) if rpc_env else None)
@@ -301,9 +392,19 @@ def main() -> int:
         print(f"RPC URL not set. Use --rpc-url or set env {hint}", file=sys.stderr)
         return 2
 
-    deployments = collect_deployments(repo_root, chain)
-    if not deployments:
-        print(f"No deployments found for chain={chain}", file=sys.stderr)
+    all_deployments: list[tuple[str, str, str]] = []
+    deployments_by_key: dict[tuple[str, str], str] = {}
+    abi_by_key: dict[tuple[str, str], list[dict] | None] = {}
+    for component in components:
+        dep_root = Path(COMPONENT_PATHS[component]["deployments_root"])
+        deployments = collect_deployments(repo_root, chain, dep_root)
+        for name, addr, abi in deployments:
+            all_deployments.append((component, name, addr))
+            deployments_by_key[(component, name)] = addr
+            abi_by_key[(component, name)] = abi
+
+    if not all_deployments:
+        print(f"No deployments found for chain={chain}, components={components}", file=sys.stderr)
         return 0
 
     silo_lens = get_silo_lens_address(repo_root, chain)
@@ -315,51 +416,124 @@ def main() -> int:
         print(f"[verbose] chain={chain} SiloLens={silo_lens} rpc={rpc_display}", file=sys.stderr)
 
     # Build expected version per contract (only for those with VERSION in repo)
-    deployments_by_name = {name: addr for name, addr in deployments}
-    expected_by_name: dict[str, str] = {}
-    for name in deployments_by_name:
-        src = find_contract_source(repo_root, name)
+    expected_by_key: dict[tuple[str, str], str] = {}
+    for component, name, _addr in all_deployments:
+        contracts_root = Path(COMPONENT_PATHS[component]["contracts_root"])
+        src = find_contract_source(repo_root, name, contracts_root)
         if src:
             v = extract_version_from_sol(src)
             if v is not None:
-                expected_by_name[name] = v
+                expected_by_key[(component, name)] = v
 
     has_failure = False
     skip_count = 0
     ok_count = 0
     fail_count = 0
-    component = "core"  # this script checks silo-core deployments only
 
     dkm_impl_name = "DynamicKinkModel (via DynamicKinkModelFactory.IRM)"
     dkm_expected: str | None = None
-    if "DynamicKinkModelFactory" in deployments_by_name:
-        dkm_src = find_contract_source(repo_root, "DynamicKinkModel")
+    if ("core", "DynamicKinkModelFactory") in deployments_by_key:
+        dkm_src = find_contract_source(repo_root, "DynamicKinkModel", Path(COMPONENT_PATHS["core"]["contracts_root"]))
         dkm_expected = extract_version_from_sol(dkm_src) if dkm_src else None
 
-    # One RPC call: getVersions(address[]) for all versioned contracts + IRM address if applicable.
+    # Oracle factory custom checks:
+    # if ABI has ORACLE_IMPLEMENTATION(), call it and verify returned implementation contract version.
+    oracle_custom_checks: list[tuple[str, str, str, str]] = []
+    # tuple: (display_name, factory_name, impl_name, expected_version)
+    for key in sorted(deployments_by_key.keys(), key=lambda x: (x[0], x[1])):
+        component, factory_name = key
+        if component != "oracle":
+            continue
+        abi = abi_by_key.get(key)
+        if not abi_has_zero_arg_function(abi, "ORACLE_IMPLEMENTATION"):
+            continue
+
+        contracts_root = Path(COMPONENT_PATHS["oracle"]["contracts_root"])
+        factory_src = find_contract_source(repo_root, factory_name, contracts_root)
+        impl_name = None
+        if factory_src:
+            impl_name = find_oracle_impl_contract_name(factory_src)
+        if not impl_name and factory_name.endswith("Factory"):
+            impl_name = factory_name[:-7]  # fallback convention: FooFactory -> Foo
+        if not impl_name:
+            continue
+        impl_src = find_contract_source(repo_root, impl_name, contracts_root)
+        if not impl_src:
+            continue
+        impl_expected = extract_version_from_sol(impl_src)
+        if impl_expected is None:
+            continue
+        display_name = f"{impl_name} (via {factory_name}.ORACLE_IMPLEMENTATION)"
+        oracle_custom_checks.append((display_name, factory_name, impl_name, impl_expected))
+
+    # SiloDeployer immutable getters: check that each pointed-to contract has current version.
+    silo_deployer_checks: list[tuple[str, str, str]] = []  # (display_name, expected_version, selector)
+    if ("core", "SiloDeployer") in deployments_by_key:
+        core_contracts = Path(COMPONENT_PATHS["core"]["contracts_root"])
+        for display_name, selector, contract_name in SILO_DEPLOYER_GETTERS:
+            src = find_contract_source(repo_root, contract_name, core_contracts)
+            if not src:
+                continue
+            expected = extract_version_from_sol(src)
+            if expected is None:
+                continue
+            silo_deployer_checks.append((display_name, expected, selector))
+
+    # One RPC call: getVersions(address[]) for all versioned contracts + IRM + oracle impls + SiloDeployer immutables.
     # Build explicit (name, address) pairs in sorted order so name and result stay paired.
-    versioned_names = sorted(expected_by_name.keys())
-    name_addr_pairs = [(n, deployments_by_name[n]) for n in versioned_names]
-    on_chain_by_name: dict[str, str | None] = {}
+    versioned_keys = sorted(expected_by_key.keys(), key=lambda x: (x[0], x[1]))
+    key_addr_pairs = [(k, deployments_by_key[k]) for k in versioned_keys]
+    on_chain_by_key: dict[tuple[str, str], str | None] = {}
+    irm_addr: str | None = None
+    oracle_impl_addr_by_display: dict[str, str | None] = {}
+    silo_deployer_addr_by_display: dict[str, str | None] = {}
     if not args.dry_run:
-        addresses = [addr for _, addr in name_addr_pairs]
-        irm_addr: str | None = None
+        addresses = [addr for _, addr in key_addr_pairs]
         if dkm_expected:
-            irm_addr = call_factory_irm(rpc_url, deployments_by_name["DynamicKinkModelFactory"])
+            irm_addr = call_factory_irm(rpc_url, deployments_by_key[("core", "DynamicKinkModelFactory")])
             if irm_addr:
                 addresses.append(irm_addr)
+        for display_name, factory_name, _impl_name, _expected in oracle_custom_checks:
+            factory_addr = deployments_by_key.get(("oracle", factory_name))
+            if not factory_addr:
+                continue
+            impl_addr = call_zero_arg_address_getter(rpc_url, factory_addr, ORACLE_IMPLEMENTATION_SELECTOR)
+            oracle_impl_addr_by_display[display_name] = impl_addr
+            if impl_addr:
+                addresses.append(impl_addr)
+        deployer_addr = deployments_by_key.get(("core", "SiloDeployer"))
+        if deployer_addr:
+            for display_name, _expected, selector in silo_deployer_checks:
+                addr = call_zero_arg_address_getter(rpc_url, deployer_addr, selector)
+                silo_deployer_addr_by_display[display_name] = addr
+                if addr:
+                    addresses.append(addr)
         if addresses:
             on_chain_list = get_versions_on_chain(rpc_url, silo_lens, addresses, verbose=args.verbose)
-            n_versioned = len(name_addr_pairs)
+            n_versioned = len(key_addr_pairs)
             versions_for_versioned = on_chain_list[:n_versioned]
-            for (name, _), version in zip(name_addr_pairs, versions_for_versioned):
-                on_chain_by_name[name] = version
-            if dkm_expected and len(addresses) > n_versioned and len(on_chain_list) == len(addresses):
-                on_chain_by_name[dkm_impl_name] = on_chain_list[-1]
+            for (key, _), version in zip(key_addr_pairs, versions_for_versioned):
+                on_chain_by_key[key] = version
+            extra_idx = n_versioned
+            if dkm_expected and irm_addr and len(on_chain_list) > extra_idx:
+                on_chain_by_key[("core", dkm_impl_name)] = on_chain_list[extra_idx]
+                extra_idx += 1
+            for display_name, _factory_name, _impl_name, _expected in oracle_custom_checks:
+                impl_addr = oracle_impl_addr_by_display.get(display_name)
+                if not impl_addr:
+                    continue
+                if len(on_chain_list) > extra_idx:
+                    on_chain_by_key[("oracle", display_name)] = on_chain_list[extra_idx]
+                extra_idx += 1
+            for display_name, _expected, _selector in silo_deployer_checks:
+                if silo_deployer_addr_by_display.get(display_name):
+                    if len(on_chain_list) > extra_idx:
+                        on_chain_by_key[("core", display_name)] = on_chain_list[extra_idx]
+                    extra_idx += 1
 
-    for name in sorted(deployments_by_name.keys()):
-        expected = expected_by_name.get(name)
-        addr = deployments_by_name[name]
+    all_deployments.sort(key=lambda x: (x[0], x[1]))
+    for component, name, addr in all_deployments:
+        expected = expected_by_key.get((component, name))
 
         if expected is None:
             if args.dry_run:
@@ -373,7 +547,7 @@ def main() -> int:
             print(f"[dry-run] {component} {name} {expected}")
             continue
 
-        on_chain = on_chain_by_name.get(name)
+        on_chain = on_chain_by_key.get((component, name))
         if on_chain is None:
             print(f"[FAIL] {component} expected {expected} on_chain (read failed) {addr}")
             has_failure = True
@@ -388,27 +562,87 @@ def main() -> int:
         fail_count += 1
 
     # Custom check: DynamicKinkModel version via DynamicKinkModelFactory.IRM() (version fetched in same batch above)
-    if "DynamicKinkModelFactory" in deployments_by_name and dkm_expected is not None:
+    if ("core", "DynamicKinkModelFactory") in deployments_by_key and dkm_expected is not None:
         if args.dry_run:
-            print(f"[dry-run] {component} {dkm_impl_name} {dkm_expected}")
+            print(f"[dry-run] core {dkm_impl_name} {dkm_expected}")
         else:
-            dkm_on_chain = on_chain_by_name.get(dkm_impl_name)
+            dkm_on_chain = on_chain_by_key.get(("core", dkm_impl_name))
             if dkm_on_chain is None:
                 irm_addr_for_fail = irm_addr if irm_addr else "(IRM address unknown)"
-                print(f"[FAIL] {component} expected {dkm_expected} on_chain (read failed) {irm_addr_for_fail}")
+                print(f"[FAIL] core expected {dkm_expected} on_chain (read failed) {irm_addr_for_fail}")
                 has_failure = True
                 fail_count += 1
             elif dkm_on_chain == dkm_expected:
-                print(f"[ ok ] {component} {dkm_impl_name} {dkm_expected}")
+                print(f"[ ok ] core {dkm_impl_name} {dkm_expected}")
                 ok_count += 1
             else:
                 irm_addr_fail = irm_addr if irm_addr else "(IRM address unknown)"
-                print(f"[FAIL] {component} expected {dkm_expected} on_chain {dkm_on_chain} {irm_addr_fail}")
+                print(f"[FAIL] core expected {dkm_expected} on_chain {dkm_on_chain} {irm_addr_fail}")
                 has_failure = True
                 fail_count += 1
 
+    # Custom checks: oracle implementations from factory ORACLE_IMPLEMENTATION()
+    for display_name, factory_name, _impl_name, expected in oracle_custom_checks:
+        if args.dry_run:
+            print(f"[dry-run] oracle {display_name} {expected}")
+            continue
+
+        impl_addr = oracle_impl_addr_by_display.get(display_name)
+        if not impl_addr:
+            factory_addr = deployments_by_key.get(("oracle", factory_name), "(factory address unknown)")
+            print(
+                f"[FAIL] oracle expected {expected} on_chain (read failed) "
+                f"{factory_addr} (failed ORACLE_IMPLEMENTATION call)"
+            )
+            has_failure = True
+            fail_count += 1
+            continue
+
+        on_chain = on_chain_by_key.get(("oracle", display_name))
+        if on_chain is None:
+            print(f"[FAIL] oracle expected {expected} on_chain (read failed) {impl_addr}")
+            has_failure = True
+            fail_count += 1
+            continue
+        if on_chain == expected:
+            print(f"[ ok ] oracle {display_name} {expected}")
+            ok_count += 1
+            continue
+        print(f"[FAIL] oracle expected {expected} on_chain {on_chain} {impl_addr}")
+        has_failure = True
+        fail_count += 1
+
+    # Custom checks: SiloDeployer immutable getters (SILO_IMPL, SILO_FACTORY, etc.)
+    for display_name, expected, _selector in silo_deployer_checks:
+        if args.dry_run:
+            print(f"[dry-run] core {display_name} {expected}")
+            continue
+        impl_addr = silo_deployer_addr_by_display.get(display_name)
+        if not impl_addr:
+            deployer_addr = deployments_by_key.get(("core", "SiloDeployer"), "(SiloDeployer address unknown)")
+            print(
+                f"[FAIL] core expected {expected} on_chain (read failed) "
+                f"{deployer_addr} (failed getter for {display_name})"
+            )
+            has_failure = True
+            fail_count += 1
+            continue
+        on_chain = on_chain_by_key.get(("core", display_name))
+        if on_chain is None:
+            print(f"[FAIL] core expected {expected} on_chain (read failed) {impl_addr}")
+            has_failure = True
+            fail_count += 1
+            continue
+        if on_chain == expected:
+            print(f"[ ok ] core {display_name} {expected}")
+            ok_count += 1
+            continue
+        print(f"[FAIL] core expected {expected} on_chain {on_chain} {impl_addr}")
+        has_failure = True
+        fail_count += 1
+
     if args.dry_run:
-        print(f"Dry-run: {len(expected_by_name)} versioned, {len(deployments_by_name) - len(expected_by_name)} skipped.")
+        print(f"Dry-run: {len(expected_by_key)} versioned, {len(all_deployments) - len(expected_by_key)} skipped.")
         return 0
 
     print(f"Summary: skipped={skip_count} ok={ok_count} fail={fail_count}")

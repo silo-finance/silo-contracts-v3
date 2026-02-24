@@ -30,6 +30,9 @@ IRM_SELECTOR = "0x1e75db16"
 # OracleFactory.ORACLE_IMPLEMENTATION() getter (public immutable)
 ORACLE_IMPLEMENTATION_SELECTOR = "0xa8f39f66"
 
+# SiloVaultDeployer.SILO_VAULTS_FACTORY() getter (public immutable)
+SILO_VAULTS_FACTORY_SELECTOR = "0x8dd579c9"
+
 # SiloDeployer immutable getters: (display_name, selector, contract_name for expected version)
 SILO_DEPLOYER_GETTERS: list[tuple[str, str, str]] = [
     ("InterestRateModelV2Factory (via SiloDeployer.IRM_CONFIG_FACTORY)", "0x28cdfde0", "InterestRateModelV2Factory"),
@@ -479,6 +482,15 @@ def main() -> int:
                 continue
             silo_deployer_checks.append((display_name, expected, selector))
 
+    # When vaults SiloVaultsFactory address equals SiloVaultDeployer.SILO_VAULTS_FACTORY(), show "via SiloVaultDeployer" in output.
+    display_name_override: dict[tuple[str, str], str] = {}
+    if not args.dry_run and ("vaults", "SiloVaultsFactory") in deployments_by_key and ("vaults", "SiloVaultDeployer") in deployments_by_key:
+        vault_deployer_addr = deployments_by_key[("vaults", "SiloVaultDeployer")]
+        factory_from_deployer = call_zero_arg_address_getter(rpc_url, vault_deployer_addr, SILO_VAULTS_FACTORY_SELECTOR)
+        factory_deployed_addr = deployments_by_key[("vaults", "SiloVaultsFactory")]
+        if factory_from_deployer and factory_from_deployer.lower() == factory_deployed_addr.lower():
+            display_name_override[("vaults", "SiloVaultsFactory")] = "SiloVaultsFactory (via SiloVaultDeployer.SILO_VAULTS_FACTORY)"
+
     # One RPC call: getVersions(address[]) for all versioned contracts + IRM + oracle impls + SiloDeployer immutables.
     # Build explicit (name, address) pairs in sorted order so name and result stay paired.
     versioned_keys = sorted(expected_by_key.keys(), key=lambda x: (x[0], x[1]))
@@ -548,16 +560,17 @@ def main() -> int:
             continue
 
         on_chain = on_chain_by_key.get((component, name))
+        name_display = display_name_override.get((component, name), name)
         if on_chain is None:
-            print(f"[FAIL] {component} expected {expected} on_chain (read failed) {addr}")
+            print(f"[FAIL] {component} {name_display} expected {expected} on_chain (read failed) {addr}")
             has_failure = True
             fail_count += 1
             continue
         if on_chain == expected:
-            print(f"[ ok ] {component} {name} {expected}")
+            print(f"[ ok ] {component} {name_display} {expected}")
             ok_count += 1
             continue
-        print(f"[FAIL] {component} expected {expected} on_chain {on_chain} {addr}")
+        print(f"[FAIL] {component} {name_display} expected {expected} on_chain {on_chain} {addr}")
         has_failure = True
         fail_count += 1
 

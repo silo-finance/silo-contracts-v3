@@ -7,6 +7,10 @@
         {
             "implementation": "0x92b70a15283d6b5dD7078cc4085fea8e4b7940df",
             "description": "silo v3 implementation"
+        },
+        {
+            "implementation": "0xad1875AF7e720e0058c27466A65372533b11B9bf",
+            "description": "after forge linter fixes"
         }
     ],
     "sonic": [
@@ -25,12 +29,20 @@
         {
             "implementation": "0x4C5526Ad3546819eE86fE3499D997453A3178043",
             "description": "silo v3 implementation"
+        },
+        {
+            "implementation": "0x39021662EF7679845E6851E38E01912f556A861f",
+            "description": "after forge linter fixes"
         }
     ],
     "optimism": [
         {
             "implementation": "0x7ef3055d2B76214Df9Ae74D42944e2917D08Bd78",
             "description": "original implementation"
+        },
+        {
+            "implementation": "0xc4832aEbD785d9A35608E9Abc5d644A2e616311d",
+            "description": "after forge linter fixes"
         }
     ],
     "ink": [
@@ -47,6 +59,10 @@
         {
             "implementation": "0x97D6d6196A22Abf2De4a7C6C98e539230411d8Bd",
             "description": "silo v3 implementation"
+        },
+        {
+            "implementation": "0x1f39ed01Ac23A1abc4038E87291d4E9FF599B7FE",
+            "description": "after forge linter fixes"
         }
     ],
     "avalanche": [
@@ -57,24 +73,40 @@
         {
             "implementation": "0x1478570FC9C8422b6733455DB5504378940DDAE8",
             "description": "silo v3 implementation"
+        },
+        {
+            "implementation": "0xe3aE3f11D2aFD7031D3C92774166571b057E8A87",
+            "description": "after forge linter fixes"
         }
     ],
     "injective": [
         {
             "implementation": "0x57448f23Fe51be6934a1d88f783d613b9801B151",
             "description": "silo v3 implementation"
+        },
+        {
+            "implementation": "0xee6845d30c2529BA0a9A1adFfa06C377FE2DDEdd",
+            "description": "after forge linter fixes"
         }
     ],
     "okx": [
         {
             "implementation": "0x34490CBc071b9A15440179299CF10bd82F2b079B",
             "description": "silo v3 implementation"
+        },
+        {
+            "implementation": "0x2458ee990E64D8793Fe61212558AD8b1a7BdD845",
+            "description": "after forge linter fixes"
         }
     ],
     "bnb": [
         {
             "implementation": "0x34490CBc071b9A15440179299CF10bd82F2b079B",
             "description": "silo v3 implementation"
+        },
+        {
+            "implementation": "0x27a96951d7aad034265A285C395225C295384688",
+            "description": "after forge linter fixes"
         }
     ],
     "base": [

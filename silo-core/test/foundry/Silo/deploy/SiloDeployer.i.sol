@@ -57,6 +57,36 @@ contract SiloDeployerIntegrationTest is Test {
             }
         }
 
+        if (ChainsLib.getChainId() == ChainsLib.BASE_CHAIN_ID) {
+            if (
+                address(oldDeployer) == address(0)
+                    && address(siloDeployer) == 0x315a8319e94eFF8aa5FB11923c32E73Fca00E479
+            ) {
+                console2.log("there is no old deployer on this chain yet");
+                return;
+            }
+        }
+
+        if (ChainsLib.getChainId() == ChainsLib.BNB_CHAIN_ID) {
+            if (
+                address(oldDeployer) == address(0)
+                    && address(siloDeployer) == 0xa1D54744C9c2bAB2004CE7Fe1d781cca350fFa97
+            ) {
+                console2.log("there is no old deployer on this chain yet");
+                return;
+            }
+        }
+
+        if (ChainsLib.getChainId() == ChainsLib.OKX_CHAIN_ID) {
+            if (
+                address(oldDeployer) == address(0)
+                    && address(siloDeployer) == 0x2ca8f56ba6302477eb9e47E312db07706bEFEf3c
+            ) {
+                console2.log("there is no old deployer on this chain yet");
+                return;
+            }
+        }
+
         assertNotEq(address(oldDeployer), address(0), string.concat("Previous deployer not found", i));
         assertNotEq(
             address(oldDeployer),
@@ -103,6 +133,12 @@ contract SiloDeployerIntegrationTest is Test {
         } else if (chainId == ChainsLib.ARBITRUM_ONE_CHAIN_ID) {
             return SiloDeployer(0x1bdeBe3C773452e1f8FBE338fF4139539D9bC2f4);
         } else if (chainId == ChainsLib.INJECTIVE_CHAIN_ID) {
+            return SiloDeployer(address(0));
+        } else if (chainId == ChainsLib.BASE_CHAIN_ID) {
+            return SiloDeployer(address(0));
+        } else if (chainId == ChainsLib.BNB_CHAIN_ID) {
+            return SiloDeployer(address(0));
+        } else if (chainId == ChainsLib.OKX_CHAIN_ID) {
             return SiloDeployer(address(0));
         }
 

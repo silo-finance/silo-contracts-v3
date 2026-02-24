@@ -2,7 +2,7 @@
 # Owner: every contract with owner() must have owner == DAO.
 # Admin: every contract with DEFAULT_ADMIN_ROLE (AccessControl) must have admin == DAO.
 
-name: Check deployments owner, admin, version on-chain
+name: on-chain checks
 
 on:
   push:

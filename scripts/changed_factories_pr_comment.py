@@ -120,6 +120,8 @@ def main() -> int:
         for name in contract_names:
             body_lines.append(f"- `{name}`")
         body_lines.append("")
+        body_lines.append("⚠️ Do not copy or use these addresses until this PR is merged. This is a notification only; after merge, use the new deployment addresses.")
+        body_lines.append("")
     if args.cc:
         body_lines.append("CC: " + " ".join(f"@{u}" for u in args.cc))
 

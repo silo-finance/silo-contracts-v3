@@ -62,6 +62,20 @@ CHAIN_TO_RPC_ENV: dict[str, str] = {
     "sonic": "RPC_SONIC",
 }
 
+# Chain folder name -> display name for summary lists
+CHAIN_DISPLAY_NAMES: dict[str, str] = {
+    "arbitrum_one": "Arbitrum",
+    "avalanche": "Avalanche",
+    "base": "Base",
+    "bnb": "BNB",
+    "injective": "Injective",
+    "ink": "Ink",
+    "mainnet": "Mainnet",
+    "okx": "OKX",
+    "optimism": "Optimism",
+    "sonic": "Sonic",
+}
+
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
@@ -279,6 +293,7 @@ def main() -> int:
     ok_count = 0
     fail_count = 0
     failed_contracts: list[tuple[str, str]] = []
+    pending_owner_contracts: list[tuple[str, str, str]] = []  # (component, contract_name, address)
 
     for component, contract_name, address, abi in deployments:
         if args.dry_run:
@@ -318,6 +333,7 @@ def main() -> int:
                 print(f"       -> pending owner: {pending_key}")
             else:
                 print(f"       -> pending owner: unknown ({pending})")
+            pending_owner_contracts.append((component, contract_name, address))
         has_failure = True
         fail_count += 1
         failed_contracts.append((component, contract_name))
@@ -326,11 +342,25 @@ def main() -> int:
         print(f"Dry-run: would check {len(deployments)} deployments for chain={chain}.")
         return 0
 
+    print()
     print(f"Summary: skipped={skip_count} ok={ok_count} fail={fail_count}")
+    print()
+
+    chain_label = CHAIN_DISPLAY_NAMES.get(chain, chain)
+
     if failed_contracts:
-        print("Contracts failing verification:")
+        print()
+        print(f"Contracts failing verification on {chain_label}:")
         for component, contract_name in failed_contracts:
             print(f"  - {component}/{contract_name}")
+
+    if pending_owner_contracts:
+        print()
+        print(f"Contracts with pending owner to accept on {chain_label}:")
+        for component, contract_name, address in pending_owner_contracts:
+            print(f"  - {component}/{contract_name}, {address}")
+        print()
+
     return 1 if has_failure else 0
 
 

@@ -232,6 +232,7 @@ def main() -> int:
     skip_count = 0
     ok_count = 0
     fail_count = 0
+    failed_contracts: list[tuple[str, str]] = []
 
     for component, contract_name, address, abi in deployments:
         if args.dry_run:
@@ -266,12 +267,17 @@ def main() -> int:
             print(f"[FAIL] {component} {contract_name} owner is {key} ({owner}), expected DAO")
         has_failure = True
         fail_count += 1
+        failed_contracts.append((component, contract_name))
 
     if args.dry_run:
         print(f"Dry-run: would check {len(deployments)} deployments for chain={chain}.")
         return 0
 
     print(f"Summary: skipped={skip_count} ok={ok_count} fail={fail_count}")
+    if failed_contracts:
+        print("Contracts failing verification:")
+        for component, contract_name in failed_contracts:
+            print(f"  - {component}/{contract_name}")
     return 1 if has_failure else 0
 
 

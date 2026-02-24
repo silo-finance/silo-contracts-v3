@@ -29,63 +29,13 @@ contract SiloDeployerIntegrationTest is Test {
     }
 
     /*
-    FOUNDRY_PROFILE=core_test RPC_URL=$RPC_INJECTIVE forge test -vv --ffi --mt test_compareToOldDeployer
+    FOUNDRY_PROFILE=core_test RPC_URL=$RPC_ARBITRUM forge test -vv --ffi --mt test_compareToOldDeployer
     */
     function test_compareToOldDeployer() public view {
         string memory i = " (This is verification test, adjust it when needed)";
         SiloDeployer oldDeployer = _getPreviousDeployer();
 
         console2.log("chain %s (%s)", ChainsLib.chainAlias(), ChainsLib.getChainId());
-
-        if (ChainsLib.getChainId() == ChainsLib.OPTIMISM_CHAIN_ID) {
-            if (
-                address(oldDeployer) == address(0)
-                    && address(siloDeployer) == 0x6225eF6256f945f490204D7F71e80B0FF84523dD
-            ) {
-                console2.log("there is no old deployer on this chain yet");
-                return;
-            }
-        }
-
-        if (ChainsLib.getChainId() == ChainsLib.INJECTIVE_CHAIN_ID) {
-            if (
-                address(oldDeployer) == address(0)
-                    && address(siloDeployer) == 0x931e59f06b83dD3d9A622FD4537989B6C63B9bde
-            ) {
-                console2.log("there is no old deployer on this chain yet");
-                return;
-            }
-        }
-
-        if (ChainsLib.getChainId() == ChainsLib.BASE_CHAIN_ID) {
-            if (
-                address(oldDeployer) == address(0)
-                    && address(siloDeployer) == 0x315a8319e94eFF8aa5FB11923c32E73Fca00E479
-            ) {
-                console2.log("there is no old deployer on this chain yet");
-                return;
-            }
-        }
-
-        if (ChainsLib.getChainId() == ChainsLib.BNB_CHAIN_ID) {
-            if (
-                address(oldDeployer) == address(0)
-                    && address(siloDeployer) == 0xa1D54744C9c2bAB2004CE7Fe1d781cca350fFa97
-            ) {
-                console2.log("there is no old deployer on this chain yet");
-                return;
-            }
-        }
-
-        if (ChainsLib.getChainId() == ChainsLib.OKX_CHAIN_ID) {
-            if (
-                address(oldDeployer) == address(0)
-                    && address(siloDeployer) == 0x2ca8f56ba6302477eb9e47E312db07706bEFEf3c
-            ) {
-                console2.log("there is no old deployer on this chain yet");
-                return;
-            }
-        }
 
         assertNotEq(address(oldDeployer), address(0), string.concat("Previous deployer not found", i));
         assertNotEq(
@@ -121,25 +71,25 @@ contract SiloDeployerIntegrationTest is Test {
         uint256 chainId = ChainsLib.getChainId();
 
         if (chainId == ChainsLib.AVALANCHE_CHAIN_ID) {
-            return SiloDeployer(0xBa4A545C497cbE13424da03ea13E81797239344e);
+            return SiloDeployer(0xcf8d34CffF69F8d4ab388395E24EF9c46f9a8992);
         } else if (chainId == ChainsLib.INK_CHAIN_ID) {
             return SiloDeployer(address(0));
         } else if (chainId == ChainsLib.SONIC_CHAIN_ID) {
-            return SiloDeployer(0x03e03B56BD24E0B3B206403596A40cF48fb54279);
+            return SiloDeployer(0x931e59f06b83dD3d9A622FD4537989B6C63B9bde);
         } else if (chainId == ChainsLib.MAINNET_CHAIN_ID) {
-            return SiloDeployer(0xc4832aEbD785d9A35608E9Abc5d644A2e616311d);
+            return SiloDeployer(0x5418cC3C992C19fB7A3AF812Da0d8bbb28eD558C);
         } else if (chainId == ChainsLib.OPTIMISM_CHAIN_ID) {
-            return SiloDeployer(address(0));
+            return SiloDeployer(0x6225eF6256f945f490204D7F71e80B0FF84523dD);
         } else if (chainId == ChainsLib.ARBITRUM_ONE_CHAIN_ID) {
-            return SiloDeployer(0x1bdeBe3C773452e1f8FBE338fF4139539D9bC2f4);
+            return SiloDeployer(0x8c3024280BF126db4bDbA2B5dE5b22ccCb26db98);
         } else if (chainId == ChainsLib.INJECTIVE_CHAIN_ID) {
-            return SiloDeployer(address(0));
+            return SiloDeployer(0x931e59f06b83dD3d9A622FD4537989B6C63B9bde);
         } else if (chainId == ChainsLib.BASE_CHAIN_ID) {
             return SiloDeployer(address(0));
         } else if (chainId == ChainsLib.BNB_CHAIN_ID) {
-            return SiloDeployer(address(0));
+            return SiloDeployer(0xB2886994d8E7d84759b6e08D465094E71BfBad67);
         } else if (chainId == ChainsLib.OKX_CHAIN_ID) {
-            return SiloDeployer(address(0));
+            return SiloDeployer(0xB2886994d8E7d84759b6e08D465094E71BfBad67);
         }
 
         revert("Chain not supported");

@@ -103,7 +103,7 @@ jobs:
           - avalanche
           - base
           - bnb
-          - ink
+          # - ink
           - mainnet
           - okx
           - optimism

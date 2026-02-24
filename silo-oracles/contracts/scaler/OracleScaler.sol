@@ -2,13 +2,17 @@
 pragma solidity 0.8.28;
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
+import {Aggregator} from "../_common/Aggregator.sol";
+
+// solhint-disable ordering
 
 /// @notice OracleScaler is an oracle, which scales the token amounts to 18 decimals instead of original decimals.
 /// For example, USDC decimals are 6. 1 USDC is 10**6. This oracle will scale this amount to 10**18. If the token
 /// decimals > 18, this oracle will revert.
 /// This oracle was created to increase the precision for LTV calculation of low decimal tokens.
-contract OracleScaler is ISiloOracle {
+contract OracleScaler is ISiloOracle, Aggregator, IVersioned {
     /// @dev the amounts will be scaled to 18 decimals.
     uint8 public constant DECIMALS_TO_SCALE = 18;
 
@@ -36,11 +40,17 @@ contract OracleScaler is ISiloOracle {
         QUOTE_TOKEN = _quoteToken;
     }
 
-    // @inheritdoc ISiloOracle
+    /// @inheritdoc ISiloOracle
     function beforeQuote(address) external virtual {}
 
-    // @inheritdoc ISiloOracle
-    function quote(uint256 _baseAmount, address _baseToken) external virtual view returns (uint256 quoteAmount) {
+    /// @inheritdoc ISiloOracle
+    function quote(uint256 _baseAmount, address _baseToken)
+        public
+        view
+        virtual
+        override(Aggregator, ISiloOracle)
+        returns (uint256 quoteAmount)
+    {
         require(_baseToken == QUOTE_TOKEN, AssetNotSupported());
 
         quoteAmount = _baseAmount * SCALE_FACTOR;
@@ -48,8 +58,19 @@ contract OracleScaler is ISiloOracle {
         require(quoteAmount != 0, ZeroPrice());
     }
 
-    // @inheritdoc ISiloOracle
-    function quoteToken() external virtual view returns (address) {
+    /// @inheritdoc ISiloOracle
+    function quoteToken() external view virtual returns (address) {
         return address(QUOTE_TOKEN);
+    }
+
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure override returns (string memory version) {
+        version = "OracleScaler 4.0.0";
+    }
+
+    /// @inheritdoc Aggregator
+    function baseToken() public view virtual override returns (address token) {
+        return QUOTE_TOKEN;
     }
 }

@@ -48,6 +48,20 @@ contract OracleScalerTest is Test {
         assertTrue(factory.createdInFactory(scaler));
     }
 
+    function test_OracleScaler_VERSION() public {
+        OracleScaler scaler = OracleScaler(address(oracleDeployer.run()));
+        assertEq(scaler.VERSION(), "OracleScaler 4.0.0", "VERSION");
+    }
+
+    function test_OracleScaler_baseToken() public {
+        OracleScaler scaler = OracleScaler(address(oracleDeployer.run()));
+        address baseTokenAddr = scaler.baseToken();
+        assertEq(baseTokenAddr, USDC, "baseToken");
+
+        uint256 amount = 10 ** IERC20Metadata(baseTokenAddr).decimals();
+        scaler.quote(amount, baseTokenAddr);
+    }
+
     function test_OracleScaler_constructorVars() public {
         OracleScaler scaler = OracleScaler(address(oracleDeployer.run()));
 

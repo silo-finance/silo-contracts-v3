@@ -1,0 +1,68 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "silo-oracles/contracts/silo-virtual-assets/SiloVirtualAsset8Decimals.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.28;\n\ncontract SiloVirtualAsset8Decimals {\n    function name() external pure returns (string memory) {\n        return \"Silo Virtual Asset\";\n    }\n\n    function symbol() external pure returns (string memory) {\n        return \"SVA8D\";\n    }\n\n    function decimals() external pure returns (uint8) {\n        return 8;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "remappings": [
+      "forge-std/=gitmodules/forge-std/src/",
+      "silo-foundry-utils/=gitmodules/silo-foundry-utils/contracts/",
+      "properties/=gitmodules/crytic/properties/contracts/",
+      "silo-core/=silo-core/",
+      "silo-oracles/=silo-oracles/",
+      "silo-vaults/=silo-vaults/",
+      "ve-silo/=ve-silo/",
+      "@openzeppelin/=gitmodules/openzeppelin-contracts-5/",
+      "morpho-blue/=gitmodules/morpho-blue/src/",
+      "openzeppelin5/=gitmodules/openzeppelin-contracts-5/contracts/",
+      "openzeppelin5-upgradeable/=gitmodules/openzeppelin-contracts-upgradeable-5/contracts/",
+      "chainlink/=gitmodules/chainlink/contracts/src/",
+      "chainlink-ccip/=gitmodules/chainlink-ccip/contracts/src/",
+      "uniswap/=gitmodules/uniswap/",
+      "@uniswap/v3-core/=gitmodules/uniswap/v3-core/",
+      "balancer-labs/v2-solidity-utils/=external/balancer-v2-monorepo/pkg/solidity-utils/contracts/",
+      "balancer-labs/v2-interfaces/=external/balancer-v2-monorepo/pkg/interfaces/contracts/",
+      "balancer-labs/v2-liquidity-mining/=external/balancer-v2-monorepo/pkg/liquidity-mining/contracts/",
+      "pyth-sdk-solidity/=gitmodules/pyth-sdk-solidity/target_chains/ethereum/sdk/solidity/",
+      "a16z-erc4626-tests/=gitmodules/a16z-erc4626-tests/",
+      "ERC4626/=gitmodules/crytic/properties/lib/ERC4626/contracts/",
+      "createx/=gitmodules/pyth-sdk-solidity/lazer/contracts/evm/lib/createx/src/",
+      "crytic/=gitmodules/crytic/",
+      "ds-test/=gitmodules/openzeppelin-contracts-5/lib/forge-std/lib/ds-test/src/",
+      "erc4626-tests/=gitmodules/openzeppelin-contracts-5/lib/erc4626-tests/",
+      "halmos-cheatcodes/=gitmodules/morpho-blue/lib/halmos-cheatcodes/src/",
+      "openzeppelin-contracts-5/=gitmodules/openzeppelin-contracts-5/",
+      "openzeppelin-contracts-upgradeable-5/=gitmodules/openzeppelin-contracts-upgradeable-5/",
+      "openzeppelin-contracts-upgradeable/=gitmodules/pyth-sdk-solidity/lazer/contracts/evm/lib/openzeppelin-contracts-upgradeable/",
+      "openzeppelin-contracts/=gitmodules/openzeppelin-contracts-upgradeable-5/lib/openzeppelin-contracts/",
+      "solady/=gitmodules/pyth-sdk-solidity/lazer/contracts/evm/lib/createx/lib/solady/",
+      "solmate/=gitmodules/crytic/properties/lib/solmate/src/"
+    ],
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "metadata": {
+      "useLiteralContent": false,
+      "bytecodeHash": "ipfs",
+      "appendCBOR": true
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "devdoc",
+          "userdoc",
+          "metadata",
+          "abi"
+        ]
+      }
+    },
+    "evmVersion": "cancun",
+    "viaIR": false,
+    "libraries": {}
+  }
+}

@@ -11,6 +11,7 @@ import {ERC4626OracleWithUnderlyingFactory} from
     "silo-oracles/contracts/erc4626/ERC4626OracleWithUnderlyingFactory.sol";
 import {ERC4626OracleWithUnderlying} from "silo-oracles/contracts/erc4626/ERC4626OracleWithUnderlying.sol";
 import {SiloOraclesFactoriesContracts} from "silo-oracles/deploy/SiloOraclesFactoriesContracts.sol";
+import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {IERC4626OracleWithUnderlying} from "silo-oracles/contracts/interfaces/IERC4626OracleWithUnderlying.sol";
 
 /*
@@ -45,6 +46,18 @@ contract ERC4626OracleWithUnderlyingTest is Test {
      */
     function test_wrappedVault_deploy() public {
         // deploy pass
+    }
+
+    function test_ERC4626OracleWithUnderlying_VERSION() public view {
+        assertEq(oracle.VERSION(), "ERC4626OracleWithUnderlying 4.0.0", "VERSION");
+    }
+
+    function test_ERC4626OracleWithUnderlying_baseToken() public view {
+        address baseTokenAddr = oracle.baseToken();
+        assertEq(baseTokenAddr, wstUSR, "baseToken");
+
+        uint256 amount = 10 ** IERC20Metadata(baseTokenAddr).decimals();
+        oracle.quote(amount, baseTokenAddr);
     }
 
     /*

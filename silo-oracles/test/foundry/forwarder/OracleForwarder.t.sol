@@ -8,7 +8,7 @@ import {OracleForwarderFactoryDeploy} from "silo-oracles/deploy/OracleForwarderF
 import {IOracleForwarderFactory} from "silo-oracles/contracts/interfaces/IOracleForwarderFactory.sol";
 import {IOracleForwarder} from "silo-oracles/contracts/interfaces/IOracleForwarder.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
-
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {SiloOracleMock1} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMock1.sol";
 import {SiloOracleMock2} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMock2.sol";
 
@@ -44,6 +44,10 @@ contract OracleForwarderTest is Test {
     function test_OracleForwarder_setOracle_onlyOwner() public {
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, address(this)));
         _oracleForwarder.setOracle(ISiloOracle(address(_oracleMock2)));
+    }
+   
+    function test_OracleForwarder_VERSION() public view {
+        assertEq(IVersioned(address(_oracleForwarder)).VERSION(), "OracleForwarder 4.0.0");
     }
 
     // FOUNDRY_PROFILE=oracles forge test --mt test_OracleForwarder_setOracle
@@ -98,7 +102,7 @@ contract OracleForwarderTest is Test {
 
         uint256 quote1 = forwarder.quote(1, address(0));
 
-        assertEq(quote1, _oracleMock1.QUOTE_AMOUNT());
+        assertEq(quote1, _oracleMock1.price());
 
         vm.prank(_owner);
         _oracleForwarder.setOracle(ISiloOracle(address(_oracleMock2)));

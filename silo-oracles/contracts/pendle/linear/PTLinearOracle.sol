@@ -8,12 +8,14 @@ import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {IPTLinearOracleConfig} from "../../interfaces/IPTLinearOracleConfig.sol";
 import {IPTLinearOracle} from "../../interfaces/IPTLinearOracle.sol";
+import {Aggregator} from "../../_common/Aggregator.sol";
 
 import {ISparkLinearDiscountOracle} from "../../pendle/interfaces/ISparkLinearDiscountOracle.sol";
 
-contract PTLinearOracle is IPTLinearOracle, Initializable {
+contract PTLinearOracle is IPTLinearOracle, Initializable, Aggregator, IVersioned {
     IPTLinearOracleConfig public oracleConfig;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -37,7 +39,7 @@ contract PTLinearOracle is IPTLinearOracle, Initializable {
         external
         view
         virtual
-        override
+        override(Aggregator, AggregatorV3Interface)
         returns (uint80, int256 answer, uint256, uint256, uint80)
     {
         IPTLinearOracleConfig.OracleConfig memory cfg = oracleConfig.getConfig();
@@ -52,7 +54,7 @@ contract PTLinearOracle is IPTLinearOracle, Initializable {
     }
 
     /// @inheritdoc AggregatorV3Interface
-    function description() external view returns (string memory) {
+    function description() external view override(Aggregator, AggregatorV3Interface) virtual returns (string memory) {
         string memory baseSymbol = TokenHelper.symbol(oracleConfig.getConfig().ptToken);
         string memory quoteSymbol = TokenHelper.symbol(oracleConfig.getConfig().hardcodedQuoteToken);
         return string.concat("PTLinearOracle for ", baseSymbol, " / ", quoteSymbol);
@@ -68,23 +70,26 @@ contract PTLinearOracle is IPTLinearOracle, Initializable {
         // nothing to execute
     }
 
-    /// @inheritdoc AggregatorV3Interface
-    function decimals() external pure returns (uint8) {
-        return 18;
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure override returns (string memory version) {
+        version = "PTLinearOracle 4.0.0";
     }
 
-    /// @inheritdoc AggregatorV3Interface
-    function version() external pure returns (uint256) {
-        return 1;
-    }
-
-    /// @notice not in use, always returns 0s, use latestRoundData instead
-    function getRoundData(uint80 /* _roundId */ ) external pure returns (uint80, int256, uint256, uint256, uint80) {
-        return (0, 0, 0, 0, 0);
+    /// @inheritdoc Aggregator
+    function baseToken() public view virtual override returns (address token) {
+        IPTLinearOracleConfig.OracleConfig memory cfg = oracleConfig.getConfig();
+        return cfg.ptToken;
     }
 
     /// @inheritdoc ISiloOracle
-    function quote(uint256 _baseAmount, address _baseToken) public view virtual returns (uint256 quoteAmount) {
+    function quote(uint256 _baseAmount, address _baseToken)
+        public
+        view
+        virtual
+        override(Aggregator, ISiloOracle)
+        returns (uint256 quoteAmount)
+    {
         IPTLinearOracleConfig oracleCfg = oracleConfig;
         require(address(oracleCfg) != address(0), NotInitialized());
 

@@ -81,8 +81,8 @@ jobs:
                     cp target/release/silo-foundry-utils ../../silo-foundry-utils
                     ../../silo-foundry-utils --version
 
-            -   name: Check Deployer with ${{ matrix.match-rpc }}
+            -   name: Core Deployer for ${{ matrix.match-rpc }}
                 run: FOUNDRY_PROFILE=core_test RPC_URL=$${{ matrix.match-rpc }} forge test --mc SiloDeployerIntegrationTest --ffi -vv
             
-            -   name: Check Vaults Deployer with ${{ matrix.match-rpc }}
+            -   name: Vaults Deployer for ${{ matrix.match-rpc }}
                 run: FOUNDRY_PROFILE=vaults_tests RPC_URL=$${{ matrix.match-rpc }} forge test --mc VaultsDeploymentAddressesTest --ffi -vv

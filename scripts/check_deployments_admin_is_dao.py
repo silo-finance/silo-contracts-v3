@@ -4,12 +4,12 @@ CI script: check that every deployed contract (core, oracle, vaults) that uses
 OpenZeppelin Access Control has the DEFAULT_ADMIN_ROLE holder equal to DAO from
 common/addresses for that chain.
 
-Uses AccessControlEnumerable: getRoleMemberCount(DEFAULT_ADMIN_ROLE) and
-getRoleMember(DEFAULT_ADMIN_ROLE, 0). DEFAULT_ADMIN_ROLE = bytes32(0).
-If the contract has no such methods (revert) -> SKIP. If admin != DAO -> FAIL.
+Uses deployment ABI to decide: only contracts whose ABI has getRoleMemberCount(bytes32)
+and getRoleMember(bytes32,uint256) are checked. Then eth_call getRoleMemberCount(DEFAULT_ADMIN_ROLE)
+and getRoleMember(DEFAULT_ADMIN_ROLE, 0). If admin != DAO -> FAIL.
 
 Output and behaviour mirror check_deployments_owner_is_dao.py: one line per
-contract ([OK] / [skip] / [FAIL]), no summary, exit 1 if any FAIL.
+contract ([ ok ] / [skip] / [FAIL]), no summary, exit 1 if any FAIL.
 
 Usage:
 
@@ -79,10 +79,29 @@ def get_dao_address(common_addresses: dict[str, str]) -> str | None:
     return common_addresses.get("DAO")
 
 
+def abi_has_access_control_admin(abi: list | None) -> bool:
+    """True if ABI has getRoleMemberCount(bytes32) and getRoleMember(bytes32,uint256) (AccessControlEnumerable)."""
+    if not abi:
+        return False
+    has_count = has_member = False
+    for item in abi:
+        if not (isinstance(item, dict) and item.get("type") == "function"):
+            continue
+        name = item.get("name")
+        ins = item.get("inputs") or []
+        types = [inp.get("type") for inp in ins]
+        if name == "getRoleMemberCount" and types == ["bytes32"]:
+            has_count = True
+        if name == "getRoleMember" and types == ["bytes32", "uint256"]:
+            has_member = True
+    return has_count and has_member
+
+
 def collect_deployment_addresses(
     repo_root: Path, chain: str, components: list[str]
-) -> list[tuple[str, str, str]]:
-    out: list[tuple[str, str, str]] = []
+) -> list[tuple[str, str, str, list | None]]:
+    """Returns list of (component, contract_name, address, abi). abi is from deployment JSON or None."""
+    out: list[tuple[str, str, str, list | None]] = []
     for comp in components:
         base = repo_root / COMPONENT_PATHS[comp] / chain
         if not base.exists():
@@ -95,7 +114,10 @@ def collect_deployment_addresses(
                     name = j.stem
                     if name.endswith(".sol"):
                         name = name[:-4]
-                    out.append((comp, name, addr.lower()))
+                    abi = data.get("abi")
+                    if not isinstance(abi, list):
+                        abi = None
+                    out.append((comp, name, addr.lower(), abi))
             except (json.JSONDecodeError, OSError):
                 continue
     return out
@@ -194,7 +216,7 @@ def main() -> int:
 
     has_failure = False
 
-    for component, contract_name, address in deployments:
+    for component, contract_name, address, abi in deployments:
         if args.dry_run:
             print(f"[dry-run] {component} {contract_name} {address}")
             continue
@@ -203,13 +225,17 @@ def main() -> int:
             print(f"[skip] {component} {contract_name} excluded from check")
             continue
 
+        if not abi_has_access_control_admin(abi):
+            print(f"[skip] {component} {contract_name} no AccessControl")
+            continue
+
         admin = eth_call_admin(rpc_url, address)
         if admin is None:
-            print(f"[skip] {component} {contract_name} no DEFAULT_ADMIN_ROLE / getRoleMember")
+            print(f"[skip] {component} {contract_name} getRoleMember call failed")
             continue
 
         if admin == dao_address:
-            print(f"[OK] {component} {contract_name} admin is DAO")
+            print(f"[ ok ] {component} {contract_name} admin is DAO")
             continue
 
         key = addr_to_key.get(admin)

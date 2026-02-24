@@ -4,9 +4,9 @@ CI script: check that every deployed contract (core, oracle, vaults) that has an
 owner() returns an owner that is the DAO from common/addresses for that chain.
 
 Intended to run in CI matrix per blockchain. For each chain:
-  - Load all deployment addresses from silo-core, silo-oracles, silo-vaults.
-  - For each address: eth_call owner(). If the call reverts, skip (contract may not have owner).
-  - If owner() succeeds: check that the owner address exists in common/addresses/<chain>.json
+  - Load all deployment addresses (and ABI) from silo-core, silo-oracles, silo-vaults.
+  - For each address: if the deployment ABI has no owner() function, skip (no RPC call).
+  - If ABI has owner(): eth_call owner() and check that the owner is DAO in common/addresses/<chain>.json
     and that the key is "DAO". If key is DAO -> pass (green). If key is something else or
     owner not in file -> CI fail with a clear message (contract name, owner address, key or "not in common-addresses").
 
@@ -101,14 +101,30 @@ def get_dao_address(common_addresses: dict[str, str]) -> str | None:
     return common_addresses.get("DAO")
 
 
+def abi_has_owner(abi: list | None) -> bool:
+    """True if ABI declares a view function owner() with no arguments (Ownable)."""
+    if not abi:
+        return False
+    for item in abi:
+        if (
+            isinstance(item, dict)
+            and item.get("type") == "function"
+            and item.get("name") == "owner"
+        ):
+            ins = item.get("inputs") or []
+            if len(ins) == 0:
+                return True
+    return False
+
+
 def collect_deployment_addresses(
     repo_root: Path, chain: str, components: list[str]
-) -> list[tuple[str, str, str]]:
+) -> list[tuple[str, str, str, list | None]]:
     """
-    Returns list of (component, contract_name, address) for the given chain.
-    Scans *.*.json under each component's deployments/<chain>/ (includes .sol.json and other .json with "address").
+    Returns list of (component, contract_name, address, abi) for the given chain.
+    abi is the "abi" array from the deployment JSON, or None if missing.
     """
-    out: list[tuple[str, str, str]] = []
+    out: list[tuple[str, str, str, list | None]] = []
     for comp in components:
         base = repo_root / COMPONENT_PATHS[comp] / chain
         if not base.exists():
@@ -118,10 +134,13 @@ def collect_deployment_addresses(
                 data = json.loads(j.read_text(encoding="utf-8"))
                 addr = (data.get("address") or "").strip()
                 if isinstance(addr, str) and addr.startswith("0x") and len(addr) >= 42:
-                    name = j.stem  # e.g. SiloFactory.sol -> SiloFactory, or LiquidationHelper_1INCH
+                    name = j.stem
                     if name.endswith(".sol"):
                         name = name[:-4]
-                    out.append((comp, name, addr.lower()))
+                    abi = data.get("abi")
+                    if not isinstance(abi, list):
+                        abi = None
+                    out.append((comp, name, addr.lower(), abi))
             except (json.JSONDecodeError, OSError):
                 continue
     return out
@@ -211,7 +230,7 @@ def main() -> int:
 
     has_failure = False
 
-    for component, contract_name, address in deployments:
+    for component, contract_name, address, abi in deployments:
         if args.dry_run:
             print(f"[dry-run] {component} {contract_name} {address}")
             continue
@@ -220,13 +239,17 @@ def main() -> int:
             print(f"[skip] {component} {contract_name} excluded from check")
             continue
 
-        owner = eth_call_owner(rpc_url, address)
-        if owner is None:
+        if not abi_has_owner(abi):
             print(f"[skip] {component} {contract_name} no owner()")
             continue
 
+        owner = eth_call_owner(rpc_url, address)
+        if owner is None:
+            print(f"[skip] {component} {contract_name} owner() call failed")
+            continue
+
         if owner == dao_address:
-            print(f"[OK] {component} {contract_name} owner is DAO")
+            print(f"[ ok ] {component} {contract_name} owner is DAO")
             continue
 
         key = addr_to_key.get(owner)

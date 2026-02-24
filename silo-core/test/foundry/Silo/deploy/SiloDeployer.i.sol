@@ -83,7 +83,7 @@ contract SiloDeployerIntegrationTest is Test {
         } else if (chainId == ChainsLib.INJECTIVE_CHAIN_ID) {
             return SiloDeployer(0x931e59f06b83dD3d9A622FD4537989B6C63B9bde);
         } else if (chainId == ChainsLib.BASE_CHAIN_ID) {
-            return SiloDeployer(0x315a8319e94eFF8aa5FB11923c32E73Fca00E479);
+            return SiloDeployer(0x27a96951d7aad034265A285C395225C295384688);
         } else if (chainId == ChainsLib.BNB_CHAIN_ID) {
             return SiloDeployer(0xB2886994d8E7d84759b6e08D465094E71BfBad67);
         } else if (chainId == ChainsLib.OKX_CHAIN_ID) {

@@ -21,10 +21,12 @@ on:
         branches: [ master, develop ]
         paths:
             - 'silo-core/deployments/*/*.json'
+            - '.github/workflows/silo-deployer.yml'
 
     pull_request:
         paths:
             - 'silo-core/deployments/*/*.json'
+            - '.github/workflows/silo-deployer.yml'
 
 jobs:
     silo-deployer-tests:

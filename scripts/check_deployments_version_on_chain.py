@@ -629,7 +629,7 @@ def main() -> int:
             continue
         on_chain = on_chain_by_key.get(("core", display_name))
         if on_chain is None:
-            print(f"[FAIL] core expected {expected} on_chain (read failed) {impl_addr}")
+            print(f"[FAIL] core {display_name} expected {expected} on_chain (read failed) {impl_addr}")
             has_failure = True
             fail_count += 1
             continue
@@ -637,7 +637,7 @@ def main() -> int:
             print(f"[ ok ] core {display_name} {expected}")
             ok_count += 1
             continue
-        print(f"[FAIL] core expected {expected} on_chain {on_chain} {impl_addr}")
+        print(f"[FAIL] core {display_name} expected {expected} on_chain {on_chain} {impl_addr}")
         has_failure = True
         fail_count += 1
 

@@ -1,8 +1,8 @@
-# Run owner-is-DAO check when any deployment artifact changes.
-# Verifies that every deployed contract (core, oracle, vaults) that has owner()
-# has owner == DAO from common/addresses for that chain.
+# Run owner-is-DAO and admin-is-DAO checks when any deployment artifact changes.
+# Owner: every contract with owner() must have owner == DAO.
+# Admin: every contract with DEFAULT_ADMIN_ROLE (AccessControl) must have admin == DAO.
 
-name: Check deployments owner is DAO
+name: Check deployments owner and admin is DAO
 
 on:
   push:
@@ -13,6 +13,7 @@ on:
       - silo-vaults/deployments/**
       - common/addresses/**
       - scripts/check_deployments_owner_is_dao.py
+      - scripts/check_deployments_admin_is_dao.py
       - .github/workflows/check-deployments-owner-dao.yml
   pull_request:
     branches: [master]
@@ -22,6 +23,7 @@ on:
       - silo-vaults/deployments/**
       - common/addresses/**
       - scripts/check_deployments_owner_is_dao.py
+      - scripts/check_deployments_admin_is_dao.py
       - .github/workflows/check-deployments-owner-dao.yml
 
 env:
@@ -62,3 +64,29 @@ jobs:
 
       - name: Check deployment owners are DAO (${{ matrix.chain }})
         run: python3 scripts/check_deployments_owner_is_dao.py --chain ${{ matrix.chain }}
+
+  admin-is-dao:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chain:
+          - arbitrum_one
+          - avalanche
+          - base
+          - bnb
+          - ink
+          - mainnet
+          - okx
+          - optimism
+          - sonic
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check deployment admins are DAO (${{ matrix.chain }})
+        run: python3 scripts/check_deployments_admin_is_dao.py --chain ${{ matrix.chain }}

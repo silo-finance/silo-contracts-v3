@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Detect changed factory/deployer deployment files between two git refs and optionally
+Detect changed factory deployment files between two git refs and optionally
 output a PR comment body.
 
-Used by CI to post a single (editable) comment on PRs when any factory or deployer
+Used by CI to post a single (editable) comment on PRs when any factory
 deployments change (silo-core, silo-vaults, silo-oracles). Contract names are listed
 without addresses; CC users can be included.
 
@@ -38,13 +38,13 @@ CC_USERS = ["yvesfracari", "jean-neiverth"]
 
 
 def is_factory_deployment_path(relpath: str) -> bool:
-    """True if path is under a deployment root and filename looks like a factory/deployer."""
+    """True if path is under a deployment root and filename is a factory (*Factory*.sol.json)."""
     if not any(relpath.startswith(root) for root in DEPLOYMENT_ROOTS):
         return False
     name = Path(relpath).name
     if not name.endswith(".sol.json"):
         return False
-    return "Factory" in name or "Deployer" in name
+    return "Factory" in name
 
 
 def contract_name_from_path(relpath: str) -> str:
@@ -67,7 +67,7 @@ def get_changed_files(base: str, head: str, repo_root: Path) -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="List changed factory/deployer deployments and optionally format as PR comment.",
+        description="List changed factory deployments and optionally format as PR comment.",
     )
     parser.add_argument(
         "--base",
@@ -106,15 +106,15 @@ def main() -> int:
     # Format as PR comment body
     if not contract_names:
         body_lines = [
-            "🏭 📦 **Factories & deployers**",
+            "🏭 **Factories**",
             "",
-            "No factory or deployer deployment changes in this PR.",
+            "No factory deployment changes in this PR.",
         ]
     else:
         body_lines = [
-            "🏭 📦 **Factories & deployers**",
+            "🏭 **Factories**",
             "",
-            "Changed factory/deployer deployments (contract names):",
+            "Changed factory deployments (contract names):",
             "",
         ]
         for name in contract_names:

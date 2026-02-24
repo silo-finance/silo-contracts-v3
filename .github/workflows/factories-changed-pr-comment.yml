@@ -1,4 +1,4 @@
-# When any factory or deployer deployments change (silo-core, silo-vaults, silo-oracles),
+# When any factory deployments change (silo-core, silo-vaults, silo-oracles),
 # post or update a single comment on the PR with the list of changed contract names and CC.
 # The comment is updated on each push (same comment, not a new one).
 

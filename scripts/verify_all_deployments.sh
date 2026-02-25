@@ -16,13 +16,13 @@ set -euo pipefail
 # =============================================================================
 
 # RPC URL for the blockchain (can be overridden by environment variable)
-RPC_URL=$RPC_MAINNET    
+RPC_URL=$RPC_INJECTIVE
 
 # Verifier API URL (etherscan, blockscout, snowscan, etc.)
-VERIFIER_URL=$VERIFIER_URL_MAINNET
+VERIFIER_URL=$VERIFIER_URL_INJECTIVE
 
 # Verifier type: etherscan | blockscout | ...
-VERIFIER="${VERIFIER:-etherscan}"
+VERIFIER="${VERIFIER:-blockscout}"
 
 # List of deploy scripts to verify (path relative to repo root)
 # Format: "path/to/ScriptDeploy.s.sol"

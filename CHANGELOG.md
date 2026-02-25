@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [4.3.0] - 2026-02-24
 ### Updated
 - redeploy SiloFactory, Silo implementation, SiloDeployer after fixing forge linter issues
+- change DAO address on Optimism
 
 ## [4.2.0] - 2026-02-23
 ### Added

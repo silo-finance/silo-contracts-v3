@@ -37,6 +37,8 @@ from pathlib import Path
 OWNER_SELECTOR = "0x8da5cb5b"
 # pendingOwner() selector (Ownable2Step)
 PENDING_OWNER_SELECTOR = "0xe30c3978"
+# acceptOwnership() selector (Ownable2Step)
+ACCEPT_OWNERSHIP_SELECTOR = "0x79ba5097"
 
 # Component name -> deployments path relative to repo root
 COMPONENT_PATHS = {
@@ -358,7 +360,9 @@ def main() -> int:
         print()
         print(f"Contracts with pending owner to accept on {chain_label}:")
         for component, contract_name, address, pending_owner in pending_owner_contracts:
-            print(f"  - {component}/{contract_name} (pending owner: {pending_owner})")
+            print(f"  - {component}/{contract_name} {address} (pending owner: {pending_owner})")
+        print()
+        print(f"Acceptance ownership method signature: acceptOwnership() {ACCEPT_OWNERSHIP_SELECTOR}")
         print()
 
     return 1 if has_failure else 0

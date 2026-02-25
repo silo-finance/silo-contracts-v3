@@ -35,12 +35,12 @@ SILO_VAULTS_FACTORY_SELECTOR = "0x8dd579c9"
 
 # SiloDeployer immutable getters: (display_name, selector, contract_name for expected version)
 SILO_DEPLOYER_GETTERS: list[tuple[str, str, str]] = [
-    ("InterestRateModelV2Factory (via SiloDeployer.IRM_CONFIG_FACTORY)", "0x28cdfde0", "InterestRateModelV2Factory"),
-    ("DynamicKinkModelFactory (via SiloDeployer.DYNAMIC_KINK_MODEL_FACTORY)", "0x0ec00513", "DynamicKinkModelFactory"),
-    ("SiloFactory (via SiloDeployer.SILO_FACTORY)", "0x5956617c", "SiloFactory"),
-    ("Silo (via SiloDeployer.SILO_IMPL)", "0xdb35c403", "Silo"),
-    ("ShareProtectedCollateralToken (via SiloDeployer.SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL)", "0xc2bcfc51", "ShareProtectedCollateralToken"),
-    ("ShareDebtToken (via SiloDeployer.SHARE_DEBT_TOKEN_IMPL)", "0x654ec411", "ShareDebtToken"),
+    ("InterestRateModelV2Factory (via SiloDeployer)", "0x28cdfde0", "InterestRateModelV2Factory"),
+    ("DynamicKinkModelFactory (via SiloDeployer)", "0x0ec00513", "DynamicKinkModelFactory"),
+    ("SiloFactory (via SiloDeployer)", "0x5956617c", "SiloFactory"),
+    ("Silo (via SiloDeployer)", "0xdb35c403", "Silo"),
+    ("ShareProtectedCollateralToken (via SiloDeployer)", "0xc2bcfc51", "ShareProtectedCollateralToken"),
+    ("ShareDebtToken (via SiloDeployer)", "0x654ec411", "ShareDebtToken"),
 ]
 
 COMPONENT_PATHS: dict[str, dict[str, str]] = {
@@ -432,8 +432,9 @@ def main() -> int:
     skip_count = 0
     ok_count = 0
     fail_count = 0
+    failed_contracts: list[tuple[str, str, str]] = []  # (component, display_name, address)
 
-    dkm_impl_name = "DynamicKinkModel (via DynamicKinkModelFactory.IRM)"
+    dkm_impl_name = "DynamicKinkModel (via DynamicKinkModelFactory)"
     dkm_expected: str | None = None
     if ("core", "DynamicKinkModelFactory") in deployments_by_key:
         dkm_src = find_contract_source(repo_root, "DynamicKinkModel", Path(COMPONENT_PATHS["core"]["contracts_root"]))
@@ -489,7 +490,7 @@ def main() -> int:
         factory_from_deployer = call_zero_arg_address_getter(rpc_url, vault_deployer_addr, SILO_VAULTS_FACTORY_SELECTOR)
         factory_deployed_addr = deployments_by_key[("vaults", "SiloVaultsFactory")]
         if factory_from_deployer and factory_from_deployer.lower() == factory_deployed_addr.lower():
-            display_name_override[("vaults", "SiloVaultsFactory")] = "SiloVaultsFactory (via SiloVaultDeployer.SILO_VAULTS_FACTORY)"
+            display_name_override[("vaults", "SiloVaultsFactory")] = "SiloVaultsFactory (via SiloVaultDeployer)"
 
     # One RPC call: getVersions(address[]) for all versioned contracts + IRM + oracle impls + SiloDeployer immutables.
     # Build explicit (name, address) pairs in sorted order so name and result stay paired.
@@ -565,6 +566,7 @@ def main() -> int:
             print(f"[FAIL] {component} {name_display} expected {expected} on_chain (read failed) {addr}")
             has_failure = True
             fail_count += 1
+            failed_contracts.append((component, name_display, addr))
             continue
         if on_chain == expected:
             print(f"[ ok ] {component} {name_display} {expected}")
@@ -573,6 +575,7 @@ def main() -> int:
         print(f"[FAIL] {component} {name_display} expected {expected} on_chain {on_chain} {addr}")
         has_failure = True
         fail_count += 1
+        failed_contracts.append((component, name_display, addr))
 
     # Custom check: DynamicKinkModel version via DynamicKinkModelFactory.IRM() (version fetched in same batch above)
     if ("core", "DynamicKinkModelFactory") in deployments_by_key and dkm_expected is not None:
@@ -585,6 +588,8 @@ def main() -> int:
                 print(f"[FAIL] core expected {dkm_expected} on_chain (read failed) {irm_addr_for_fail}")
                 has_failure = True
                 fail_count += 1
+                if irm_addr:
+                    failed_contracts.append(("core", dkm_impl_name, irm_addr))
             elif dkm_on_chain == dkm_expected:
                 print(f"[ ok ] core {dkm_impl_name} {dkm_expected}")
                 ok_count += 1
@@ -593,6 +598,8 @@ def main() -> int:
                 print(f"[FAIL] core expected {dkm_expected} on_chain {dkm_on_chain} {irm_addr_fail}")
                 has_failure = True
                 fail_count += 1
+                if irm_addr:
+                    failed_contracts.append(("core", dkm_impl_name, irm_addr))
 
     # Custom checks: oracle implementations from factory ORACLE_IMPLEMENTATION()
     for display_name, factory_name, _impl_name, expected in oracle_custom_checks:
@@ -616,6 +623,7 @@ def main() -> int:
             print(f"[FAIL] oracle expected {expected} on_chain (read failed) {impl_addr}")
             has_failure = True
             fail_count += 1
+            failed_contracts.append(("oracle", display_name, impl_addr))
             continue
         if on_chain == expected:
             print(f"[ ok ] oracle {display_name} {expected}")
@@ -624,6 +632,7 @@ def main() -> int:
         print(f"[FAIL] oracle expected {expected} on_chain {on_chain} {impl_addr}")
         has_failure = True
         fail_count += 1
+        failed_contracts.append(("oracle", display_name, impl_addr))
 
     # Custom checks: SiloDeployer immutable getters (SILO_IMPL, SILO_FACTORY, etc.)
     for display_name, expected, _selector in silo_deployer_checks:
@@ -645,6 +654,7 @@ def main() -> int:
             print(f"[FAIL] core {display_name} expected {expected} on_chain (read failed) {impl_addr}")
             has_failure = True
             fail_count += 1
+            failed_contracts.append(("core", display_name, impl_addr))
             continue
         if on_chain == expected:
             print(f"[ ok ] core {display_name} {expected}")
@@ -653,12 +663,23 @@ def main() -> int:
         print(f"[FAIL] core {display_name} expected {expected} on_chain {on_chain} {impl_addr}")
         has_failure = True
         fail_count += 1
+        failed_contracts.append(("core", display_name, impl_addr))
 
     if args.dry_run:
         print(f"Dry-run: {len(expected_by_key)} versioned, {len(all_deployments) - len(expected_by_key)} skipped.")
         return 0
 
+    print()
     print(f"Summary: skipped={skip_count} ok={ok_count} fail={fail_count}")
+    print()
+
+    if failed_contracts:
+        print()
+        print("Contracts with outdated versions (name, address):")
+        for component, display_name, address in failed_contracts:
+            print(f"  - {component}/{display_name}, {address}")
+        print()
+
     return 1 if has_failure else 0
 
 

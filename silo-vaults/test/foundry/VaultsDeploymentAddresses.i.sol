@@ -12,7 +12,7 @@ import {SiloCoreContracts, SiloCoreDeployments} from "silo-core/common/SiloCoreC
 import {SiloVaultDeployer} from "silo-vaults/contracts/SiloVaultDeployer.sol";
 
 /*
- FOUNDRY_PROFILE=vaults_tests forge test --ffi --mc VaultsDeploymentAddressesTest -vvv
+ FOUNDRY_PROFILE=vaults_tests RPC_URL=$RPC_INJECTIVE forge test --ffi --mc VaultsDeploymentAddressesTest -vvv
 */
 contract VaultsDeploymentAddressesTest is Test {
     function setUp() public {
@@ -30,34 +30,30 @@ contract VaultsDeploymentAddressesTest is Test {
         return ChainsLib.chainAlias();
     }
 
-    function test_vaultDeployer_factory() public {
+    function test_vaultDeployer_factories() public {
         string memory chainAlias = _chainAlias();
-        SiloVaultDeployer vaultDeployer = SiloVaultDeployer(payable(SiloVaultsDeployments.get(SiloVaultsContracts.SILO_VAULT_DEPLOYER, chainAlias)));
+        SiloVaultDeployer vaultDeployer = SiloVaultDeployer(
+            payable(SiloVaultsDeployments.get(SiloVaultsContracts.SILO_VAULT_DEPLOYER, chainAlias))
+        );
 
-        assertEq(address(vaultDeployer.SILO_VAULTS_FACTORY()), SiloVaultsDeployments.get(SiloVaultsContracts.SILO_VAULTS_FACTORY, chainAlias), "SILO_VAULTS_FACTORY");
-    }
+        console2.log("vaultDeployer", address(vaultDeployer));
 
-    // SILO_INCENTIVES_CONTROLLER_FACTORY (from silo-core)
-    function test_vaultDeployer_incentivesControllerFactory() public {
-        string memory chainAlias = _chainAlias();
-        SiloVaultDeployer vaultDeployer = SiloVaultDeployer(payable(SiloVaultsDeployments.get(SiloVaultsContracts.SILO_VAULT_DEPLOYER, chainAlias)));
+        assertEq(
+            address(vaultDeployer.SILO_INCENTIVES_CONTROLLER_FACTORY()),
+            SiloCoreDeployments.get(SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY, chainAlias),
+            "SILO_INCENTIVES_CONTROLLER_FACTORY"
+        );
 
-        assertEq(address(vaultDeployer.SILO_INCENTIVES_CONTROLLER_FACTORY()), SiloCoreDeployments.get(SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY, chainAlias), "SILO_INCENTIVES_CONTROLLER_FACTORY");
-    }
+        assertEq(
+            address(vaultDeployer.SILO_INCENTIVES_CONTROLLER_CL_FACTORY()),
+            SiloVaultsDeployments.get(SiloVaultsContracts.SILO_INCENTIVES_CONTROLLER_CL_FACTORY, chainAlias),
+            "SILO_INCENTIVES_CONTROLLER_CL_FACTORY"
+        );
 
-    // SILO_INCENTIVES_CONTROLLER_CL_FACTORY
-    function test_vaultDeployer_incentivesControllerCLFactory() public {
-        string memory chainAlias = _chainAlias();
-        SiloVaultDeployer vaultDeployer = SiloVaultDeployer(payable(SiloVaultsDeployments.get(SiloVaultsContracts.SILO_VAULT_DEPLOYER, chainAlias)));
-
-        assertEq(address(vaultDeployer.SILO_INCENTIVES_CONTROLLER_CL_FACTORY()), SiloVaultsDeployments.get(SiloVaultsContracts.SILO_INCENTIVES_CONTROLLER_CL_FACTORY, chainAlias), "SILO_INCENTIVES_CONTROLLER_CL_FACTORY");
-    }
-    
-    // IDLE_VAULTS_FACTORY
-    function test_vaultDeployer_idleVaultsFactory() public {
-        string memory chainAlias = _chainAlias();
-        SiloVaultDeployer vaultDeployer = SiloVaultDeployer(payable(SiloVaultsDeployments.get(SiloVaultsContracts.SILO_VAULT_DEPLOYER, chainAlias)));
-
-        assertEq(address(vaultDeployer.IDLE_VAULTS_FACTORY()), SiloVaultsDeployments.get(SiloVaultsContracts.IDLE_VAULTS_FACTORY, chainAlias), "IDLE_VAULTS_FACTORY");
+        assertEq(
+            address(vaultDeployer.IDLE_VAULTS_FACTORY()),
+            SiloVaultsDeployments.get(SiloVaultsContracts.IDLE_VAULTS_FACTORY, chainAlias),
+            "IDLE_VAULTS_FACTORY"
+        );
     }
 }

@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 """
+
+/api/v5/xlayer/contract/verify-contract-info?chainShortName=xlayer&contractAddress=0xcF80631b469A54dcba8c8ee1aF84505f496ed248
+https://web3.okx.com/xlayer/onchaindata/docs/en/#quickstart-guide-api-authentication
+
 Check deployment contract verification on explorer APIs (no HTML scraping).
 
 This script is matrix-friendly for CI:
@@ -24,8 +28,10 @@ Env vars per chain:
   EXPLORER_API_URL_<CHAIN>   (optional override)
 
 Example for arbitrum_one:
-  EXPLORER_API_KEY_ARBITRUM_ONE=...
+  ETHERSCAN_API_KEY=...
   EXPLORER_API_URL_ARBITRUM_ONE=https://api.arbiscan.io/api   # optional (default exists)
+
+Injective uses Blockscout (https://docs.blockscout.com/devs/apis/rpc); apikey is optional for Blockscout.
 """
 
 from __future__ import annotations
@@ -63,6 +69,7 @@ CHAIN_TO_CHAIN_ID: dict[str, str] = {
 # Defaults for etherscan-compatible endpoints.
 # Chains with multiple explorers (e.g. avalanche) list (label, url) tuples.
 # You can override via EXPLORER_API_URL_<CHAIN> for single-explorer chains.
+# Injective uses Blockscout (https://docs.blockscout.com/devs/apis/rpc) - same getsourcecode API.
 CHAIN_EXPLORERS: dict[str, list[tuple[str, str]]] = {
     "arbitrum_one": [("default", "https://api.etherscan.io/v2/api?chainid=42161")],
     "avalanche": [
@@ -70,6 +77,7 @@ CHAIN_EXPLORERS: dict[str, list[tuple[str, str]]] = {
         ("etherscan", "https://api.etherscan.io/v2/api?chainid=43114"),
     ],
     "base": [("default", "https://api.etherscan.io/v2/api?chainid=8453")],
+    "injective": [("default", "https://blockscout-api.injective.network/api")],
     "bnb": [("default", "https://api.etherscan.io/v2/api?chainid=56")],
     "mainnet": [("default", "https://api.etherscan.io/v2/api?chainid=1")],
     "optimism": [("default", "https://api.etherscan.io/v2/api?chainid=10")],
@@ -134,11 +142,14 @@ def resolve_api_config(chain: str) -> tuple[list[tuple[str, str]], str]:
     """
     suffix = chain_env_suffix(chain)
     url_env = f"EXPLORER_API_URL_{suffix}"
-    key_env = "ETHERSCAN_API_KEY"
+    key_env_suffix = f"ETHERSCAN_API_KEY_{suffix}"
+    key_env_default = "ETHERSCAN_API_KEY"
 
-    api_key = os.environ.get(key_env)
+    api_key = os.environ.get(key_env_suffix) or os.environ.get(key_env_default)
     if not api_key:
-        raise ValueError(f"API key not set for chain={chain}. Set {key_env}.")
+        raise ValueError(
+            f"API key not set for chain={chain}. Set {key_env_suffix} or {key_env_default}."
+        )
 
     env_url = os.environ.get(url_env)
     if env_url:
@@ -280,13 +291,23 @@ def fetch_getsourcecode(
 
 
 def is_verified_from_getsourcecode(payload: dict[str, Any]) -> tuple[bool, str | None]:
+    """Parse getsourcecode response. Supports both Etherscan (result=list) and Blockscout (result=dict)."""
     result = payload.get("result")
-    if not isinstance(result, list) or not result:
-        return False, "missing result[]"
+    if result is None:
+        return False, "missing result"
 
-    entry = result[0]
+    # Etherscan: result is list of one entry; Blockscout: result is single dict
+    if isinstance(result, list):
+        if not result:
+            return False, "empty result[]"
+        entry = result[0]
+    elif isinstance(result, dict):
+        entry = result
+    else:
+        return False, "result is not list or dict"
+
     if not isinstance(entry, dict):
-        return False, "result[0] is not object"
+        return False, "entry is not object"
 
     source_code = str(entry.get("SourceCode") or "").strip()
     abi = str(entry.get("ABI") or "").strip().lower()

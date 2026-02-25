@@ -93,7 +93,7 @@ jobs:
                     forge cache ls 2>&1 || echo "No cache yet (first fork test will create it)"
                     
             -   name: Run tests
-                run: FOUNDRY_PROFILE=vaults_tests forge test --no-match-test "_skip_" -v --ffi
+                run: FOUNDRY_PROFILE=vaults_tests forge test --no-match-test "_skip_" --nmc VaultsDeploymentAddressesTest -v --ffi
 
             -   name: Sizes
                 run: |

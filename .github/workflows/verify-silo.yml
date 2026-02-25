@@ -21,6 +21,7 @@ on:
     # Trigger only when the deployments file is changed
     paths:
       - 'silo-core/deploy/silo/_siloDeployments.json'
+      - '.github/workflows/verify-silo.yml'
 
 jobs:
   count-config-changes:

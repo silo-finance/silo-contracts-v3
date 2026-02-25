@@ -16,7 +16,7 @@ on:
             - yarn.lock
             - gitmodules/*
             - .gitmodules
-            - .github/workflows/silo-core.yml
+            - .github/workflows/crytic-to-foundry-tests.yml
 
     pull_request:
         paths:
@@ -32,7 +32,7 @@ on:
             - yarn.lock
             - gitmodules/*
             - .gitmodules
-            - .github/workflows/silo-core.yml
+            - .github/workflows/crytic-to-foundry-tests.yml
 
 jobs:
     CryticToFoundryDefaulting:

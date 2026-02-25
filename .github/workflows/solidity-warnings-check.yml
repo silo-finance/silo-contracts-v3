@@ -11,7 +11,7 @@ on:
       - 'package.json'
       - 'yarn.lock'
       - 'foundry.toml'
-      - '.github/workflows/solidity-compilation-check.yml'
+      - '.github/workflows/solidity-warnings-check.yml'
 
   pull_request:
     paths:
@@ -22,7 +22,7 @@ on:
       - 'package.json'
       - 'yarn.lock'
       - 'foundry.toml'
-      - '.github/workflows/solidity-compilation-check.yml'
+      - '.github/workflows/solidity-warnings-check.yml'
 
 env:
   RPC_MAINNET: ${{ secrets.RPC_MAINNET }}

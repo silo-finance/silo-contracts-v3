@@ -26,6 +26,14 @@ import {SiloDeployments} from "silo-core/deploy/silo/SiloDeployments.sol";
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/incentives-controller/SiloIncentivesControllerDefaulting.s.sol:SiloIncentivesControllerDefaulting \
         --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify
+
+    // verify SiloIncentiveController:
+    FOUNDRY_PROFILE=core \
+        forge verify-contract --watch --rpc-url $RPC_ARBITRUM \
+        0xFA7E04Dd205619644269eaA9846b0E267E859A14 \
+        silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol:SiloIncentivesControllerCompatible \
+        --constructor-args $(cast abi-encode "constructor(address,address,address)" \
+        0xAaD2F138Eb20fb60C34ac70624339ccbaC2320fa 0x2174557e5ed2E8256284A5DF42A91b21db6313a9 0xe42E547c9c46c7b2bAd4914228699c0E09C1034D)
  */
 contract SiloIncentivesControllerDefaulting is CommonDeploy {
     error NotHookReceiverOwner();

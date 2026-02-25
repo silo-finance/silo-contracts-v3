@@ -22,7 +22,7 @@ import {SiloCoreContracts, SiloCoreDeployments} from "silo-core/common/SiloCoreC
 import {SiloDeployments} from "silo-core/deploy/silo/SiloDeployments.sol";
 
 /*
-    INCENTIVES_OWNER=GROWTH_MULTISIG SILO=wS_scUSD_Silo \
+    SILO=Test_Silo_WETH_USDC_id_3001 \
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/incentives-controller/SiloIncentivesControllerDefaulting.s.sol:SiloIncentivesControllerDefaulting \
         --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify

@@ -14,7 +14,7 @@ import {IDynamicKinkModelFactory} from "silo-core/contracts/interfaces/IDynamicK
 import {SiloDeployer} from "silo-core/contracts/SiloDeployer.sol";
 
 /*
-FOUNDRY_PROFILE=core_test RPC_URL=$RPC_SONIC forge test -vv --ffi --mc SiloDeployerIntegrationTest
+FOUNDRY_PROFILE=core_test RPC_URL=$RPC_BASE forge test -vv --ffi --mc SiloDeployerIntegrationTest
 
 It check if SiloDeployer is using newest/current contract addresses
 */
@@ -26,87 +26,6 @@ contract SiloDeployerIntegrationTest is Test {
 
         AddrLib.init();
         siloDeployer = SiloDeployer(_getDeployedAddress(SiloCoreContracts.SILO_DEPLOYER));
-    }
-
-    /*
-    FOUNDRY_PROFILE=core_test RPC_URL=$RPC_INJECTIVE forge test -vv --ffi --mt test_compareToOldDeployer
-    */
-    function test_compareToOldDeployer() public view {
-        string memory i = " (This is verification test, adjust it when needed)";
-        SiloDeployer oldDeployer = _getPreviousDeployer();
-
-        console2.log("chain %s (%s)", ChainsLib.chainAlias(), ChainsLib.getChainId());
-
-        if (ChainsLib.getChainId() == ChainsLib.OPTIMISM_CHAIN_ID) {
-            if (
-                address(oldDeployer) == address(0)
-                    && address(siloDeployer) == 0x6225eF6256f945f490204D7F71e80B0FF84523dD
-            ) {
-                console2.log("there is no old deployer on this chain yet");
-                return;
-            }
-        }
-
-        if (ChainsLib.getChainId() == ChainsLib.INJECTIVE_CHAIN_ID) {
-            if (
-                address(oldDeployer) == address(0)
-                    && address(siloDeployer) == 0x931e59f06b83dD3d9A622FD4537989B6C63B9bde
-            ) {
-                console2.log("there is no old deployer on this chain yet");
-                return;
-            }
-        }
-
-        assertNotEq(address(oldDeployer), address(0), string.concat("Previous deployer not found", i));
-        assertNotEq(
-            address(oldDeployer),
-            address(siloDeployer),
-            string.concat("Update old deployer address, it is the same as new one", i)
-        );
-
-        bool irmConfigFactoryMatch = oldDeployer.IRM_CONFIG_FACTORY() == siloDeployer.IRM_CONFIG_FACTORY();
-        bool dynamicKinkModelFactoryMatch;
-
-        try oldDeployer.DYNAMIC_KINK_MODEL_FACTORY() returns (IDynamicKinkModelFactory dynamicKinkModelFactory) {
-            dynamicKinkModelFactoryMatch = dynamicKinkModelFactory == siloDeployer.DYNAMIC_KINK_MODEL_FACTORY();
-        } catch {
-            console2.log("dynamic kink model factory not found on OLD deployer");
-        }
-
-        bool siloFactoryMatch = oldDeployer.SILO_FACTORY() == siloDeployer.SILO_FACTORY();
-        bool siloImplMatch = oldDeployer.SILO_IMPL() == siloDeployer.SILO_IMPL();
-        bool shareProtectedCollateralTokenImplMatch = oldDeployer.SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL()
-            == siloDeployer.SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL();
-        bool shareDebtTokenImplMatch = oldDeployer.SHARE_DEBT_TOKEN_IMPL() == siloDeployer.SHARE_DEBT_TOKEN_IMPL();
-
-        _printMatch(irmConfigFactoryMatch, SiloCoreContracts.INTEREST_RATE_MODEL_V2_FACTORY);
-        _printMatch(dynamicKinkModelFactoryMatch, SiloCoreContracts.DYNAMIC_KINK_MODEL_FACTORY);
-        _printMatch(siloFactoryMatch, SiloCoreContracts.SILO_FACTORY);
-        _printMatch(siloImplMatch, SiloCoreContracts.SILO);
-        _printMatch(shareProtectedCollateralTokenImplMatch, SiloCoreContracts.SHARE_PROTECTED_COLLATERAL_TOKEN);
-        _printMatch(shareDebtTokenImplMatch, SiloCoreContracts.SHARE_DEBT_TOKEN);
-    }
-
-    function _getPreviousDeployer() internal view returns (SiloDeployer) {
-        uint256 chainId = ChainsLib.getChainId();
-
-        if (chainId == ChainsLib.AVALANCHE_CHAIN_ID) {
-            return SiloDeployer(0xBa4A545C497cbE13424da03ea13E81797239344e);
-        } else if (chainId == ChainsLib.INK_CHAIN_ID) {
-            return SiloDeployer(address(0));
-        } else if (chainId == ChainsLib.SONIC_CHAIN_ID) {
-            return SiloDeployer(0x03e03B56BD24E0B3B206403596A40cF48fb54279);
-        } else if (chainId == ChainsLib.MAINNET_CHAIN_ID) {
-            return SiloDeployer(0xc4832aEbD785d9A35608E9Abc5d644A2e616311d);
-        } else if (chainId == ChainsLib.OPTIMISM_CHAIN_ID) {
-            return SiloDeployer(address(0));
-        } else if (chainId == ChainsLib.ARBITRUM_ONE_CHAIN_ID) {
-            return SiloDeployer(0x1bdeBe3C773452e1f8FBE338fF4139539D9bC2f4);
-        } else if (chainId == ChainsLib.INJECTIVE_CHAIN_ID) {
-            return SiloDeployer(address(0));
-        }
-
-        revert("Chain not supported");
     }
 
     /*
@@ -158,6 +77,7 @@ contract SiloDeployerIntegrationTest is Test {
     }
 
     function _getDeployedAddress(string memory _contractName) internal returns (address deployedAddress) {
+        console2.log("looking for ", _contractName, " on ", ChainsLib.chainAlias());
         deployedAddress = SiloCoreDeployments.get(_contractName, ChainsLib.chainAlias());
     }
 

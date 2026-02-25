@@ -25,14 +25,14 @@ import {CommonDeploy} from "./common/CommonDeploy.sol";
 /*
 FOUNDRY_PROFILE=vaults \
     forge script silo-vaults/deploy/SiloVaultsDeployerDeploy.s.sol:SiloVaultsDeployerDeploy \
-    --ffi --rpc-url $RPC_INK --broadcast --verify
+    --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify
 
 Resume verification:
 FOUNDRY_PROFILE=vaults \
     forge script silo-vaults/deploy/SiloVaultsDeployerDeploy.s.sol:SiloVaultsDeployerDeploy \
-    --ffi --rpc-url $RPC_INK \
+    --ffi --rpc-url $RPC_INJECTIVE \
     --verify \
-    --verifier blockscout --verifier-url $VERIFIER_URL_INK \
+    --verifier blockscout --verifier-url $VERIFIER_URL_INJECTIVE \
     --private-key $PRIVATE_KEY \
     --resume
 

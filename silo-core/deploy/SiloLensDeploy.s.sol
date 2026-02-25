@@ -12,7 +12,7 @@ import {ISiloLens} from "silo-core/contracts/interfaces/ISiloLens.sol";
 /*
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/SiloLensDeploy.s.sol \
-        --ffi --rpc-url $RPC_INJECTIVE --broadcast --verify
+        --ffi --rpc-url $RPC_OPTIMISM --broadcast --verify
 
     Resume verification:
     FOUNDRY_PROFILE=core \

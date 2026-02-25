@@ -1,0 +1,45 @@
+# When any factory deployments change (silo-core, silo-vaults, silo-oracles),
+# post or update a single comment on the PR with the list of changed contract names and CC.
+# The comment is updated on each push (same comment, not a new one).
+
+name: Factories changed – PR comment
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - silo-core/deployments/**
+      - silo-vaults/deployments/**
+      - silo-oracles/deployments/**
+      - scripts/changed_factories_pr_comment.py
+      - .github/workflows/factories-changed-pr-comment.yml
+
+jobs:
+  comment-factories-changed:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate comment body
+        id: comment
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.sha }}"
+          python3 scripts/changed_factories_pr_comment.py --base "$BASE" --head "$HEAD" --format comment > factories_comment.md
+          echo "Comment body written to factories_comment.md"
+
+      - name: Post or update comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: factories-changed
+          path: factories_comment.md

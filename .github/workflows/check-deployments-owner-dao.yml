@@ -1,0 +1,121 @@
+# Run owner-is-DAO and admin-is-DAO checks when any deployment artifact changes.
+# Owner: every contract with owner() must have owner == DAO.
+# Admin: every contract with DEFAULT_ADMIN_ROLE (AccessControl) must have admin == DAO.
+
+name: on-chain checks
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - silo-core/deployments/**
+      - silo-oracles/deployments/**
+      - silo-vaults/deployments/**
+      - common/addresses/**
+      - scripts/check_deployments_owner_is_dao.py
+      - scripts/check_deployments_admin_is_dao.py
+      - scripts/check_deployments_version_on_chain.py
+      - .github/workflows/check-deployments-owner-dao.yml
+  pull_request:
+    branches: [master]
+    paths:
+      - silo-core/deployments/**
+      - silo-oracles/deployments/**
+      - silo-vaults/deployments/**
+      - common/addresses/**
+      - scripts/check_deployments_owner_is_dao.py
+      - scripts/check_deployments_admin_is_dao.py
+      - scripts/check_deployments_version_on_chain.py
+      - .github/workflows/check-deployments-owner-dao.yml
+
+env:
+  RPC_MAINNET: ${{ secrets.RPC_MAINNET }}
+  RPC_ARBITRUM: ${{ secrets.RPC_ARBITRUM }}
+  RPC_OPTIMISM: ${{ secrets.RPC_OPTIMISM }}
+  RPC_SONIC: ${{ secrets.RPC_SONIC }}
+  RPC_AVALANCHE: ${{ secrets.RPC_AVALANCHE }}
+  RPC_INK: ${{ secrets.RPC_INK }}
+  RPC_BASE: ${{ secrets.RPC_BASE }}
+  RPC_BNB: ${{ secrets.RPC_BNB }}
+  RPC_OKX: ${{ secrets.RPC_OKX }}
+  RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
+
+jobs:
+  owner-is-dao:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chain:
+          - arbitrum_one
+          - avalanche
+          - base
+          - bnb
+          - ink
+          - mainnet
+          - okx
+          - optimism
+          - sonic
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # this will be ON once we have owners changes
+      # - name: Check if owners are DAO (${{ matrix.chain }})
+      #   run: python3 scripts/check_deployments_owner_is_dao.py --chain ${{ matrix.chain }}
+
+  admin-is-dao:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chain:
+          - arbitrum_one
+          - avalanche
+          - base
+          - bnb
+          - ink
+          - mainnet
+          - okx
+          - optimism
+          - sonic
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check if admins are DAO (${{ matrix.chain }})
+        run: python3 scripts/check_deployments_admin_is_dao.py --chain ${{ matrix.chain }}
+
+  version-on-chain:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chain:
+          - arbitrum_one
+          - avalanche
+          - base
+          - bnb
+          # - ink
+          - mainnet
+          - okx
+          - optimism
+          - sonic
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: version on-chain (${{ matrix.chain }})
+        run: python3 scripts/check_deployments_version_on_chain.py --chain ${{ matrix.chain }}

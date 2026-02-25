@@ -2,7 +2,7 @@
 # Runs whenever deployments change (PR or push to master). Never fails CI.
 # Posts/updates a PR comment with unverified contracts when any are found.
 
-name: Deployment verification on explorers
+name: Code verification
 
 on:
   push:

@@ -85,6 +85,22 @@ CHAIN_EXPLORERS: dict[str, list[tuple[str, str]]] = {
     "sonic": [("default", "https://api.etherscan.io/v2/api?chainid=146")],
 }
 
+# Chains that have explorer config (for --chain all; excludes e.g. ink)
+VERIFICATION_SUPPORTED_CHAINS = sorted(CHAIN_EXPLORERS.keys())
+
+# Display names for PR comment output
+CHAIN_DISPLAY_NAMES: dict[str, str] = {
+    "arbitrum_one": "Arbitrum",
+    "avalanche": "Avalanche",
+    "base": "Base",
+    "bnb": "BNB",
+    "injective": "Injective",
+    "mainnet": "Mainnet",
+    "optimism": "Optimism",
+    "okx": "OKX",
+    "sonic": "Sonic",
+}
+
 USER_AGENT = "Mozilla/5.0 (compatible; explorer-api-verify-checker/1.0)"
 
 
@@ -101,7 +117,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--chain",
         required=True,
-        help="Chain name or comma-separated list (e.g. arbitrum_one or mainnet,base). Use 'all' for all chains.",
+        help="Chain name or comma-separated list (e.g. arbitrum_one or mainnet,base). Use 'all' for all supported chains.",
     )
     p.add_argument(
         "--components",
@@ -110,6 +126,16 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--timeout", type=int, default=20, help="HTTP timeout in seconds. Default: 20.")
     p.add_argument("--verbose", action="store_true", help="Print API endpoint info and errors.")
+    p.add_argument(
+        "--no-fail",
+        action="store_true",
+        help="Always return exit code 0 (for CI that must not fail on unverified contracts).",
+    )
+    p.add_argument(
+        "--output-unverified-file",
+        metavar="PATH",
+        help="Write only the 'Unverified contracts' section to this file (for PR comments). If none, writes a success message.",
+    )
     return p.parse_args()
 
 
@@ -119,7 +145,7 @@ def chain_env_suffix(chain: str) -> str:
 
 def parse_chain_selection(raw: str) -> list[str]:
     if raw.strip().lower() == "all":
-        return sorted(CHAIN_TO_CHAIN_ID.keys())
+        return VERIFICATION_SUPPORTED_CHAINS
     chains = [c.strip() for c in raw.split(",") if c.strip()]
     unknown = [c for c in chains if c not in CHAIN_TO_CHAIN_ID]
     if unknown:
@@ -327,15 +353,20 @@ def is_verified_from_getsourcecode(payload: dict[str, Any]) -> tuple[bool, str |
 def main() -> int:
     args = parse_args()
     repo_root = Path(__file__).resolve().parents[1]
+    unverified: list[tuple[str, str, ContractEntry]] = []
+    output_file = getattr(args, "output_unverified_file", None)
 
     try:
         chains = parse_chain_selection(args.chain)
         components = parse_components(args.components)
     except ValueError as e:
         print(str(e), file=sys.stderr)
+        if output_file:
+            _write_unverified_file(
+                output_file, [], error_msg="Verification check could not run. See logs for details."
+            )
         return 2
 
-    unverified: list[tuple[str, str, ContractEntry]] = []  # (chain, explorer_label, entry)
     has_failures = False
 
     for chain in chains:
@@ -343,6 +374,11 @@ def main() -> int:
             explorer_configs, api_key = resolve_api_config(chain)
         except ValueError as e:
             print(str(e), file=sys.stderr)
+            if output_file:
+                _write_unverified_file(
+                    output_file, unverified,
+                    error_msg=f"Verification failed for {chain}. See logs for details."
+                )
             return 2
 
         contracts = collect_contracts(repo_root, chain, components)
@@ -401,7 +437,70 @@ def main() -> int:
             print(f"  [{label}] {c.component}/{c.contract_name}  {c.address}")
         print()
 
-    return 1 if has_failures else 0
+    # Write unverified section to file (for CI PR comments)
+    if output_file:
+        _write_unverified_file(output_file, unverified)
+
+    exit_code = 1 if has_failures and not getattr(args, "no_fail", False) else 0
+    return exit_code
+
+
+def _format_unverified_for_comment(unverified: list[tuple[str, str, ContractEntry]]) -> str:
+    """Format unverified contracts for PR comment (markdown)."""
+    if not unverified:
+        return (
+            "## Deployment verification on block explorers\n\n"
+            "All deployment contracts are verified on block explorers."
+        )
+
+    lines = [
+        "## Unverified contracts on block explorers",
+        "",
+        "The following contracts are not yet verified on their respective block explorers:",
+        "",
+    ]
+    # Group by (chain, explorer_label)
+    by_chain: dict[str, list[ContractEntry]] = {}
+    for chain, explorer_label, c in unverified:
+        display = CHAIN_DISPLAY_NAMES.get(chain, chain)
+        if explorer_label != "default":
+            key = f"{display} ({explorer_label})"
+        else:
+            key = display
+        if key not in by_chain:
+            by_chain[key] = []
+        by_chain[key].append(c)
+
+    for chain_label in sorted(by_chain.keys()):
+        contracts = by_chain[chain_label]
+        lines.append(f"### {chain_label}")
+        lines.append("")
+        for c in contracts:
+            lines.append(f"- `{c.component}/{c.contract_name}` `{c.address}`")
+        lines.append("")
+
+    return "\n".join(lines).rstrip()
+
+
+def _write_unverified_file(
+    path: str,
+    unverified: list[tuple[str, str, ContractEntry]],
+    error_msg: str | None = None,
+) -> None:
+    """Write unverified section to file with markers for CI parsing."""
+    if error_msg:
+        content = (
+            "## Deployment verification on block explorers\n\n"
+            f"⚠️ {error_msg}"
+        )
+    else:
+        content = _format_unverified_for_comment(unverified)
+    body = (
+        "<!-- UNVERIFIED_CONTRACTS_REPORT -->\n"
+        f"{content}\n"
+        "<!-- /UNVERIFIED_CONTRACTS_REPORT -->"
+    )
+    Path(path).write_text(body, encoding="utf-8")
 
 
 if __name__ == "__main__":

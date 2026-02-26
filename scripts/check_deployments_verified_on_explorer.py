@@ -136,6 +136,11 @@ def parse_args() -> argparse.Namespace:
         metavar="PATH",
         help="Write only the 'Unverified contracts' section to this file (for PR comments). If none, writes a success message.",
     )
+    p.add_argument(
+        "--output-json-file",
+        metavar="PATH",
+        help="Write per-chain result as JSON for CI merge (used with matrix strategy).",
+    )
     return p.parse_args()
 
 
@@ -367,6 +372,9 @@ def main() -> int:
             _write_unverified_file(
                 output_file, [], summary_per_chain=[], error_msg="Verification check could not run. See logs for details."
             )
+        json_file = getattr(args, "output_json_file", None)
+        if json_file:
+            _write_json_artifact(json_file, [])
         return 2
 
     has_failures = False
@@ -384,6 +392,8 @@ def main() -> int:
 
             contracts = collect_contracts(repo_root, chain, components)
             if not contracts:
+                display_label = CHAIN_DISPLAY_NAMES.get(chain, chain)
+                summary_per_chain.append((display_label, 0, 0, 0, [], "No deployments found for this chain."))
                 continue
 
             for explorer_label, api_url in explorer_configs:
@@ -447,6 +457,9 @@ def main() -> int:
                 "<!-- UNVERIFIED_CONTRACTS_REPORT -->\n" + content + "\n<!-- /UNVERIFIED_CONTRACTS_REPORT -->",
                 encoding="utf-8",
             )
+        json_file = getattr(args, "output_json_file", None)
+        if json_file and summary_per_chain:
+            _write_json_artifact(json_file, summary_per_chain)
         raise
 
     # List unverified contracts at the end
@@ -463,6 +476,11 @@ def main() -> int:
     # Write unverified section to file (for CI PR comments) - always when output_file is set
     if output_file:
         _write_unverified_file(output_file, unverified, summary_per_chain)
+
+    # Write JSON for CI matrix merge (per-chain artifact)
+    json_file = getattr(args, "output_json_file", None)
+    if json_file:
+        _write_json_artifact(json_file, summary_per_chain)
 
     exit_code = 1 if has_failures and not getattr(args, "no_fail", False) else 0
     return exit_code
@@ -509,6 +527,29 @@ def _format_report_for_comment(
         lines.append("")
 
     return "\n".join(lines).rstrip()
+
+
+def _contract_to_dict(c: ContractEntry) -> dict[str, str]:
+    return {"component": c.component, "contract_name": c.contract_name, "address": c.address}
+
+
+def _write_json_artifact(
+    path: str,
+    summary_per_chain: list[tuple[str, int, int, int, list[ContractEntry], str | None]],
+) -> None:
+    """Write per-chain result as JSON for CI matrix merge."""
+    sections = []
+    for display_label, verified, not_verified, fetch_errors, chain_unverified, config_error in summary_per_chain:
+        sections.append({
+            "display_label": display_label,
+            "verified": verified,
+            "not_verified": not_verified,
+            "fetch_errors": fetch_errors,
+            "config_error": config_error,
+            "unverified": [_contract_to_dict(c) for c in chain_unverified],
+        })
+    data = {"sections": sections}
+    Path(path).write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
 def _write_unverified_file(

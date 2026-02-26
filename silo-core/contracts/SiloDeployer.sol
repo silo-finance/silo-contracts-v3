@@ -48,6 +48,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         IInterestRateModelV2Factory _irmConfigFactory,
         IDynamicKinkModelFactory _dynamicKinkModelFactory,
         ISiloFactory _siloFactory,
+        ISiloIncentivesControllerFactory _siloIncentivesControllerFactory,
         address _siloImpl,
         address _shareProtectedCollateralTokenImpl,
         address _shareDebtTokenImpl
@@ -55,6 +56,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         IRM_CONFIG_FACTORY = _irmConfigFactory;
         DYNAMIC_KINK_MODEL_FACTORY = _dynamicKinkModelFactory;
         SILO_FACTORY = _siloFactory;
+        SILO_INCENTIVES_CONTROLLER_FACTORY = _siloIncentivesControllerFactory;
         SILO_IMPL = _siloImpl;
         SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL = _shareProtectedCollateralTokenImpl;
         SHARE_DEBT_TOKEN_IMPL = _shareDebtTokenImpl;
@@ -147,38 +149,58 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         ISiloConfig.ConfigData memory configData0;
         ISiloConfig.ConfigData memory configData1;
 
-        (configData0, configData1) = Views.copySiloConfig(
-            _siloInitData,
-            SILO_FACTORY.daoFeeRange(),
-            SILO_FACTORY.maxDeployerFee(),
-            SILO_FACTORY.maxFlashloanFee(),
-            SILO_FACTORY.maxLiquidationFee()
-        );
+        (configData0, configData1) = Views.copySiloConfig({
+            _initData: _siloInitData,
+            _daoFeeRange: SILO_FACTORY.daoFeeRange(),
+            _maxDeployerFee: SILO_FACTORY.maxDeployerFee(),
+            _maxFlashloanFee: SILO_FACTORY.maxFlashloanFee(),
+            _maxLiquidationFee: SILO_FACTORY.maxLiquidationFee()
+        });
 
-        configData0.silo =
-            CloneDeterministic.predictSilo0Addr(SILO_IMPL, creatorSiloCounter, address(SILO_FACTORY), msg.sender);
+        configData0.silo = CloneDeterministic.predictSilo0Addr({
+            _siloImpl: SILO_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
-        configData1.silo =
-            CloneDeterministic.predictSilo1Addr(SILO_IMPL, creatorSiloCounter, address(SILO_FACTORY), msg.sender);
+        configData1.silo = CloneDeterministic.predictSilo1Addr({
+            _siloImpl: SILO_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
         configData0.collateralShareToken = configData0.silo;
         configData1.collateralShareToken = configData1.silo;
 
-        configData0.protectedShareToken = CloneDeterministic.predictShareProtectedCollateralToken0Addr(
-            SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL, creatorSiloCounter, address(SILO_FACTORY), msg.sender
-        );
+        configData0.protectedShareToken = CloneDeterministic.predictShareProtectedCollateralToken0Addr({
+            _shareProtectedCollateralTokenImpl: SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
-        configData1.protectedShareToken = CloneDeterministic.predictShareProtectedCollateralToken1Addr(
-            SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL, creatorSiloCounter, address(SILO_FACTORY), msg.sender
-        );
+        configData1.protectedShareToken = CloneDeterministic.predictShareProtectedCollateralToken1Addr({
+            _shareProtectedCollateralTokenImpl: SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
-        configData0.debtShareToken = CloneDeterministic.predictShareDebtToken0Addr(
-            SHARE_DEBT_TOKEN_IMPL, creatorSiloCounter, address(SILO_FACTORY), msg.sender
-        );
+        configData0.debtShareToken = CloneDeterministic.predictShareDebtToken0Addr({
+            _shareDebtTokenImpl: SHARE_DEBT_TOKEN_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
-        configData1.debtShareToken = CloneDeterministic.predictShareDebtToken1Addr(
-            SHARE_DEBT_TOKEN_IMPL, creatorSiloCounter, address(SILO_FACTORY), msg.sender
-        );
+        configData1.debtShareToken = CloneDeterministic.predictShareDebtToken1Addr({
+            _shareDebtTokenImpl: SHARE_DEBT_TOKEN_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
         uint256 nextSiloId = SILO_FACTORY.getNextSiloId();
 

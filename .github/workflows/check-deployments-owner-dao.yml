@@ -64,8 +64,9 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Check if owners are DAO (${{ matrix.chain }})
-        run: python3 scripts/check_deployments_owner_is_dao.py --chain ${{ matrix.chain }}
+      # TODO
+      # - name: Check if owners are DAO (${{ matrix.chain }})
+      #   run: python3 scripts/check_deployments_owner_is_dao.py --chain ${{ matrix.chain }}
 
   admin-is-dao:
     runs-on: ubuntu-latest

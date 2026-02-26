@@ -356,9 +356,11 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         ClonableHookReceiver calldata _clonableHookReceiver
     ) internal {
         if (_clonableHookReceiver.implementation != address(0)) {
-            require(_clonableHookReceiver.initializationData.length == 32, InvalidHookInitData());
-
-            (_finalHookOwner) = abi.decode(_clonableHookReceiver.initializationData, (address));
+            if (_gaugeRequired) {
+                require(_clonableHookReceiver.initializationData.length == 32, InvalidHookInitData());
+                
+                (_finalHookOwner) = abi.decode(_clonableHookReceiver.initializationData, (address));
+            }
 
             IHookReceiver(_siloInitData.hookReceiver)
                 .initialize({

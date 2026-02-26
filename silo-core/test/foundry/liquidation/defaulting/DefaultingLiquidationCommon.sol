@@ -228,8 +228,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         vm.warp(block.timestamp + _warp);
 
-        _createIncentiveController();
-
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
@@ -331,8 +329,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         _printLtv(_borrower);
         assertTrue(_defaultingPossible(_borrower), "it should be possible always when bad debt");
-
-        _createIncentiveController();
 
         _printBalances(silo0, _borrower);
         _printBalances(silo1, _borrower);
@@ -455,8 +451,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
             vm.warp(block.timestamp + 12 hours);
         } while (!_defaultingPossible(_borrower));
 
-        _createIncentiveController();
-
         _printBalances(silo0, _borrower);
         _printBalances(silo1, _borrower);
 
@@ -555,8 +549,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         vm.assume(debtShareToken.balanceOf(borrower) != 0); //  we need bad debt
 
         assertTrue(_defaultingPossible(borrower), "defaulting should be possible even without collateral");
-
-        _createIncentiveController();
 
         token0.setOnDemand(false);
         token1.setOnDemand(false);
@@ -709,8 +701,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         assertTrue(_defaultingPossible(borrower), "defaulting should be possible even without collateral");
 
-        _createIncentiveController();
-
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
@@ -744,8 +734,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_twice_0collateral -vv
     */
     function test_defaulting_twice_0collateral_fuzz(uint48 _collateral, uint48 _protected) public {
-        _createIncentiveController();
-
         _addLiquidity(uint256(_collateral) + _protected);
 
         (ISilo collateralSilo, ISilo debtSilo) = _getSilos();
@@ -861,8 +849,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         vm.warp(block.timestamp + _warp);
 
-        _createIncentiveController();
-
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
@@ -974,8 +960,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         (throwing,) = _isOracleThrowing(borrower);
         vm.assume(!throwing);
 
-        _createIncentiveController();
-
         if (_badDebtCasesOnly) {
             vm.assume(_printLtv(borrower) >= 1e18);
         } else {
@@ -1031,8 +1015,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         console2.log("AFTER WARP AND PRICE CHANGE");
         _printLtv(borrower);
 
-        _createIncentiveController();
-
         _moveUntillDefaultingPossible(borrower, 0.0001e18, 1 hours);
 
         uint256 ltv = _printLtv(borrower);
@@ -1083,8 +1065,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         assertTrue(_defaultingPossible(borrower), "explect not solvent ready for defaulting");
 
-        _createIncentiveController();
-
         (, ISilo debtSilo) = _getSilos();
         (,, IShareToken debtShareToken) = _getBorrowerShareTokens(borrower);
         uint256 debtBalanceBefore = debtShareToken.balanceOf(borrower);
@@ -1116,8 +1096,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         uint256 ltv = _printLtv(borrower);
 
         assertTrue(ltv > 1e18, "we need bad debt so we can use max repay for mocking call");
-
-        _createIncentiveController();
 
         (, ISilo debtSilo) = _getSilos();
         (,, IShareToken debtShareToken) = _getBorrowerShareTokens(borrower);
@@ -1197,8 +1175,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         _printBalances(silo0, lpProvider);
         _printBalances(silo1, lpProvider);
 
-        _createIncentiveController();
-
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
@@ -1277,8 +1253,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         uint256 shares1 = debtSilo.deposit(1, makeAddr("lpProvider1"));
         debtSilo.deposit(1, makeAddr("lpProvider3"), ISilo.CollateralType.Protected);
-
-        _createIncentiveController();
 
         uint256 shares2 = debtSilo.deposit(Math.max(_collateral, 1), makeAddr("lpProvider2"));
         debtSilo.deposit(Math.max(_protected, 1), makeAddr("lpProvider4"), ISilo.CollateralType.Protected);
@@ -1443,8 +1417,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         uint256 totalSupplyBefore = debtSilo.totalSupply();
 
-        _createIncentiveController();
-
         bool success =
             _createPosition({_borrower: borrower, _collateral: _collateral, _protected: _protected, _maxOut: true});
 
@@ -1519,8 +1491,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         (, ISilo debtSilo) = _getSilos();
         uint256 shares1 = debtSilo.deposit(Math.max(_collateral, _protected), makeAddr("lpProvider1"));
-
-        _createIncentiveController();
 
         bool success =
             _createPosition({_borrower: borrower, _collateral: _collateral, _protected: _protected, _maxOut: true});
@@ -1654,7 +1624,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     {
         uint64 _collateral = 10e18;
 
-        ISiloIncentivesController gauge1 = _createIncentiveController();
+        ISiloIncentivesController gauge1 = gauge;
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         (, ISilo debtSilo) = _getSilos();
@@ -1744,6 +1714,8 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_createIncentiveController_forWrongToken_reverts -vv
     */
     function test_createIncentiveController_forWrongToken_reverts() public {
+        _removeIncentiveController();
+        
         (ISilo collateralSilo, ISilo debtSilo) = _getSilos();
         ISiloIncentivesController gauge =
             new SiloIncentivesControllerCompatible(address(this), address(defaulting), address(collateralSilo));

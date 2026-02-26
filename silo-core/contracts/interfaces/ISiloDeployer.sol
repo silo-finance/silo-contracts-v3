@@ -44,6 +44,9 @@ interface ISiloDeployer {
     /// @dev Revert if for the deployment provided both hook receiver and hook receiver implementation
     error HookReceiverMisconfigured();
 
+    /// @dev Revert if the hook initialization data is different from expected
+    error InvalidHookInitData();
+
     /// @notice Deploy silo
     /// @param _oracles Oracles to be create during the silo creation
     /// @param _irmConfigData0 IRM config data for a silo `_TOKEN0`

@@ -129,7 +129,9 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         // in forge we can have code length 1
         if (_hook.code.length < 32) return false;
 
-        try IPartialLiquidationByDefaulting(_hook).LT_MARGIN_FOR_DEFAULTING() returns (uint256 margin) {
+        IPartialLiquidationByDefaulting _hookContract = IPartialLiquidationByDefaulting(_hook);
+
+        try _hookContract.LT_MARGIN_FOR_DEFAULTING() returns (uint256 margin) {
             return margin != 0;
         } catch {
             return false;
@@ -354,6 +356,8 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         ClonableHookReceiver calldata _clonableHookReceiver
     ) internal {
         if (_clonableHookReceiver.implementation != address(0)) {
+            require(_clonableHookReceiver.initializationData.length == 32, InvalidHookInitData());
+
             (_finalHookOwner) = abi.decode(_clonableHookReceiver.initializationData, (address));
 
             IHookReceiver(_siloInitData.hookReceiver)

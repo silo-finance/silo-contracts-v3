@@ -94,7 +94,9 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         _siloDepositWithoutHook(silo1, token1, _depositor, _depositor, amount, PROTECTED);
     }
 
-    /// FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testDepositFnAllHookActions
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testDepositFnAllHookActions
+    */
     function testDepositFnAllHookActions() public {
         uint256 beforeActions = Hook.depositAction(COLLATERAL).addAction(Hook.depositAction(PROTECTED));
 
@@ -826,6 +828,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         configOverride.token0 = address(new MintableToken(18));
         configOverride.token1 = address(new MintableToken(18));
         configOverride.hookReceiverImplementation = _hookReceiver;
+        configOverride.hookReceiverInitializationData = abi.encode(address(this));
         configOverride.configName = SiloConfigsNames.SILO_LOCAL_DEPLOYER;
 
         address hook;

@@ -11,6 +11,9 @@ import {IInterestRateModelV2Factory} from "silo-core/contracts/interfaces/IInter
 import {IDynamicKinkModelFactory} from "silo-core/contracts/interfaces/IDynamicKinkModelFactory.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
 import {ISiloDeployer} from "silo-core/contracts/interfaces/ISiloDeployer.sol";
+import {
+    ISiloIncentivesControllerFactory
+} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
 
 import {SiloImplementationDeploy} from "./SiloImplementationDeploy.s.sol";
 
@@ -100,6 +103,16 @@ contract SiloDeployerDeploy is CommonDeploy {
 
         console2.log("irmConfigFactory", irmConfigFactory);
 
+        address siloIncentivesControllerFactory =
+            SiloCoreDeployments.get(SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY, chainAlias);
+
+        require(
+            siloIncentivesControllerFactory != address(0),
+            string.concat(SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY, " not deployed")
+        );
+
+        console2.log("siloIncentivesControllerFactory", siloIncentivesControllerFactory);
+
         address dkinkIRMConfigFactory =
             SiloCoreDeployments.get(SiloCoreContracts.DYNAMIC_KINK_MODEL_FACTORY, chainAlias);
 
@@ -134,6 +147,7 @@ contract SiloDeployerDeploy is CommonDeploy {
                     IInterestRateModelV2Factory(irmConfigFactory),
                     IDynamicKinkModelFactory(dkinkIRMConfigFactory),
                     ISiloFactory(siloFactory),
+                    ISiloIncentivesControllerFactory(siloIncentivesControllerFactory),
                     siloImpl,
                     shareProtectedCollateralTokenImpl,
                     shareDebtTokenImpl

@@ -354,8 +354,8 @@ def main() -> int:
     args = parse_args()
     repo_root = Path(__file__).resolve().parents[1]
     unverified: list[tuple[str, str, ContractEntry]] = []
-    # Per (chain, explorer_label): (verified, not_verified, fetch_errors) for PR comment
-    summary_per_chain: list[tuple[str, int, int, int, list[ContractEntry]]] = []
+    # Per (chain, explorer_label): (display_label, verified, not_verified, fetch_errors, chain_unverified, config_error?)
+    summary_per_chain: list[tuple[str, int, int, int, list[ContractEntry], str | None]] = []
     output_file = getattr(args, "output_unverified_file", None)
 
     try:
@@ -371,70 +371,83 @@ def main() -> int:
 
     has_failures = False
 
-    for chain in chains:
-        try:
-            explorer_configs, api_key = resolve_api_config(chain)
-        except ValueError as e:
-            print(str(e), file=sys.stderr)
-            if output_file:
-                _write_unverified_file(
-                    output_file, unverified, summary_per_chain,
-                    error_msg=f"Verification failed for {chain}. See logs for details."
-                )
-            return 2
-
-        contracts = collect_contracts(repo_root, chain, components)
-        if not contracts:
-            continue
-
-        for explorer_label, api_url in explorer_configs:
-            if args.verbose:
-                print(f"[verbose] chain={chain} explorer={explorer_label} api_url={api_url}", file=sys.stderr)
-
-            verified_count = 0
-            not_verified_count = 0
-            fetch_error_count = 0
-            chain_unverified: list[ContractEntry] = []
-
-            for c in contracts:
-                payload, err = fetch_getsourcecode(api_url, api_key, c.address, timeout=args.timeout)
-                if err is not None:
-                    if args.verbose:
-                        print(f"[verbose] {chain} {c.address} API error: {err}", file=sys.stderr)
-                    display = f"[{chain}]" if len(explorer_configs) == 1 else f"[{chain} {explorer_label}]"
-                    print(f"{display} {c.component}/{c.contract_name} {c.address} Not Verified")
-                    not_verified_count += 1
-                    fetch_error_count += 1
-                    unverified.append((chain, explorer_label, c))
-                    chain_unverified.append(c)
-                    continue
-
-                verified, _reason = is_verified_from_getsourcecode(payload)
-                display = f"[{chain}]" if len(explorer_configs) == 1 else f"[{chain} {explorer_label}]"
-                if verified:
-                    print(f"{display} {c.component}/{c.contract_name} {c.address} Verified")
-                    verified_count += 1
-                else:
-                    print(f"{display} {c.component}/{c.contract_name} {c.address} Not Verified")
-                    not_verified_count += 1
-                    unverified.append((chain, explorer_label, c))
-                    chain_unverified.append(c)
-
-            if not_verified_count > 0 or fetch_error_count > 0:
+    try:
+        for chain in chains:
+            try:
+                explorer_configs, api_key = resolve_api_config(chain)
+            except ValueError as e:
+                print(str(e), file=sys.stderr)
                 has_failures = True
+                display_label = CHAIN_DISPLAY_NAMES.get(chain, chain)
+                summary_per_chain.append((display_label, 0, 0, 0, [], str(e)))
+                continue
 
-            summary_label = f"{chain} {explorer_label}" if len(explorer_configs) > 1 else chain
-            display_label = CHAIN_DISPLAY_NAMES.get(chain, chain)
-            if explorer_label != "default":
-                display_label = f"{display_label} ({explorer_label})"
-            summary_per_chain.append((display_label, verified_count, not_verified_count, fetch_error_count, chain_unverified))
+            contracts = collect_contracts(repo_root, chain, components)
+            if not contracts:
+                continue
 
-            # Summary on new lines with clear formatting
-            print()
-            print(f"Summary [{summary_label}]:")
-            print(f"  Verified:     {verified_count}")
-            print(f"  Not verified: {not_verified_count}")
-            print(f"  Fetch errors: {fetch_error_count}")
+            for explorer_label, api_url in explorer_configs:
+                if args.verbose:
+                    print(f"[verbose] chain={chain} explorer={explorer_label} api_url={api_url}", file=sys.stderr)
+
+                verified_count = 0
+                not_verified_count = 0
+                fetch_error_count = 0
+                chain_unverified: list[ContractEntry] = []
+
+                for c in contracts:
+                    payload, err = fetch_getsourcecode(api_url, api_key, c.address, timeout=args.timeout)
+                    if err is not None:
+                        if args.verbose:
+                            print(f"[verbose] {chain} {c.address} API error: {err}", file=sys.stderr)
+                        display = f"[{chain}]" if len(explorer_configs) == 1 else f"[{chain} {explorer_label}]"
+                        print(f"{display} {c.component}/{c.contract_name} {c.address} Not Verified")
+                        not_verified_count += 1
+                        fetch_error_count += 1
+                        unverified.append((chain, explorer_label, c))
+                        chain_unverified.append(c)
+                        continue
+
+                    verified, _reason = is_verified_from_getsourcecode(payload)
+                    display = f"[{chain}]" if len(explorer_configs) == 1 else f"[{chain} {explorer_label}]"
+                    if verified:
+                        print(f"{display} {c.component}/{c.contract_name} {c.address} Verified")
+                        verified_count += 1
+                    else:
+                        print(f"{display} {c.component}/{c.contract_name} {c.address} Not Verified")
+                        not_verified_count += 1
+                        unverified.append((chain, explorer_label, c))
+                        chain_unverified.append(c)
+
+                if not_verified_count > 0 or fetch_error_count > 0:
+                    has_failures = True
+
+                summary_label = f"{chain} {explorer_label}" if len(explorer_configs) > 1 else chain
+                display_label = CHAIN_DISPLAY_NAMES.get(chain, chain)
+                if explorer_label != "default":
+                    display_label = f"{display_label} ({explorer_label})"
+                summary_per_chain.append((display_label, verified_count, not_verified_count, fetch_error_count, chain_unverified, None))
+
+                # Summary on new lines with clear formatting
+                print()
+                print(f"Summary [{summary_label}]:")
+                print(f"  Verified:     {verified_count}")
+                print(f"  Not verified: {not_verified_count}")
+                print(f"  Fetch errors: {fetch_error_count}")
+
+    except Exception:
+        if output_file:
+            # Write partial report with error banner so PR comment still gets useful info
+            partial = _format_report_for_comment(unverified, summary_per_chain)
+            content = (
+                "⚠️ **Verification check failed with an unexpected error.** See workflow logs for details.\n\n"
+                "---\n\n" + partial
+            )
+            Path(output_file).write_text(
+                "<!-- UNVERIFIED_CONTRACTS_REPORT -->\n" + content + "\n<!-- /UNVERIFIED_CONTRACTS_REPORT -->",
+                encoding="utf-8",
+            )
+        raise
 
     # List unverified contracts at the end
     if unverified:
@@ -447,7 +460,7 @@ def main() -> int:
             print(f"  [{label}] {c.component}/{c.contract_name}  {c.address}")
         print()
 
-    # Write unverified section to file (for CI PR comments)
+    # Write unverified section to file (for CI PR comments) - always when output_file is set
     if output_file:
         _write_unverified_file(output_file, unverified, summary_per_chain)
 
@@ -457,50 +470,43 @@ def main() -> int:
 
 def _format_report_for_comment(
     unverified: list[tuple[str, str, ContractEntry]],
-    summary_per_chain: list[tuple[str, int, int, int, list[ContractEntry]]],
+    summary_per_chain: list[tuple[str, int, int, int, list[ContractEntry], str | None]],
 ) -> str:
-    """Format full report for PR comment: summary per chain + unverified list."""
-    lines = ["## Deployment verification on block explorers", ""]
+    """Format full report for PR comment: sections per chain with unverified list under each."""
+    lines: list[str] = ["## Deployment verification on block explorers", ""]
 
     if not summary_per_chain:
         lines.append("All deployment contracts are verified on block explorers.")
         return "\n".join(lines)
 
-    # If all contracts are verified across all chains, show a single success message
+    # If all contracts are verified across all chains (no config errors), show a single success message
     all_verified = all(
-        not_verified == 0 and fetch_errors == 0
-        for _, _, not_verified, fetch_errors, _ in summary_per_chain
+        config_error is None and not_verified == 0 and fetch_errors == 0
+        for _, _, not_verified, fetch_errors, _, config_error in summary_per_chain
     )
     if all_verified:
         lines.append("All deployment contracts are verified on block explorers.")
         return "\n".join(lines)
 
-    for chain_label, verified, not_verified, fetch_errors, chain_unverified in summary_per_chain:
+    for chain_label, verified, not_verified, fetch_errors, chain_unverified, config_error in summary_per_chain:
         lines.append(f"### {chain_label}")
         lines.append("")
-        lines.append(f"- **Verified:** {verified}")
-        lines.append(f"- **Not verified:** {not_verified}")
-        lines.append(f"- **Fetch errors:** {fetch_errors}")
-        lines.append("")
-        if chain_unverified:
-            lines.append("**Unverified contracts:**")
-            lines.append("")
-            for c in chain_unverified:
-                lines.append(f"- `{c.component}/{c.contract_name}` `{c.address}`")
+        if config_error is not None:
+            lines.append(f"⚠️ **Could not check:** {config_error}")
         else:
-            lines.append("All contracts verified for this chain.")
+            lines.append(f"- **Verified:** {verified}")
+            lines.append(f"- **Not verified:** {not_verified}")
+            lines.append(f"- **Fetch errors:** {fetch_errors}")
+            lines.append("")
+            if chain_unverified:
+                lines.append("**Unverified contracts:**")
+                lines.append("")
+                for c in chain_unverified:
+                    lines.append(f"- `{c.component}/{c.contract_name}` `{c.address}`")
+            else:
+                lines.append("All contracts verified for this chain.")
         lines.append("")
         lines.append("")
-
-    if unverified:
-        lines.append("---")
-        lines.append("")
-        lines.append("### Unverified contracts (all chains)")
-        lines.append("")
-        for chain, explorer_label, c in unverified:
-            display = CHAIN_DISPLAY_NAMES.get(chain, chain)
-            label = f"{display} ({explorer_label})" if explorer_label != "default" else display
-            lines.append(f"- [{label}] `{c.component}/{c.contract_name}` `{c.address}`")
 
     return "\n".join(lines).rstrip()
 
@@ -508,7 +514,7 @@ def _format_report_for_comment(
 def _write_unverified_file(
     path: str,
     unverified: list[tuple[str, str, ContractEntry]],
-    summary_per_chain: list[tuple[str, int, int, int, list[ContractEntry]]],
+    summary_per_chain: list[tuple[str, int, int, int, list[ContractEntry], str | None]],
     error_msg: str | None = None,
 ) -> None:
     """Write full report to file with markers for CI parsing."""

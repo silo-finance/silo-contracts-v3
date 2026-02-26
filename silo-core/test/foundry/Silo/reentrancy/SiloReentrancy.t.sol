@@ -4,14 +4,7 @@ pragma solidity ^0.8.28;
 import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
-import {Ownable} from "openzeppelin5/access/Ownable.sol";
-
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
-
-import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
-import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
-import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
-import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 
 import {AddrKey} from "common/addresses/AddrKey.sol";
 import {Registries} from "./registries/Registries.sol";

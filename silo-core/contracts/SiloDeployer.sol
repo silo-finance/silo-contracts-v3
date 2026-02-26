@@ -125,11 +125,14 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         // in forge we can have code length 1
         if (_hook.code.length < 32) return false;
 
-        try IPartialLiquidationByDefaulting(_hook).LT_MARGIN_FOR_DEFAULTING() returns (uint256 margin) {
-            return margin != 0;
-        } catch {
-            return false;
-        }
+        (bool success, bytes memory data) = _hook.staticcall(
+            abi.encodeWithSelector(IPartialLiquidationByDefaulting.LT_MARGIN_FOR_DEFAULTING.selector)
+        );
+        
+        if (!success || data.length != 32) return false;
+
+        uint256 margin = abi.decode(data, (uint256));
+        return margin != 0;
     }
 
     function _getDebtSilo(ISiloConfig _siloConfig, ISiloConfig.InitData memory _siloInitData)

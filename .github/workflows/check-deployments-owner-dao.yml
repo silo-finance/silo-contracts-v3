@@ -17,7 +17,7 @@ on:
       - scripts/check_deployments_version_on_chain.py
       - .github/workflows/check-deployments-owner-dao.yml
   pull_request:
-    branches: [master]
+    branches: [master, develop]
     paths:
       - silo-core/deployments/**
       - silo-oracles/deployments/**

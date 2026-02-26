@@ -148,8 +148,6 @@ contract SiloReentrancyTest is Test {
         leverageDeploy.disableDeploymentsSync();
         address leverageRouter = address(leverageDeploy.run());
 
-        _createIncentiveController(hookReceiver, address(silo0));
-
         TestStateLib.init(
             address(siloConfig),
             address(silo0),
@@ -159,13 +157,5 @@ contract SiloReentrancyTest is Test {
             hookReceiver,
             leverageRouter
         );
-    }
-
-    function _createIncentiveController(address _hookReceiver, address _debtSilo) internal {
-        ISiloIncentivesController gauge = new SiloIncentivesControllerCompatible(makeAddr("DAO"), _hookReceiver, _debtSilo);
-
-        address owner = Ownable(_hookReceiver).owner();
-        vm.prank(owner);
-        IGaugeHookReceiver(_hookReceiver).setGauge(gauge, IShareToken(_debtSilo));
     }
 }

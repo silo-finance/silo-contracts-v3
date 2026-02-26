@@ -25,6 +25,7 @@ import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfac
 import {SiloConfig} from "silo-core/contracts/SiloConfig.sol";
 import {CloneDeterministic} from "silo-core/contracts/lib/CloneDeterministic.sol";
 import {Views} from "silo-core/contracts/lib/Views.sol";
+import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 
 /// @notice Silo Deployer
 contract SiloDeployer is Create2Factory, ISiloDeployer {
@@ -119,6 +120,9 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         });
 
         Ownable1and2Steps(_siloInitData.hookReceiver).transferOwnership1Step(_finalHookOwner);
+        bytes32 defaultAdminRole = Whitelist(address(_siloInitData.hookReceiver)).DEFAULT_ADMIN_ROLE();
+        Whitelist(address(_siloInitData.hookReceiver)).grantRole(defaultAdminRole, _finalHookOwner);
+        Whitelist(address(_siloInitData.hookReceiver)).revokeRole(defaultAdminRole, address(this));
     }
 
     function _isDefaultingHook(address _hook) internal view returns (bool isDefaulting) {

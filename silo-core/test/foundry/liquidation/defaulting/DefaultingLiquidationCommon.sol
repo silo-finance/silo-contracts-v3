@@ -73,6 +73,8 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         assertEq(debtSilo.asset(), debtAsset, "[crosscheck] asset must much silo asset");
 
         vm.label(address(this), "TESTER");
+
+        gauge = defaulting.validateControllerForCollateral(address(debtSilo));
     }
 
     /*
@@ -111,8 +113,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         )
     {
         (ISilo collateralSilo, ISilo debtSilo) = _getSilos();
-
-        _createIncentiveController();
 
         uint256 assets = 1e18;
         _addLiquidity(assets);

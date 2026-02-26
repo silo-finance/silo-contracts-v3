@@ -99,7 +99,9 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
     }
 
     /// @notice Create an incentives controller if the hook is defaulting
-    function _createIncentivesController(ISiloConfig _siloConfig, ISiloConfig.InitData memory _siloInitData) internal {
+    function _createIncentivesController(ISiloConfig _siloConfig, ISiloConfig.InitData memory _siloInitData)
+        internal
+    {
         if (!_gaugeRequired) return;
 
         address debtSilo = _getDebtSilo(_siloConfig, _siloInitData);
@@ -112,7 +114,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         });
 
         IGaugeHookReceiver(_siloInitData.hookReceiver).setGauge({
-            _gauge: ISiloIncentivesController(incentivesController),
+            _gauge: ISiloIncentivesController(incentivesController), 
             _shareToken: IShareToken(debtSilo)
         });
 
@@ -229,15 +231,23 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         uint256 creatorSiloCounter = SILO_FACTORY.creatorSiloCounter(msg.sender);
 
         if (_siloInitData.interestRateModel0 == address(DYNAMIC_KINK_MODEL_FACTORY)) {
-            address silo =
-                CloneDeterministic.predictSilo0Addr(SILO_IMPL, creatorSiloCounter, address(SILO_FACTORY), msg.sender);
+            address silo = CloneDeterministic.predictSilo0Addr({
+                _siloImpl: SILO_IMPL,
+                _creatorSiloCounter: creatorSiloCounter,
+                _deployer: address(SILO_FACTORY),
+                _creator: msg.sender
+            });
 
             _siloInitData.interestRateModel0 = _createDKinkIRM(_irmConfigData0, silo, salt);
         }
 
         if (_siloInitData.interestRateModel1 == address(DYNAMIC_KINK_MODEL_FACTORY)) {
-            address silo =
-                CloneDeterministic.predictSilo1Addr(SILO_IMPL, creatorSiloCounter, address(SILO_FACTORY), msg.sender);
+            address silo = CloneDeterministic.predictSilo1Addr({
+                _siloImpl: SILO_IMPL,
+                _creatorSiloCounter: creatorSiloCounter,
+                _deployer: address(SILO_FACTORY),
+                _creator: msg.sender
+            });
 
             _siloInitData.interestRateModel1 = _createDKinkIRM(_irmConfigData1, silo, salt);
         }
@@ -260,8 +270,13 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
     function _createDKinkIRM(bytes memory _irmConfigData, address _silo, bytes32 _salt) internal returns (address) {
         DKinkIRMConfig memory dkink = abi.decode(_irmConfigData, (DKinkIRMConfig));
 
-        IInterestRateModel interestRateModel =
-            DYNAMIC_KINK_MODEL_FACTORY.create(dkink.config, dkink.immutableArgs, dkink.initialOwner, _silo, _salt);
+        IInterestRateModel interestRateModel = DYNAMIC_KINK_MODEL_FACTORY.create({
+            _config: dkink.config,
+            _immutableArgs: dkink.immutableArgs,
+            _initialOwner: dkink.initialOwner,
+            _silo: _silo,
+            _externalSalt: _salt
+        });
 
         return address(interestRateModel);
     }

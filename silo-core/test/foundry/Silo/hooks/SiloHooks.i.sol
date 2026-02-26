@@ -17,7 +17,9 @@ import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
 import {SiloConfigOverride} from "../../_common/fixtures/SiloFixture.sol";
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 
-/// FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mc SiloHooksTest
+/*
+FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mc SiloHooksTest
+*/
 contract SiloHooksTest is SiloLittleHelper, Test {
     uint24 constant HOOKS_BEFORE = 1;
     uint24 constant HOOKS_AFTER = 2;

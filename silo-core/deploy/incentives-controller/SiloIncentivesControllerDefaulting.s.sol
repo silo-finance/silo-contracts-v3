@@ -42,10 +42,8 @@ contract SiloIncentivesControllerDefaulting is CommonDeploy {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
         address deployer = vm.addr(deployerPrivateKey);
 
-        address factory = SiloCoreDeployments.get(
-            SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY,
-            ChainsLib.chainAlias()
-        );
+        address factory =
+            SiloCoreDeployments.get(SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY, ChainsLib.chainAlias());
 
         string memory siloKey = vm.envString("SILO");
         address siloConfig = SiloDeployments.get(ChainsLib.chainAlias(), siloKey);
@@ -54,7 +52,7 @@ contract SiloIncentivesControllerDefaulting is CommonDeploy {
         (address silo0, address silo1) = ISiloConfig(siloConfig).getSilos();
         ISiloConfig.ConfigData memory config0 = ISiloConfig(siloConfig).getConfig(silo0);
         ISiloConfig.ConfigData memory config1 = ISiloConfig(siloConfig).getConfig(silo1);
-        
+
         address hookReceiver = config0.hookReceiver;
 
         address shareToken = config0.lt == 0 ? silo0 : silo1;
@@ -63,23 +61,19 @@ contract SiloIncentivesControllerDefaulting is CommonDeploy {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        address incentivesController = SiloIncentivesControllerFactory(factory).create({
-            _owner: deployer,
-            _notifier: hookReceiver,
-            _shareToken: shareToken,
-            _externalSalt: bytes32(0)
-        });
+        address incentivesController = SiloIncentivesControllerFactory(factory)
+            .create({_owner: deployer, _notifier: hookReceiver, _shareToken: shareToken, _externalSalt: bytes32(0)});
 
-        IGaugeHookReceiver(hookReceiver).setGauge(
-            ISiloIncentivesController(incentivesController), IShareToken(shareToken)
-        );
+        IGaugeHookReceiver(hookReceiver)
+            .setGauge(ISiloIncentivesController(incentivesController), IShareToken(shareToken));
 
         vm.stopBroadcast();
 
-       IPartialLiquidationByDefaulting(hookReceiver).validateControllerForCollateral(shareToken);
+        IPartialLiquidationByDefaulting(hookReceiver).validateControllerForCollateral(shareToken);
 
-       console2.log("Incentives controller created:", incentivesController);
-       console2.log("Hook receiver:", hookReceiver);
-       console2.log("Share token / silo", shareToken);
+        console2.log("Incentives controller created:", incentivesController);
+        console2.log("controller owner:", Ownable(incentivesController).owner());
+        console2.log("Hook receiver:", hookReceiver);
+        console2.log("Share token / debt silo", shareToken);
     }
 }

@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 import {SiloDeploy, ISiloDeployer} from "./SiloDeploy.s.sol";
 
 /*
-FOUNDRY_PROFILE=core CONFIG=Test_Silo_WINJ_USDT \
+FOUNDRY_PROFILE=core CONFIG=Test_Silo_WETH_USDC \
     forge script silo-core/deploy/silo/SiloDeployWithDeployerOwner.s.sol \
-    --ffi --rpc-url $RPC_INJECTIVE --broadcast --verify
+    --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify
  */
 contract SiloDeployWithDeployerOwner is SiloDeploy {
     function _getClonableHookReceiverOwner() internal view override returns (address owner) {

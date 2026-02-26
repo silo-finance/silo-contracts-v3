@@ -123,20 +123,27 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
         _hookReceiver.setGauge(ISiloIncentivesController(_gauge), IShareToken(invalidShareToken));
     }
 
-    // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testSetGaugePass
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testSetGaugePass
+    */
     function testSetGaugePass() public {
         (address silo0, address silo1) = _siloConfig.getSilos();
         (, address shareCollateralToken,) = _siloConfig.getShareTokens(silo0);
 
         _mockGaugeShareToken(_gauge, shareCollateralToken);
 
-        vm.prank(_dao);
-        _hookReceiver.setGauge(ISiloIncentivesController(_gauge), IShareToken(shareCollateralToken));
-
         ISiloIncentivesController configured =
             GaugeHookReceiver(address(_hookReceiver)).configuredGauges(IShareToken(shareCollateralToken));
 
-        assertEq(address(configured), _gauge);
+        assertEq(address(configured), address(0), "Gauge should not be configured");
+
+        vm.prank(_dao);
+        _hookReceiver.setGauge(ISiloIncentivesController(_gauge), IShareToken(shareCollateralToken));
+
+        configured =
+            GaugeHookReceiver(address(_hookReceiver)).configuredGauges(IShareToken(shareCollateralToken));
+
+        assertEq(address(configured), _gauge, "Gauge should be configured");
 
         _mockGaugeShareToken(_gauge2, shareCollateralToken);
 
@@ -148,18 +155,18 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
 
         uint256 action = Hook.shareTokenTransfer(Hook.COLLATERAL_TOKEN);
 
-        assertEq(uint256(hooksBefore), 0);
-        assertEq(uint256(hooksAfter), action);
+        assertEq(uint256(hooksBefore), 0, "Hooks before should be 0");
+        assertEq(uint256(hooksAfter), action, "Hooks after should match action");
 
         IShareToken.HookSetup memory silo0Hooks = IShareToken(address(silo0)).hookSetup();
 
-        assertEq(uint256(silo0Hooks.hooksBefore), 0);
-        assertEq(uint256(silo0Hooks.hooksAfter), action);
+        assertEq(uint256(silo0Hooks.hooksBefore), 0, "[aster setup 0] hooks before should be 0");
+        assertEq(uint256(silo0Hooks.hooksAfter), action, "[aster setup 0] hooks after should match action");
 
         IShareToken.HookSetup memory silo1Hooks = IShareToken(address(silo1)).hookSetup();
 
-        assertEq(uint256(silo1Hooks.hooksBefore), 0);
-        assertEq(uint256(silo1Hooks.hooksAfter), 0);
+        assertEq(uint256(silo1Hooks.hooksBefore), 0, "[aster setup 1] hooks before should be 0");
+        assertEq(uint256(silo1Hooks.hooksAfter), 0, "[aster setup 1] hooks after should be 0");
     }
 
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testRemoveGauge

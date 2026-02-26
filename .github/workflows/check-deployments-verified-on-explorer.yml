@@ -1,6 +1,7 @@
 # Check deployment contract verification on block explorers.
 # Runs whenever deployments change (PR or push to master). Never fails CI.
-# Posts/updates a PR comment with unverified contracts when any are found.
+# Uses matrix for parallel per-chain verification - re-run failed jobs individually.
+# Posts/updates a single PR comment with merged results.
 
 name: Code verification
 
@@ -24,47 +25,91 @@ on:
       - silo-vaults/deployments/**
       - silo-vaults/broadcast/**
       - scripts/check_deployments_verified_on_explorer.py
+      - scripts/merge_verification_reports.py
       - .github/workflows/check-deployments-verified-on-explorer.yml
 
 env:
   ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+  ETHERSCAN_API_KEY_OKX: ${{ secrets.ETHERSCAN_API_KEY_OKX }}
 
-jobs:
-  check-verified:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
+# TODO
+# jobs:
+#   verify:
+#     name: Verify (${{ matrix.chain }})
+#     runs-on: ubuntu-latest
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         chain:
+#           - arbitrum_one
+#           - avalanche
+#           - base
+#           - bnb
+#           - injective
+#           - mainnet
+#           - optimism
+#           - okx
+#           - sonic
+#     steps:
+#       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: "3.12"
 
-      - name: Check verification (all chains)
-        run: |
-          python3 scripts/check_deployments_verified_on_explorer.py \
-            --chain all \
-            --no-fail \
-            --output-unverified-file unverified_report.md
-        continue-on-error: true
+#       - name: Check verification (${{ matrix.chain }})
+#         run: |
+#           python3 scripts/check_deployments_verified_on_explorer.py \
+#             --chain ${{ matrix.chain }} \
+#             --no-fail \
+#             --output-json-file verification_${{ matrix.chain }}.json
+#         continue-on-error: true
 
-      - name: Generate PR comment body
-        run: |
-          if [ -f unverified_report.md ]; then
-            # Strip HTML markers for cleaner comment
-            sed '/<!-- UNVERIFIED_CONTRACTS_REPORT -->/d; /<!-- \/UNVERIFIED_CONTRACTS_REPORT -->/d' \
-              unverified_report.md > pr_comment.md
-          else
-            echo "## Deployment verification on block explorers" > pr_comment.md
-            echo "" >> pr_comment.md
-            echo "All deployment contracts are verified on block explorers." >> pr_comment.md
-          fi
+#       - name: Ensure artifact exists (for failed runs)
+#         if: failure() && hashFiles(format('verification_{0}.json', matrix.chain)) == ''
+#         run: echo '{"sections":[]}' > verification_${{ matrix.chain }}.json
 
-      - name: Post or update PR comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request'
-        with:
-          header: deployment-verification
-          path: pr_comment.md
+#       - name: Upload verification result
+#         uses: actions/upload-artifact@v4
+#         if: always()
+#         with:
+#           name: verification-${{ matrix.chain }}
+#           path: verification_${{ matrix.chain }}.json
+
+#   aggregate-and-comment:
+#     name: Aggregate and comment
+#     runs-on: ubuntu-latest
+#     needs: [verify]
+#     if: github.event_name == 'pull_request'
+#     permissions:
+#       pull-requests: write
+#       contents: read
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: "3.12"
+
+#       - name: Download verification artifacts
+#         uses: actions/download-artifact@v4
+#         with:
+#           pattern: verification-*
+#           path: verification-artifacts
+
+#       - name: Merge reports and generate comment
+#         run: |
+#           python3 scripts/merge_verification_reports.py \
+#             --artifacts-dir verification-artifacts \
+#             --pr-comment-from-gh \
+#             -o pr_comment.md
+#         env:
+#           GH_TOKEN: ${{ github.token }}
+
+#       - name: Post or update PR comment
+#         uses: marocchino/sticky-pull-request-comment@v2
+#         with:
+#           header: deployment-verification
+#           path: pr_comment.md

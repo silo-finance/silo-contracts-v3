@@ -3,6 +3,9 @@ pragma solidity 0.8.28;
 
 import {Clones} from "openzeppelin5/proxy/Clones.sol";
 
+import {Create2Factory} from "common/utils/Create2Factory.sol";
+import {Ownable1and2Steps} from "common/access/Ownable1and2Steps.sol";
+
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
 import {IInterestRateModelV2} from "silo-core/contracts/interfaces/IInterestRateModelV2.sol";
@@ -11,10 +14,18 @@ import {IDynamicKinkModelFactory} from "silo-core/contracts/interfaces/IDynamicK
 import {IInterestRateModel} from "silo-core/contracts/interfaces/IInterestRateModel.sol";
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {ISiloDeployer} from "silo-core/contracts/interfaces/ISiloDeployer.sol";
+import {
+    ISiloIncentivesControllerFactory
+} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
+import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
+import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
+import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IPartialLiquidationByDefaulting.sol";
+import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
+
 import {SiloConfig} from "silo-core/contracts/SiloConfig.sol";
 import {CloneDeterministic} from "silo-core/contracts/lib/CloneDeterministic.sol";
 import {Views} from "silo-core/contracts/lib/Views.sol";
-import {Create2Factory} from "common/utils/Create2Factory.sol";
+import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 
 /// @notice Silo Deployer
 contract SiloDeployer is Create2Factory, ISiloDeployer {
@@ -22,15 +33,23 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
     IInterestRateModelV2Factory public immutable IRM_CONFIG_FACTORY;
     IDynamicKinkModelFactory public immutable DYNAMIC_KINK_MODEL_FACTORY;
     ISiloFactory public immutable SILO_FACTORY;
+    ISiloIncentivesControllerFactory public immutable SILO_INCENTIVES_CONTROLLER_FACTORY;
     address public immutable SILO_IMPL;
     address public immutable SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL;
     address public immutable SHARE_DEBT_TOKEN_IMPL;
     // solhint-enable var-name-mixedcase
 
+    /// @notice variable to store the final hook owner
+    address internal transient _finalHookOwner;
+
+    /// @notice TRUE is hook has defaulting liquidation
+    bool internal transient _gaugeRequired;
+
     constructor(
         IInterestRateModelV2Factory _irmConfigFactory,
         IDynamicKinkModelFactory _dynamicKinkModelFactory,
         ISiloFactory _siloFactory,
+        ISiloIncentivesControllerFactory _siloIncentivesControllerFactory,
         address _siloImpl,
         address _shareProtectedCollateralTokenImpl,
         address _shareDebtTokenImpl
@@ -38,6 +57,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         IRM_CONFIG_FACTORY = _irmConfigFactory;
         DYNAMIC_KINK_MODEL_FACTORY = _dynamicKinkModelFactory;
         SILO_FACTORY = _siloFactory;
+        SILO_INCENTIVES_CONTROLLER_FACTORY = _siloIncentivesControllerFactory;
         SILO_IMPL = _siloImpl;
         SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL = _shareProtectedCollateralTokenImpl;
         SHARE_DEBT_TOKEN_IMPL = _shareDebtTokenImpl;
@@ -50,10 +70,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         bytes calldata _irmConfigData1,
         ClonableHookReceiver calldata _clonableHookReceiver,
         ISiloConfig.InitData memory _siloInitData
-    )
-        external
-        returns (ISiloConfig siloConfig)
-    {
+    ) external returns (ISiloConfig siloConfig) {
         // setUp IRMs (create if needed) and update `_siloInitData`
         _setUpIRMs(_irmConfigData0, _irmConfigData1, _siloInitData);
         // create oracles and update `_siloInitData`
@@ -71,10 +88,63 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
             _deployer: _siloInitData.deployer,
             _creator: msg.sender
         });
+
+        _gaugeRequired = _isDefaultingHook(_siloInitData.hookReceiver);
+
         // initialize hook receiver only if it was cloned
         _initializeHookReceiver(_siloInitData, siloConfig, _clonableHookReceiver);
 
+        _createIncentivesController(siloConfig, _siloInitData);
+
         emit SiloCreated(siloConfig);
+    }
+
+    /// @notice Create an incentives controller if the hook is defaulting
+    function _createIncentivesController(ISiloConfig _siloConfig, ISiloConfig.InitData memory _siloInitData)
+        internal
+    {
+        if (!_gaugeRequired) return;
+
+        address debtSilo = _getDebtSilo(_siloConfig, _siloInitData);
+
+        address incentivesController = SILO_INCENTIVES_CONTROLLER_FACTORY.create({
+            _owner: _finalHookOwner,
+            _notifier: _siloInitData.hookReceiver,
+            _shareToken: debtSilo,
+            _externalSalt: bytes32(0)
+        });
+
+        IGaugeHookReceiver(_siloInitData.hookReceiver).setGauge({
+            _gauge: ISiloIncentivesController(incentivesController), 
+            _shareToken: IShareToken(debtSilo)
+        });
+
+        Ownable1and2Steps(_siloInitData.hookReceiver).transferOwnership1Step(_finalHookOwner);
+        bytes32 defaultAdminRole = Whitelist(address(_siloInitData.hookReceiver)).DEFAULT_ADMIN_ROLE();
+        Whitelist(address(_siloInitData.hookReceiver)).grantRole(defaultAdminRole, _finalHookOwner);
+        Whitelist(address(_siloInitData.hookReceiver)).revokeRole(defaultAdminRole, address(this));
+    }
+
+    function _isDefaultingHook(address _hook) internal view returns (bool isDefaulting) {
+        // in forge we can have code length 1
+        if (_hook.code.length < 32) return false;
+
+        IPartialLiquidationByDefaulting _hookContract = IPartialLiquidationByDefaulting(_hook);
+
+        try _hookContract.LT_MARGIN_FOR_DEFAULTING() returns (uint256 margin) {
+            return margin != 0;
+        } catch {
+            return false;
+        }
+    }
+
+    function _getDebtSilo(ISiloConfig _siloConfig, ISiloConfig.InitData memory _siloInitData)
+        internal
+        view
+        returns (address debtSilo)
+    {
+        (address silo0, address silo1) = _siloConfig.getSilos();
+        debtSilo = _siloInitData.lt0 == 0 ? silo0 : silo1;
     }
 
     /// @notice Deploy `SiloConfig` with predicted addresses
@@ -87,58 +157,58 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         ISiloConfig.ConfigData memory configData0;
         ISiloConfig.ConfigData memory configData1;
 
-        (configData0, configData1) = Views.copySiloConfig(
-            _siloInitData,
-            SILO_FACTORY.daoFeeRange(),
-            SILO_FACTORY.maxDeployerFee(),
-            SILO_FACTORY.maxFlashloanFee(),
-            SILO_FACTORY.maxLiquidationFee()
-        );
+        (configData0, configData1) = Views.copySiloConfig({
+            _initData: _siloInitData,
+            _daoFeeRange: SILO_FACTORY.daoFeeRange(),
+            _maxDeployerFee: SILO_FACTORY.maxDeployerFee(),
+            _maxFlashloanFee: SILO_FACTORY.maxFlashloanFee(),
+            _maxLiquidationFee: SILO_FACTORY.maxLiquidationFee()
+        });
 
-        configData0.silo = CloneDeterministic.predictSilo0Addr(
-            SILO_IMPL,
-            creatorSiloCounter,
-            address(SILO_FACTORY),
-            msg.sender
-        );
+        configData0.silo = CloneDeterministic.predictSilo0Addr({
+            _siloImpl: SILO_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
-        configData1.silo = CloneDeterministic.predictSilo1Addr(
-            SILO_IMPL,
-            creatorSiloCounter,
-            address(SILO_FACTORY),
-            msg.sender
-        );
+        configData1.silo = CloneDeterministic.predictSilo1Addr({
+            _siloImpl: SILO_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
         configData0.collateralShareToken = configData0.silo;
         configData1.collateralShareToken = configData1.silo;
 
-        configData0.protectedShareToken = CloneDeterministic.predictShareProtectedCollateralToken0Addr(
-            SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL,
-            creatorSiloCounter,
-            address(SILO_FACTORY),
-            msg.sender
-        );
+        configData0.protectedShareToken = CloneDeterministic.predictShareProtectedCollateralToken0Addr({
+            _shareProtectedCollateralTokenImpl: SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
-        configData1.protectedShareToken = CloneDeterministic.predictShareProtectedCollateralToken1Addr(
-            SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL,
-            creatorSiloCounter,
-            address(SILO_FACTORY),
-            msg.sender
-        );
+        configData1.protectedShareToken = CloneDeterministic.predictShareProtectedCollateralToken1Addr({
+            _shareProtectedCollateralTokenImpl: SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
-        configData0.debtShareToken = CloneDeterministic.predictShareDebtToken0Addr(
-            SHARE_DEBT_TOKEN_IMPL,
-            creatorSiloCounter,
-            address(SILO_FACTORY),
-            msg.sender
-        );
+        configData0.debtShareToken = CloneDeterministic.predictShareDebtToken0Addr({
+            _shareDebtTokenImpl: SHARE_DEBT_TOKEN_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
-        configData1.debtShareToken = CloneDeterministic.predictShareDebtToken1Addr(
-            SHARE_DEBT_TOKEN_IMPL,
-            creatorSiloCounter,
-            address(SILO_FACTORY),
-            msg.sender
-        );
+        configData1.debtShareToken = CloneDeterministic.predictShareDebtToken1Addr({
+            _shareDebtTokenImpl: SHARE_DEBT_TOKEN_IMPL,
+            _creatorSiloCounter: creatorSiloCounter,
+            _deployer: address(SILO_FACTORY),
+            _creator: msg.sender
+        });
 
         uint256 nextSiloId = SILO_FACTORY.getNextSiloId();
 
@@ -167,23 +237,23 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         uint256 creatorSiloCounter = SILO_FACTORY.creatorSiloCounter(msg.sender);
 
         if (_siloInitData.interestRateModel0 == address(DYNAMIC_KINK_MODEL_FACTORY)) {
-            address silo = CloneDeterministic.predictSilo0Addr(
-                SILO_IMPL,
-                creatorSiloCounter,
-                address(SILO_FACTORY),
-                msg.sender
-            );
+            address silo = CloneDeterministic.predictSilo0Addr({
+                _siloImpl: SILO_IMPL,
+                _creatorSiloCounter: creatorSiloCounter,
+                _deployer: address(SILO_FACTORY),
+                _creator: msg.sender
+            });
 
             _siloInitData.interestRateModel0 = _createDKinkIRM(_irmConfigData0, silo, salt);
         }
 
         if (_siloInitData.interestRateModel1 == address(DYNAMIC_KINK_MODEL_FACTORY)) {
-            address silo = CloneDeterministic.predictSilo1Addr(
-                SILO_IMPL,
-                creatorSiloCounter,
-                address(SILO_FACTORY),
-                msg.sender
-            );
+            address silo = CloneDeterministic.predictSilo1Addr({
+                _siloImpl: SILO_IMPL,
+                _creatorSiloCounter: creatorSiloCounter,
+                _deployer: address(SILO_FACTORY),
+                _creator: msg.sender
+            });
 
             _siloInitData.interestRateModel1 = _createDKinkIRM(_irmConfigData1, silo, salt);
         }
@@ -206,13 +276,13 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
     function _createDKinkIRM(bytes memory _irmConfigData, address _silo, bytes32 _salt) internal returns (address) {
         DKinkIRMConfig memory dkink = abi.decode(_irmConfigData, (DKinkIRMConfig));
 
-        IInterestRateModel interestRateModel = DYNAMIC_KINK_MODEL_FACTORY.create(
-            dkink.config,
-            dkink.immutableArgs,
-            dkink.initialOwner,
-            _silo,
-            _salt
-        );
+        IInterestRateModel interestRateModel = DYNAMIC_KINK_MODEL_FACTORY.create({
+            _config: dkink.config,
+            _immutableArgs: dkink.immutableArgs,
+            _initialOwner: dkink.initialOwner,
+            _silo: _silo,
+            _externalSalt: _salt
+        });
 
         return address(interestRateModel);
     }
@@ -262,10 +332,9 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
     /// @notice Clone hook receiver if it is provided
     /// @param _siloInitData Silo configuration for the silo creation
     /// @param _hookReceiverImplementation Hook receiver implementation to clone
-    function _cloneHookReceiver(
-        ISiloConfig.InitData memory _siloInitData,
-        address _hookReceiverImplementation
-    ) internal {
+    function _cloneHookReceiver(ISiloConfig.InitData memory _siloInitData, address _hookReceiverImplementation)
+        internal
+    {
         require(
             _hookReceiverImplementation == address(0) || _siloInitData.hookReceiver == address(0),
             HookReceiverMisconfigured()
@@ -287,10 +356,18 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
         ClonableHookReceiver calldata _clonableHookReceiver
     ) internal {
         if (_clonableHookReceiver.implementation != address(0)) {
-            IHookReceiver(_siloInitData.hookReceiver).initialize(
-                _siloConfig,
-                _clonableHookReceiver.initializationData
-            );
+            if (_gaugeRequired) {
+                require(_clonableHookReceiver.initializationData.length == 32, InvalidHookInitData());
+                
+                (_finalHookOwner) = abi.decode(_clonableHookReceiver.initializationData, (address));
+            }
+
+            IHookReceiver(_siloInitData.hookReceiver)
+                .initialize({
+                    _siloConfig: _siloConfig,
+                    // override owner so we can set the incentives controller
+                    _data: _gaugeRequired ? abi.encode(address(this)) : _clonableHookReceiver.initializationData
+                });
         }
     }
 
@@ -299,7 +376,8 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
     function _updateSalt(bytes memory _txInput) internal {
         bytes32 salt = _salt();
 
-        assembly { // solhint-disable-line no-inline-assembly
+        assembly {
+            // solhint-disable-line no-inline-assembly
             let pointer := add(add(_txInput, 0x20), sub(mload(_txInput), 0x20))
             mstore(pointer, salt)
         }

@@ -3,3 +3,4 @@ contracts/utils/liquidationHelper/LiquidationHelper.sol
 contracts/hooks/_common/TransientReentrancy.sol
 contracts/hooks/PendleRewardsClaimer.sol
 contracts/leverage/modules/LeverageTxState.sol
+contracts/SiloDeployer.sol

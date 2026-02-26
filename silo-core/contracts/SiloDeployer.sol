@@ -111,7 +111,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
             _externalSalt: bytes32(0)
         });
 
-        IGaugeHookReceiver(incentivesController).setGauge({
+        IGaugeHookReceiver(_siloInitData.hookReceiver).setGauge({
             _gauge: ISiloIncentivesController(incentivesController),
             _shareToken: IShareToken(debtSilo)
         });

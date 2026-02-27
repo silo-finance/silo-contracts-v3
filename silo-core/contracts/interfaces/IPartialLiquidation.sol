@@ -2,6 +2,11 @@
 pragma solidity >=0.5.0;
 
 interface IPartialLiquidation {
+    enum LiquidationType {
+        STANDARD,
+        DEFAULTING
+    }
+
     struct HookSetup {
         /// @param this is the same as in siloConfig
         address hookReceiver;
@@ -30,6 +35,8 @@ interface IPartialLiquidation {
         uint256 withdrawCollateral,
         bool receiveSToken
     );
+
+    event LiquidationStart(LiquidationType indexed liquidationType);
 
     error UnexpectedCollateralToken();
     error UnexpectedDebtToken();

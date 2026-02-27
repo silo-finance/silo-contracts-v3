@@ -65,6 +65,8 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         onlyAllowedOrPublic
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
     {
+        emit LiquidationStart(LiquidationType.DEFAULTING);
+
         ISiloConfig siloConfigCached = siloConfig;
 
         require(address(siloConfigCached) != address(0), EmptySiloConfig());
@@ -149,6 +151,7 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         // it is possible to deduct 1 wei less from debtTotalAssets than from collateralTotalAssets because of rounding
         (, repayDebtAssets) = _repayDebtByDefaulting(debtConfig.silo, repayDebtAssets, _borrower);
 
+        emit DefaultingLiquidationData(debtConfig.silo, _borrower, repayDebtAssets, withdrawCollateral);
         emit LiquidationCall(msg.sender, debtConfig.silo, _borrower, repayDebtAssets, withdrawCollateral, true);
     }
 

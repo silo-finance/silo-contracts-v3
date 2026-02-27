@@ -197,7 +197,7 @@ contract DefaultingLiquidationBorrowable1Test is DefaultingLiquidationCommon {
             address lpProvider = makeAddr("lpProvider");
 
             {
-                uint256 lpProviderCollateralLeft = 0.587901860083379310e18; // hardcoded based on logs
+                uint256 lpProviderCollateralLeft = 0.58790186008337931e18; // hardcoded based on logs
                 if (_withOtherBorrower) lpProviderCollateralLeft += 1.071336880148335035e18;
 
                 assertEq(

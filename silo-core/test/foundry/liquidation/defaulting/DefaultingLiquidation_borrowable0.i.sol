@@ -138,7 +138,8 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
             );
 
             assertLe(
-                debtSilo.maxRepay(makeAddr("otherBorrower")) + debtSilo.maxRepay(makeAddr("borrower")) - debtSiloAfter.totalDebt,
+                debtSilo.maxRepay(makeAddr("otherBorrower")) + debtSilo.maxRepay(makeAddr("borrower"))
+                    - debtSiloAfter.totalDebt,
                 1,
                 "[debtSilo] total debt must match borrowers debt (1 is for rounding errors)"
             );
@@ -182,7 +183,11 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
                 borrowerCollateralAfter.protectedAssets, 0, "[collateralUser] borrower protected was fully liquidated"
             );
 
-            assertEq(borrowerDebtBefore.debtAssets - debtToRepay, borrowerDebtAfter.debtAssets, "[debtUser] debt amount canceled");
+            assertEq(
+                borrowerDebtBefore.debtAssets - debtToRepay,
+                borrowerDebtAfter.debtAssets,
+                "[debtUser] debt amount canceled"
+            );
         }
 
         {
@@ -206,7 +211,7 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
 
             {
                 uint256 lpProviderCollateralLeft = 0.427395456080449533e18; // hardcoded based on logs
-                if (_withOtherBorrower) lpProviderCollateralLeft += 1.000778598547384710e18;
+                if (_withOtherBorrower) lpProviderCollateralLeft += 1.00077859854738471e18;
 
                 assertEq(
                     _getUserState(debtSilo, lpProvider).collateralAssets,

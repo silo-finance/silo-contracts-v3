@@ -6,6 +6,7 @@ import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
+import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IPartialLiquidationByDefaulting.sol";
 
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
@@ -499,6 +500,42 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
             0.097522141506617573e18,
             "keeper3 fee from borrower3 liquidation (protected)"
         );
+    }
+
+    /*
+    FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_DefaultingLiquidationData -vv --mc DefaultingLiquidationBorrowable0Test
+    */
+    function test_defaulting_DefaultingLiquidationData() public {
+        _addLiquidity(1e18);
+
+        _createPosition({_borrower: borrower, _collateral: 1e18, _protected: 1e18, _maxOut: true});
+
+        _setCollateralPrice(0.98e18);
+
+        _moveUntillDefaultingPossible(borrower, 0.001e18, 1 days);
+
+        _createIncentiveController();
+
+        (,ISilo debtSilo) = _getSilos();
+
+        // hardcoded based on logs
+        uint256 withdrawAssetsFromCollateral = 1e18;
+        uint256 withdrawAssetsFromProtected = 1e18;
+        uint256 repayDebtAssets = 2.046343284218735174e18;
+
+        vm.expectEmit(true, true, true, true);
+        emit IPartialLiquidationByDefaulting.DefaultingLiquidationData({
+            debtSilo: address(debtSilo),
+            borrower: borrower,
+            withdrawAssetsFromCollateral: withdrawAssetsFromCollateral,
+            withdrawAssetsFromProtected: withdrawAssetsFromProtected,
+            repayDebtAssets: repayDebtAssets
+        });
+            
+        (uint256 collateralToLiquidate, uint256 debtToRepay) = defaulting.liquidationCallByDefaulting(borrower);
+
+        assertEq(collateralToLiquidate, withdrawAssetsFromCollateral + withdrawAssetsFromProtected, "collateralToLiquidate match");
+        assertEq(debtToRepay, repayDebtAssets, "debtToRepay match");
     }
 
     // CONFIGURATION

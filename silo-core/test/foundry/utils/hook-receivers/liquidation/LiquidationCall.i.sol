@@ -248,6 +248,10 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
                 abi.encodeWithSelector(IERC20.transfer.selector, address(this), maxDebtToCover + 0.05e5)
             );
 
+            vm.expectEmit(true, true, true, true);
+            emit IPartialLiquidation.LiquidationStart(IPartialLiquidation.LiquidationType.STANDARD);
+
+
             (uint256 withdrawAssetsFromCollateral, uint256 repayDebtAssets) = partialLiquidation.liquidationCall(
                 address(token0), address(token1), BORROWER, maxDebtToCover, false /* receiveSToken */
             );

@@ -163,6 +163,9 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         console2.log("maxRepay borrower:", debtSilo.maxRepay(borrower));
         console2.log("maxRepay other borrower:", debtSilo.maxRepay(makeAddr("otherBorrower")));
 
+        vm.expectEmit(true, true, true, true);
+        emit IPartialLiquidation.LiquidationStart(IPartialLiquidation.LiquidationType.DEFAULTING);
+
         (collateralToLiquidate, debtToRepay) = defaulting.liquidationCallByDefaulting(borrower);
         console2.log("AFTER DEFAULTING what happened?");
 

@@ -47,6 +47,8 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
         nonReentrant
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
     {
+        emit LiquidationStart(LiquidationType.STANDARD);
+
         ISiloConfig siloConfigCached = siloConfig;
 
         require(address(siloConfigCached) != address(0), EmptySiloConfig());

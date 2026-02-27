@@ -54,6 +54,7 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
     }
 
     /// @inheritdoc IPartialLiquidationByDefaulting
+    // solhint-disable-next-line func-name-mixedcase
     function LT_MARGIN_FOR_DEFAULTING() public pure virtual returns (uint256) {
         return 0.01e18; // 1%
     }

@@ -152,12 +152,11 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         (, repayDebtAssets) = _repayDebtByDefaulting(debtConfig.silo, repayDebtAssets, _borrower);
 
         emit DefaultingLiquidationData({
+            debtSilo: debtConfig.silo,
+            borrower: _borrower,
             withdrawAssetsFromCollateral: params.withdrawAssetsFromCollateral,
             withdrawAssetsFromProtected: params.withdrawAssetsFromProtected,
-            collateralSharesForKeeper: params.collateralSharesForKeeper,
-            collateralSharesForLenders: params.collateralSharesForLenders,
-            protectedSharesForKeeper: params.protectedSharesForKeeper,
-            protectedSharesForLenders: params.protectedSharesForLenders
+            repayDebtAssets: repayDebtAssets
         });
         
         emit LiquidationCall(msg.sender, debtConfig.silo, _borrower, repayDebtAssets, withdrawCollateral, true);

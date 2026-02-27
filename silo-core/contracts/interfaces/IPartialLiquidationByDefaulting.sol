@@ -30,12 +30,11 @@ interface IPartialLiquidationByDefaulting {
     event DefaultingLiquidation(uint256 canceledDebt, uint256 deductedFromCollateral);
 
     event DefaultingLiquidationData(
+        address indexed debtSilo,
+        address indexed borrower,
         uint256 withdrawAssetsFromCollateral,
         uint256 withdrawAssetsFromProtected,
-        uint256 collateralSharesForKeeper,
-        uint256 collateralSharesForLenders,
-        uint256 protectedSharesForKeeper,
-        uint256 protectedSharesForLenders
+        uint256 repayDebtAssets
     );
 
     error NoControllerForCollateral();

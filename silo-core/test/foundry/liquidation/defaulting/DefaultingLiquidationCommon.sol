@@ -165,6 +165,8 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         (collateralToLiquidate, debtToRepay) = defaulting.liquidationCallByDefaulting(borrower);
         console2.log("AFTER DEFAULTING what happened?");
+        emit log_named_decimal_uint("collateralToLiquidate", collateralToLiquidate, 18);
+        emit log_named_decimal_uint("debtToRepay", debtToRepay, 18);
 
         _assertProtectedRatioDidNotchanged();
 

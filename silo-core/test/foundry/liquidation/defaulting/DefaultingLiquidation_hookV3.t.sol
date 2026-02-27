@@ -18,6 +18,6 @@ contract DefaultingLiquidationHookV3Test is Test {
 
     function test_defaulting_version() public {
         SiloHookV3 hook = new SiloHookV3();
-        assertEq(hook.VERSION(), "SiloHookV3 4.0.0");
+        assertEq(hook.VERSION(), "SiloHookV3 4.4.0");
     }
 }

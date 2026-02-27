@@ -29,7 +29,14 @@ interface IPartialLiquidationByDefaulting {
     /// it might be lower then debt eg in case of bad debt
     event DefaultingLiquidation(uint256 canceledDebt, uint256 deductedFromCollateral);
 
-    event DefaultingLiquidationData(address indexed silo, address indexed borrower, uint256 repayDebtAssets, uint256 withdrawCollateral);
+    event DefaultingLiquidationData(
+        uint256 withdrawAssetsFromCollateral,
+        uint256 withdrawAssetsFromProtected,
+        uint256 collateralSharesForKeeper,
+        uint256 collateralSharesForLenders,
+        uint256 protectedSharesForKeeper,
+        uint256 protectedSharesForLenders
+    );
 
     error NoControllerForCollateral();
     error CollateralNotSupportedForDefaulting();

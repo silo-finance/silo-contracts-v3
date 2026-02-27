@@ -151,7 +151,15 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         // it is possible to deduct 1 wei less from debtTotalAssets than from collateralTotalAssets because of rounding
         (, repayDebtAssets) = _repayDebtByDefaulting(debtConfig.silo, repayDebtAssets, _borrower);
 
-        emit DefaultingLiquidationData(debtConfig.silo, _borrower, repayDebtAssets, withdrawCollateral);
+        emit DefaultingLiquidationData({
+            withdrawAssetsFromCollateral: params.withdrawAssetsFromCollateral,
+            withdrawAssetsFromProtected: params.withdrawAssetsFromProtected,
+            collateralSharesForKeeper: params.collateralSharesForKeeper,
+            collateralSharesForLenders: params.collateralSharesForLenders,
+            protectedSharesForKeeper: params.protectedSharesForKeeper,
+            protectedSharesForLenders: params.protectedSharesForLenders
+        });
+        
         emit LiquidationCall(msg.sender, debtConfig.silo, _borrower, repayDebtAssets, withdrawCollateral, true);
     }
 

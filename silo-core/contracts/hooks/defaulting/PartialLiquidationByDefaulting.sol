@@ -37,9 +37,6 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
     /// @inheritdoc IPartialLiquidationByDefaulting
     address public immutable LIQUIDATION_LOGIC;
 
-    /// @inheritdoc IPartialLiquidationByDefaulting
-    uint256 public constant LT_MARGIN_FOR_DEFAULTING = 0.025e18;
-
     uint256 internal constant _DECIMALS_PRECISION = 1e18;
 
     constructor() {
@@ -54,6 +51,11 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         __Whitelist_init(_owner);
 
         validateDefaultingCollateral();
+    }
+
+    /// @inheritdoc IPartialLiquidationByDefaulting
+    function LT_MARGIN_FOR_DEFAULTING() public pure virtual returns (uint256) {
+        return 0.01e18; // 1%
     }
 
     /// @inheritdoc IPartialLiquidationByDefaulting
@@ -74,7 +76,7 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         (ISiloConfig.ConfigData memory collateralConfig, ISiloConfig.ConfigData memory debtConfig) =
             _fetchConfigs(siloConfigCached, _borrower);
 
-        collateralConfig.lt += LT_MARGIN_FOR_DEFAULTING;
+        collateralConfig.lt += LT_MARGIN_FOR_DEFAULTING();
 
         CallParams memory params;
 
@@ -195,11 +197,11 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
 
         // to be consistent with validateSiloInitData, we using `<=` for lt check
         require(
-            config0.lt + LT_MARGIN_FOR_DEFAULTING + config0.liquidationFee <= _DECIMALS_PRECISION, InvalidLTConfig0()
+            config0.lt + LT_MARGIN_FOR_DEFAULTING() + config0.liquidationFee <= _DECIMALS_PRECISION, InvalidLTConfig0()
         );
         
         require(
-            config1.lt + LT_MARGIN_FOR_DEFAULTING + config1.liquidationFee <= _DECIMALS_PRECISION, InvalidLTConfig1()
+            config1.lt + LT_MARGIN_FOR_DEFAULTING() + config1.liquidationFee <= _DECIMALS_PRECISION, InvalidLTConfig1()
         );
     }
 

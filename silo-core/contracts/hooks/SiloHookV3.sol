@@ -23,6 +23,11 @@ contract SiloHookV3 is SiloHookV2 {
     }
 
     function VERSION() external pure override returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "SiloHookV3 4.0.0";
+        return "SiloHookV3 4.4.0";
+    }
+
+    // solhint-disable-next-line func-name-mixedcase
+    function LT_MARGIN_FOR_DEFAULTING() public pure override virtual returns (uint256) {
+        return 0;
     }
 }

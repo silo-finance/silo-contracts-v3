@@ -242,6 +242,9 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         try SILO_LENS.getLtv(silo0, _user) returns (uint256 _ltv) {
             ltv = _ltv;
             emit log_named_decimal_uint(string.concat(vm.getLabel(_user), " LTV [%]"), ltv, 16);
+            (ISilo collateralSilo,) = _getSilos();
+            uint256 lt = collateralSilo.config().getConfig(address(collateralSilo)).lt;
+            emit log_named_decimal_uint(" LT [%]", lt, 16);
         } catch {
             console2.log("\t[_printLtv] getLtv failed");
         }

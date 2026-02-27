@@ -136,11 +136,13 @@ contract DefaultingLiquidationSplitMathTest is CloneHookV2 {
             _totalShares: _shares
         });
 
-        (uint256 totalSharesToLiquidate1, uint256 keeperShares1, uint256 lendersShares1) = defaulting
-            .getKeeperAndLenderSharesSplit({_assetsToLiquidate: _assets, _collateralType: ISilo.CollateralType.Protected});
+        (uint256 totalSharesToLiquidate1, uint256 keeperShares1, uint256 lendersShares1) = defaulting.getKeeperAndLenderSharesSplit({
+            _assetsToLiquidate: _assets, _collateralType: ISilo.CollateralType.Protected
+        });
 
-        (uint256 totalSharesToLiquidate2, uint256 keeperShares2, uint256 lendersShares2) = defaulting
-            .getKeeperAndLenderSharesSplit({_assetsToLiquidate: _assets, _collateralType: ISilo.CollateralType.Collateral});
+        (uint256 totalSharesToLiquidate2, uint256 keeperShares2, uint256 lendersShares2) = defaulting.getKeeperAndLenderSharesSplit({
+            _assetsToLiquidate: _assets, _collateralType: ISilo.CollateralType.Collateral
+        });
 
         assertEq(totalSharesToLiquidate1, totalSharesToLiquidate2, "total shares to liquidate should be the same");
         assertEq(keeperShares1, keeperShares2, "keeper shares should be the same");
@@ -261,8 +263,9 @@ contract DefaultingLiquidationSplitMathTest is CloneHookV2 {
         ISilo.CollateralType collateralType =
             _useProtected ? ISilo.CollateralType.Protected : ISilo.CollateralType.Collateral;
 
-        (uint256 totalSharesToLiquidate, uint256 keeperShares, uint256 lendersShares) = defaulting
-            .getKeeperAndLenderSharesSplit({_assetsToLiquidate: _assetsToLiquidate, _collateralType: collateralType});
+        (uint256 totalSharesToLiquidate, uint256 keeperShares, uint256 lendersShares) = defaulting.getKeeperAndLenderSharesSplit({
+            _assetsToLiquidate: _assetsToLiquidate, _collateralType: collateralType
+        });
 
         if (lendersShares == 0) assertEq(keeperShares, 0, "if lenders are 0, keeper should be 0");
         else assertLt(keeperShares, lendersShares, "keeper part is always less than lenders part");

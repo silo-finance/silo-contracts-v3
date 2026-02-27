@@ -10,8 +10,9 @@ import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IP
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
 
-import {SiloIncentivesControllerCompatible} from
-    "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
+import {
+    SiloIncentivesControllerCompatible
+} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 
 import {CloneHookV2} from "./common/CloneHookV2.sol";
 

@@ -68,6 +68,7 @@ abstract contract DefaultingLiquidationAsserts is DefaultingLiquidationHelpers {
             ISilo.Fractions memory fractions = _silo.getFractionsStorage();
             assertGt(fractions.revenue, 0, "[_assertWithdrawableFees] expect revenue fractions to be greater than 0");
         } else {
+            console2.log("withdrawing fees", fees);
             _silo.withdrawFees();
         }
     }

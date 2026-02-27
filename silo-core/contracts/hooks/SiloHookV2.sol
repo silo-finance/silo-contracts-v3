@@ -12,7 +12,7 @@ import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiv
 
 contract SiloHookV2 is GaugeHookReceiver, PartialLiquidationByDefaulting, IVersioned {
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "SiloHookV2 4.1.3";
+        return "SiloHookV2 4.4.0";
     }
 
     /// @inheritdoc IHookReceiver

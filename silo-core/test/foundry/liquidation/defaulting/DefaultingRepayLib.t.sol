@@ -20,7 +20,9 @@ uint256 constant OFFSET = 1e3;
 
 contract ShareDebtTokenMock is ShareDebtToken {
     function mockIt(ISilo _silo) external {
-        ShareTokenLib.__ShareToken_init({_silo: _silo, _hookReceiver: address(0), _tokenType: uint24(Hook.DEBT_TOKEN)});
+        ShareTokenLib.__ShareToken_init({
+            _silo: _silo, _hookReceiver: address(0), _tokenType: uint24(Hook.DEBT_TOKEN)
+        });
     }
 
     function overrideSilo(ISilo _silo) external {
@@ -46,9 +48,19 @@ contract SiloAndConfigMock {
 
     function turnOffReentrancyProtection() external pure {}
 
-    function accrueInterestForSilo(address /* _silo */ ) external pure {}
+    function accrueInterestForSilo(
+        address /* _silo */
+    )
+        external
+        pure {}
 
-    function getDebtShareTokenAndAsset(address /* _silo */ ) external view returns (address, address) {
+    function getDebtShareTokenAndAsset(
+        address /* _silo */
+    )
+        external
+        view
+        returns (address, address)
+    {
         return (address(DEBT_SHARE_TOKEN), address(DEBT_ASSET));
     }
 }

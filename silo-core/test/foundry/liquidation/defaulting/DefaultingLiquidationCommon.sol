@@ -165,6 +165,8 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         (collateralToLiquidate, debtToRepay) = defaulting.liquidationCallByDefaulting(borrower);
         console2.log("AFTER DEFAULTING what happened?");
+        emit log_named_decimal_uint("collateralToLiquidate", collateralToLiquidate, 18);
+        emit log_named_decimal_uint("debtToRepay", debtToRepay, 18);
 
         _assertProtectedRatioDidNotchanged();
 
@@ -383,9 +385,10 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_defaulting_neverReverts_insolvency_withOtherBorrowers_fuzz -vv
     locally: 63s
     */
-    function test_defaulting_neverReverts_insolvency_withOtherBorrowers_long_fuzz(uint32 _collateral, uint32 _protected)
-        public
-    {
+    function test_defaulting_neverReverts_insolvency_withOtherBorrowers_long_fuzz(
+        uint32 _collateral,
+        uint32 _protected
+    ) public {
         _addLiquidity(Math.max(_collateral, _protected));
         address otherBorrower = makeAddr("otherBorrower");
 
@@ -753,7 +756,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         uint256 balance = collateralSilo.balanceOf(borrower);
 
         // remove collateral
-        
+
         if (balance != 0) {
             vm.prank(address(partialLiquidation));
             IShareToken(address(collateralSilo)).forwardTransferFromNoChecks(borrower, address(this), balance);
@@ -986,7 +989,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_bothLiquidationsResultsMatch_insolvent_fuzz -vv --fuzz-runs 500
 
-    use uint64 for collateral and protected because fuzzing was trouble to find cases, 
+    use uint64 for collateral and protected because fuzzing was trouble to find cases,
     reason is incentive uint104 cap
 
     use only 100 runs because fuzzing for this one is demanding
@@ -1244,7 +1247,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     }
 
     /*
-    incentive distribution: 
+    incentive distribution:
     - does everyone can claim? its shares so even 1 wei should be claimable
 
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_incentiveDistribution_everyoneCanClaim_badDebt -vv
@@ -1260,7 +1263,9 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_incentiveDistribution_everyoneCanClaim_insolvent -vv
     locally: 55s
     */
-    function test_incentiveDistribution_everyoneCanClaim_insolvent_long_fuzz(uint64 _collateral, uint64 _protected) public {
+    function test_incentiveDistribution_everyoneCanClaim_insolvent_long_fuzz(uint64 _collateral, uint64 _protected)
+        public
+    {
         _incentiveDistribution_everyoneCanClaim(_collateral, _protected, false);
     }
 
@@ -1406,7 +1411,9 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     /*
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_incentiveDistribution_defaultingIsProRata_badDebt -vv
     */
-    function test_incentiveDistribution_defaultingIsProRata_badDebt_fuzz(uint64 _collateral, uint64 _protected) public {
+    function test_incentiveDistribution_defaultingIsProRata_badDebt_fuzz(uint64 _collateral, uint64 _protected)
+        public
+    {
         _incentiveDistribution_defaultingIsProRata(_collateral, _protected, true);
     }
 
@@ -1414,7 +1421,9 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_incentiveDistribution_defaultingIsProRata_insolvent -vv
     locally: 10s
     */
-    function test_incentiveDistribution_defaultingIsProRata_insolvent_fuzz(uint64 _collateral, uint64 _protected) public {
+    function test_incentiveDistribution_defaultingIsProRata_insolvent_fuzz(uint64 _collateral, uint64 _protected)
+        public
+    {
         _incentiveDistribution_defaultingIsProRata(_collateral, _protected, false);
     }
 

@@ -131,8 +131,8 @@ contract SiloDeployer is Create2Factory, ISiloDeployer {
 
         IPartialLiquidationByDefaulting _hookContract = IPartialLiquidationByDefaulting(_hook);
 
-        try _hookContract.LT_MARGIN_FOR_DEFAULTING() returns (uint256 margin) {
-            return margin != 0;
+        try _hookContract.LIQUIDATION_LOGIC() returns (address logic) {
+            return logic != address(0);
         } catch {
             return false;
         }

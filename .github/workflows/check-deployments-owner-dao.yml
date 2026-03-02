@@ -17,7 +17,7 @@ on:
       - scripts/check_deployments_version_on_chain.py
       - .github/workflows/check-deployments-owner-dao.yml
   pull_request:
-    branches: [master, develop]
+    branches: [master]
     paths:
       - silo-core/deployments/**
       - silo-oracles/deployments/**
@@ -64,9 +64,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      # TODO
-      # - name: Check if owners are DAO (${{ matrix.chain }})
-      #   run: python3 scripts/check_deployments_owner_is_dao.py --chain ${{ matrix.chain }}
+      - name: Check if owners are DAO (${{ matrix.chain }})
+        run: python3 scripts/check_deployments_owner_is_dao.py --chain ${{ matrix.chain }}
 
   admin-is-dao:
     runs-on: ubuntu-latest

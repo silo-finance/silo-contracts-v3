@@ -520,8 +520,6 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
 
         _moveUntillDefaultingPossible(borrower, 0.001e18, 1 days);
 
-        _createIncentiveController();
-
         (,ISilo debtSilo) = _getSilos();
 
         // hardcoded based on logs

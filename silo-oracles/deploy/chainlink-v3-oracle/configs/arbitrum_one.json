@@ -251,6 +251,16 @@
         "normalizationDivider": 1e18,
         "normalizationMultiplier": 0
     },
+    "CHAINLINK_GM_WETH": {
+        "baseToken": "GM",
+        "quoteToken": "WETH",
+        "primaryAggregator": "CHAINLINK_GM_WETH_aggregator",
+        "primaryHeartbeat": 87001,
+        "secondaryAggregator": "",
+        "secondaryHeartbeat": 0,
+        "normalizationDivider": 1e8,
+        "normalizationMultiplier": 0
+    },
     "CHAINLINK_HARDCODE_weETH_WETH": {
         "baseToken": "weETH",
         "quoteToken": "WETH",

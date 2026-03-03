@@ -75,8 +75,19 @@ def load_common_addresses(repo_root: Path, chain: str) -> dict[str, str]:
     return {k: v.strip().lower() for k, v in data.items() if isinstance(v, str) and v.strip().startswith("0x")}
 
 
-def get_dao_address(common_addresses: dict[str, str]) -> str | None:
-    return common_addresses.get("DAO")
+def get_dao_addresses(common_addresses: dict[str, str]) -> set[str]:
+    """
+    Return set of DAO addresses that are allowed to be DEFAULT_ADMIN_ROLE.
+    Includes both current DAO and legacy DAO_OLD when present.
+    """
+    addrs: set[str] = set()
+    dao = common_addresses.get("DAO")
+    if dao:
+        addrs.add(dao)
+    dao_old = common_addresses.get("DAO_OLD")
+    if dao_old:
+        addrs.add(dao_old)
+    return addrs
 
 
 def abi_has_access_control_admin(abi: list | None) -> bool:
@@ -193,9 +204,9 @@ def main() -> int:
 
     repo_root = Path(__file__).resolve().parents[1]
     common_addresses = load_common_addresses(repo_root, chain)
-    dao_address = get_dao_address(common_addresses)
-    if not dao_address:
-        print(f"DAO not found in common/addresses/{chain}.json", file=sys.stderr)
+    dao_addresses = get_dao_addresses(common_addresses)
+    if not dao_addresses:
+        print(f"DAO/DAO_OLD not found in common/addresses/{chain}.json", file=sys.stderr)
         return 2
 
     addr_to_key: dict[str, str] = {addr: key for key, addr in common_addresses.items()}
@@ -241,16 +252,19 @@ def main() -> int:
             skip_count += 1
             continue
 
-        if admin == dao_address:
-            print(f"[ ok ] {component} {contract_name} admin is DAO")
+        if admin in dao_addresses:
+            print(f"[ ok ] {component} {contract_name} admin is DAO (current or legacy)")
             ok_count += 1
             continue
 
         key = addr_to_key.get(admin)
         if key is None:
-            print(f"[FAIL] {component} {contract_name} admin {admin} not in common/addresses/{chain}.json (expected DAO)")
+            print(
+                f"[FAIL] {component} {contract_name} admin {admin} not in common/addresses/{chain}.json "
+                "(expected DAO or DAO_OLD)"
+            )
         else:
-            print(f"[FAIL] {component} {contract_name} admin is {key} ({admin}), expected DAO")
+            print(f"[FAIL] {component} {contract_name} admin is {key} ({admin}), expected DAO or DAO_OLD")
         has_failure = True
         fail_count += 1
         failed_contracts.append((component, contract_name))

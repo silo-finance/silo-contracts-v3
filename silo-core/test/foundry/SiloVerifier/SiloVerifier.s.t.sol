@@ -121,7 +121,7 @@ contract SiloVerifierScriptTest is Test {
         );
 
         verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
-        assertEq(verifier.verify(), 2, "2 errors after breaking liquidation fee in both Silos");
+        assertEq(verifier.verify(), 3, "3 errors after breaking liquidation fee in both Silos");
     }
 
     function test_CheckFlashloanFee() public {

@@ -8,8 +8,26 @@ name: Code verification
 
 on:
   push:
-
+    branches: [master]
+    paths:
+      - silo-core/deployments/**
+      - silo-core/broadcast/**
+      - silo-oracles/deployments/**
+      - silo-oracles/broadcast/**
+      - silo-vaults/deployments/**
+      - silo-vaults/broadcast/**
   pull_request:
+    types: [opened, synchronize]
+    paths:
+      - silo-core/deployments/**
+      - silo-core/broadcast/**
+      - silo-oracles/deployments/**
+      - silo-oracles/broadcast/**
+      - silo-vaults/deployments/**
+      - silo-vaults/broadcast/**
+      - scripts/check_deployments_verified_on_explorer.py
+      - scripts/merge_verification_reports.py
+      - .github/workflows/check-deployments-verified-on-explorer.yml
 
 env:
   ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}

@@ -24,14 +24,14 @@ contract CheckIncentivesOwner is ICheck {
     }
 
     function checkName() external view override returns (string memory name) {
-        name = string.concat(siloName, " incentives owner is a growth multisig");
+        name = string.concat(siloName, " incentives owner is a DAO multisig");
     }
 
     function successMessage() external view override returns (string memory message) {
         if (skipped) {
             message = "incentives are not set";
         } else {
-            message = "owner is a growth multisig";
+            message = "owner is a DAO multisig";
         }
     }
 
@@ -67,7 +67,7 @@ contract CheckIncentivesOwner is ICheck {
     }
 
     function _checkIncentivesOwner(address _gauge) internal returns (bool success) {
-        success = _gauge == address(0) || Ownable(_gauge).owner() == AddrLib.getAddress(AddrKey.GROWTH_MULTISIG);
+        success = _gauge == address(0) || Ownable(_gauge).owner() == AddrLib.getAddress(AddrKey.DAO);
 
         if (!success) {
             gauge = _gauge;

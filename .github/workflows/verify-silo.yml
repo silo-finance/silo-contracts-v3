@@ -245,5 +245,27 @@ jobs:
           else
             echo "✅ LIVE MARKET QA tests passed"
           fi
-  
-        
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate new market PR comment (Slack-style)
+        run: |
+          python3 scripts/new_market_pr_comment.py \
+            --market-name "${{ steps.extract.outputs.CONFIG_NAME }}" \
+            --address "${{ steps.extract.outputs.CONFIG }}" \
+            --chain "${{ steps.extract.outputs.CHAIN }}" \
+            -o new_market_comment.md
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      - name: Post new market comment on PR
+        if: steps.live-market-qa.outputs.test_exit_code == '0'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: new-markets
+          path: new_market_comment.md
+

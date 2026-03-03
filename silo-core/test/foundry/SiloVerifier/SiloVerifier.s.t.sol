@@ -22,7 +22,7 @@ import {SiloCoreContracts} from "silo-core/common/SiloCoreContracts.sol";
 
 /*
     FOUNDRY_PROFILE=core_test forge test --match-contract SiloVerifierScriptTest --ffi -vvv  \
-    --mt test_CheckDaoFee
+    --mt test_CheckLiquidationFee
 */
 contract SiloVerifierScriptTest is Test {
     ISiloConfig constant GM_WETH_CONFIG = ISiloConfig(0xB4b4d23F4D7FFd04deABfCdCf8fDdeD0Ed3ae1C8);
@@ -67,7 +67,7 @@ contract SiloVerifierScriptTest is Test {
         );
 
         verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
-        assertEq(verifier.verify(), 2, "2 errors after breaking dao fee in both Silos");
+        assertEq(verifier.verify(), 3, "3 errors after breaking dao fee in both Silos");
     }
 
     function test_CheckDeployerFee() public {

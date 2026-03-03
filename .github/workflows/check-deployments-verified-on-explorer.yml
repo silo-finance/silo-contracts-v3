@@ -7,8 +7,6 @@
 name: Code verification
 
 on:
-  push:
-
   pull_request:
 
 env:

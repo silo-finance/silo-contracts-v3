@@ -99,7 +99,7 @@ VERIFICATION_SUPPORTED_CHAINS = sorted(CHAIN_EXPLORERS.keys())
 # Block explorer address URL for PR comment links (display_label -> base URL)
 EXPLORER_ADDRESS_URL: dict[str, str] = {
     "Arbitrum": "https://arbiscan.io/address/",
-    "Avalanche (routescan)": "https://snowscan.io/address/",
+    "Avalanche (routescan)": "https://snowtrace.io/address/",
     "Avalanche (etherscan)": "https://snowscan.xyz/address/",
     "Base": "https://basescan.org/address/",
     "BNB": "https://bscscan.com/address/",

@@ -115,6 +115,8 @@ def build_comment_body(
     view_link = f"{SILO_MARKET_CRAFTER_BASE}{addr}" if addr else ""
 
     lines = [
+        f"notify people on slack with this comment when PR will be finalized",
+        f"------",
         f"new market on {chain_display}:",
         f'"{market_name}":',
         f"- [{addr}]({explorer_link})" if explorer_link else f"- {addr}",

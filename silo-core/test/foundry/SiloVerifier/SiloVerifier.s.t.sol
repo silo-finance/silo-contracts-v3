@@ -21,22 +21,22 @@ import {CheckNonBorrowableAsset} from "silo-core/deploy/silo/verifier/checks/sil
 import {SiloCoreContracts} from "silo-core/common/SiloCoreContracts.sol";
 
 /*
-    FOUNDRY_PROFILE=core_test forge test -vvv --match-contract SiloVerifierScriptTest --ffi \
+    FOUNDRY_PROFILE=core_test forge test --match-contract SiloVerifierScriptTest --ffi -vvv  \
     --mt test_CheckDaoFee
 */
 contract SiloVerifierScriptTest is Test {
-    ISiloConfig constant WS_USDC_CONFIG = ISiloConfig(0x062A36Bbe0306c2Fd7aecdf25843291fBAB96AD2);
-    address constant USDC = 0x29219dd400f2Bf60E5a23d13Be72B486D4038894;
-    address constant EXAMPLE_HOOK_RECEIVER = 0x2D3d269334485d2D876df7363e1A50b13220a7D8;
+    ISiloConfig constant GM_WETH_CONFIG = ISiloConfig(0xB4b4d23F4D7FFd04deABfCdCf8fDdeD0Ed3ae1C8);
+    address constant WETH = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
+    address constant EXAMPLE_HOOK_RECEIVER = 0xAf45c4F4B0239a20157eda4069c283cb8c7D6aF2;
 
-    uint256 constant EXTERNAL_PRICE_0 = 0.07561e6; // price of wS @ 51321936 block
-    uint256 constant EXTERNAL_PRICE_1 = 1e6;
+    uint256 constant EXTERNAL_PRICE_0 = 0.68e18; // price of GM
+    uint256 constant EXTERNAL_PRICE_1 = 1987e18;
 
-    address public constant SILO_FACTORY = 0xa42001D6d2237d2c74108FE360403C4b796B7170;
-    address public constant DKINK_IRM_FACTORY = 0xfdC13d2Aa0b8eA820b26003139f31AeFCA65Ab47;
+    address public constant SILO_FACTORY = 0xAFd8F792cb025A76C4916652CfC8e20eee3b6fe2;
+    address public constant DKINK_IRM_FACTORY = 0xCA1658fe7c04E7CF739c3072A1f60948506Efd83;
 
     function setUp() public {
-        vm.createSelectFork(string(abi.encodePacked(vm.envString("RPC_SONIC"))), 58293738);
+        vm.createSelectFork(string(abi.encodePacked(vm.envString("RPC_ARBITRUM"))), 437839306);
         AddrLib.init();
 
         AddrLib.setAddress(SiloCoreContracts.SILO_FACTORY, SILO_FACTORY);
@@ -44,143 +44,143 @@ contract SiloVerifierScriptTest is Test {
     }
 
     function test_CheckDaoFee() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (address silo0, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
         configData0.daoFee = 1;
         configData1.daoFee = 10 ** 18;
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo0),
             abi.encode(configData0)
         );
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo1),
             abi.encode(configData1)
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 2, "2 errors after breaking dao fee in both Silos");
     }
 
     function test_CheckDeployerFee() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (address silo0, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
         configData0.deployerFee = 12;
         configData1.deployerFee = 22;
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo0),
             abi.encode(configData0)
         );
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo1),
             abi.encode(configData1)
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 2, "2 errors after breaking deployer fee in both Silos");
     }
 
     function test_CheckLiquidationFee() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (address silo0, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
         configData0.liquidationFee = 10 ** 18;
         configData1.liquidationFee = 10 ** 18 / 2;
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo0),
             abi.encode(configData0)
         );
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo1),
             abi.encode(configData1)
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 2, "2 errors after breaking liquidation fee in both Silos");
     }
 
     function test_CheckFlashloanFee() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (address silo0, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
         configData0.flashloanFee = 10 ** 18;
         configData1.flashloanFee = 10 ** 18 / 2;
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo0),
             abi.encode(configData0)
         );
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo1),
             abi.encode(configData1)
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 2, "2 errors after breaking flashloan fee in both Silos");
     }
 
     function test_CheckSiloImplementation() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (address silo0, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
-        configData0.silo = USDC;
-        configData1.silo = USDC;
+        configData0.silo = WETH;
+        configData1.silo = WETH;
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo0),
             abi.encode(configData0)
         );
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo1),
             abi.encode(configData1)
         );
 
-        vm.mockCall(address(USDC), abi.encodeWithSelector(ISilo.factory.selector), abi.encode(SILO_FACTORY));
+        vm.mockCall(address(WETH), abi.encodeWithSelector(ISilo.factory.selector), abi.encode(SILO_FACTORY));
 
         vm.mockCall(
-            address(SILO_FACTORY), abi.encodeWithSelector(ISiloFactory.isSilo.selector, USDC), abi.encode(true)
+            address(SILO_FACTORY), abi.encodeWithSelector(ISiloFactory.isSilo.selector, WETH), abi.encode(true)
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 2, "2 errors after breaking Silo implementation in both Silos");
     }
 
@@ -188,12 +188,12 @@ contract SiloVerifierScriptTest is Test {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_CheckMaxLtvLtLiquidationFee -vv
     */
     function test_CheckMaxLtvLtLiquidationFee() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (address silo0, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
         configData0.maxLtv = 0;
         configData0.lt = 0;
@@ -204,18 +204,18 @@ contract SiloVerifierScriptTest is Test {
         configData1.liquidationFee = 0;
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo0),
             abi.encode(configData0)
         );
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo1),
             abi.encode(configData1)
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "0 errors when maxLTV, LT and liquidation fee are zeros");
 
         configData0.maxLtv = 0;
@@ -227,28 +227,28 @@ contract SiloVerifierScriptTest is Test {
         configData1.liquidationFee = 10 ** 18 / 100;
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo0),
             abi.encode(configData0)
         );
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo1),
             abi.encode(configData1)
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 2, "2 errors when one of the maxLTV, LT and liquidation fee is zero");
     }
 
     function test_CheckHookOwner() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (address silo0, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
         vm.mockCall(
             address(configData0.hookReceiver), abi.encodeWithSelector(Ownable.owner.selector), abi.encode(address(1))
@@ -258,16 +258,16 @@ contract SiloVerifierScriptTest is Test {
             address(configData1.hookReceiver), abi.encodeWithSelector(Ownable.owner.selector), abi.encode(address(2))
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 2, "2 errors after breaking hook receiver owner in both Silos");
     }
 
     function test_CheckIncentivesOwner() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
         ISiloIncentivesController incentives1 = IGaugeHookReceiver(configData1.hookReceiver).configuredGauges(
             IShareToken(configData1.collateralShareToken)
@@ -275,16 +275,16 @@ contract SiloVerifierScriptTest is Test {
 
         vm.mockCall(address(incentives1), abi.encodeWithSelector(Ownable.owner.selector), abi.encode(address(2)));
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 1, "1 error after breaking incentives owner in Silo1 with incentives");
     }
 
     function test_CheckShareTokensInGauge() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
         ISiloIncentivesController incentives1 = IGaugeHookReceiver(configData1.hookReceiver).configuredGauges(
             IShareToken(configData1.collateralShareToken)
@@ -296,17 +296,17 @@ contract SiloVerifierScriptTest is Test {
             abi.encode(address(2))
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 1, "1 error after breaking share_token in Silo1 gauge with incentives");
     }
 
     function test_CheckIrmConfig() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (address silo0, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
         IInterestRateModelV2Config irmV2Config0 = InterestRateModelV2(configData0.interestRateModel).irmConfig();
 
@@ -331,7 +331,7 @@ contract SiloVerifierScriptTest is Test {
             abi.encode(irmConfig1)
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 2, "2 errors after breaking IRM config in both Silos");
     }
 
@@ -339,11 +339,11 @@ contract SiloVerifierScriptTest is Test {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_CheckPriceDoesNotReturnZero -vv 
     */
     function test_CheckPriceDoesNotReturnZero() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0,) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
+        (address silo0,) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
 
         vm.mockCall(
             address(configData0.solvencyOracle),
@@ -351,7 +351,7 @@ contract SiloVerifierScriptTest is Test {
             abi.encode(uint256(0))
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
 
         assertEq(
             verifier.verify(),
@@ -364,26 +364,26 @@ contract SiloVerifierScriptTest is Test {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_CheckExternalPrices -vv
     */
     function test_CheckExternalPrices() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors for original prices");
 
         verifier = new SiloVerifier(ISiloConfig(0xefA367570B11f8745B403c0D458b9D2EAf424686), false, 1010, 1000);
         assertEq(verifier.verify(), 0, "no errors for single oracle case");
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0 * 102 / 100, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0 * 102 / 100, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 1, "1 error for 2% price deviation");
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, 0, 0);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, 0, 0);
         assertEq(verifier.verify(), 1, "1 error when no prices provided");
     }
 
     function test_CheckQuoteIsLinearFunction() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (address silo0, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
         vm.mockCall(
             address(configData0.solvencyOracle),
@@ -397,34 +397,34 @@ contract SiloVerifierScriptTest is Test {
             abi.encode(EXTERNAL_PRICE_1)
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 2, "2 errors after breaking linear property in oracles for both Silos");
     }
 
     function test_CheckQuoteLargeAmounts() public {
-        SiloVerifier verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        (address silo0, address silo1) = WS_USDC_CONFIG.getSilos();
-        ISiloConfig.ConfigData memory configData0 = WS_USDC_CONFIG.getConfig(silo0);
-        ISiloConfig.ConfigData memory configData1 = WS_USDC_CONFIG.getConfig(silo1);
+        (address silo0, address silo1) = GM_WETH_CONFIG.getSilos();
+        ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
+        ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
-        configData0.solvencyOracle = USDC;
-        configData1.solvencyOracle = USDC;
+        configData0.solvencyOracle = WETH;
+        configData1.solvencyOracle = WETH;
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo0),
             abi.encode(configData0)
         );
 
         vm.mockCall(
-            address(WS_USDC_CONFIG),
+            address(GM_WETH_CONFIG),
             abi.encodeWithSelector(ISiloConfig.getConfig.selector, silo1),
             abi.encode(configData1)
         );
 
-        verifier = new SiloVerifier(WS_USDC_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
+        verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
 
         assertEq(
             verifier.verify(),

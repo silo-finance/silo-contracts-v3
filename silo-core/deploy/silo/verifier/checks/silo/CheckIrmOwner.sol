@@ -26,11 +26,11 @@ contract CheckIrmOwner is ICheck {
 
     function successMessage() external view override returns (string memory message) {
         if (!isOwnableIrm) message = "IRM is NOT ownable, N/A";
-        else message = string.concat("owner is a DAO ", Strings.toHexString(realOwner));
+        else message = string.concat("owner is a DAO_ORACLE ", Strings.toHexString(realOwner));
     }
 
     function errorMessage() external view override returns (string memory message) {
-        message = string.concat("owner is NOT a DAO ", Strings.toHexString(realOwner));
+        message = string.concat("owner is NOT a DAO_ORACLE ", Strings.toHexString(realOwner));
     }
 
     function execute() external override returns (bool result) {
@@ -40,7 +40,7 @@ contract CheckIrmOwner is ICheck {
             isOwnableIrm = true;
             realOwner = owner;
             // check zero in case of DAO key is not set for a new chain.
-            result = owner != address(0) && owner == AddrLib.getAddress(AddrKey.DAO);
+            result = owner != address(0) && owner == AddrLib.getAddress(AddrKey.DAO_ORACLE);
         } catch {
             result = true;
             isOwnableIrm = false;

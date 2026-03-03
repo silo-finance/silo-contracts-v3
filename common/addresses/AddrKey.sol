@@ -6,6 +6,8 @@ library AddrKey {
     string constant public CHAINLINK_CCIP_ROUTER = "CHAINLINK_CCIP_ROUTER";
     string constant public CHAINLINK_USDPlus_USD_aggregator = "CHAINLINK_USDPlus_USD_aggregator";
     string constant public DAO = "DAO";
+    string constant public DAO_OLD = "DAO_OLD";
+    string constant public DAO_ORACLE = "DAO_ORACLE";
     string constant public DEV_WALLET = "DEV_WALLET";
     string constant public EGGS = "EGGS";
     string constant public ENSO_ROUTER = "ENSO_ROUTER";

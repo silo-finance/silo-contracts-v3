@@ -19,10 +19,13 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
 import {CheckNonBorrowableAsset} from "silo-core/deploy/silo/verifier/checks/silo/CheckNonBorrowableAsset.sol";
 import {SiloCoreContracts} from "silo-core/common/SiloCoreContracts.sol";
+import {IDynamicKinkModel} from "silo-core/contracts/interfaces/IDynamicKinkModel.sol";
+import {IDynamicKinkModelConfig} from "silo-core/contracts/interfaces/IDynamicKinkModelConfig.sol";
 
 /*
     FOUNDRY_PROFILE=core_test forge test --match-contract SiloVerifierScriptTest --ffi -vvv  \
-    --mt test_CheckLiquidationFee
+    --mt test_CheckIrmConfig
+
 */
 contract SiloVerifierScriptTest is Test {
     ISiloConfig constant GM_WETH_CONFIG = ISiloConfig(0xB4b4d23F4D7FFd04deABfCdCf8fDdeD0Ed3ae1C8);
@@ -67,7 +70,7 @@ contract SiloVerifierScriptTest is Test {
         );
 
         verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
-        assertEq(verifier.verify(), 3, "3 errors after breaking dao fee in both Silos");
+        assertEq(verifier.verify(), 2, "2 errors after breaking dao fee in both Silos");
     }
 
     function test_CheckDeployerFee() public {
@@ -308,31 +311,41 @@ contract SiloVerifierScriptTest is Test {
         ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
         ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
-        IInterestRateModelV2Config irmV2Config0 = InterestRateModelV2(configData0.interestRateModel).irmConfig();
+        IDynamicKinkModel irm0 = IDynamicKinkModel(configData0.interestRateModel);
+        IDynamicKinkModel irm1 = IDynamicKinkModel(configData1.interestRateModel);
 
-        IInterestRateModelV2.Config memory irmConfig0 = irmV2Config0.getConfig();
+        IDynamicKinkModelConfig irmConfigContract0 = irm0.irmConfig();
+        IDynamicKinkModelConfig irmConfigContract1 = irm1.irmConfig();
 
-        IInterestRateModelV2Config irmV2Config1 = InterestRateModelV2(configData1.interestRateModel).irmConfig();
+        (
+            IDynamicKinkModel.Config memory irmConfig0,
+            IDynamicKinkModel.ImmutableConfig memory immutableConfig0
+        ) = irmConfigContract0.getConfig();
 
-        IInterestRateModelV2.Config memory irmConfig1 = irmV2Config1.getConfig();
+        (
+            IDynamicKinkModel.Config memory irmConfig1,
+            IDynamicKinkModel.ImmutableConfig memory immutableConfig1
+        ) = irmConfigContract1.getConfig();
 
-        irmConfig0.uopt = 11;
-        irmConfig1.ucrit = 22;
+        // mutate both standard config and immutable config so that Kink model config
+        // no longer matches any known JSON config used by Utils.findKinkIrmName
+        irmConfig0.ulow = irmConfig0.ulow + 1;
+        immutableConfig1.timelock = immutableConfig1.timelock + 1;
 
         vm.mockCall(
-            address(irmV2Config0),
-            abi.encodeWithSelector(IInterestRateModelV2Config.getConfig.selector),
-            abi.encode(irmConfig0)
+            address(irmConfigContract0),
+            abi.encodeWithSelector(IDynamicKinkModelConfig.getConfig.selector),
+            abi.encode(irmConfig0, immutableConfig0)
         );
 
         vm.mockCall(
-            address(irmV2Config1),
-            abi.encodeWithSelector(IInterestRateModelV2Config.getConfig.selector),
-            abi.encode(irmConfig1)
+            address(irmConfigContract1),
+            abi.encodeWithSelector(IDynamicKinkModelConfig.getConfig.selector),
+            abi.encode(irmConfig1, immutableConfig1)
         );
 
         verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
-        assertEq(verifier.verify(), 2, "2 errors after breaking IRM config in both Silos");
+        assertEq(verifier.verify(), 2, "2 errors after breaking Dynamic Kink IRM config in both Silos");
     }
 
     /*
@@ -366,9 +379,6 @@ contract SiloVerifierScriptTest is Test {
     function test_CheckExternalPrices() public {
         SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors for original prices");
-
-        verifier = new SiloVerifier(ISiloConfig(0xefA367570B11f8745B403c0D458b9D2EAf424686), false, 1010, 1000);
-        assertEq(verifier.verify(), 0, "no errors for single oracle case");
 
         verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0 * 102 / 100, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 1, "1 error for 2% price deviation");

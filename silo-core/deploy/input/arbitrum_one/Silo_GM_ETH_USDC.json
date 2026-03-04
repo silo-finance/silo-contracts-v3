@@ -1,0 +1,57 @@
+{
+    "deployer": "",
+    "hookReceiver": "CLONE_IMPLEMENTATION",
+    "hookReceiverImplementation": "SiloHookV2.sol",
+    "daoFee": 1000,
+    "deployerFee": 0,
+    "token0": "GM",
+    "solvencyOracle0": "Chainlink",
+    "maxLtvOracle0": "NO_ORACLE",
+    "interestRateModel0": "DynamicKinkModelFactory.sol",
+    "interestRateModelConfig0": "static-7.4-20:T1day_C200",
+    "maxLtv0": 8700,
+    "lt0": 8900,
+    "liquidationTargetLtv0": 8700,
+    "liquidationFee0": 500,
+    "flashloanFee0": 0,
+    "callBeforeQuote0": false,
+    "chainlinkOracle0": {
+        "baseToken": "token0",
+        "useOtherTokenAsQuote": true,
+        "customQuoteTokenAddress": "0xF66c3c5661d870a46B0Ac1bc7676B03e5F93E4EC",
+        "customQuoteTokenMetadata": {
+            "symbol": "SVA8D",
+            "decimals": 8
+        },
+        "primaryAggregator": "0xEAeFFF521cb36dFb414E8580f8635BFB44d96255",
+        "secondaryAggregator": "0x0000000000000000000000000000000000000000",
+        "normalizationDivider": "100000000",
+        "normalizationMultiplier": "0",
+        "invertSecondPrice": false
+    },
+    "token1": "USDC",
+    "solvencyOracle1": "Chainlink",
+    "maxLtvOracle1": "NO_ORACLE",
+    "interestRateModel1": "DynamicKinkModelFactory.sol",
+    "interestRateModelConfig1": "static-7.4-20:T1day_C200",
+    "maxLtv1": 0,
+    "lt1": 0,
+    "liquidationTargetLtv1": 0,
+    "liquidationFee1": 0,
+    "flashloanFee1": 0,
+    "callBeforeQuote1": false,
+    "chainlinkOracle1": {
+        "baseToken": "token1",
+        "useOtherTokenAsQuote": true,
+        "customQuoteTokenAddress": "0xF66c3c5661d870a46B0Ac1bc7676B03e5F93E4EC",
+        "customQuoteTokenMetadata": {
+            "symbol": "SVA8D",
+            "decimals": 8
+        },
+        "primaryAggregator": "0x50834F3163758fcC1Df9973b6e91f0F0F0434aD3",
+        "secondaryAggregator": "0x0000000000000000000000000000000000000000",
+        "normalizationDivider": "0",
+        "normalizationMultiplier": "10000",
+        "invertSecondPrice": false
+    }
+}

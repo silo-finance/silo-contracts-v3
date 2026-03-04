@@ -17,7 +17,7 @@
     "callBeforeQuote0": false,
     "chainlinkOracle0": {
         "baseToken": "token0",
-        "useOtherTokenAsQuote": true,
+        "useOtherTokenAsQuote": false,
         "customQuoteTokenAddress": "0xF66c3c5661d870a46B0Ac1bc7676B03e5F93E4EC",
         "customQuoteTokenMetadata": {
             "symbol": "SVA8D",
@@ -42,7 +42,7 @@
     "callBeforeQuote1": false,
     "chainlinkOracle1": {
         "baseToken": "token1",
-        "useOtherTokenAsQuote": true,
+        "useOtherTokenAsQuote": false,
         "customQuoteTokenAddress": "0xF66c3c5661d870a46B0Ac1bc7676B03e5F93E4EC",
         "customQuoteTokenMetadata": {
             "symbol": "SVA8D",

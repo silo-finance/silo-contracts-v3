@@ -1,0 +1,57 @@
+{
+    "deployer": "",
+    "hookReceiver": "CLONE_IMPLEMENTATION",
+    "hookReceiverImplementation": "SiloHookV2.sol",
+    "daoFee": 1000,
+    "deployerFee": 0,
+    "token0": "GLV [WAVAX-USDC]",
+    "solvencyOracle0": "0xAE73c502291CB6fc5cb2F29fb1F72bf872844322",
+    "maxLtvOracle0": "NO_ORACLE",
+    "interestRateModel0": "DynamicKinkModelFactory.sol",
+    "interestRateModelConfig0": "static-5.5-20:T1day_C200",
+    "maxLtv0": 8700,
+    "lt0": 8900,
+    "liquidationTargetLtv0": 8700,
+    "liquidationFee0": 500,
+    "flashloanFee0": 0,
+    "callBeforeQuote0": false,
+    "chainlinkOracle0": {
+        "baseToken": "token0",
+        "useOtherTokenAsQuote": false,
+        "customQuoteTokenAddress": "0xB6AdBb29f2D8ae731C7C72036A7FD5A7E970B198",
+        "customQuoteTokenMetadata": {
+            "symbol": "SVA8D",
+            "decimals": 8
+        },
+        "primaryAggregator": "0x0A6fd6F735faCD3Cdb1D5aE1c74ebd54a4fc3CCf",
+        "secondaryAggregator": "0x0000000000000000000000000000000000000000",
+        "normalizationDivider": "1000000000000000000",
+        "normalizationMultiplier": "0",
+        "invertSecondPrice": false
+    },
+    "token1": "USDC",
+    "solvencyOracle1": "0xB0Ded43f0629e5F8a413b716839Df09B46E0E4e2",
+    "maxLtvOracle1": "NO_ORACLE",
+    "interestRateModel1": "DynamicKinkModelFactory.sol",
+    "interestRateModelConfig1": "static-5.5-20:T1day_C200",
+    "maxLtv1": 0,
+    "lt1": 0,
+    "liquidationTargetLtv1": 0,
+    "liquidationFee1": 0,
+    "flashloanFee1": 0,
+    "callBeforeQuote1": false,
+    "chainlinkOracle1": {
+        "baseToken": "token1",
+        "useOtherTokenAsQuote": false,
+        "customQuoteTokenAddress": "0xB6AdBb29f2D8ae731C7C72036A7FD5A7E970B198",
+        "customQuoteTokenMetadata": {
+            "symbol": "SVA8D",
+            "decimals": 8
+        },
+        "primaryAggregator": "0xF096872672F44d6EBA71458D74fe67F9a77a23B9",
+        "secondaryAggregator": "0x0000000000000000000000000000000000000000",
+        "normalizationDivider": "0",
+        "normalizationMultiplier": "10000",
+        "invertSecondPrice": false
+    }
+}

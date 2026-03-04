@@ -7,3 +7,8 @@ Fixes: SILO-<!-- ticket ID -->
 ## Solution
 
 <!-- required section -->
+
+## Price check for new market
+
+EXTERNAL_PRICE_0=
+EXTERNAL_PRICE_1=

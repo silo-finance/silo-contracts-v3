@@ -21,7 +21,7 @@ contract CheckIrmOwner is ICheck {
     }
 
     function checkName() external view override returns (string memory name) {
-        name = string.concat(siloName, " IRM owner should be a DAO");
+        name = string.concat(siloName, " IRM owner should be a DAO_ORACLE");
     }
 
     function successMessage() external view override returns (string memory message) {

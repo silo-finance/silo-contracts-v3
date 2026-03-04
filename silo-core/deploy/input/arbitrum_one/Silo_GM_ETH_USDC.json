@@ -5,7 +5,7 @@
     "daoFee": 1000,
     "deployerFee": 0,
     "token0": "GM",
-    "solvencyOracle0": "Chainlink",
+    "solvencyOracle0": "0x26B7cD50d17834F59B9dde88c410F71A29d29fe8",
     "maxLtvOracle0": "NO_ORACLE",
     "interestRateModel0": "DynamicKinkModelFactory.sol",
     "interestRateModelConfig0": "static-7.4-20:T1day_C200",
@@ -30,7 +30,7 @@
         "invertSecondPrice": false
     },
     "token1": "USDC",
-    "solvencyOracle1": "Chainlink",
+    "solvencyOracle1": "0xc14D7b9444B231A4f1C253e401917B1EeFaa4511",
     "maxLtvOracle1": "NO_ORACLE",
     "interestRateModel1": "DynamicKinkModelFactory.sol",
     "interestRateModelConfig1": "static-7.4-20:T1day_C200",

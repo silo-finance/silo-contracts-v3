@@ -13,8 +13,9 @@ import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IP
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
-import {SiloIncentivesControllerCompatible} from
-    "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
+import {
+    SiloIncentivesControllerCompatible
+} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 
 import {SiloConfigOverride, SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
 import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
@@ -1284,6 +1285,13 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         console2.log("borrower colateral share balance", collateralSilo.balanceOf(borrower));
 
+        (uint256 collateralToLiquidate, uint256 debtToRepay,) =
+            IPartialLiquidation(address(defaulting)).maxLiquidation(borrower);
+            
+        console2.log("collateralToLiquidate", collateralToLiquidate);
+        console2.log("debtToRepay", debtToRepay);
+        vm.assume(debtToRepay > 0);
+
         defaulting.liquidationCallByDefaulting(borrower);
 
         uint256 collateralRewards = collateralShareToken.balanceOf(address(gauge));
@@ -1715,7 +1723,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     */
     function test_createIncentiveController_forWrongToken_reverts() public {
         _removeIncentiveController();
-        
+
         (ISilo collateralSilo, ISilo debtSilo) = _getSilos();
         ISiloIncentivesController gauge =
             new SiloIncentivesControllerCompatible(address(this), address(defaulting), address(collateralSilo));

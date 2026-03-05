@@ -1,0 +1,57 @@
+{
+    "deployer": "",
+    "hookReceiver": "CLONE_IMPLEMENTATION",
+    "hookReceiverImplementation": "SiloHookV2.sol",
+    "daoFee": 1000,
+    "deployerFee": 0,
+    "token0": "RLP",
+    "solvencyOracle0": "Chainlink",
+    "maxLtvOracle0": "NO_ORACLE",
+    "interestRateModel0": "DynamicKinkModelFactory.sol",
+    "interestRateModelConfig0": "static-6.5-11:T1day_C200",
+    "maxLtv0": 9100,
+    "lt0": 9200,
+    "liquidationTargetLtv0": 9100,
+    "liquidationFee0": 500,
+    "flashloanFee0": 0,
+    "callBeforeQuote0": false,
+    "chainlinkOracle0": {
+        "baseToken": "token0",
+        "useOtherTokenAsQuote": false,
+        "customQuoteTokenAddress": "0xA1BC7C2D9185F10D6D50075fAeA3c1e20927674c",
+        "customQuoteTokenMetadata": {
+            "symbol": "SVA8D",
+            "decimals": 8
+        },
+        "primaryAggregator": "0xAdb2c15Fde49D1A4294740aCb650de94184E66b2",
+        "secondaryAggregator": "0x0000000000000000000000000000000000000000",
+        "normalizationDivider": "100000000",
+        "normalizationMultiplier": "0",
+        "invertSecondPrice": false
+    },
+    "token1": "USDC",
+    "solvencyOracle1": "Chainlink",
+    "maxLtvOracle1": "NO_ORACLE",
+    "interestRateModel1": "DynamicKinkModelFactory.sol",
+    "interestRateModelConfig1": "static-6.5-11:T1day_C200",
+    "maxLtv1": 0,
+    "lt1": 0,
+    "liquidationTargetLtv1": 0,
+    "liquidationFee1": 0,
+    "flashloanFee1": 0,
+    "callBeforeQuote1": false,
+    "chainlinkOracle1": {
+        "baseToken": "token1",
+        "useOtherTokenAsQuote": false,
+        "customQuoteTokenAddress": "0xA1BC7C2D9185F10D6D50075fAeA3c1e20927674c",
+        "customQuoteTokenMetadata": {
+            "symbol": "SVA8D",
+            "decimals": 8
+        },
+        "primaryAggregator": "0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6",
+        "secondaryAggregator": "0x0000000000000000000000000000000000000000",
+        "normalizationDivider": "0",
+        "normalizationMultiplier": "10000",
+        "invertSecondPrice": false
+    }
+}

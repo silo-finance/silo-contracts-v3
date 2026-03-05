@@ -5,7 +5,7 @@
     "daoFee": 1000,
     "deployerFee": 0,
     "token0": "stAVAX",
-    "solvencyOracle0": "VaultOracle",
+    "solvencyOracle0": "0x9F2132159532f76aE3ac740D8813419ADd410c44",
     "maxLtvOracle0": "NO_ORACLE",
     "interestRateModel0": "DynamicKinkModelFactory.sol",
     "interestRateModelConfig0": "static-4-6:T1day_C200",

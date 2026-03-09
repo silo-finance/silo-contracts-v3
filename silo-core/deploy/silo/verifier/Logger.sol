@@ -13,6 +13,7 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {Ownable2Step, Ownable} from "openzeppelin5/access/Ownable2Step.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
+import {IManageableOracle} from "silo-oracles/contracts/interfaces/IManageableOracle.sol";
 import {InterestRateModelConfigData} from "silo-core/deploy/input-readers/InterestRateModelConfigData.sol";
 import {
     InterestRateModelV2, IInterestRateModelV2
@@ -163,6 +164,15 @@ contract Logger is Test {
     }
 
     function _logOracle(ISiloOracle _oracle, address _baseToken) internal {
+        bool isManageableOracle = Utils.isManageableOracle(address(_oracle));
+
+        if (!isManageableOracle) {
+            console2.log("\t", WARNING_SYMBOL, "Oracle is not a ManageableOracle");
+        } else {
+            console2.log("\t", SUCCESS_SYMBOL, "Oracle is manageable");
+            _oracle = IManageableOracle(address(_oracle)).oracle();
+        }
+
         address quoteToken = _oracle.quoteToken();
         uint8 baseTokenDecimals = Utils.tryGetTokenDecimals(_baseToken);
 

@@ -215,7 +215,7 @@ contract SiloVerifierScriptTest is Test {
         );
 
         verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
-        assertEq(verifier.verify(), 0, "0 errors when maxLTV, LT and liquidation fee are zeros");
+        assertEq(verifier.verify(), 1, "1 error (for defaulting) when maxLTV, LT and liquidation fee are zeros");
 
         configData0.maxLtv = 0;
         configData0.lt = 10 ** 18 / 2;

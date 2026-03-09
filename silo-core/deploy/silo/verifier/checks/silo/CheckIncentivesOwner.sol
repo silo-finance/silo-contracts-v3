@@ -7,7 +7,7 @@ import {Strings} from "openzeppelin5/utils/Strings.sol";
 import {GaugeHookReceiver} from "silo-core/contracts/hooks/gauge/GaugeHookReceiver.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
-import {Ownable2Step, Ownable} from "openzeppelin5/access/Ownable2Step.sol";
+import {Ownable} from "openzeppelin5/access/Ownable2Step.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 
 contract CheckIncentivesOwner is ICheck {

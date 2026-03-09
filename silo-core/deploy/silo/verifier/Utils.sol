@@ -10,6 +10,7 @@ import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {InterestRateModelConfigData} from "silo-core/deploy/input-readers/InterestRateModelConfigData.sol";
+import {IPartialLiquidationByDefaulting} from "silo-core/contracts/hooks/defaulting/PartialLiquidationByDefaulting.sol";
 import {DKinkIRMConfigData} from "silo-core/deploy/input-readers/DKinkIRMConfigData.sol";
 import {
     InterestRateModelV2, IInterestRateModelV2
@@ -238,7 +239,14 @@ library Utils {
             oracle = _oracle;
         }
     }
-
+    
+    function isDefaultingHook(address _hook) internal view returns (bool) {
+        try IPartialLiquidationByDefaulting(_hook).LIQUIDATION_LOGIC() returns (address logic) {
+            return logic != address(0);
+        } catch {
+            return false;
+        }
+    }
 
     function tryGetPT(address _aggregator) internal view returns (address _pt) {
         if (_aggregator == address(0)) {

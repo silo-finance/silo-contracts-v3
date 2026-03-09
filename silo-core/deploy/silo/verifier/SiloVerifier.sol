@@ -18,6 +18,7 @@ import {CheckNonBorrowableAsset} from "silo-core/deploy/silo/verifier/checks/sil
 import {CheckHookOwner} from "silo-core/deploy/silo/verifier/checks/silo/CheckHookOwner.sol";
 import {CheckIrmOwner} from "silo-core/deploy/silo/verifier/checks/silo/CheckIrmOwner.sol";
 import {CheckIncentivesOwner} from "silo-core/deploy/silo/verifier/checks/silo/CheckIncentivesOwner.sol";
+import {CheckIncentivesForDefaulting} from "silo-core/deploy/silo/verifier/checks/silo/CheckIncentivesForDefaulting.sol";
 import {CheckShareTokensInGauge} from "silo-core/deploy/silo/verifier/checks/silo/CheckShareTokensInGauge.sol";
 import {CheckSiloImplementation} from "silo-core/deploy/silo/verifier/checks/silo/CheckSiloImplementation.sol";
 import {CheckSiloFactory} from "silo-core/deploy/silo/verifier/checks/silo/CheckSiloFactory.sol";
@@ -98,6 +99,7 @@ contract SiloVerifier {
         _checks.push(new CheckMaxLtvLtLiquidationFee(_configData, _isSiloZero));
         _checks.push(new CheckHookOwner(_configData, _isSiloZero));
         _checks.push(new CheckIncentivesOwner(_configData, _isSiloZero));
+        _checks.push(new CheckIncentivesForDefaulting(_configData, _isSiloZero));
         _checks.push(new CheckShareTokensInGauge(_configData, _isSiloZero));
         _checks.push(new CheckSiloImplementation(_configData, _isSiloZero));
         _checks.push(new CheckPTLinearOracle(_configData.solvencyOracle, _configData.token));

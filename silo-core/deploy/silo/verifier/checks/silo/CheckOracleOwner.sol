@@ -34,6 +34,10 @@ contract CheckOracleOwner is ICheck {
 
     function execute() external override returns (bool result) {
         Ownable oracle = Ownable(configData.solvencyOracle);
+        if (address(oracle) == address(0)) {
+            skip = true;
+            return true;
+        }
 
         try oracle.owner() returns (address owner) {
             realOwner = owner;

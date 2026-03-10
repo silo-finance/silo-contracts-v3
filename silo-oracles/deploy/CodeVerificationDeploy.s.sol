@@ -3,7 +3,10 @@ pragma solidity 0.8.28;
 
 import {CommonDeploy} from "./CommonDeploy.sol";
 
-import {ChainlinkV3OracleConfig, IChainlinkV3Oracle} from "silo-oracles/contracts/chainlinkV3/ChainlinkV3OracleConfig.sol";
+import {
+    ChainlinkV3OracleConfig,
+    IChainlinkV3Oracle
+} from "silo-oracles/contracts/chainlinkV3/ChainlinkV3OracleConfig.sol";
 import {SiloOraclesFactoriesContracts} from "./SiloOraclesFactoriesContracts.sol";
 
 /*

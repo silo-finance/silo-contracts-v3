@@ -6,7 +6,9 @@ import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 import {SiloCoreContracts} from "silo-core/common/SiloCoreContracts.sol";
 
 import {Tower} from "silo-core/contracts/utils/Tower.sol";
-import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
+import {
+    SiloIncentivesControllerCompatible
+} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 import {SiloConfig} from "silo-core/contracts/SiloConfig.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 
@@ -37,16 +39,10 @@ contract CodeVerificationDeploy is CommonDeploy {
         vm.startBroadcast(deployerPrivateKey);
 
         new SiloIncentivesControllerCompatible({
-            _owner: address(1),
-            _notifier: address(2),
-            _shareTokenAddress: address(3)
+            _owner: address(1), _notifier: address(2), _shareTokenAddress: address(3)
         });
 
-        new SiloConfig({
-            _siloId: 0,
-            _configData0: data,
-            _configData1: data
-        });
+        new SiloConfig({_siloId: 0, _configData0: data, _configData1: data});
 
         vm.stopBroadcast();
     }

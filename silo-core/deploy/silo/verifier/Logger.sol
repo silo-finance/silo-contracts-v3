@@ -149,7 +149,8 @@ contract Logger is Test {
         if (configData0.solvencyOracle != address(0)) {
             _logOracle(ISiloOracle(configData0.solvencyOracle), configData0.token);
         } else {
-            console2.log("\tOracle is not set, price is: 1.0e18");
+            console2.log("\n\tOracle is not set for silo0, price is: 1.0e18\n", DELIMITER);
+
         }
 
         if (configData0.maxLtvOracle != configData0.solvencyOracle && configData0.maxLtvOracle != address(0)) {
@@ -159,7 +160,7 @@ contract Logger is Test {
         if (configData1.solvencyOracle != address(0)) {
             _logOracle(ISiloOracle(configData1.solvencyOracle), configData1.token);
         } else {
-            console2.log("\tOracle is not set, price is: 1.0e18");
+            console2.log("\n\tOracle is not set for silo1, price is: 1.0e18\n", DELIMITER);
         }
 
         if (configData1.maxLtvOracle != configData1.solvencyOracle && configData1.maxLtvOracle != address(0)) {

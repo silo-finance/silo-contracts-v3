@@ -184,17 +184,21 @@ jobs:
           awk '/== Logs ==/ { print_flag = 1 } print_flag' output.log >> result.txt
           echo '```' >> result.txt
 
-          if [ "$VERIFY_EXIT" -ne 0 ]; then
-            echo "::error title=Verify script failed::Verification script exited with code $VERIFY_EXIT"
-            exit "$VERIFY_EXIT"
-          fi
+          echo "verify_exit_code=$VERIFY_EXIT" >> $GITHUB_OUTPUT
 
-      # Post result as a sticky comment on the PR
+      # Post result as a sticky comment on the PR (so logs/error are visible before job fails)
       - name: Comment result on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: verify-silo
           path: result.txt
+
+      - name: Fail job if verify script failed
+        run: |
+          if [ "${{ steps.verify.outputs.verify_exit_code }}" != "0" ]; then
+            echo "::error title=Verify script failed::Verification script exited with code ${{ steps.verify.outputs.verify_exit_code }}. See the verify-silo comment above for logs."
+            exit 1
+          fi
 
       - name: Run LIVE MARKET QA
         id: live-market-qa

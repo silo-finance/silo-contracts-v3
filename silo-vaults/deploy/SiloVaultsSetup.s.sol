@@ -32,6 +32,8 @@ FOUNDRY_PROFILE=vaults ASSET=USDC SILO=0x78445e53151b523F64d70C929ED602B8F75014c
 
 This script sets up the vault for QA.
 
+In order for this script to work, we need to use a new factory and a new deployer with a time lock 0.
+
 */
 contract SiloVaultsSetup is CommonDeploy, StdCheats {
     function run() public {

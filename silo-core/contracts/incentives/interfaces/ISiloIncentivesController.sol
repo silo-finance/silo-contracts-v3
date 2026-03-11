@@ -167,4 +167,7 @@ interface ISiloIncentivesController is IDistributionManager {
     /// @notice SHARE_TOKEN is contract with IERC20 interface with users balances, based based on which
     /// rewards distribution is calculated. In Silo it is ususally collateral share token or debt share token.
     function SHARE_TOKEN() external view returns (address); // solhint-disable-line func-name-mixedcase
+
+    /// @dev NOTIFIER is contract that is allowed to notify controller about token transfers.
+    function NOTIFIER() external view returns (address); // solhint-disable-line func-name-mixedcase
 }

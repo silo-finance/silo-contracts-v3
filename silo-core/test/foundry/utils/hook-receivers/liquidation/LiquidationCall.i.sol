@@ -7,6 +7,7 @@ import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
+import {IERC20R} from "silo-core/contracts/interfaces/IERC20R.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
@@ -536,6 +537,83 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         assertEq(token0.balanceOf(address(silo0)), COLLATERAL, "silo still has collateral balance, because of sToken");
 
         _liquidationModuleDoNotHaveTokens();
+    }
+
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_liquidationCall_sameBorrow
+    */
+    function test_liquidationCall_sameBorrow() public {
+        address alice = makeAddr("alice");
+        address bob = makeAddr("bob");
+        address depositor = makeAddr("depositor");
+
+        token0.setOnDemand(true);
+        token1.setOnDemand(true);
+
+        _deposit(100e18, depositor);
+        _depositForBorrow(100e18, depositor);
+
+        // Alice borrows from SILO0, which sets borrowerCollateralSilo[Alice] = SILO1.
+        _depositForBorrow(1e18, alice);
+        vm.prank(alice);
+        uint256 debtShares = silo0.borrow(0.75e18, alice, alice);
+
+        // 2. Alice fully repays her debt in SILO0. borrowerCollateralSilo[Alice] remains
+        // unchanged and still points to SILO1.
+        vm.prank(alice);
+        silo0.repayShares(debtShares, alice);
+
+        ISiloConfig.ConfigData memory cfg = siloConfig.getConfig(address(silo0));
+        assertEq(IERC20(cfg.debtShareToken).balanceOf(alice), 0, "alice must repay all");
+
+        // 3. Bob, who has outstanding debt shares in SILO1, transfers those shares to Alice.
+        _deposit(1e18, bob);
+        _borrow(0.2e18, bob);
+
+        (ISiloConfig.ConfigData memory collateralConfig, ISiloConfig.ConfigData memory debtConfig) =
+            siloConfig.getConfigsForSolvency(bob);
+
+        vm.prank(alice);
+        IERC20R(debtConfig.debtShareToken).increaseReceiveAllowance(bob, 0.1e18);
+
+        vm.prank(bob);
+        assertTrue(IERC20(debtConfig.debtShareToken).transfer(alice, 0.1e18));
+
+        uint256 ltv = SILO_LENS.getUserLTV(silo0, alice);
+        emit log_named_decimal_uint("Alice LTV %", ltv, 16);
+
+        assertGt(ltv, 0, "alice must have some LTV");
+
+        // 5. However, the protocol does not refresh Alice’s collateral silo assignment, because the
+        // mapping is already non-zero. As a result, Alice now holds SILO1 debt while
+        // borrowerCollateralSilo[Alice] still equals SILO1.
+
+        cfg = siloConfig.getConfig(address(silo1));
+        assertGt(IERC20(cfg.debtShareToken).balanceOf(alice), 0, "alice got debt on silo1 from bob");
+
+        (collateralConfig, debtConfig) = siloConfig.getConfigsForSolvency(alice);
+        assertEq(collateralConfig.silo, debtConfig.silo, "alice has same borrow position");
+
+        // liquidation
+        vm.startPrank(alice);
+        silo1.repay(0.01e18, alice);
+        silo1.redeem(silo1.maxRedeem(alice), alice, alice);
+        vm.stopPrank();
+
+        vm.warp(block.timestamp + 100 days);
+
+        emit log_named_decimal_uint("Alice final LTV %", SILO_LENS.getUserLTV(silo1, alice), 16);
+        assertFalse(silo1.isSolvent(alice), "expect alice not be solvent");
+
+        // we have on demand tokens, so liquidation process will generate neccessary tokens on the fly
+        vm.prank(makeAddr("liquidator"));
+        partialLiquidation.liquidationCall({
+            _collateralAsset: address(token1),
+            _debtAsset: address(token1),
+            _user: alice,
+            _maxDebtToCover: type(uint256).max,
+            _receiveSToken: false
+        });
     }
 
     function _liquidationCall_badDebt_full(bool _receiveSToken) internal {

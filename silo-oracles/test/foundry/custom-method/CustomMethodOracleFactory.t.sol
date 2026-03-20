@@ -96,11 +96,7 @@ contract CustomMethodOracleFactoryTest is Test {
         assertEq(IVersioned(address(oracle)).VERSION(), "CustomMethodOracle 4.5.0");
     }
 
-    function _cfg(string memory _sig)
-        internal
-        view
-        returns (ICustomMethodOracle.DeploymentConfig memory cfg)
-    {
+    function _cfg(string memory _sig) internal view returns (ICustomMethodOracle.DeploymentConfig memory cfg) {
         return _cfgWithTarget(_sig, address(feed));
     }
 

@@ -80,6 +80,29 @@ contract CustomMethodOracleFactoryTest is Test {
         factory.create(cfg, keccak256("too-many-decimals"));
     }
 
+    /*
+    FOUNDRY_PROFILE=oracles forge test -vv --ffi --mt test_CustomMethodOracle_StaticCallFailed
+    */
+    function test_CustomMethodOracle_StaticCallFailed() public {
+        ICustomMethodOracle.DeploymentConfig memory cfg = _cfgWithTarget("readUint", address(this));
+
+        vm.expectRevert(ICustomMethodOracle.StaticCallFailed.selector);
+        factory.create(cfg, keccak256("invalid method"));
+    }
+    
+    /*
+    FOUNDRY_PROFILE=oracles forge test -vv --ffi --mt test_CustomMethodOracle_InvalidReturnData
+    */
+    function test_CustomMethodOracle_InvalidReturnData() public {
+        ICustomMethodOracle.DeploymentConfig memory cfg = _cfgWithTarget("readUint", address(this));
+
+        // mock cll with invalid return data, length is not 32
+        vm.mockCall(address(cfg.target), bytes4(keccak256("readUint()")), abi.encode("not a number"));
+
+        vm.expectRevert(ICustomMethodOracle.InvalidReturnData.selector);
+        factory.create(cfg, keccak256("InvalidReturnData"));
+    }
+
     function test_CustomMethodOracle_getConfig_exposes_target_selector_signature() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         ICustomMethodOracle oracle = factory.create(cfg, keccak256("c"));

@@ -1,39 +1,16 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.28;
 
-import {ERC20} from "openzeppelin5/token/ERC20/ERC20.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {Test} from "forge-std/Test.sol";
 
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 
+import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
+
 import {CustomMethodOracleFactory} from "silo-oracles/contracts/custom-method/CustomMethodOracleFactory.sol";
 import {ICustomMethodOracle} from "silo-oracles/contracts/interfaces/ICustomMethodOracle.sol";
-
-contract Base6 is ERC20 {
-    constructor() ERC20("Base", "BASE") {}
-
-    function decimals() public pure override returns (uint8) {
-        return 6;
-    }
-}
-
-contract Quote6 is ERC20 {
-    constructor() ERC20("Quote", "Q") {}
-
-    function decimals() public pure override returns (uint8) {
-        return 6;
-    }
-}
-
-contract Base19 is ERC20 {
-    constructor() ERC20("Base19", "B19") {}
-
-    function decimals() public pure override returns (uint8) {
-        return 19;
-    }
-}
 
 contract MockFeed {
     uint256 public spotPrice;
@@ -45,7 +22,6 @@ contract MockFeed {
     function readUint() external view returns (uint256) {
         return spotPrice;
     }
-
 }
 
 /*
@@ -53,8 +29,8 @@ contract MockFeed {
 */
 contract CustomMethodOracleFactoryTest is Test {
     CustomMethodOracleFactory internal factory = new CustomMethodOracleFactory();
-    Base6 internal base = new Base6();
-    Quote6 internal quote = new Quote6();
+    MintableToken internal base = new MintableToken(6);
+    MintableToken internal quote = new MintableToken(6);
     MockFeed internal feed = new MockFeed(2e8);
 
     function test_predict_matches_create() public {
@@ -105,7 +81,7 @@ contract CustomMethodOracleFactoryTest is Test {
 
     function test_base_decimals_above_18_reverts() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
-        cfg.baseToken = IERC20Metadata(address(new Base19()));
+        cfg.baseToken = IERC20Metadata(address(new MintableToken(19)));
 
         vm.expectRevert(ICustomMethodOracle.BaseTokenDecimalsAbove18.selector);
         factory.create(cfg, keccak256("too-many-decimals"));

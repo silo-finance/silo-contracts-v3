@@ -12,7 +12,6 @@ import {CustomMethodOracleConfig} from "./CustomMethodOracleConfig.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 
 contract CustomMethodOracleFactory is Create2Factory, ICustomMethodOracleFactory {
-    /// @dev implementation cloned for each `create`; not inherited from `OracleFactory` to avoid config/oracle registries.
     address public immutable ORACLE_IMPLEMENTATION; // solhint-disable-line var-name-mixedcase
 
     constructor() {
@@ -45,6 +44,20 @@ contract CustomMethodOracleFactory is Create2Factory, ICustomMethodOracleFactory
     }
 
     /// @inheritdoc ICustomMethodOracleFactory
+    function predictAddress(
+        ICustomMethodOracle.DeploymentConfig memory,
+        address _deployer,
+        bytes32 _externalSalt
+    ) external view virtual returns (address predictedAddress) {
+        require(_deployer != address(0), DeployerCannotBeZero());
+
+        predictedAddress = Clones.predictDeterministicAddress({
+            implementation: ORACLE_IMPLEMENTATION,
+            salt: _createSalt(_deployer, _externalSalt)
+        });
+    }
+
+    /// @inheritdoc ICustomMethodOracleFactory
     function verifyConfig(ICustomMethodOracle.DeploymentConfig memory _config)
         public
         view
@@ -62,20 +75,6 @@ contract CustomMethodOracleFactory is Create2Factory, ICustomMethodOracleFactory
         (normalizationDivider, normalizationMultiplier) = OracleNormalization.calculateNormalizationData({
             _baseDecimals: _baseTokenDecimals(_config),
             _priceDecimals: _config.priceDecimals
-        });
-    }
-
-    /// @inheritdoc ICustomMethodOracleFactory
-    function predictAddress(
-        ICustomMethodOracle.DeploymentConfig memory,
-        address _deployer,
-        bytes32 _externalSalt
-    ) external view virtual returns (address predictedAddress) {
-        require(_deployer != address(0), DeployerCannotBeZero());
-
-        predictedAddress = Clones.predictDeterministicAddress({
-            implementation: ORACLE_IMPLEMENTATION,
-            salt: _createSalt(_deployer, _externalSalt)
         });
     }
 

@@ -31,10 +31,11 @@ pragma solidity ^0.8.20;
 /// That said, choosing rounding policy is arbitrary decision and our decision is to use default rounding down.
 library OracleNormalization {
     error Overflow();
-    /// @dev Reverted when `baseDecimals + priceDecimals` is too large for safe `10 ** exponent` in normalization (see `calculateNormalizationData`).
+    /// @dev Reverted when `baseDecimals + priceDecimals` is too large, supported range is 0-36.
     error NormalizationScaleTooLarge();
 
-    /// @notice Derives `normalizePrice` divider/multiplier from base-token decimals and raw price decimals so the quote uses 18 decimals.
+    /// @notice Derives `normalizePrice` divider/multiplier from base-token decimals and raw price decimals 
+    /// so the quote uses 18 decimals.
     /// @param _baseDecimals ERC20 decimals of the base token (≤ 18 enforced by caller).
     /// @param _priceDecimals decimals of the uint256 returned by the external price method.
     /// @return normalizationDivider used when `_normalizationMultiplier == 0` (divide path).

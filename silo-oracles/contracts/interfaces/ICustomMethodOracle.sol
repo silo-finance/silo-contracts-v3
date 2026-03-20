@@ -8,7 +8,6 @@ interface ICustomMethodOracle {
     /// @notice Passed to the factory; `create` normalizes `methodSignature` by appending `()`.
     /// @dev `target`: every price read is `address(target).staticcall`
     /// with only the method selector (no calldata tail).
-    /// `methodSignature`: pass method name without parentheses (e.g. `latestAnswer`); factory always appends `()`.
     /// `priceDecimals`: decimals of value returned by target method.
     struct DeploymentConfig {
         IERC20Metadata baseToken;
@@ -18,7 +17,7 @@ interface ICustomMethodOracle {
         uint8 priceDecimals;
     }
 
-    /// @notice Immutable values read in one shot for `quote` / price reads (see `getConfig`).
+    /// @notice Immutable values
     struct OracleConfig {
         address baseToken;
         address quoteToken;
@@ -28,7 +27,6 @@ interface ICustomMethodOracle {
         uint256 normalizationMultiplier;
     }
 
-    /// @dev Emitted by `CustomMethodOracleFactory.create` after config + oracle clone are deployed.
     event CustomMethodConfigDeployed(address indexed configAddress);
 
     error AddressZero();
@@ -41,13 +39,14 @@ interface ICustomMethodOracle {
     error StaticCallFailed();
     error InvalidReturnData();
 
-    /// @notice Immutable params from the config contract (one call); `methodSignature` stays on the oracle as public state.
+    /// @notice One-off initializer for a fresh oracle clone.
+    /// @dev `_oracleConfig` is `CustomMethodOracleConfig` as `address`
+    /// @dev Call only from `CustomMethodOracleFactory.create`.
+    function initialize(address _oracleConfig, string calldata _methodSignature) external;
+
+    /// @notice Immutable params from config via `getConfig()`
     function getConfig() external view returns (OracleConfig memory);
 
-    /// @notice Canonical method name + `()` after factory normalization; lives on the oracle clone, not on config.
+    /// @notice Canonical method name + `()` after factory normalization
     function methodSignature() external view returns (string memory);
-
-    /// @notice One-off initializer for a fresh clone. `_oracleConfig` is `CustomMethodOracleConfig` as `address` (avoids circular import with that contract).
-    /// @dev Intended to be called only from `CustomMethodOracleFactory.create`.
-    function initialize(address _oracleConfig, string calldata _methodSignature) external;
 }

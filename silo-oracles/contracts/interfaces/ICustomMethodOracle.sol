@@ -5,7 +5,7 @@ import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadat
 
 /// @notice Oracle that reads a parameterless external view and normalizes it like other Silo oracles.
 interface ICustomMethodOracle {
-    /// @notice Passed to the factory; `hashConfig` and deployment use the same normalization as `create`.
+    /// @notice Passed to the factory; `create` normalizes `methodSignature` by appending `()`.
     /// @dev `target`: every price read is `address(target).staticcall`
     /// with only the method selector (no calldata tail).
     /// `methodSignature`: pass method name without parentheses (e.g. `latestAnswer`); factory always appends `()`.

@@ -41,24 +41,17 @@ contract CustomMethodOracleFactoryTest is Test {
         assertEq(address(oracle), predicted);
     }
 
-    function test_deduplicate_same_config() public {
+    function test_each_create_new_oracle_same_config_distinct_address() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
-        ICustomMethodOracle a = factory.create(cfg, keccak256("a"));
-        ICustomMethodOracle b = factory.create(cfg, keccak256("b"));
-        assertEq(address(a), address(b));
+        bytes32 salt = keccak256("same");
+        ICustomMethodOracle a = factory.create(cfg, salt);
+        ICustomMethodOracle b = factory.create(cfg, salt);
+        assertNotEq(address(a), address(b), "each create deploys a new clone (nonce advances)");
     }
 
-    function test_method_name_without_parens_same_id_and_canonical_signature() public {
-        ICustomMethodOracle.DeploymentConfig memory bare = _cfg("readUint");
-        ICustomMethodOracle.DeploymentConfig memory bad = _cfg("readUint()");
-
-        assertNotEq(
-            factory.hashConfig(bare),
-            factory.hashConfig(bad),
-            "factory always appends (), expect different id"
-        );
-
-        ICustomMethodOracle o = factory.create(bare, keccak256("p"));
+    function test_method_name_without_parens_canonical_signature_on_clone() public {
+        ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
+        ICustomMethodOracle o = factory.create(cfg, keccak256("p"));
         assertEq(o.methodSignature(), "readUint()");
     }
 

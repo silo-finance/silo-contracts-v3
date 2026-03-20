@@ -38,13 +38,13 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
             _normalizationMultiplier: normalizationMultiplier
         });
 
-        ICustomMethodOracle oracle = ICustomMethodOracle(
+        oracle = ICustomMethodOracle(
             Clones.cloneDeterministic({implementation: ORACLE_IMPLEMENTATION, salt: _salt(_externalSalt)})
         );
 
         _saveOracle({_newOracle: address(oracle), _newConfig: address(oracleConfig), _configId: id});
 
-        oracle.initialize(oracleConfig, canonicalMethod);
+        oracle.initialize({_oracleConfig: address(oracleConfig), _methodSignature: canonicalMethod});
 
         emit ICustomMethodOracle.CustomMethodConfigDeployed(address(oracleConfig));
     }

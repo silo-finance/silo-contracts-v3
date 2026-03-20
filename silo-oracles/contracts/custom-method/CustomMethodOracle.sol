@@ -22,12 +22,13 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         _disableInitializers();
     }
 
-    function initialize(CustomMethodOracleConfig _oracleConfig, string calldata _methodSignature)
+    /// @inheritdoc ICustomMethodOracle
+    function initialize(address _oracleConfig, string calldata _methodSignature)
         external
         virtual
         initializer
     {
-        oracleConfig = _oracleConfig;
+        oracleConfig = CustomMethodOracleConfig(_oracleConfig);
         methodSignature = _methodSignature;
 
         ICustomMethodOracle.OracleConfig memory _cfg = oracleConfig.getConfig();

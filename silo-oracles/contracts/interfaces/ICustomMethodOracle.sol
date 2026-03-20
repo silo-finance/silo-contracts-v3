@@ -46,4 +46,8 @@ interface ICustomMethodOracle {
 
     /// @notice Canonical method name + `()` after factory normalization; lives on the oracle clone, not on config.
     function methodSignature() external view returns (string memory);
+
+    /// @notice One-off initializer for a fresh clone. `_oracleConfig` is `CustomMethodOracleConfig` as `address` (avoids circular import with that contract).
+    /// @dev Intended to be called only from `CustomMethodOracleFactory.create`.
+    function initialize(address _oracleConfig, string calldata _methodSignature) external;
 }

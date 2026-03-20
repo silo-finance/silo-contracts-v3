@@ -35,8 +35,6 @@ interface ICustomMethodOracle {
     error TokensAreTheSame();
     error EmptyMethodSignature();
     error BaseTokenDecimalsAbove18();
-    /// @dev `10 ** exponent` for normalization would overflow uint256 (keep `baseDecimals + priceDecimals` reasonable).
-    error NormalizationScaleTooLarge();
     error AssetNotSupported();
     error BaseAmountOverflow();
     error ZeroQuote();

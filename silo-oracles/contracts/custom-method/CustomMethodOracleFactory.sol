@@ -5,6 +5,7 @@ import {Clones} from "openzeppelin5/proxy/Clones.sol";
 
 import {Create2Factory} from "common/utils/Create2Factory.sol";
 import {OracleFactory} from "../_common/OracleFactory.sol";
+import {OracleNormalization} from "../lib/OracleNormalization.sol";
 import {ICustomMethodOracle} from "../interfaces/ICustomMethodOracle.sol";
 import {ICustomMethodOracleFactory} from "../interfaces/ICustomMethodOracleFactory.sol";
 import {CustomMethodOracle} from "./CustomMethodOracle.sol";
@@ -35,7 +36,7 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
 
         uint8 baseDecimals = _baseTokenDecimals(config);
         (uint256 normalizationDivider, uint256 normalizationMultiplier) =
-            _normalizationFromDecimals(baseDecimals, config.priceDecimals);
+            OracleNormalization.calculateNormalizationData(baseDecimals, config.priceDecimals);
 
         bytes4 selector = bytes4(keccak256(bytes(config.methodSignature)));
         CustomMethodOracleConfig oracleConfig =
@@ -72,7 +73,7 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         require(bytes(_config.methodSignature).length != 0, ICustomMethodOracle.EmptyMethodSignature());
 
         uint8 baseDecimals = _baseTokenDecimals(_config);
-        _normalizationFromDecimals(baseDecimals, _config.priceDecimals);
+        OracleNormalization.calculateNormalizationData(baseDecimals, _config.priceDecimals);
     }
 
     /// @inheritdoc ICustomMethodOracleFactory
@@ -110,22 +111,6 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         require(decimals <= 18, ICustomMethodOracle.BaseTokenDecimalsAbove18());
         // forge-lint: disable-next-line(unsafe-typecast)
         baseDecimals = uint8(decimals);
-    }
-
-    /// @dev Maps `baseDecimals` + `priceDecimals` to `OracleNormalization` divider/multiplier so quote is 18 decimals.
-    function _normalizationFromDecimals(uint8 _baseDecimals, uint8 _priceDecimals)
-        internal
-        pure
-        returns (uint256 divider, uint256 multiplier)
-    {
-        uint256 sum = uint256(_baseDecimals) + uint256(_priceDecimals);
-        require(sum <= 36, ICustomMethodOracle.NormalizationScaleTooLarge());
-
-        if (sum > 18) {
-            divider = 10 ** (sum - 18);
-        } else {
-            multiplier = 10 ** (18 - sum);
-        }
     }
 
     function _hashConfig(ICustomMethodOracle.DeploymentConfig memory _config, string memory _canonicalMethod)

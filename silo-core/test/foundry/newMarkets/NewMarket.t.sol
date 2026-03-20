@@ -349,54 +349,5 @@ contract NewMarketTest is InjectiveWorkaround {
         try OldGauge(_gauge).killGauge() {} catch {}
     }
 
-    function _logBorrowScenarioSkipped(ISilo _collateralSilo, ISilo _debtSilo) internal view {
-        console2.log(
-            string.concat(
-                SKIPPED_SYMBOL,
-                " Borrow scenario is skipped because asset is not borrowable for ",
-                _collateralSilo.symbol(),
-                " -> ",
-                _debtSilo.symbol()
-            )
-        );
-    }
-
-    function _logBorrowScenarioSuccess(
-        ISilo _collateralSilo,
-        IERC20Metadata _collateralToken,
-        ISilo _debtSilo,
-        IERC20Metadata _debtToken,
-        uint256 _deposited,
-        uint256 _borrowed
-    ) internal view {
-        console2.log(DELIMITER);
-
-        console2.log(
-            string.concat(
-                SUCCESS_SYMBOL,
-                " Borrow scenario success for direction ",
-                _collateralSilo.symbol(),
-                " -> ",
-                _debtSilo.symbol()
-            )
-        );
-
-        console2.log(
-            "1. Deposited (in own decimals)",
-            _deposited / (10 ** _collateralToken.decimals()),
-            _collateralToken.symbol()
-        );
-
-        console2.log(
-            "2. Borrowed up to maxBorrow (in own decimals)",
-            _borrowed / (10 ** _debtToken.decimals()),
-            _debtToken.symbol(),
-            "with less than 1% deviation from expected amount to maxBorrow() based on LTV and external prices"
-        );
-
-        console2.log("3. Repaid everything");
-        console2.log("4. Withdrawn all collateral");
-    }
-
     function _beforeSetupHook() internal virtual {}
 }

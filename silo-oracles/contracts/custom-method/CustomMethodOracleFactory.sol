@@ -29,14 +29,10 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
             return ICustomMethodOracle(existing);
         }
 
-        verifyConfig(_config);
+        (uint256 normalizationDivider, uint256 normalizationMultiplier) = verifyConfig(_config);
 
         ICustomMethodOracle.DeploymentConfig memory config = _config;
         config.methodSignature = canonicalMethod;
-
-        uint8 baseDecimals = _baseTokenDecimals(config);
-        (uint256 normalizationDivider, uint256 normalizationMultiplier) =
-            OracleNormalization.calculateNormalizationData(baseDecimals, config.priceDecimals);
 
         bytes4 selector = bytes4(keccak256(bytes(config.methodSignature)));
         CustomMethodOracleConfig oracleConfig =
@@ -64,7 +60,13 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
     }
 
     /// @inheritdoc ICustomMethodOracleFactory
-    function verifyConfig(ICustomMethodOracle.DeploymentConfig memory _config) public view virtual override {
+    function verifyConfig(ICustomMethodOracle.DeploymentConfig memory _config)
+        public
+        view
+        virtual
+        override
+        returns (uint256 normalizationDivider, uint256 normalizationMultiplier)
+    {
         require(address(_config.baseToken) != address(0), ICustomMethodOracle.AddressZero());
         require(address(_config.quoteToken) != address(0), ICustomMethodOracle.AddressZero());
         require(_config.target != address(0), ICustomMethodOracle.AddressZero());
@@ -73,7 +75,8 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         require(bytes(_config.methodSignature).length != 0, ICustomMethodOracle.EmptyMethodSignature());
 
         uint8 baseDecimals = _baseTokenDecimals(_config);
-        OracleNormalization.calculateNormalizationData(baseDecimals, _config.priceDecimals);
+        (normalizationDivider, normalizationMultiplier) =
+            OracleNormalization.calculateNormalizationData(baseDecimals, _config.priceDecimals);
     }
 
     /// @inheritdoc ICustomMethodOracleFactory

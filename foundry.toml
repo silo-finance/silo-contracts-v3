@@ -221,7 +221,7 @@ sonic = { key = "${VERIFIER_API_KEY_SONIC}", chain = 146, url = "${VERIFIER_URL_
 ink = { key = "", chain = 57073, url = "https://explorer.inkonchain.com/api/", verifier = "blockscout" }
 injective = { key = "", chain = 1776, url = "https://blockscout-api.injective.network/api", verifier = "blockscout" }
 # TODO on XDC depoyment this line prevents it, it must be set only on resume for verification
-xdc = { key = "${ETHERSCAN_API_KEY}", chain = 50, url = "${VERIFIER_URL_ETHERSCAN_V2}", verifier = "etherscan" }
+# xdc = { key = "${ETHERSCAN_API_KEY}", chain = 50, url = "${VERIFIER_URL_ETHERSCAN_V2}", verifier = "etherscan" }
 
 [lint]
 exclude_lints = [

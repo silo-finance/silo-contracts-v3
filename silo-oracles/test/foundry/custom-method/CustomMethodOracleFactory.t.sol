@@ -33,7 +33,7 @@ contract CustomMethodOracleFactoryTest is Test {
     MintableToken internal quote = new MintableToken(6);
     MockFeed internal feed = new MockFeed(2e8);
 
-    function test_predict_matches_create() public {
+    function test_CustomMethodOracle_predict_matches_create() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
 
         address predicted = factory.predictAddress(cfg, address(this), keccak256("salt"));
@@ -41,7 +41,7 @@ contract CustomMethodOracleFactoryTest is Test {
         assertEq(address(oracle), predicted);
     }
 
-    function test_each_create_new_oracle_same_config_distinct_address() public {
+    function test_CustomMethodOracle_each_create_new_oracle_same_config_distinct_address() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         bytes32 salt = keccak256("same");
         ICustomMethodOracle a = factory.create(cfg, salt);
@@ -49,21 +49,21 @@ contract CustomMethodOracleFactoryTest is Test {
         assertNotEq(address(a), address(b), "each create deploys a new clone (nonce advances)");
     }
 
-    function test_method_name_without_parens_canonical_signature_on_clone() public {
+    function test_CustomMethodOracle_method_name_without_parens_canonical_signature_on_clone() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         ICustomMethodOracle o = factory.create(cfg, keccak256("p"));
         assertEq(o.methodSignature(), "readUint()");
     }
 
-    function test_quote_uint() public {
+    function test_CustomMethodOracle_quote_uint() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         ICustomMethodOracle oracle = factory.create(cfg, keccak256("x"));
 
         uint256 q = ISiloOracle(address(oracle)).quote(1e18, address(base));
-        assertEq(q, 1e18 * feed.spotPrice() * 1e4);
+        assertEq(q, 1e18 * feed.spotPrice() * 1e4, "expected quote with 18 decimals");
     }
 
-    function test_zero_uint_reverts() public {
+    function test_CustomMethodOracle_zero_uint_reverts() public {
         MockFeed zeroFeed = new MockFeed(0);
 
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfgWithTarget("readUint", address(zeroFeed));
@@ -72,7 +72,7 @@ contract CustomMethodOracleFactoryTest is Test {
         factory.create(cfg, keccak256("z"));
     }
 
-    function test_base_decimals_above_18_reverts() public {
+    function test_CustomMethodOracle_BaseTokenDecimalsAbove18() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         cfg.baseToken = IERC20Metadata(address(new MintableToken(19)));
 
@@ -80,7 +80,7 @@ contract CustomMethodOracleFactoryTest is Test {
         factory.create(cfg, keccak256("too-many-decimals"));
     }
 
-    function test_getConfig_exposes_target_selector_signature() public {
+    function test_CustomMethodOracle_getConfig_exposes_target_selector_signature() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         ICustomMethodOracle oracle = factory.create(cfg, keccak256("c"));
 
@@ -90,7 +90,7 @@ contract CustomMethodOracleFactoryTest is Test {
         assertEq(oc.target, address(feed));
     }
 
-    function test_VERSION() public {
+    function test_CustomMethodOracle_VERSION() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         ICustomMethodOracle oracle = factory.create(cfg, keccak256("v"));
         assertEq(IVersioned(address(oracle)).VERSION(), "CustomMethodOracle 4.5.0");

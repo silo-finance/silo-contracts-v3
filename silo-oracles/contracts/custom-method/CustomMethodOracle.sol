@@ -31,6 +31,7 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         oracleConfig = CustomMethodOracleConfig(_oracleConfig);
         methodSignature = _methodSignature;
 
+        // sanity check
         ICustomMethodOracle.OracleConfig memory _cfg = oracleConfig.getConfig();
         _readPrice({_target: _cfg.target, _callSelector: _cfg.callSelector});
     }

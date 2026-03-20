@@ -46,7 +46,7 @@ import {
 
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_XDC --legacy --broadcast --verify
+        --ffi --rpc-url $RPC_XDC --legacy --slow --broadcast --slow --verify
 
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
@@ -86,14 +86,13 @@ contract MainnetDeploy is CommonDeploy {
 
         siloFactoryDeploy.run();
         siloImplementationDeploy.run();
-        interestRateModelV2ConfigFactoryDeploy.run(); // not for V3
-        interestRateModelV2Deploy.run(); // not for V3
+        // interestRateModelV2ConfigFactoryDeploy.run(); // not for V3
+        // interestRateModelV2Deploy.run(); // not for V3
         dkinkIRMFactoryDeploy.run();
         siloHookV1Deploy.run();
         siloHookV2Deploy.run();
         siloHookV3Deploy.run();
-        liquidationHelperDeploy.run(); // TODO once we have exchange on Injective
-        // liquidationHelperDeploy.run();
+        // liquidationHelperDeploy.run(); // TODO once we have exchange on Injective
         siloLensDeploy.run();
         siloRouterV2Deploy.run();
         siloIncentivesControllerFactoryDeploy.run();

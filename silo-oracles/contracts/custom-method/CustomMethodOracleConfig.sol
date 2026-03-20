@@ -5,7 +5,7 @@ import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadat
 
 import {ICustomMethodOracle} from "../interfaces/ICustomMethodOracle.sol";
 
-/// @dev Deploy only via factory; `methodSignature` lives on the oracle clone, not here.
+/// @dev Deploy only via factory. Uses `DeploymentConfig` for tokens/target only; `methodSignature` / `priceDecimals` in that struct are ignored here. Selector is a separate argument; canonical method string lives on the oracle clone.
 contract CustomMethodOracleConfig {
     IERC20Metadata internal immutable _BASE_TOKEN; // solhint-disable-line var-name-mixedcase
     IERC20Metadata internal immutable _QUOTE_TOKEN; // solhint-disable-line var-name-mixedcase

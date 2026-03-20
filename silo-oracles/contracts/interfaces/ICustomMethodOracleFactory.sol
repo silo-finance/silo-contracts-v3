@@ -15,7 +15,7 @@ interface ICustomMethodOracleFactory {
     /// @dev Always appends `()` to `methodSignature` before hashing (pass method name without parentheses).
     function hashConfig(ICustomMethodOracle.DeploymentConfig memory _config) external pure returns (bytes32 configId);
 
-    /// @dev Same checks and normalization math as `create`; reverts on invalid config. Returns values passed to `CustomMethodOracleConfig` (single `decimals()` read; no duplicate `calculateNormalizationData` in `create`).
+    /// @dev Same checks and normalization math as `create`; reverts on invalid config. Returns divider/multiplier for `CustomMethodOracleConfig` (single `decimals()` read; no duplicate `calculateNormalizationData` in `create`).
     function verifyConfig(ICustomMethodOracle.DeploymentConfig memory _config)
         external
         view

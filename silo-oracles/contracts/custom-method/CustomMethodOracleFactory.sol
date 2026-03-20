@@ -31,18 +31,16 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
 
         (uint256 normalizationDivider, uint256 normalizationMultiplier) = verifyConfig(_config);
 
-        ICustomMethodOracle.DeploymentConfig memory config = _config;
-        config.methodSignature = canonicalMethod;
-
-        bytes4 selector = bytes4(keccak256(bytes(config.methodSignature)));
-        CustomMethodOracleConfig oracleConfig =
-            new CustomMethodOracleConfig(config, selector, normalizationDivider, normalizationMultiplier);
+        bytes4 callSelector = bytes4(keccak256(bytes(canonicalMethod)));
+        CustomMethodOracleConfig oracleConfig = new CustomMethodOracleConfig(
+            _config, callSelector, normalizationDivider, normalizationMultiplier
+        );
 
         CustomMethodOracle clone = CustomMethodOracle(Clones.cloneDeterministic(ORACLE_IMPLEMENTATION, _salt(_externalSalt)));
 
         _saveOracle(address(clone), address(oracleConfig), id);
 
-        clone.initialize(oracleConfig, config.methodSignature);
+        clone.initialize(oracleConfig, canonicalMethod);
 
         oracle = ICustomMethodOracle(address(clone));
 

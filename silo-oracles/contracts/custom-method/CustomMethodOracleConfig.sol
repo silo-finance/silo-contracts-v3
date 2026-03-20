@@ -13,43 +13,27 @@ contract CustomMethodOracleConfig {
     uint256 internal immutable _NORMALIZATION_MULTIPLIER; // solhint-disable-line var-name-mixedcase
     address internal immutable _TARGET; // solhint-disable-line var-name-mixedcase
     bytes4 internal immutable _CALL_SELECTOR; // solhint-disable-line var-name-mixedcase
-    bool internal immutable _RETURN_IS_SIGNED; // solhint-disable-line var-name-mixedcase
 
-    constructor(ICustomMethodOracle.DeploymentConfig memory _config, bytes4 _callSelector) {
+    constructor(
+        ICustomMethodOracle.DeploymentConfig memory _config,
+        bytes4 _callSelector,
+        uint256 _normalizationDivider,
+        uint256 _normalizationMultiplier
+    ) {
         _BASE_TOKEN = _config.baseToken;
         _QUOTE_TOKEN = _config.quoteToken;
-        _NORMALIZATION_DIVIDER = _config.normalizationDivider;
-        _NORMALIZATION_MULTIPLIER = _config.normalizationMultiplier;
+        _NORMALIZATION_DIVIDER = _normalizationDivider;
+        _NORMALIZATION_MULTIPLIER = _normalizationMultiplier;
         _TARGET = _config.target;
         _CALL_SELECTOR = _callSelector;
-        _RETURN_IS_SIGNED = _config.returnIsSigned;
     }
 
-    function baseToken() external view returns (IERC20Metadata) {
-        return _BASE_TOKEN;
-    }
-
-    function quoteToken() external view returns (IERC20Metadata) {
-        return _QUOTE_TOKEN;
-    }
-
-    function target() external view returns (address) {
-        return _TARGET;
-    }
-
-    function callSelector() external view returns (bytes4) {
-        return _CALL_SELECTOR;
-    }
-
-    function returnIsSigned() external view returns (bool) {
-        return _RETURN_IS_SIGNED;
-    }
-
-    function normalizationDivider() external view returns (uint256) {
-        return _NORMALIZATION_DIVIDER;
-    }
-
-    function normalizationMultiplier() external view returns (uint256) {
-        return _NORMALIZATION_MULTIPLIER;
+    function getConfig() external view returns (ICustomMethodOracle.OracleConfig memory _cfg) {
+        _cfg.baseToken = address(_BASE_TOKEN);
+        _cfg.quoteToken = address(_QUOTE_TOKEN);
+        _cfg.target = _TARGET;
+        _cfg.callSelector = _CALL_SELECTOR;
+        _cfg.normalizationDivider = _NORMALIZATION_DIVIDER;
+        _cfg.normalizationMultiplier = _NORMALIZATION_MULTIPLIER;
     }
 }

@@ -9,6 +9,7 @@ import {ICustomMethodOracle} from "../interfaces/ICustomMethodOracle.sol";
 import {ICustomMethodOracleFactory} from "../interfaces/ICustomMethodOracleFactory.sol";
 import {CustomMethodOracle} from "./CustomMethodOracle.sol";
 import {CustomMethodOracleConfig} from "./CustomMethodOracleConfig.sol";
+import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 
 contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMethodOracleFactory {
     constructor() OracleFactory(address(new CustomMethodOracle())) {}
@@ -31,8 +32,13 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         ICustomMethodOracle.DeploymentConfig memory config = _config;
         config.methodSignature = canonicalMethod;
 
+        uint8 baseDecimals = _baseTokenDecimals(config);
+        (uint256 normalizationDivider, uint256 normalizationMultiplier) =
+            _normalizationFromDecimals(baseDecimals, config.priceDecimals);
+
         bytes4 selector = bytes4(keccak256(bytes(config.methodSignature)));
-        CustomMethodOracleConfig oracleConfig = new CustomMethodOracleConfig(config, selector);
+        CustomMethodOracleConfig oracleConfig =
+            new CustomMethodOracleConfig(config, selector, normalizationDivider, normalizationMultiplier);
 
         oracle = CustomMethodOracle(Clones.cloneDeterministic(ORACLE_IMPLEMENTATION, _salt(_externalSalt)));
 
@@ -60,12 +66,8 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
 
         require(bytes(_config.methodSignature).length != 0, ICustomMethodOracle.EmptyMethodSignature());
 
-        require(_config.normalizationDivider <= 1e36, ICustomMethodOracle.HugeDivider());
-        require(_config.normalizationMultiplier <= 1e36, ICustomMethodOracle.HugeMultiplier());
-        require(
-            _config.normalizationDivider != 0 || _config.normalizationMultiplier != 0,
-            ICustomMethodOracle.MultiplierAndDividerZero()
-        );
+        uint8 baseDecimals = _baseTokenDecimals(_config);
+        _normalizationFromDecimals(baseDecimals, _config.priceDecimals);
     }
 
     /// @inheritdoc ICustomMethodOracleFactory
@@ -92,6 +94,40 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
 
     function _canonicalMethodSignature(string memory _method) internal pure returns (string memory) {
         return string.concat(_method, "()");
+    }
+
+    function _baseTokenDecimals(ICustomMethodOracle.DeploymentConfig memory _config)
+        internal
+        view
+        returns (uint8 baseDecimals)
+    {
+        uint256 decimals = TokenHelper.assertAndGetDecimals(address(_config.baseToken));
+        require(decimals <= 18, ICustomMethodOracle.BaseTokenDecimalsAbove18());
+        // forge-lint: disable-next-line(unsafe-typecast)
+        baseDecimals = uint8(decimals);
+    }
+
+    /// @dev Maps `baseDecimals` + `priceDecimals` to `OracleNormalization` divider/multiplier so quote is 18 decimals.
+    function _normalizationFromDecimals(uint8 _baseDecimals, uint8 _priceDecimals)
+        internal
+        pure
+        returns (uint256 divider, uint256 multiplier)
+    {
+        uint256 sum = uint256(_baseDecimals) + uint256(_priceDecimals);
+
+        if (sum > 18) {
+            uint256 d = sum - 18;
+            require(d <= 77, ICustomMethodOracle.NormalizationScaleTooLarge());
+            return (10 ** d, 0);
+        }
+
+        if (sum < 18) {
+            uint256 m = 18 - sum;
+            require(m <= 77, ICustomMethodOracle.NormalizationScaleTooLarge());
+            return (1, 10 ** m);
+        }
+
+        return (1, 0);
     }
 
     function _hashConfig(ICustomMethodOracle.DeploymentConfig memory _config, string memory _canonicalMethod)

@@ -6,16 +6,26 @@ import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadat
 /// @notice Oracle that reads a parameterless external view and normalizes it like other Silo oracles.
 interface ICustomMethodOracle {
     /// @notice Passed to the factory; `hashConfig` and deployment use the same normalization as `create`.
-    /// @dev `target`: every price read is `address(target).staticcall` with only the method selector (no calldata tail).
+    /// @dev `target`: every price read is `address(target).staticcall`
+    /// with only the method selector (no calldata tail).
     /// `methodSignature`: pass method name without parentheses (e.g. `latestAnswer`); factory always appends `()`.
+    /// `priceDecimals`: decimals of value returned by target method.
     struct DeploymentConfig {
         IERC20Metadata baseToken;
         IERC20Metadata quoteToken;
         address target;
         string methodSignature;
+        uint8 priceDecimals;
+    }
+
+    /// @notice Immutable values read in one shot for `quote` / price reads (see `getConfig`).
+    struct OracleConfig {
+        address baseToken;
+        address quoteToken;
+        address target;
+        bytes4 callSelector;
         uint256 normalizationDivider;
         uint256 normalizationMultiplier;
-        bool returnIsSigned;
     }
 
     event CustomMethodConfigDeployed(address indexed configAddress);
@@ -23,18 +33,20 @@ interface ICustomMethodOracle {
     error AddressZero();
     error TokensAreTheSame();
     error EmptyMethodSignature();
-    error HugeDivider();
-    error HugeMultiplier();
-    error MultiplierAndDividerZero();
+    error BaseTokenDecimalsAbove18();
+    /// @dev `10 ** exponent` for normalization would overflow uint256 (keep `baseDecimals + priceDecimals` reasonable).
+    error NormalizationScaleTooLarge();
     error AssetNotSupported();
     error BaseAmountOverflow();
     error ZeroQuote();
     error StaticCallFailed();
     error InvalidReturnData();
-    error InvalidSignedPrice();
 
     /// @notice Canonical signature built by factory from method name + `()`.
     function methodSignature() external view returns (string memory);
+
+    /// @notice Single read of config contract fields used for quoting and debugging.
+    function getConfig() external view returns (OracleConfig memory);
 
     function callData() external view returns (bytes memory);
 

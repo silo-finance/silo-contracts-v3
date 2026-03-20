@@ -13,6 +13,7 @@ import {CustomMethodOracleConfig} from "./CustomMethodOracleConfig.sol";
 // solhint-disable ordering
 
 contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, Aggregator, IVersioned {
+    /// @notice Config contract address (clone-specific); all other immutable params via `getConfig()`.
     CustomMethodOracleConfig public oracleConfig;
 
     /// @dev Canonical parameterless signature string (factory-normalized); kept on the clone, not on config.
@@ -41,45 +42,43 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         override(Aggregator, ISiloOracle)
         returns (uint256 quoteAmount)
     {
-        CustomMethodOracleConfig _cfg = oracleConfig;
+        ICustomMethodOracle.OracleConfig memory _cfg = oracleConfig.getConfig();
 
-        require(_baseToken == address(_cfg.baseToken()), AssetNotSupported());
+        require(_baseToken == _cfg.baseToken, AssetNotSupported());
         require(_baseAmount <= type(uint128).max, BaseAmountOverflow());
 
-        uint256 assetPrice = _readPrice(_cfg);
+        uint256 assetPrice = _readPrice(_cfg.target, _cfg.callSelector);
 
         require(assetPrice <= type(uint128).max, InvalidReturnData());
 
         quoteAmount = OracleNormalization.normalizePrice(
             _baseAmount,
             assetPrice,
-            _cfg.normalizationDivider(),
-            _cfg.normalizationMultiplier()
+            _cfg.normalizationDivider,
+            _cfg.normalizationMultiplier
         );
 
         require(quoteAmount != 0, ZeroQuote());
-
-        return quoteAmount;
     }
 
     /// @inheritdoc ISiloOracle
     function quoteToken() external view virtual returns (address) {
-        return address(oracleConfig.quoteToken());
+        return oracleConfig.getConfig().quoteToken;
     }
 
-    function beforeQuote(address _baseToken) external pure virtual override {
-        _baseToken;
+    function beforeQuote(address) external pure virtual override {
+        // nothing to execute
     }
 
     /// @inheritdoc IVersioned
     // solhint-disable-next-line func-name-mixedcase
     function VERSION() external pure virtual override returns (string memory version) {
-        version = "CustomMethodOracle 1.0.0";
+        version = "CustomMethodOracle 4.5.0";
     }
 
     /// @inheritdoc Aggregator
     function baseToken() public view virtual override returns (address token) {
-        return address(oracleConfig.baseToken());
+        return oracleConfig.getConfig().baseToken;
     }
 
     /// @inheritdoc ICustomMethodOracle
@@ -88,35 +87,32 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
     }
 
     /// @inheritdoc ICustomMethodOracle
+    function getConfig() external view virtual override returns (ICustomMethodOracle.OracleConfig memory) {
+        return oracleConfig.getConfig();
+    }
+
+    /// @inheritdoc ICustomMethodOracle
     function callData() external view virtual override returns (bytes memory) {
-        return abi.encodeWithSelector(oracleConfig.callSelector());
+        return abi.encodeWithSelector(oracleConfig.getConfig().callSelector);
     }
 
     /// @inheritdoc ICustomMethodOracle
     function callSelector() external view virtual override returns (bytes4) {
-        return oracleConfig.callSelector();
+        return oracleConfig.getConfig().callSelector;
     }
 
     /// @inheritdoc ICustomMethodOracle
     function priceTarget() external view virtual override returns (address) {
-        return oracleConfig.target();
+        return oracleConfig.getConfig().target;
     }
 
-    function _readPrice(CustomMethodOracleConfig _cfg) internal view returns (uint256 assetPrice) {
+    function _readPrice(address _target, bytes4 _callSelector) internal view returns (uint256 assetPrice) {
         // solhint-disable-next-line avoid-low-level-calls
-        (bool success, bytes memory data) = _cfg.target().staticcall(abi.encodeWithSelector(_cfg.callSelector()));
+        (bool success, bytes memory data) = _target.staticcall(abi.encodeWithSelector(_callSelector));
 
         require(success, StaticCallFailed());
         require(data.length >= 32, InvalidReturnData());
 
-        if (_cfg.returnIsSigned()) {
-            int256 signed = abi.decode(data, (int256));
-            require(signed > 0, InvalidSignedPrice());
-            // forge-lint: disable-next-line(unsafe-typecast)
-            assetPrice = uint256(signed);
-        } else {
-            assetPrice = abi.decode(data, (uint256));
-            require(assetPrice != 0, ZeroQuote());
-        }
+        assetPrice = abi.decode(data, (uint256));
     }
 }

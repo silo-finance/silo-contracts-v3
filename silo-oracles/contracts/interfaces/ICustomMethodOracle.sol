@@ -5,14 +5,9 @@ import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadat
 
 /// @notice Oracle that reads a parameterless external view and normalizes it like other Silo oracles.
 interface ICustomMethodOracle {
-    /// @dev Configuration for factory `create`.
-    /// @param baseToken token priced by this oracle
-    /// @param quoteToken denomination of the quote
-    /// @param target contract to `staticcall`
-    /// @param methodSignature canonical signature of the target method, e.g. `latestAnswer()` (no arguments)
-    /// @param normalizationDivider see `OracleNormalization`
-    /// @param normalizationMultiplier see `OracleNormalization`
-    /// @param returnIsSigned if true, return data is decoded as `int256` (must be > 0); otherwise `uint256`
+    /// @notice Passed to the factory; `hashConfig` and deployment use the same normalization as `create`.
+    /// @dev `target`: every price read is `address(target).staticcall` with only the method selector (no calldata tail).
+    /// `methodSignature`: pass method name without parentheses (e.g. `latestAnswer`); factory always appends `()`.
     struct DeploymentConfig {
         IERC20Metadata baseToken;
         IERC20Metadata quoteToken;
@@ -38,15 +33,12 @@ interface ICustomMethodOracle {
     error InvalidReturnData();
     error InvalidSignedPrice();
 
-    /// @notice Canonical method signature string passed at deployment.
+    /// @notice Canonical signature built by factory from method name + `()`.
     function methodSignature() external view returns (string memory);
 
-    /// @notice Full calldata for the parameterless call (4-byte selector).
     function callData() external view returns (bytes memory);
 
-    /// @notice Selector derived from `methodSignature`.
     function callSelector() external view returns (bytes4);
 
-    /// @notice Target contract for the staticcall.
     function priceTarget() external view returns (address);
 }

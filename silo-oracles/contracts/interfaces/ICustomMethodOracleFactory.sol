@@ -4,26 +4,24 @@ pragma solidity >=0.8.0;
 import {ICustomMethodOracle} from "./ICustomMethodOracle.sol";
 import {CustomMethodOracle} from "../custom-method/CustomMethodOracle.sol";
 
-/// @notice Permissionless factory: clone `CustomMethodOracle` + deploy config; deduplicates by config hash.
+/// @notice Clones `CustomMethodOracle`, deploys config; same logical config (after method-string normalization) ⇒ one oracle.
 interface ICustomMethodOracleFactory {
     error DeployerCannotBeZero();
 
-    /// @notice Deploy (or return existing) oracle for the given configuration.
+    /// @dev `methodSignature` is normalized like in `hashConfig` (factory appends `()`). `_externalSalt` is mixed into CREATE2 salt only.
     function create(ICustomMethodOracle.DeploymentConfig memory _config, bytes32 _externalSalt)
         external
         returns (CustomMethodOracle oracle);
 
-    /// @notice Configuration id used for deduplication and lookups.
+    /// @dev Always appends `()` to `methodSignature` before hashing (pass method name without parentheses).
     function hashConfig(ICustomMethodOracle.DeploymentConfig memory _config) external pure returns (bytes32 configId);
 
-    /// @notice Validate deployment config (also used off-chain before `create`).
+    /// @dev Same normalization as `create`; reverts on invalid config.
     function verifyConfig(ICustomMethodOracle.DeploymentConfig memory _config) external view;
 
-    /// @notice Oracle address for a config id, if already created.
     function resolveExistingOracle(bytes32 _configId) external view returns (address oracle);
 
-    /// @notice Predict clone address for the next `create` from `_deployer` with `_externalSalt`.
-    /// @dev If config already exists, returns the existing oracle address instead.
+    /// @dev Uses `hashConfig`; if that id already exists, returns that oracle instead of a clone address.
     function predictAddress(
         ICustomMethodOracle.DeploymentConfig memory _config,
         address _deployer,

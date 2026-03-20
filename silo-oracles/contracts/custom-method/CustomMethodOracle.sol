@@ -15,15 +15,22 @@ import {CustomMethodOracleConfig} from "./CustomMethodOracleConfig.sol";
 contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, Aggregator, IVersioned {
     CustomMethodOracleConfig public oracleConfig;
 
+    /// @dev Canonical parameterless signature string (factory-normalized); kept on the clone, not on config.
+    string internal _methodSignature;
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
     }
 
-    /// @notice One-time init; use factory only.
-    function initialize(CustomMethodOracleConfig _configAddress) external virtual initializer {
-        oracleConfig = _configAddress;
-        emit CustomMethodConfigDeployed(address(_configAddress));
+    function initialize(CustomMethodOracleConfig _oracleConfig, string calldata _canonicalMethodSignature)
+        external
+        virtual
+        initializer
+    {
+        oracleConfig = _oracleConfig;
+        _methodSignature = _canonicalMethodSignature;
+        emit CustomMethodConfigDeployed(address(_oracleConfig));
     }
 
     /// @inheritdoc ISiloOracle
@@ -34,23 +41,23 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         override(Aggregator, ISiloOracle)
         returns (uint256 quoteAmount)
     {
-        CustomMethodOracleConfig cfg = oracleConfig;
+        CustomMethodOracleConfig _cfg = oracleConfig;
 
-        if (_baseToken != address(cfg.baseToken())) revert AssetNotSupported();
-        if (_baseAmount > type(uint128).max) revert BaseAmountOverflow();
+        require(_baseToken == address(_cfg.baseToken()), AssetNotSupported());
+        require(_baseAmount <= type(uint128).max, BaseAmountOverflow());
 
-        uint256 assetPrice = _readPrice(cfg);
+        uint256 assetPrice = _readPrice(_cfg);
 
-        if (assetPrice > type(uint128).max) revert InvalidReturnData();
+        require(assetPrice <= type(uint128).max, InvalidReturnData());
 
         quoteAmount = OracleNormalization.normalizePrice(
             _baseAmount,
             assetPrice,
-            cfg.normalizationDivider(),
-            cfg.normalizationMultiplier()
+            _cfg.normalizationDivider(),
+            _cfg.normalizationMultiplier()
         );
 
-        if (quoteAmount == 0) revert ZeroQuote();
+        require(quoteAmount != 0, ZeroQuote());
 
         return quoteAmount;
     }
@@ -60,8 +67,8 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         return address(oracleConfig.quoteToken());
     }
 
-    function beforeQuote(address) external pure virtual override {
-        // nothing
+    function beforeQuote(address _baseToken) external pure virtual override {
+        _baseToken;
     }
 
     /// @inheritdoc IVersioned
@@ -77,7 +84,7 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
 
     /// @inheritdoc ICustomMethodOracle
     function methodSignature() external view virtual override returns (string memory) {
-        return oracleConfig.methodSignature();
+        return _methodSignature;
     }
 
     /// @inheritdoc ICustomMethodOracle
@@ -95,21 +102,21 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         return oracleConfig.target();
     }
 
-    function _readPrice(CustomMethodOracleConfig cfg) internal view returns (uint256 assetPrice) {
+    function _readPrice(CustomMethodOracleConfig _cfg) internal view returns (uint256 assetPrice) {
         // solhint-disable-next-line avoid-low-level-calls
-        (bool success, bytes memory data) = cfg.target().staticcall(abi.encodeWithSelector(cfg.callSelector()));
+        (bool success, bytes memory data) = _cfg.target().staticcall(abi.encodeWithSelector(_cfg.callSelector()));
 
-        if (!success) revert StaticCallFailed();
-        if (data.length < 32) revert InvalidReturnData();
+        require(success, StaticCallFailed());
+        require(data.length >= 32, InvalidReturnData());
 
-        if (cfg.returnIsSigned()) {
+        if (_cfg.returnIsSigned()) {
             int256 signed = abi.decode(data, (int256));
-            if (signed <= 0) revert InvalidSignedPrice();
+            require(signed > 0, InvalidSignedPrice());
             // forge-lint: disable-next-line(unsafe-typecast)
             assetPrice = uint256(signed);
         } else {
             assetPrice = abi.decode(data, (uint256));
-            if (assetPrice == 0) revert ZeroQuote();
+            require(assetPrice != 0, ZeroQuote());
         }
     }
 }

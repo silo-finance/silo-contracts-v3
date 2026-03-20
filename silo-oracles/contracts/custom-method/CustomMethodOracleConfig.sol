@@ -5,7 +5,7 @@ import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadat
 
 import {ICustomMethodOracle} from "../interfaces/ICustomMethodOracle.sol";
 
-/// @notice Immutable configuration for `CustomMethodOracle`. Deploy only via factory.
+/// @dev Deploy only via factory; `methodSignature` lives on the oracle clone, not here.
 contract CustomMethodOracleConfig {
     IERC20Metadata internal immutable _BASE_TOKEN; // solhint-disable-line var-name-mixedcase
     IERC20Metadata internal immutable _QUOTE_TOKEN; // solhint-disable-line var-name-mixedcase
@@ -14,7 +14,6 @@ contract CustomMethodOracleConfig {
     address internal immutable _TARGET; // solhint-disable-line var-name-mixedcase
     bytes4 internal immutable _CALL_SELECTOR; // solhint-disable-line var-name-mixedcase
     bool internal immutable _RETURN_IS_SIGNED; // solhint-disable-line var-name-mixedcase
-    string internal _METHOD_SIGNATURE;
 
     constructor(ICustomMethodOracle.DeploymentConfig memory _config, bytes4 _callSelector) {
         _BASE_TOKEN = _config.baseToken;
@@ -24,18 +23,6 @@ contract CustomMethodOracleConfig {
         _TARGET = _config.target;
         _CALL_SELECTOR = _callSelector;
         _RETURN_IS_SIGNED = _config.returnIsSigned;
-        _METHOD_SIGNATURE = _config.methodSignature;
-    }
-
-    function getConfig() external view returns (ICustomMethodOracle.DeploymentConfig memory config, bytes4 selector) {
-        config.baseToken = _BASE_TOKEN;
-        config.quoteToken = _QUOTE_TOKEN;
-        config.target = _TARGET;
-        config.methodSignature = _METHOD_SIGNATURE;
-        config.normalizationDivider = _NORMALIZATION_DIVIDER;
-        config.normalizationMultiplier = _NORMALIZATION_MULTIPLIER;
-        config.returnIsSigned = _RETURN_IS_SIGNED;
-        selector = _CALL_SELECTOR;
     }
 
     function baseToken() external view returns (IERC20Metadata) {
@@ -56,10 +43,6 @@ contract CustomMethodOracleConfig {
 
     function returnIsSigned() external view returns (bool) {
         return _RETURN_IS_SIGNED;
-    }
-
-    function methodSignature() external view returns (string memory) {
-        return _METHOD_SIGNATURE;
     }
 
     function normalizationDivider() external view returns (uint256) {

@@ -19,7 +19,8 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         virtual
         returns (CustomMethodOracle oracle)
     {
-        bytes32 id = hashConfig(_config);
+        string memory canonicalMethod = _canonicalMethodSignature(_config.methodSignature);
+        bytes32 id = _hashConfig(_config, canonicalMethod);
         address existing = resolveExistingOracle(id);
         if (existing != address(0)) {
             return CustomMethodOracle(existing);
@@ -27,14 +28,17 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
 
         verifyConfig(_config);
 
-        bytes4 selector = bytes4(keccak256(bytes(_config.methodSignature)));
-        CustomMethodOracleConfig oracleConfig = new CustomMethodOracleConfig(_config, selector);
+        ICustomMethodOracle.DeploymentConfig memory config = _config;
+        config.methodSignature = canonicalMethod;
+
+        bytes4 selector = bytes4(keccak256(bytes(config.methodSignature)));
+        CustomMethodOracleConfig oracleConfig = new CustomMethodOracleConfig(config, selector);
 
         oracle = CustomMethodOracle(Clones.cloneDeterministic(ORACLE_IMPLEMENTATION, _salt(_externalSalt)));
 
         _saveOracle(address(oracle), address(oracleConfig), id);
 
-        oracle.initialize(oracleConfig);
+        oracle.initialize(oracleConfig, config.methodSignature);
     }
 
     /// @inheritdoc ICustomMethodOracleFactory
@@ -44,23 +48,24 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         virtual
         returns (bytes32 configId)
     {
-        configId = keccak256(abi.encode(_config));
+        configId = _hashConfig(_config, _canonicalMethodSignature(_config.methodSignature));
     }
 
     /// @inheritdoc ICustomMethodOracleFactory
     function verifyConfig(ICustomMethodOracle.DeploymentConfig memory _config) public view virtual override {
-        if (address(_config.baseToken) == address(0)) revert ICustomMethodOracle.AddressZero();
-        if (address(_config.quoteToken) == address(0)) revert ICustomMethodOracle.AddressZero();
-        if (_config.target == address(0)) revert ICustomMethodOracle.AddressZero();
-        if (address(_config.baseToken) == address(_config.quoteToken)) revert ICustomMethodOracle.TokensAreTheSame();
+        require(address(_config.baseToken) != address(0), ICustomMethodOracle.AddressZero());
+        require(address(_config.quoteToken) != address(0), ICustomMethodOracle.AddressZero());
+        require(_config.target != address(0), ICustomMethodOracle.AddressZero());
+        require(address(_config.baseToken) != address(_config.quoteToken), ICustomMethodOracle.TokensAreTheSame());
 
-        if (bytes(_config.methodSignature).length == 0) revert ICustomMethodOracle.EmptyMethodSignature();
+        require(bytes(_config.methodSignature).length != 0, ICustomMethodOracle.EmptyMethodSignature());
 
-        if (_config.normalizationDivider > 1e36) revert ICustomMethodOracle.HugeDivider();
-        if (_config.normalizationMultiplier > 1e36) revert ICustomMethodOracle.HugeMultiplier();
-        if (_config.normalizationDivider == 0 && _config.normalizationMultiplier == 0) {
-            revert ICustomMethodOracle.MultiplierAndDividerZero();
-        }
+        require(_config.normalizationDivider <= 1e36, ICustomMethodOracle.HugeDivider());
+        require(_config.normalizationMultiplier <= 1e36, ICustomMethodOracle.HugeMultiplier());
+        require(
+            _config.normalizationDivider != 0 || _config.normalizationMultiplier != 0,
+            ICustomMethodOracle.MultiplierAndDividerZero()
+        );
     }
 
     /// @inheritdoc ICustomMethodOracleFactory
@@ -79,9 +84,23 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         address existing = resolveExistingOracle(id);
         if (existing != address(0)) return existing;
 
-        if (_deployer == address(0)) revert DeployerCannotBeZero();
+        require(_deployer != address(0), DeployerCannotBeZero());
 
         predictedAddress =
             Clones.predictDeterministicAddress(ORACLE_IMPLEMENTATION, _createSalt(_deployer, _externalSalt));
+    }
+
+    function _canonicalMethodSignature(string memory _method) internal pure returns (string memory) {
+        return string.concat(_method, "()");
+    }
+
+    function _hashConfig(ICustomMethodOracle.DeploymentConfig memory _config, string memory _canonicalMethod)
+        internal
+        pure
+        returns (bytes32)
+    {
+        ICustomMethodOracle.DeploymentConfig memory canonical = _config;
+        canonical.methodSignature = _canonicalMethod;
+        return keccak256(abi.encode(canonical));
     }
 }

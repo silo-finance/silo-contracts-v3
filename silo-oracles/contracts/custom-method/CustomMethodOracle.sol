@@ -22,16 +22,16 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         _disableInitializers();
     }
 
-    function initialize(CustomMethodOracleConfig _oracleConfig, string calldata _canonicalMethodSignature)
+    function initialize(CustomMethodOracleConfig _oracleConfig, string calldata _methodSignature)
         external
         virtual
         initializer
     {
         oracleConfig = _oracleConfig;
-        methodSignature = _canonicalMethodSignature;
+        methodSignature = _methodSignature;
 
         ICustomMethodOracle.OracleConfig memory _cfg = oracleConfig.getConfig();
-        _readPrice(_cfg.target, _cfg.callSelector);
+        _readPrice({_target: _cfg.target, _callSelector: _cfg.callSelector});
     }
 
     /// @inheritdoc ISiloOracle
@@ -47,16 +47,16 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         require(_baseToken == _cfg.baseToken, AssetNotSupported());
         require(_baseAmount <= type(uint128).max, BaseAmountOverflow());
 
-        uint256 assetPrice = _readPrice(_cfg.target, _cfg.callSelector);
+        uint256 assetPrice = _readPrice({_target: _cfg.target, _callSelector: _cfg.callSelector});
 
         require(assetPrice <= type(uint128).max, InvalidReturnData());
 
-        quoteAmount = OracleNormalization.normalizePrice(
-            _baseAmount,
-            assetPrice,
-            _cfg.normalizationDivider,
-            _cfg.normalizationMultiplier
-        );
+        quoteAmount = OracleNormalization.normalizePrice({
+            _baseAmount: _baseAmount,
+            _assetPrice: assetPrice,
+            _normalizationDivider: _cfg.normalizationDivider,
+            _normalizationMultiplier: _cfg.normalizationMultiplier
+        });
 
         require(quoteAmount != 0, ZeroQuote());
     }

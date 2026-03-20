@@ -21,8 +21,7 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         virtual
         returns (ICustomMethodOracle oracle)
     {
-        string memory canonicalMethod = _canonicalMethodSignature(_config.methodSignature);
-        bytes32 id = _hashConfig(_config, canonicalMethod);
+        bytes32 id = hashConfig(_config);
         address existing = resolveExistingOracle(id);
 
         if (existing != address(0)) {
@@ -30,19 +29,22 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         }
 
         (uint256 normalizationDivider, uint256 normalizationMultiplier) = verifyConfig(_config);
+        string memory canonicalMethod = string.concat(_config.methodSignature, "()");
 
-        bytes4 callSelector = bytes4(keccak256(bytes(canonicalMethod)));
-        CustomMethodOracleConfig oracleConfig = new CustomMethodOracleConfig(
-            _config, callSelector, normalizationDivider, normalizationMultiplier
+        CustomMethodOracleConfig oracleConfig = new CustomMethodOracleConfig({
+            _config: _config,
+            _callSelector: bytes4(abi.encodeWithSignature(canonicalMethod)),
+            _normalizationDivider: normalizationDivider,
+            _normalizationMultiplier: normalizationMultiplier
+        });
+
+        ICustomMethodOracle oracle = ICustomMethodOracle(
+            Clones.cloneDeterministic({implementation: ORACLE_IMPLEMENTATION, salt: _salt(_externalSalt)})
         );
 
-        CustomMethodOracle clone = CustomMethodOracle(Clones.cloneDeterministic(ORACLE_IMPLEMENTATION, _salt(_externalSalt)));
+        _saveOracle({_newOracle: address(oracle), _newConfig: address(oracleConfig), _configId: id});
 
-        _saveOracle(address(clone), address(oracleConfig), id);
-
-        clone.initialize(oracleConfig, canonicalMethod);
-
-        oracle = ICustomMethodOracle(address(clone));
+        oracle.initialize(oracleConfig, canonicalMethod);
 
         emit ICustomMethodOracle.CustomMethodConfigDeployed(address(oracleConfig));
     }
@@ -54,7 +56,7 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         virtual
         returns (bytes32 configId)
     {
-        configId = _hashConfig(_config, _canonicalMethodSignature(_config.methodSignature));
+        configId = keccak256(abi.encode(_config));
     }
 
     /// @inheritdoc ICustomMethodOracleFactory
@@ -72,9 +74,9 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
 
         require(bytes(_config.methodSignature).length != 0, ICustomMethodOracle.EmptyMethodSignature());
 
-        uint8 baseDecimals = _baseTokenDecimals(_config);
-        (normalizationDivider, normalizationMultiplier) =
-            OracleNormalization.calculateNormalizationData(baseDecimals, _config.priceDecimals);
+        (normalizationDivider, normalizationMultiplier) = OracleNormalization.calculateNormalizationData({
+            _baseDecimals: _baseTokenDecimals(_config), _priceDecimals: _config.priceDecimals
+        });
     }
 
     /// @inheritdoc ICustomMethodOracleFactory
@@ -95,8 +97,9 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
 
         require(_deployer != address(0), DeployerCannotBeZero());
 
-        predictedAddress =
-            Clones.predictDeterministicAddress(ORACLE_IMPLEMENTATION, _createSalt(_deployer, _externalSalt));
+        predictedAddress = Clones.predictDeterministicAddress({
+            implementation: ORACLE_IMPLEMENTATION, salt: _createSalt(_deployer, _externalSalt)
+        });
     }
 
     function _canonicalMethodSignature(string memory _method) internal pure returns (string memory) {
@@ -110,17 +113,8 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
     {
         uint256 decimals = TokenHelper.assertAndGetDecimals(address(_config.baseToken));
         require(decimals <= 18, ICustomMethodOracle.BaseTokenDecimalsAbove18());
+
         // forge-lint: disable-next-line(unsafe-typecast)
         baseDecimals = uint8(decimals);
-    }
-
-    function _hashConfig(ICustomMethodOracle.DeploymentConfig memory _config, string memory _canonicalMethod)
-        internal
-        pure
-        returns (bytes32)
-    {
-        ICustomMethodOracle.DeploymentConfig memory canonical = _config;
-        canonical.methodSignature = _canonicalMethod;
-        return keccak256(abi.encode(canonical));
     }
 }

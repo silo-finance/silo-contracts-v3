@@ -10,14 +10,12 @@ import {OracleNormalization} from "../lib/OracleNormalization.sol";
 import {ICustomMethodOracle} from "../interfaces/ICustomMethodOracle.sol";
 import {CustomMethodOracleConfig} from "./CustomMethodOracleConfig.sol";
 
-// solhint-disable ordering
-
 contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, Aggregator, IVersioned {
     /// @notice Config contract address (clone-specific); all other immutable params via `getConfig()`.
     CustomMethodOracleConfig public oracleConfig;
 
-    /// @dev Canonical parameterless signature string (factory-normalized); kept on the clone, not on config.
-    string internal _methodSignature;
+    /// @notice Canonical parameterless signature string (factory-normalized)
+    string public methodSignature;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -30,8 +28,10 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         initializer
     {
         oracleConfig = _oracleConfig;
-        _methodSignature = _canonicalMethodSignature;
-        emit CustomMethodConfigDeployed(address(_oracleConfig));
+        methodSignature = _canonicalMethodSignature;
+
+        ICustomMethodOracle.OracleConfig memory _cfg = oracleConfig.getConfig();
+        _readPrice(_cfg.target, _cfg.callSelector);
     }
 
     /// @inheritdoc ISiloOracle
@@ -82,28 +82,8 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
     }
 
     /// @inheritdoc ICustomMethodOracle
-    function methodSignature() external view virtual override returns (string memory) {
-        return _methodSignature;
-    }
-
-    /// @inheritdoc ICustomMethodOracle
     function getConfig() external view virtual override returns (ICustomMethodOracle.OracleConfig memory) {
         return oracleConfig.getConfig();
-    }
-
-    /// @inheritdoc ICustomMethodOracle
-    function callData() external view virtual override returns (bytes memory) {
-        return abi.encodeWithSelector(oracleConfig.getConfig().callSelector);
-    }
-
-    /// @inheritdoc ICustomMethodOracle
-    function callSelector() external view virtual override returns (bytes4) {
-        return oracleConfig.getConfig().callSelector;
-    }
-
-    /// @inheritdoc ICustomMethodOracle
-    function priceTarget() external view virtual override returns (address) {
-        return oracleConfig.getConfig().target;
     }
 
     function _readPrice(address _target, bytes4 _callSelector) internal view returns (uint256 assetPrice) {
@@ -111,8 +91,9 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         (bool success, bytes memory data) = _target.staticcall(abi.encodeWithSelector(_callSelector));
 
         require(success, StaticCallFailed());
-        require(data.length >= 32, InvalidReturnData());
+        require(data.length == 32, InvalidReturnData());
 
         assetPrice = abi.decode(data, (uint256));
+        require(assetPrice != 0, ZeroQuote());
     }
 }

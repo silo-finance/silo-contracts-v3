@@ -4,6 +4,7 @@ pragma solidity 0.8.28;
 import {CommonDeploy} from "../CommonDeploy.sol";
 import {SiloOraclesFactoriesContracts} from "../SiloOraclesFactoriesContracts.sol";
 import {CustomMethodOracleFactory} from "silo-oracles/contracts/custom-method/CustomMethodOracleFactory.sol";
+import {ICustomMethodOracleFactory} from "silo-oracles/contracts/interfaces/ICustomMethodOracleFactory.sol";
 
 /*
 FOUNDRY_PROFILE=oracles \
@@ -11,11 +12,11 @@ FOUNDRY_PROFILE=oracles \
     --ffi --rpc-url $RPC_SONIC --broadcast --verify
  */
 contract CustomMethodOracleFactoryDeploy is CommonDeploy {
-    function run() public returns (CustomMethodOracleFactory factory) {
+    function run() public returns (ICustomMethodOracleFactory factory) {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
         vm.startBroadcast(deployerPrivateKey);
 
-        factory = new CustomMethodOracleFactory();
+        factory = ICustomMethodOracleFactory(address(new CustomMethodOracleFactory()));
 
         vm.stopBroadcast();
 

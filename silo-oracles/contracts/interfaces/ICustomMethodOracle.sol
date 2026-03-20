@@ -28,6 +28,7 @@ interface ICustomMethodOracle {
         uint256 normalizationMultiplier;
     }
 
+    /// @dev Emitted by `CustomMethodOracleFactory.create` after config + oracle clone are deployed.
     event CustomMethodConfigDeployed(address indexed configAddress);
 
     error AddressZero();
@@ -42,15 +43,9 @@ interface ICustomMethodOracle {
     error StaticCallFailed();
     error InvalidReturnData();
 
-    /// @notice Canonical signature built by factory from method name + `()`.
-    function methodSignature() external view returns (string memory);
-
-    /// @notice Single read of config contract fields used for quoting and debugging.
+    /// @notice Immutable params from the config contract (one call); `methodSignature` stays on the oracle as public state.
     function getConfig() external view returns (OracleConfig memory);
 
-    function callData() external view returns (bytes memory);
-
-    function callSelector() external view returns (bytes4);
-
-    function priceTarget() external view returns (address);
+    /// @notice Canonical method name + `()` after factory normalization; lives on the oracle clone, not on config.
+    function methodSignature() external view returns (string memory);
 }

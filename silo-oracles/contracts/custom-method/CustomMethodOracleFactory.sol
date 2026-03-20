@@ -18,13 +18,14 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
     function create(ICustomMethodOracle.DeploymentConfig memory _config, bytes32 _externalSalt)
         external
         virtual
-        returns (CustomMethodOracle oracle)
+        returns (ICustomMethodOracle oracle)
     {
         string memory canonicalMethod = _canonicalMethodSignature(_config.methodSignature);
         bytes32 id = _hashConfig(_config, canonicalMethod);
         address existing = resolveExistingOracle(id);
+
         if (existing != address(0)) {
-            return CustomMethodOracle(existing);
+            return ICustomMethodOracle(existing);
         }
 
         verifyConfig(_config);
@@ -40,11 +41,15 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         CustomMethodOracleConfig oracleConfig =
             new CustomMethodOracleConfig(config, selector, normalizationDivider, normalizationMultiplier);
 
-        oracle = CustomMethodOracle(Clones.cloneDeterministic(ORACLE_IMPLEMENTATION, _salt(_externalSalt)));
+        CustomMethodOracle clone = CustomMethodOracle(Clones.cloneDeterministic(ORACLE_IMPLEMENTATION, _salt(_externalSalt)));
 
-        _saveOracle(address(oracle), address(oracleConfig), id);
+        _saveOracle(address(clone), address(oracleConfig), id);
 
-        oracle.initialize(oracleConfig, config.methodSignature);
+        clone.initialize(oracleConfig, config.methodSignature);
+
+        oracle = ICustomMethodOracle(address(clone));
+
+        emit ICustomMethodOracle.CustomMethodConfigDeployed(address(oracleConfig));
     }
 
     /// @inheritdoc ICustomMethodOracleFactory
@@ -114,20 +119,13 @@ contract CustomMethodOracleFactory is Create2Factory, OracleFactory, ICustomMeth
         returns (uint256 divider, uint256 multiplier)
     {
         uint256 sum = uint256(_baseDecimals) + uint256(_priceDecimals);
+        require(sum <= 36, ICustomMethodOracle.NormalizationScaleTooLarge());
 
         if (sum > 18) {
-            uint256 d = sum - 18;
-            require(d <= 77, ICustomMethodOracle.NormalizationScaleTooLarge());
-            return (10 ** d, 0);
+            divider = 10 ** (sum - 18);
+        } else {
+            multiplier = 10 ** (18 - sum);
         }
-
-        if (sum < 18) {
-            uint256 m = 18 - sum;
-            require(m <= 77, ICustomMethodOracle.NormalizationScaleTooLarge());
-            return (1, 10 ** m);
-        }
-
-        return (1, 0);
     }
 
     function _hashConfig(ICustomMethodOracle.DeploymentConfig memory _config, string memory _canonicalMethod)

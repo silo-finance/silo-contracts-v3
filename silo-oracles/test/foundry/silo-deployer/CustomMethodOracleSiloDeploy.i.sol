@@ -37,9 +37,9 @@ contract _FeedMock {
 */
 contract CustomMethodOracleSiloDeployIntegrationTest is SiloDeployerWithOracle {
     /*
-    FOUNDRY_PROFILE=oracles forge test --mt test_siloDeployer_customMethodOracle --ffi -vv
+    FOUNDRY_PROFILE=oracles forge test --mt test_siloDeployer_CustomMethodOracle --ffi -vv
     */
-    function test_siloDeployer_customMethodOracle() public {
+    function test_siloDeployer_CustomMethodOracle() public {
         _deployMarket();
 
         ICustomMethodOracle oracle = ICustomMethodOracle(address(siloOracle));

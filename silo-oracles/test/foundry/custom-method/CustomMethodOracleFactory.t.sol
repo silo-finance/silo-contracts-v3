@@ -12,7 +12,9 @@ import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 import {CustomMethodOracleFactory} from "silo-oracles/contracts/custom-method/CustomMethodOracleFactory.sol";
 import {ICustomMethodOracle} from "silo-oracles/contracts/interfaces/ICustomMethodOracle.sol";
 
-import {CustomMethodOracleFactoryDeploy} from "silo-oracles/deploy/custom-method/CustomMethodOracleFactoryDeploy.s.sol";
+import {
+    CustomMethodOracleFactoryDeploy
+} from "silo-oracles/deploy/custom-method/CustomMethodOracleFactoryDeploy.s.sol";
 
 contract MockFeed {
     uint256 public spotPrice;
@@ -91,7 +93,7 @@ contract CustomMethodOracleFactoryTest is Test {
         vm.expectRevert(ICustomMethodOracle.StaticCallFailed.selector);
         factory.create(cfg, keccak256("invalid method"));
     }
-    
+
     /*
     FOUNDRY_PROFILE=oracles forge test -vv --ffi --mt test_CustomMethodOracle_InvalidReturnData
     */
@@ -123,6 +125,8 @@ contract CustomMethodOracleFactoryTest is Test {
     function test_CustomMethodOracle_setMethodSignature() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         ICustomMethodOracle oracle = factory.create(cfg, keccak256("v"));
+
+        assertEq(oracle.methodSignature(), "", "methodSignature should be empty by default");
 
         vm.expectRevert(ICustomMethodOracle.InvalidMethodSignature.selector);
         oracle.setMethodSignature("readUint256()");

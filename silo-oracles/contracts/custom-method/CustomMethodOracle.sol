@@ -14,8 +14,8 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
     /// @notice Config contract address (clone-specific); all other immutable params via `getConfig()`.
     CustomMethodOracleConfig public oracleConfig;
 
-    /// @notice Canonical parameterless signature string (factory-normalized)
-    string public methodSignature = "set it using setMethodSignature()";
+    /// @notice Canonical parameterless signature string
+    string public methodSignature;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {

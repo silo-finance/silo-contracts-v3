@@ -139,7 +139,7 @@ contract CustomMethodOracleFactoryTest is Test {
         cfg.baseToken = base;
         cfg.quoteToken = quote;
         cfg.target = _target;
-        cfg.methodSignature = _sig;
+        cfg.callSelector = bytes4(keccak256(abi.encodePacked(_sig)));
         cfg.priceDecimals = 8;
     }
 }

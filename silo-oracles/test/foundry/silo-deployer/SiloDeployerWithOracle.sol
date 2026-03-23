@@ -75,7 +75,7 @@ abstract contract SiloDeployerWithOracle is Test, DKinkIRMConfigDataReader {
             _siloInitData: siloInitData
         });
 
-        (address silo0, ) = siloConfig.getSilos();
+        (address silo0,) = siloConfig.getSilos();
         siloOracle = ISiloOracle(siloConfig.getConfig(silo0).solvencyOracle);
     }
 

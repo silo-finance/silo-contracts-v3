@@ -47,7 +47,9 @@ contract CustomMethodOracleSiloDeployIntegrationTest is SiloDeployerWithOracle {
         ICustomMethodOracle.OracleConfig memory cfg = oracle.getConfig();
 
         console2.log("oracle", address(oracle));
-        console2.log("oracle.methodSignature()", oracle.methodSignature());
+        console2.log("oracle.methodSignature() before set", oracle.methodSignature());
+        oracle.setMethodSignature("readUint()");
+        console2.log("oracle.methodSignature() after set", oracle.methodSignature());
         console2.logBytes4(cfg.callSelector);
 
         assertEq(
@@ -68,7 +70,7 @@ contract CustomMethodOracleSiloDeployIntegrationTest is SiloDeployerWithOracle {
             baseToken: token0,
             quoteToken: token1,
             target: address(feed),
-            methodSignature: "readUint",
+            callSelector: bytes4(keccak256(abi.encodePacked("readUint()"))),
             priceDecimals: 8
         });
 

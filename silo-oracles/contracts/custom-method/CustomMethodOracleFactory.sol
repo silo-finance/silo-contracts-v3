@@ -25,11 +25,9 @@ contract CustomMethodOracleFactory is Create2Factory, ICustomMethodOracleFactory
         returns (ICustomMethodOracle oracle)
     {
         (uint256 normalizationDivider, uint256 normalizationMultiplier) = verifyConfig(_config);
-        string memory canonicalMethod = string.concat(_config.methodSignature, "()");
 
         CustomMethodOracleConfig oracleConfig = new CustomMethodOracleConfig({
             _config: _config,
-            _callSelector: bytes4(abi.encodeWithSignature(canonicalMethod)),
             _normalizationDivider: normalizationDivider,
             _normalizationMultiplier: normalizationMultiplier
         });
@@ -38,7 +36,7 @@ contract CustomMethodOracleFactory is Create2Factory, ICustomMethodOracleFactory
             Clones.cloneDeterministic({ implementation: ORACLE_IMPLEMENTATION, salt: _salt(_externalSalt) })
         );
 
-        oracle.initialize({ _oracleConfig: address(oracleConfig), _methodSignature: canonicalMethod });
+        oracle.initialize(address(oracleConfig));
 
         emit ICustomMethodOracle.CustomMethodConfigDeployed(address(oracleConfig));
     }
@@ -69,7 +67,7 @@ contract CustomMethodOracleFactory is Create2Factory, ICustomMethodOracleFactory
         require(_config.target != address(0), ICustomMethodOracle.AddressZero());
         require(address(_config.baseToken) != address(_config.quoteToken), ICustomMethodOracle.TokensAreTheSame());
 
-        require(bytes(_config.methodSignature).length != 0, ICustomMethodOracle.EmptyMethodSignature());
+        require(_config.callSelector != bytes4(0), ICustomMethodOracle.EmptyCallSelector());
 
         (normalizationDivider, normalizationMultiplier) = OracleNormalization.calculateNormalizationData({
             _baseDecimals: _baseTokenDecimals(_config),

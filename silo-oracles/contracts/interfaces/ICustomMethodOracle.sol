@@ -5,15 +5,14 @@ import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadat
 
 /// @notice Oracle that reads a parameterless external view and normalizes it like other Silo oracles.
 interface ICustomMethodOracle {
-    /// @notice Passed to the factory; `create` normalizes `methodSignature` by appending `()`.
-    /// @dev `target`: every price read is `address(target).staticcall`
+    /// @dev `target`: every price read is `address(target).staticcall(callSelector)`
     /// with only the method selector (no calldata tail).
     /// `priceDecimals`: decimals of value returned by target method.
     struct DeploymentConfig {
         IERC20Metadata baseToken;
         IERC20Metadata quoteToken;
         address target;
-        string methodSignature;
+        bytes4 callSelector;
         uint8 priceDecimals;
     }
 
@@ -31,18 +30,22 @@ interface ICustomMethodOracle {
 
     error AddressZero();
     error TokensAreTheSame();
-    error EmptyMethodSignature();
+    error EmptyCallSelector();
     error BaseTokenDecimalsAbove18();
     error AssetNotSupported();
     error BaseAmountOverflow();
     error ZeroQuote();
     error StaticCallFailed();
     error InvalidReturnData();
+    error InvalidMethodSignature();
 
-    /// @notice One-off initializer for a fresh oracle clone.
-    /// @dev `_oracleConfig` is `CustomMethodOracleConfig` as `address`
+    /// @param _oracleConfig is `CustomMethodOracleConfig` as `address`
     /// @dev Call only from `CustomMethodOracleFactory.create`.
-    function initialize(address _oracleConfig, string calldata _methodSignature) external;
+    function initialize(address _oracleConfig) external;
+
+    /// @notice Set the method signature for the oracle, anyone can set it, 
+    /// but it will be validated against the call selector
+    function setMethodSignature(string memory _methodSignature) external;
 
     /// @notice Immutable params from config via `getConfig()`
     function getConfig() external view returns (OracleConfig memory);

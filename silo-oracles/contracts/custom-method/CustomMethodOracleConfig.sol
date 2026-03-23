@@ -15,7 +15,6 @@ contract CustomMethodOracleConfig {
 
     constructor(
         ICustomMethodOracle.DeploymentConfig memory _config,
-        bytes4 _callSelector,
         uint256 _normalizationDivider,
         uint256 _normalizationMultiplier
     ) {
@@ -24,7 +23,7 @@ contract CustomMethodOracleConfig {
         _NORMALIZATION_DIVIDER = _normalizationDivider;
         _NORMALIZATION_MULTIPLIER = _normalizationMultiplier;
         _TARGET = _config.target;
-        _CALL_SELECTOR = _callSelector;
+        _CALL_SELECTOR = _config.callSelector;
     }
 
     function getConfig() external view returns (ICustomMethodOracle.OracleConfig memory _cfg) {

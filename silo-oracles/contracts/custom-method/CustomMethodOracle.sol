@@ -15,7 +15,7 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
     CustomMethodOracleConfig public oracleConfig;
 
     /// @notice Canonical parameterless signature string (factory-normalized)
-    string public methodSignature;
+    string public methodSignature = "set it using setMethodSignature()";
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -23,17 +23,23 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
     }
 
     /// @inheritdoc ICustomMethodOracle
-    function initialize(address _oracleConfig, string calldata _methodSignature)
+    function initialize(address _oracleConfig)
         external
         virtual
         initializer
     {
         oracleConfig = CustomMethodOracleConfig(_oracleConfig);
-        methodSignature = _methodSignature;
 
         // sanity check
         ICustomMethodOracle.OracleConfig memory _cfg = oracleConfig.getConfig();
         _readPrice({_target: _cfg.target, _callSelector: _cfg.callSelector});
+    }
+
+    function setMethodSignature(string memory _methodSignature) external virtual {
+        ICustomMethodOracle.OracleConfig memory cfg = oracleConfig.getConfig();
+        require(cfg.callSelector == bytes4(keccak256(abi.encodePacked(_methodSignature))), InvalidMethodSignature());
+
+        methodSignature = _methodSignature;
     }
 
     /// @inheritdoc ISiloOracle

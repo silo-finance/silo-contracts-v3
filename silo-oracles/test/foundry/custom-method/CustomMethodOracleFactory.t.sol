@@ -57,12 +57,6 @@ contract CustomMethodOracleFactoryTest is Test {
         assertNotEq(address(a), address(b), "each create deploys a new clone (nonce advances)");
     }
 
-    function test_CustomMethodOracle_method_name_without_parens_canonical_signature_on_clone() public {
-        ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
-        ICustomMethodOracle o = factory.create(cfg, keccak256("p"));
-        assertEq(o.methodSignature(), "readUint()");
-    }
-
     function test_CustomMethodOracle_quote_uint() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         ICustomMethodOracle oracle = factory.create(cfg, keccak256("x"));
@@ -115,7 +109,6 @@ contract CustomMethodOracleFactoryTest is Test {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         ICustomMethodOracle oracle = factory.create(cfg, keccak256("c"));
 
-        assertEq(oracle.methodSignature(), "readUint()");
         ICustomMethodOracle.OracleConfig memory oc = oracle.getConfig();
         assertEq(oc.callSelector, bytes4(keccak256("readUint()")));
         assertEq(oc.target, address(feed));
@@ -125,6 +118,18 @@ contract CustomMethodOracleFactoryTest is Test {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         ICustomMethodOracle oracle = factory.create(cfg, keccak256("v"));
         assertEq(IVersioned(address(oracle)).VERSION(), "CustomMethodOracle 4.5.0");
+    }
+
+    function test_CustomMethodOracle_setMethodSignature() public {
+        ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
+        ICustomMethodOracle oracle = factory.create(cfg, keccak256("v"));
+
+        vm.expectRevert(ICustomMethodOracle.InvalidMethodSignature.selector);
+        oracle.setMethodSignature("readUint256()");
+
+        oracle.setMethodSignature("readUint()");
+
+        assertEq(oracle.methodSignature(), "readUint()");
     }
 
     function _cfg(string memory _sig) internal view returns (ICustomMethodOracle.DeploymentConfig memory cfg) {
@@ -139,7 +144,7 @@ contract CustomMethodOracleFactoryTest is Test {
         cfg.baseToken = base;
         cfg.quoteToken = quote;
         cfg.target = _target;
-        cfg.callSelector = bytes4(keccak256(abi.encodePacked(_sig)));
+        cfg.callSelector = bytes4(keccak256(abi.encodePacked(string.concat(_sig, "()"))));
         cfg.priceDecimals = 8;
     }
 }

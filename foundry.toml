@@ -184,6 +184,14 @@ test = 'silo-oracles/test'
 broadcast = 'silo-oracles/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
 
+fs_permissions = [
+    { access = "read", path = "./cache/foundry/" },
+    { access = "read", path = "./silo-core/deploy/input/" },
+    { access = "read", path = "./silo-core/deploy/silo/_siloDeployments.json" },
+    { access = "read", path = "./silo-core/deploy/silo/_siloImplementations.json" },
+    { access = "read", path = "./common/addresses/" },
+]
+
 [fuzz]
 runs = 500
 max_test_rejects = 131072 # 65536 * 2 (doubled a default value)

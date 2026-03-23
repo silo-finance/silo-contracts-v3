@@ -135,6 +135,13 @@ contract CustomMethodOracleFactoryTest is Test {
 
         assertEq(oracle.methodSignature(), "readUint()");
     }
+    
+    function test_CustomMethodOracle_readPrice() public {
+        ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
+        ICustomMethodOracle oracle = factory.create(cfg, keccak256("v"));
+
+        assertEq(oracle.readPrice(), feed.spotPrice(), "direct read price should match the feed price");
+    }
 
     function _cfg(string memory _sig) internal view returns (ICustomMethodOracle.DeploymentConfig memory cfg) {
         return _cfgWithTarget(_sig, address(feed));

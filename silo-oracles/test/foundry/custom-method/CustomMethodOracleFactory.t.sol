@@ -16,6 +16,8 @@ import {
     CustomMethodOracleFactoryDeploy
 } from "silo-oracles/deploy/custom-method/CustomMethodOracleFactoryDeploy.s.sol";
 
+import {Aggregator} from "silo-oracles/contracts/_common/Aggregator.sol";
+
 contract MockFeed {
     uint256 public spotPrice;
 
@@ -135,12 +137,56 @@ contract CustomMethodOracleFactoryTest is Test {
 
         assertEq(oracle.methodSignature(), "readUint()");
     }
-    
+
     function test_CustomMethodOracle_readPrice() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
         ICustomMethodOracle oracle = factory.create(cfg, keccak256("v"));
 
         assertEq(oracle.readPrice(), feed.spotPrice(), "direct read price should match the feed price");
+    }
+
+    function test_CustomMethodOracle_baseToken() public {
+        ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
+        ICustomMethodOracle oracle = factory.create(cfg, keccak256("v"));
+
+        assertEq(Aggregator(address(oracle)).baseToken(), address(base), "baseToken should match the base token");
+    }
+
+    function test_CustomMethodOracle_beforeQuote() public {
+        ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
+        ICustomMethodOracle oracle = factory.create(cfg, keccak256("v"));
+
+        // just for coverage and make sure it exists
+        ISiloOracle(address(oracle)).beforeQuote(address(0));
+    }
+
+    /*
+    FOUNDRY_PROFILE=oracles forge test -vv --ffi --mt test_CustomMethodOracle_verifyConfig
+    */
+    function test_CustomMethodOracle_verifyConfig() public {
+        ICustomMethodOracle.DeploymentConfig memory cfg;
+
+        vm.expectRevert(ICustomMethodOracle.AddressZero.selector);
+        factory.verifyConfig(cfg);
+
+        cfg.baseToken = IERC20Metadata(address(base));
+        vm.expectRevert(ICustomMethodOracle.AddressZero.selector);
+        factory.verifyConfig(cfg);
+
+        cfg.quoteToken = IERC20Metadata(address(base));
+        vm.expectRevert(ICustomMethodOracle.AddressZero.selector);
+        factory.verifyConfig(cfg);
+
+        cfg.target = address(feed);
+        vm.expectRevert(ICustomMethodOracle.TokensAreTheSame.selector);
+        factory.verifyConfig(cfg);
+
+        cfg.quoteToken = IERC20Metadata(address(quote));
+        vm.expectRevert(ICustomMethodOracle.EmptyCallSelector.selector);
+        factory.verifyConfig(cfg);
+
+        cfg.callSelector = bytes4(keccak256(abi.encodePacked("readUint()")));
+        factory.verifyConfig(cfg);
     }
 
     function _cfg(string memory _sig) internal view returns (ICustomMethodOracle.DeploymentConfig memory cfg) {

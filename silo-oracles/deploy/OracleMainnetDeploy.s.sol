@@ -28,11 +28,11 @@ import {WstEthToStEthAdapterMainnetDeploy} from "./WstEthToStEthAdapterMainnetDe
 
 /*
     FOUNDRY_PROFILE=oracles \
-        forge script silo-oracles/deploy/MainnetDeploy.s.sol \
+        forge script silo-oracles/deploy/OracleMainnetDeploy.s.sol \
         --ffi --rpc-url $RPC_SONIC --broadcast --verify
 
     FOUNDRY_PROFILE=oracles \
-        forge script silo-oracles/deploy/MainnetDeploy.s.sol \
+        forge script silo-oracles/deploy/OracleMainnetDeploy.s.sol \
         --ffi --rpc-url $RPC_INJECTIVE \
         --verify \
         --verifier blockscout \
@@ -40,7 +40,7 @@ import {WstEthToStEthAdapterMainnetDeploy} from "./WstEthToStEthAdapterMainnetDe
         --private-key $PRIVATE_KEY \
         --resume
 */
-contract MainnetDeploy is CommonDeploy {
+contract OracleMainnetDeploy is CommonDeploy {
     function run() public {
         OracleForwarderFactoryDeploy oracleForwarderFactoryDeploy = new OracleForwarderFactoryDeploy();
         ChainlinkV3OracleFactoryDeploy chainlinkV3OracleFactoryDeploy = new ChainlinkV3OracleFactoryDeploy();

@@ -12,6 +12,8 @@ import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 import {CustomMethodOracleFactory} from "silo-oracles/contracts/custom-method/CustomMethodOracleFactory.sol";
 import {ICustomMethodOracle} from "silo-oracles/contracts/interfaces/ICustomMethodOracle.sol";
 
+import {CustomMethodOracleFactoryDeploy} from "silo-oracles/deploy/custom-method/CustomMethodOracleFactoryDeploy.s.sol";
+
 contract MockFeed {
     uint256 public spotPrice;
 
@@ -28,10 +30,16 @@ contract MockFeed {
     FOUNDRY_PROFILE=oracles forge test --match-contract CustomMethodOracleFactoryTest -vv
 */
 contract CustomMethodOracleFactoryTest is Test {
-    CustomMethodOracleFactory internal factory = new CustomMethodOracleFactory();
+    CustomMethodOracleFactory internal factory;
     MintableToken internal base = new MintableToken(6);
     MintableToken internal quote = new MintableToken(6);
     MockFeed internal feed = new MockFeed(2e8);
+
+    function setUp() public {
+        CustomMethodOracleFactoryDeploy deployer = new CustomMethodOracleFactoryDeploy();
+        deployer.disableDeploymentsSync();
+        factory = CustomMethodOracleFactory(address(deployer.run()));
+    }
 
     function test_CustomMethodOracle_predict_matches_create() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");

@@ -49,4 +49,7 @@ interface ICustomMethodOracle {
 
     /// @notice Canonical method name + `()` after factory normalization
     function methodSignature() external view returns (string memory);
+
+    /// @notice Read directly the price from the target contract
+    function readPrice() external view returns (uint256);
 }

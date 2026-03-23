@@ -45,7 +45,6 @@ contract CustomMethodOracleFactory is Create2Factory, ICustomMethodOracleFactory
 
     /// @inheritdoc ICustomMethodOracleFactory
     function predictAddress(
-        ICustomMethodOracle.DeploymentConfig memory,
         address _deployer,
         bytes32 _externalSalt
     ) external view virtual returns (address predictedAddress) {

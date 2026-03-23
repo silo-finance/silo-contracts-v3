@@ -44,7 +44,7 @@ contract CustomMethodOracleFactoryTest is Test {
     function test_CustomMethodOracle_predict_matches_create() public {
         ICustomMethodOracle.DeploymentConfig memory cfg = _cfg("readUint");
 
-        address predicted = factory.predictAddress(cfg, address(this), keccak256("salt"));
+        address predicted = factory.predictAddress(address(this), keccak256("salt"));
         ICustomMethodOracle oracle = factory.create(cfg, keccak256("salt"));
         assertEq(address(oracle), predicted);
     }

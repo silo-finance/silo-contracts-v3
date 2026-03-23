@@ -46,14 +46,24 @@ contract CustomMethodOracle is ICustomMethodOracle, ISiloOracle, Initializable, 
         return oracleConfig.getConfig();
     }
 
+    /// @inheritdoc ICustomMethodOracle
+    function readPrice() external view virtual returns (uint256) {
+        ICustomMethodOracle.OracleConfig memory cfg = oracleConfig.getConfig();
+
+        return _readPrice({
+            _target: cfg.target,
+            _callSelector: cfg.callSelector
+        });
+    }
+
     function beforeQuote(address) external pure virtual override {
         // nothing to execute
     }
 
     /// @inheritdoc IVersioned
     // solhint-disable-next-line func-name-mixedcase
-    function VERSION() external pure virtual override returns (string memory version) {
-        version = "CustomMethodOracle 4.5.0";
+    function VERSION() external pure virtual override returns (string memory v) {
+        v = "CustomMethodOracle 4.5.0";
     }
 
     /// @inheritdoc ISiloOracle

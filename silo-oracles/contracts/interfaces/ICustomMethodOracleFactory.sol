@@ -24,7 +24,6 @@ interface ICustomMethodOracleFactory {
     /// @dev Predicted clone for `_deployer` at current nonce and `_externalSalt`.
     /// @dev Matches the next `create` from that address with the same salt.
     function predictAddress(
-        ICustomMethodOracle.DeploymentConfig memory _config,
         address _deployer,
         bytes32 _externalSalt
     ) external view returns (address predictedAddress);

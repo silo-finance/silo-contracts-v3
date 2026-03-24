@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.28;
 
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
+
 import {
     ISiloIncentivesController,
     IDistributionManager
 } from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 
 import {IIncentivesClaimingLogic} from "../../interfaces/IIncentivesClaimingLogic.sol";
+import {IImmediateDistributionUint104} from "../../interfaces/IImmediateDistributionUint104.sol";
 
 /// @title Silo incentives controller claiming logic
 contract SiloIncentivesControllerCL is IIncentivesClaimingLogic {
@@ -31,12 +34,27 @@ contract SiloIncentivesControllerCL is IIncentivesClaimingLogic {
             SILO_INCENTIVES_CONTROLLER.claimRewards(address(VAULT_INCENTIVES_CONTROLLER));
 
         for (uint256 i = 0; i < accruedRewards.length; i++) {
-            if (accruedRewards[i].amount == 0) continue;
+            uint256 amount = accruedRewards[i].amount;
+            if (amount == 0) continue;
 
-            VAULT_INCENTIVES_CONTROLLER.immediateDistribution(
-                accruedRewards[i].rewardToken,
-                accruedRewards[i].amount
-            );
+            try VAULT_INCENTIVES_CONTROLLER.immediateDistribution(
+                accruedRewards[i].rewardToken, 
+                amount
+            ) {
+                // OK
+            }
+            catch {
+                if (amount > type(uint104).max) revert AmountOverflow();
+
+                // try to use the old method
+                IImmediateDistributionUint104(address(VAULT_INCENTIVES_CONTROLLER))
+                    .immediateDistribution({
+                        _tokenToDistribute: accruedRewards[i].rewardToken,
+                        // safe cast, because we checked that amount is not greater than type(uint104).max
+                        // forge-lint: disable-next-line(unsafe-typecast)
+                        _amount: uint104(amount)
+                    });
+            }
         }
     }
 }

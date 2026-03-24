@@ -44,7 +44,7 @@ contract SiloIncentivesControllerCL is IIncentivesClaimingLogic {
                 // OK
             }
             catch {
-                if (amount > type(uint104).max) revert AmountOverflow();
+                require(amount <= type(uint104).max, AmountOverflow());
 
                 // try to use the old method
                 IImmediateDistributionUint104(address(VAULT_INCENTIVES_CONTROLLER))

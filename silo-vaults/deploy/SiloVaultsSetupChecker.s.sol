@@ -25,7 +25,15 @@ import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {SiloVaultsContracts, SiloVaultsDeployments} from "silo-vaults/common/SiloVaultsContracts.sol";
 import {IdleVault} from "silo-vaults/contracts/IdleVault.sol";
-import {IBackwardsCompatibleGaugeLike} from "silo-core/contracts/incentives/interfaces/IBackwardsCompatibleGaugeLike.sol";
+import {
+    IBackwardsCompatibleGaugeLike
+} from "silo-core/contracts/incentives/interfaces/IBackwardsCompatibleGaugeLike.sol";
+import {
+    SiloIncentivesControllerCLFactory
+} from "silo-vaults/contracts/incentives/claiming-logics/SiloIncentivesControllerCLFactory.sol";
+import {
+    SiloIncentivesControllerCLDeployer
+} from "silo-vaults/contracts/incentives/claiming-logics/SiloIncentivesControllerCLDeployer.sol";
 
 /*
 FOUNDRY_PROFILE=vaults VAULT=0x5362D5086FDef73450145492a66F8EBF210c5B9C \
@@ -111,8 +119,10 @@ contract SiloVaultsSetupChecker is CommonDeploy, StdCheats {
                 )
             );
 
-            console2.log("Claiming logic deployer", address(controllerDeployer));
+            // to test current repo code, deploy here
+            // ISiloIncentivesControllerCLDeployer controllerDeployer = new SiloIncentivesControllerCLDeployer(new SiloIncentivesControllerCLFactory());
 
+            console2.log("Claiming logic deployer", address(controllerDeployer));
 
             uint256 privateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
             vm.startBroadcast(privateKey);
@@ -128,7 +138,7 @@ contract SiloVaultsSetupChecker is CommonDeploy, StdCheats {
             module.acceptIncentivesClaimingLogic(silo, logic);
             vm.stopPrank();
 
-             _qa(vault, silo, logic);
+            _qa(vault, silo, logic);
 
             vm.startPrank(vaultOwner);
             module.removeIncentivesClaimingLogic(silo, logic);
@@ -140,8 +150,6 @@ contract SiloVaultsSetupChecker is CommonDeploy, StdCheats {
 
         vm.label(address(vault), "Vault");
         vm.label(address(silo), "Silo");
-
-       
     }
 
     function _qa(ISiloVault _vault, ISilo _silo, SiloIncentivesControllerCL _logic) internal {

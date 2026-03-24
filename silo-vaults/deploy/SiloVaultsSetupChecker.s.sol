@@ -41,20 +41,10 @@ SILO=0xf82C626E99C68e7af81F4E6afC8Cd25cA13702DB \
     forge script silo-vaults/deploy/SiloVaultsSetupChecker.s.sol:SiloVaultsSetupChecker \
     --ffi --rpc-url $RPC_MAINNET --broadcast --verify
 
-
-Silo Optima Ethereum Vault: https://app.silo.finance/vaults/ethereum/0x5362D5086FDef73450145492a66F8EBF210c5B9C?action=deposit
-
-Markets:
-
-savUSD (v3 market) https://etherscan.io/address/0x74b21d458b9d5cf59f4b4e10a2e829c221670ee3
-0xf82C626E99C68e7af81F4E6afC8Cd25cA13702DB
-
-PT-savUSD Market Config https://etherscan.io/address/0x493558e4201bde0a4b2d4c1e0234a3d88d4cdad8
-0xc2B4316331303Bf31fEe9854709271851099138E
-
-PT-reUSD Market Config https://etherscan.io/address/0x18b178b50f1ffd3dc7855c893a4e1ac618f9b76a
-0x8c6564Ad2f1728a0E024dbDbFe8108680B909008
-
+This script allows to deploy logic and QA against the vault.
+It might be required to adjust the QA process. For example,
+if the market is already there and we don't need to add a cap, etc.,
+but in general the flow should work.
 */
 contract SiloVaultsSetupChecker is CommonDeploy, StdCheats {
     function run() public {
@@ -111,6 +101,7 @@ contract SiloVaultsSetupChecker is CommonDeploy, StdCheats {
         }
 
         SiloIncentivesControllerCL logic;
+        bool timelockRequired = false;
 
         {
             ISiloIncentivesControllerCLDeployer controllerDeployer = ISiloIncentivesControllerCLDeployer(
@@ -119,8 +110,8 @@ contract SiloVaultsSetupChecker is CommonDeploy, StdCheats {
                 )
             );
 
-            // to test current repo code, deploy here
-            // ISiloIncentivesControllerCLDeployer controllerDeployer = new SiloIncentivesControllerCLDeployer(new SiloIncentivesControllerCLFactory());
+            // to test current repo code, deploy it here, maually:
+            // controllerDeployer = new SiloIncentivesControllerCLDeployer(new SiloIncentivesControllerCLFactory());
 
             console2.log("Claiming logic deployer", address(controllerDeployer));
 
@@ -134,8 +125,18 @@ contract SiloVaultsSetupChecker is CommonDeploy, StdCheats {
 
             vm.startPrank(vaultOwner);
             module.submitIncentivesClaimingLogic(silo, logic);
-            vm.warp(block.timestamp + vault.timelock());
-            module.acceptIncentivesClaimingLogic(silo, logic);
+
+            try module.acceptIncentivesClaimingLogic(silo, logic) {
+                // OK
+                timelockRequired = false;
+            } catch {
+                console2.log("acceptIncentivesClaimingLogic failed, timelock will be required");
+                timelockRequired = true;
+
+                vm.warp(block.timestamp + vault.timelock());
+                module.acceptIncentivesClaimingLogic(silo, logic);
+            }
+
             vm.stopPrank();
 
             _qa(vault, silo, logic);
@@ -145,7 +146,22 @@ contract SiloVaultsSetupChecker is CommonDeploy, StdCheats {
             vm.stopPrank();
 
             // multisig tx data:
-            console2.log("create multisig tx that will submit incentives claiming logic to the vault");
+            console2.log("\n\nNEXT STEP:\n");
+            console2.log("vault: %s\n", address(vault));
+            console2.log("Create multisig tx that will submit incentives claiming logic to the vault\n");
+            console2.log("target contract (incentives module): %s\n", address(module));
+            console2.log(
+                "method: submitIncentivesClaimingLogic(silo: %s, logic: %s)\n", address(silo), address(logic)
+            );
+
+            if (timelockRequired) {
+                console2.log("\n-- timelock will be required for accepting logic --\n");
+            }
+
+            console2.log("target contract (incentives module): %s\n", address(module));
+            console2.log(
+                "method: acceptIncentivesClaimingLogic(silo: %s, logic: %s)\n", address(silo), address(logic)
+            );
         }
 
         vm.label(address(vault), "Vault");
@@ -209,7 +225,8 @@ contract SiloVaultsSetupChecker is CommonDeploy, StdCheats {
         console2.log("balance after claiming", IERC20(asset).balanceOf(depositor));
         vm.stopPrank();
 
-        // require(IERC20(asset).balanceOf(depositor) > assets, "expect rewards");
+        require(IERC20(asset).balanceOf(depositor) > assets, "expect rewards");
+        console2.log("\n\nQA PASS\n");
     }
 
     function _setSiloOnVault(ISiloVault _vault, ISilo _silo) internal {
@@ -232,9 +249,9 @@ contract SiloVaultsSetupChecker is CommonDeploy, StdCheats {
 
         vm.warp(block.timestamp + _vault.timelock());
 
-        console2.log("accepting silo cap...");
-
-        // _vault.acceptCap(_silo);
+        console2.log("accepting silo cap... (comment out if not needed)");
+        _vault.acceptCap(_silo);
+        console2.log("accepting idle vault cap... (comment out if not needed)");
         _vault.acceptCap(idleVault);
 
         console2.log("setting supply queue...");

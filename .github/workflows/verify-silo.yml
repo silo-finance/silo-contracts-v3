@@ -78,8 +78,12 @@ jobs:
               git submodule sync --recursive
               git submodule update --init --recursive
 
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
+      - name: Install Injective Foundry
+        run: |
+          curl -L https://foundry.paradigm.xyz | bash
+          git clone https://github.com/InjectiveLabs/foundry.git
+          ~/.foundry/bin/foundryup -p ./foundry
+          forge --version
 
       - name: Build silo foundry utils
         working-directory: ./gitmodules/silo-foundry-utils

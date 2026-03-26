@@ -6,16 +6,20 @@ import {Test} from "forge-std/Test.sol";
 import {SiloVerifier} from "silo-core/deploy/silo/verifier/SiloVerifier.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
+import {InjectiveWorkaround} from "silo-core/test/foundry/_common/InjectiveWorkaround.sol";
 
 /*
-FOUNDRY_PROFILE=core CONFIG=0x911DA6516b72cd921A1d422D509a78F66557CF6F \
-    EXTERNAL_PRICE_0=1 EXTERNAL_PRICE_1=1 \
+FOUNDRY_INJECTIVE=true \
+FOUNDRY_PROFILE=core CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 \
+    EXTERNAL_PRICE_0=103 EXTERNAL_PRICE_1=100 \
     forge script silo-core/deploy/silo/VerifySilo.s.sol \
     --ffi --rpc-url $RPC_INJECTIVE
  */
-contract VerifySilo is Script, Test {
+contract VerifySilo is Script, InjectiveWorkaround {
     function run() public {
         AddrLib.init();
+
+        _customMocksOnInjective();
 
         emit log_named_address("VerifySilo", vm.envAddress("CONFIG"));
 

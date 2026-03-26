@@ -11,7 +11,6 @@ import {AddrKey} from "common/addresses/AddrKey.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {Ownable} from "openzeppelin5/access/Ownable2Step.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
-import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 
 import {SiloConfig} from "silo-core/contracts/SiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
@@ -24,7 +23,7 @@ import {Utils} from "silo-core/deploy/silo/verifier/Utils.sol";
 import {IWrappedNativeToken} from "silo-core/contracts/interfaces/IWrappedNativeToken.sol";
 
 import {IBankModule} from "../_common/IBankModule.sol";
-import {InjectiveTokenAdapter} from "../_common/InjectiveTokenAdapter.sol";
+import {InjectiveWorkaround} from "../_common/InjectiveWorkaround.sol";
 
 interface OldGauge {
     function killGauge() external;
@@ -34,18 +33,15 @@ interface OldGauge {
     The test is designed to be run right after the silo lending market deployment.
     It is excluded from the general tests CI pipeline and has separate workflow.
 
+    FOUNDRY_INJECTIVE=true \
     FOUNDRY_PROFILE=core_test CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 \
     EXTERNAL_PRICE_0=4147 \
     EXTERNAL_PRICE_1=1 \
     RPC_URL=$RPC_INJECTIVE \
-    FOUNDRY_INJECTIVE=true \
     forge test --mc "NewMarketTest" --ffi -vvv --mt test_newMarketTest_borrowSilo1
  */
 // solhint-disable var-name-mixedcase
-contract NewMarketTest is Test {
-    IBankModule public constant BANK_MODULE = IBankModule(address(0x64));
-    mapping(address => address) internal _injectiveMetadataAdapters;
-
+contract NewMarketTest is InjectiveWorkaround {
     struct BorrowScenario {
         ISilo collateralSilo;
         IERC20Metadata collateralToken;
@@ -115,32 +111,6 @@ contract NewMarketTest is Test {
         MAX_LTV1 = SILO_CONFIG.getConfig(silo1).maxLtv;
 
         vm.label(address(this), "Depositor");
-    }
-
-    function _customMocksOnInjective() internal {
-        if (ChainsLib.getChainId() != ChainsLib.INJECTIVE_CHAIN_ID) return;
-
-        vm.mockCall(
-            0x072fB925014B45dec604A6c44f85DAf837653056, // vault for oracle
-            abi.encodeWithSignature("getExchangeRate()"),
-            abi.encode(1.03e18)
-        );
-    }
-
-    function _registerInjectiveMetadataHook(address _token) internal {
-        if (ChainsLib.getChainId() != ChainsLib.INJECTIVE_CHAIN_ID) return;
-
-        address adapter = _injectiveMetadataAdapters[_token];
-
-        if (adapter == address(0)) {
-            adapter = address(new InjectiveTokenAdapter(_token));
-            _injectiveMetadataAdapters[_token] = adapter;
-        }
-
-        vm.mockFunction(_token, adapter, abi.encodeWithSelector(IERC20.balanceOf.selector));
-        vm.mockFunction(_token, adapter, abi.encodeWithSelector(IERC20Metadata.decimals.selector));
-        vm.mockFunction(_token, adapter, abi.encodeWithSelector(IERC20Metadata.symbol.selector));
-        vm.mockFunction(_token, adapter, abi.encodeWithSelector(IERC20.totalSupply.selector));
     }
 
     function test_newMarketTest_borrowSilo1() public logSiloConfigName {
@@ -323,7 +293,7 @@ contract NewMarketTest is Test {
         uint256 balanceBefore = IERC20(_token).balanceOf(_depositor);
 
         if (ChainsLib.getChainId() == ChainsLib.INJECTIVE_CHAIN_ID) {
-            if (balanceBefore != 0) IERC20(_token).transfer(makeAddr("out"), balanceBefore);
+            if (balanceBefore != 0) require(IERC20(_token).transfer(makeAddr("out"), balanceBefore));
 
             if (address(_token) == AddrLib.getAddress(AddrKey.WINJ)) {
                 vm.deal(_depositor, _amount);

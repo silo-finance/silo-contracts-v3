@@ -171,6 +171,7 @@ jobs:
           VERIFIER_API_KEY_SONIC=placeholder VERIFIER_URL_SONIC=https://api.sonicscan.org/api \
           FOUNDRY_PROFILE=core CONFIG=${{ steps.extract.outputs.CONFIG }} \
           EXTERNAL_PRICE_0=${{ steps.price.outputs.EXTERNAL_PRICE_0 }} EXTERNAL_PRICE_1=${{ steps.price.outputs.EXTERNAL_PRICE_1 }} \
+          FOUNDRY_INJECTIVE=true \
           forge script silo-core/deploy/silo/VerifySilo.s.sol \
             --ffi --rpc-url "${{ steps.extract.outputs.RPC_URL }}" \
             -vvvv \
@@ -214,6 +215,7 @@ jobs:
           FOUNDRY_PROFILE=core_test CONFIG=${{ steps.extract.outputs.CONFIG }} \
           EXTERNAL_PRICE_0=${{ steps.price.outputs.EXTERNAL_PRICE_0 }} EXTERNAL_PRICE_1=${{ steps.price.outputs.EXTERNAL_PRICE_1 }} \
           RPC_URL=${{ steps.extract.outputs.RPC_URL }} \
+          FOUNDRY_INJECTIVE=true \
           forge test --mc "NewMarketTest" --ffi -vv \
           > live_market_qa.log 2>&1
           TEST_EXIT_CODE=$?

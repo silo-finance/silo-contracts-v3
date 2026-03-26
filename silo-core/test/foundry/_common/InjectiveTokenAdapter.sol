@@ -20,7 +20,7 @@ contract InjectiveTokenAdapter {
         require(d != 0, "decimals not set, check InjectiveWorkaround");
     }
 
-    function symbol() external view returns (string memorys s) {
+    function symbol() external view returns (string memory s) {
         (s,,) = BANK_MODULE.metadata(TOKEN);
     }
 

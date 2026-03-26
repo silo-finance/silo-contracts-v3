@@ -1,0 +1,164 @@
+# Manual workflow to create a PR adding a new Silo deployment to _siloDeployments.json.
+# Trigger from Actions tab; paste market configuration JSON: {"chainName":"...","deploymentKey":"...","address":"0x..."}
+# Config can be copied from silo-market-crafter Verification step ("Open PR for developer" button).
+#
+# For CI (verify-silo) to run on the created PR, add a PAT with `repo` scope as secret `PAT`.
+# Without it, the PR is created by github-actions[bot] and pull_request workflows are skipped.
+
+name: Create Silo Deployment PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      silo_config:
+        description: 'Market configuration'
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('{0}-pr-{1}', github.workflow, github.event.pull_request.number) || format('{0}-ref-{1}', github.workflow, github.ref) }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log input (debug)
+        env:
+          SILO_CONFIG: ${{ inputs.silo_config }}
+        run: |
+          echo "=== Market configuration input (paste below to reproduce) ==="
+          printf '%s\n' "$SILO_CONFIG"
+          echo "=== end of input ==="
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate and add deployment
+        id: add
+        env:
+          SILO_CONFIG: ${{ inputs.silo_config }}
+        run: |
+          echo "$SILO_CONFIG" | python .github/scripts/add_silo_deployment.py
+
+      - name: Extract metadata for PR
+        id: meta
+        env:
+          SILO_CONFIG: ${{ inputs.silo_config }}
+        run: |
+          echo "$SILO_CONFIG" | python -c "
+          import json, sys, re, os
+          d = json.load(sys.stdin)
+          key = d.get('deploymentKey', 'deployment')
+          key = re.sub(r'[^a-zA-Z0-9_-]', '-', key)[:60]
+          sym0 = d.get('symbol0', 'SYMBOL0')
+          sym1 = d.get('symbol1', 'SYMBOL1')
+          net = d.get('network', 'Network')
+          url = d.get('verificationUrl', '')
+          ep0 = d.get('externalPrice0', 1)
+          ep1 = d.get('externalPrice1', 1)
+          price_sources = d.get('priceSources', '')
+          out = os.environ.get('GITHUB_OUTPUT', '')
+          if out:
+              with open(out, 'a') as f:
+                  f.write(f'key={key}\n')
+                  f.write(f'sym0={sym0}\n')
+                  f.write(f'sym1={sym1}\n')
+                  f.write(f'net={net}\n')
+                  f.write(f'url={url}\n')
+                  f.write(f'ep0={ep0}\n')
+                  f.write(f'ep1={ep1}\n')
+          if price_sources:
+              with open('price_sources.txt', 'w') as f:
+                  f.write(price_sources)
+          "
+
+      - name: Create branch and commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          BRANCH="add-deployment-${{ steps.meta.outputs.key }}"
+          git checkout -b "$BRANCH"
+          git add silo-core/deploy/silo/_siloDeployments.json
+          git status
+          if git diff --staged --quiet; then
+            echo "no_changes=true" >> $GITHUB_OUTPUT
+          else
+            git commit -m "silo-market: ${{ steps.meta.outputs.sym0 }} / ${{ steps.meta.outputs.sym1 }} on ${{ steps.meta.outputs.net }}"
+            git push origin "$BRANCH"
+          fi
+        id: commit
+
+      - name: Create Pull Request
+        if: steps.commit.outputs.no_changes != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          VERIFICATION_URL: ${{ steps.meta.outputs.url }}
+          SYM0: ${{ steps.meta.outputs.sym0 }}
+          SYM1: ${{ steps.meta.outputs.sym1 }}
+          NET: ${{ steps.meta.outputs.net }}
+          EP0: ${{ steps.meta.outputs.ep0 }}
+          EP1: ${{ steps.meta.outputs.ep1 }}
+        run: |
+          {
+            if [ -n "$VERIFICATION_URL" ]; then
+              echo "[Silo Market Crafter Verification]($VERIFICATION_URL)"
+            fi
+            echo ""
+            echo "## Price check for new market"
+            echo ""
+            if [ -f price_sources.txt ]; then
+              echo "**price sources:**"
+              echo ""
+              cat price_sources.txt
+              echo ""
+              echo ""
+            fi
+            echo "EXTERNAL_PRICE_0=$EP0"
+            echo "EXTERNAL_PRICE_1=$EP1"
+            echo ""
+            echo "### Note"
+            echo ""
+            echo "CI runs automatically when the repo has an up-to-date PAT configured. Otherwise, you can trigger CI by closing and reopening this PR."
+            echo ""
+            echo "## QA"
+            echo ""
+            echo "- [ ] the external source price0 matches the on-chain price"
+            echo "- [ ] the external source price1 matches the on-chain price"
+            echo "- [ ] The result of automatic verification:"
+            echo "  - [ ] Market Crafter verification page for errors or warnings"
+            echo "  - [ ] our internal script in PR, for errors"
+            echo "- [ ] price0 has correct decimals"
+            echo "- [ ] price1 has correct decimals"
+            echo "- [ ] correct oracle is used for token0"
+            echo "- [ ] correct oracle is used for token1"
+            echo "- [ ] the IRM config0 has a known name"
+            echo "- [ ] the IRM config1 has a known name"
+            echo "- [ ] if PT market: is discount correct"
+          } > pr_body.md
+          gh pr create \
+            --base develop \
+            --title "new market: $SYM0 / $SYM1 on $NET" \
+            --body-file pr_body.md
+
+      - name: Summary
+        run: |
+          echo "## Create Silo Deployment PR" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.commit.outputs.no_changes }}" = "true" ]; then
+            echo "No changes were made. The entry may already exist in _siloDeployments.json." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "PR created successfully." >> $GITHUB_STEP_SUMMARY
+          fi

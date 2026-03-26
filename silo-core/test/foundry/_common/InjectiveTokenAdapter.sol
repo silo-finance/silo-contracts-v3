@@ -15,14 +15,13 @@ contract InjectiveTokenAdapter {
         return BANK_MODULE.balanceOf(TOKEN, _account);
     }
 
-    function decimals() external view returns (uint8) {
-        (,, uint8 d) = BANK_MODULE.metadata(TOKEN);
-        return d;
+    function decimals() external view returns (uint8 d) {
+        (,, d) = BANK_MODULE.metadata(TOKEN);
+        require(d != 0, "decimals not set, check InjectiveWorkaround");
     }
 
-    function symbol() external view returns (string memory) {
-        (, string memory s,) = BANK_MODULE.metadata(TOKEN);
-        return s;
+    function symbol() external view returns (string memorys ) {
+        (s,,) = BANK_MODULE.metadata(TOKEN);
     }
 
     function totalSupply() external view returns (uint256) {

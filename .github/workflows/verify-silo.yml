@@ -122,17 +122,9 @@ jobs:
         if: steps.extract.outputs.CHAIN != 'injective'
         uses: foundry-rs/foundry-toolchain@v1
 
-      - name: Restore Injective Foundry cache
-        if: steps.extract.outputs.CHAIN == 'injective'
-        id: injective-foundry-cache
-        uses: actions/cache@v4
-        with:
-          path: inj-foundry
-          key: injective-foundry-v2-${{ runner.os }}
-
       # Paradigm installer uses FOUNDRY_DIR=${XDG_CONFIG_HOME:-$HOME}/.foundry (often ~/.config/.foundry on Linux).
       - name: Install Injective Foundry
-        if: steps.extract.outputs.CHAIN == 'injective' && steps.injective-foundry-cache.outputs.cache-hit != 'true'
+        if: steps.extract.outputs.CHAIN == 'injective'
         run: |
           set -euo pipefail
           curl -L https://foundry.paradigm.xyz | bash
@@ -142,13 +134,8 @@ jobs:
           echo "${FOUNDRY_DIR}/bin" >> "${GITHUB_PATH}"
           git clone --depth 1 https://github.com/InjectiveLabs/foundry.git inj-foundry
           (cd inj-foundry && foundryup -p .)
-
-      - name: Use Injective Foundry from cache/build
-        if: steps.extract.outputs.CHAIN == 'injective'
-        run: |
-          set -euo pipefail
-          echo "${GITHUB_WORKSPACE}/inj-foundry" >> "${GITHUB_PATH}"
-          export PATH="${GITHUB_WORKSPACE}/inj-foundry:${PATH}"
+          echo "${GITHUB_WORKSPACE}/inj-foundry/bin" >> "${GITHUB_PATH}"
+          export PATH="${GITHUB_WORKSPACE}/inj-foundry/bin:${PATH}"
           forge --version
 
       - name: Build silo foundry utils

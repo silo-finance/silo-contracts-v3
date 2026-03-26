@@ -78,26 +78,6 @@ jobs:
               git submodule sync --recursive
               git submodule update --init --recursive
 
-      # Paradigm installer uses FOUNDRY_DIR=${XDG_CONFIG_HOME:-$HOME}/.foundry (often ~/.config/.foundry on Linux).
-      - name: Install Injective Foundry
-        run: |
-          set -euo pipefail
-          curl -L https://foundry.paradigm.xyz | bash
-          BASE_DIR="${XDG_CONFIG_HOME:-$HOME}"
-          FOUNDRY_DIR="${FOUNDRY_DIR:-$BASE_DIR/.foundry}"
-          export PATH="${FOUNDRY_DIR}/bin:${PATH}"
-          echo "${FOUNDRY_DIR}/bin" >> "${GITHUB_PATH}"
-          git clone --depth 1 https://github.com/InjectiveLabs/foundry.git inj-foundry
-          (cd inj-foundry && foundryup -p .)
-          forge --version
-
-      - name: Build silo foundry utils
-        working-directory: ./gitmodules/silo-foundry-utils
-        run: |
-          cargo build --release
-          cp target/release/silo-foundry-utils ../../silo-foundry-utils
-          ../../silo-foundry-utils --version
-
       # Extract CONFIG address and CHAIN (RPC key) from the changed JSON file
       - name: Extract CONFIG and CHAIN
         id: extract
@@ -137,6 +117,46 @@ jobs:
           echo "RPC_URL=$RPC_URL"
           echo "RPC_URL=$RPC_URL" >> $GITHUB_OUTPUT
           echo "CONFIG_NAME=$CONFIG_NAME" >> $GITHUB_OUTPUT
+
+      - name: Install Foundry (standard chains)
+        if: steps.extract.outputs.CHAIN != 'injective'
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Restore Injective Foundry cache
+        if: steps.extract.outputs.CHAIN == 'injective'
+        id: injective-foundry-cache
+        uses: actions/cache@v4
+        with:
+          path: inj-foundry
+          key: injective-foundry-v2-${{ runner.os }}
+
+      # Paradigm installer uses FOUNDRY_DIR=${XDG_CONFIG_HOME:-$HOME}/.foundry (often ~/.config/.foundry on Linux).
+      - name: Install Injective Foundry
+        if: steps.extract.outputs.CHAIN == 'injective' && steps.injective-foundry-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          curl -L https://foundry.paradigm.xyz | bash
+          BASE_DIR="${XDG_CONFIG_HOME:-$HOME}"
+          FOUNDRY_DIR="${FOUNDRY_DIR:-$BASE_DIR/.foundry}"
+          export PATH="${FOUNDRY_DIR}/bin:${PATH}"
+          echo "${FOUNDRY_DIR}/bin" >> "${GITHUB_PATH}"
+          git clone --depth 1 https://github.com/InjectiveLabs/foundry.git inj-foundry
+          (cd inj-foundry && foundryup -p .)
+
+      - name: Use Injective Foundry from cache/build
+        if: steps.extract.outputs.CHAIN == 'injective'
+        run: |
+          set -euo pipefail
+          echo "${GITHUB_WORKSPACE}/inj-foundry" >> "${GITHUB_PATH}"
+          export PATH="${GITHUB_WORKSPACE}/inj-foundry:${PATH}"
+          forge --version
+
+      - name: Build silo foundry utils
+        working-directory: ./gitmodules/silo-foundry-utils
+        run: |
+          cargo build --release
+          cp target/release/silo-foundry-utils ../../silo-foundry-utils
+          ../../silo-foundry-utils --version
 
       - name: Extract optional price arguments from PR body
         id: price

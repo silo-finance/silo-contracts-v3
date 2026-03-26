@@ -78,11 +78,17 @@ jobs:
               git submodule sync --recursive
               git submodule update --init --recursive
 
+      # Paradigm installer uses FOUNDRY_DIR=${XDG_CONFIG_HOME:-$HOME}/.foundry (often ~/.config/.foundry on Linux).
       - name: Install Injective Foundry
         run: |
+          set -euo pipefail
           curl -L https://foundry.paradigm.xyz | bash
-          git clone https://github.com/InjectiveLabs/foundry.git
-          ~/.foundry/bin/foundryup -p ./foundry
+          BASE_DIR="${XDG_CONFIG_HOME:-$HOME}"
+          FOUNDRY_DIR="${FOUNDRY_DIR:-$BASE_DIR/.foundry}"
+          export PATH="${FOUNDRY_DIR}/bin:${PATH}"
+          echo "${FOUNDRY_DIR}/bin" >> "${GITHUB_PATH}"
+          git clone --depth 1 https://github.com/InjectiveLabs/foundry.git inj-foundry
+          (cd inj-foundry && foundryup -p .)
           forge --version
 
       - name: Build silo foundry utils

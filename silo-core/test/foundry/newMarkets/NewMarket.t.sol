@@ -327,7 +327,11 @@ contract NewMarketTest is Test {
 
         _dealTokens(address(_debtToken), address(this), maxRepay);
 
-        assertEq(_debtToken.balanceOf(address(this)), maxRepay);
+        assertEq(
+            _debtToken.balanceOf(address(this)),
+            maxRepay,
+            "max repay match debt token balance"
+        );
         _debtSilo.repayShares(sharesToRepay, address(this));
         assertEq((new SiloLens()).getLtv(_debtSilo, address(this)), 0, "Repay is successful, LTV==0");
         console2.log("\t- repaid debt");
@@ -390,7 +394,11 @@ contract NewMarketTest is Test {
 
         vm.prank(hookReceiver.owner());
         hookReceiver.removeGauge(_shareToken);
-        assertEq(address(hookReceiver.configuredGauges(_shareToken)), address(0));
+        assertEq(
+            address(hookReceiver.configuredGauges(_shareToken)),
+            address(0),
+            "gauge mapping should be cleared after removeGauge"
+        );
 
         console2.log(SUCCESS_SYMBOL, shareTokenName, "gauge is removable");
     }

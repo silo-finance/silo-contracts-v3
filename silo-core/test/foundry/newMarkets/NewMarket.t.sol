@@ -114,28 +114,7 @@ contract NewMarketTest is Test {
         MAX_LTV0 = SILO_CONFIG.getConfig(silo0).maxLtv;
         MAX_LTV1 = SILO_CONFIG.getConfig(silo1).maxLtv;
 
-        // TOKEN0.symbol();
-        // console2.log(
-        //     "Integration test for SiloConfig",
-        //     string.concat(TOKEN0.symbol(), " / ", TOKEN1.symbol()),
-        //     address(SILO_CONFIG)
-        // );
-    }
-
-    function _mintTokentOnInjective() internal {
-        if (ChainsLib.getChainId() == ChainsLib.INJECTIVE_CHAIN_ID) {
-            uint256 amount0 = 1000 * 10 ** TOKEN0.decimals();
-            uint256 amount1 = 1000 * 10 ** TOKEN1.decimals();
-
-            vm.prank(address(TOKEN0));
-            BANK_MODULE.mint(address(this), amount0);
-            vm.prank(address(TOKEN0));
-            BANK_MODULE.mint(makeAddr("stranger"), amount0);
-            vm.prank(address(TOKEN1));
-            BANK_MODULE.mint(address(this), amount1);
-            vm.prank(address(TOKEN1));
-            BANK_MODULE.mint(makeAddr("stranger"), amount1);
-        }
+        vm.label(address(this), "Depositor");
     }
 
     function _customMocksOnInjective() internal {
@@ -165,10 +144,6 @@ contract NewMarketTest is Test {
     }
 
     function test_newMarketTest_borrowSilo1() public logSiloConfigName {
-        _mintTokentOnInjective();
-
-        _dealTokens(address(TOKEN0), address(this), 123);
-
         _borrowScenario(
             BorrowScenario({
                 collateralSilo: SILO0,
@@ -327,11 +302,7 @@ contract NewMarketTest is Test {
 
         _dealTokens(address(_debtToken), address(this), maxRepay);
 
-        assertEq(
-            _debtToken.balanceOf(address(this)),
-            maxRepay,
-            "max repay match debt token balance"
-        );
+        assertGe(_debtToken.balanceOf(address(this)), maxRepay, "we need enough tokens for repay");
         _debtSilo.repayShares(sharesToRepay, address(this));
         assertEq((new SiloLens()).getLtv(_debtSilo, address(this)), 0, "Repay is successful, LTV==0");
         console2.log("\t- repaid debt");
@@ -349,18 +320,13 @@ contract NewMarketTest is Test {
     }
 
     function _dealTokens(address _token, address _depositor, uint256 _amount) internal {
+        uint256 balanceBefore = IERC20(_token).balanceOf(_depositor);
+
         if (ChainsLib.getChainId() == ChainsLib.INJECTIVE_CHAIN_ID) {
+            if (balanceBefore != 0) IERC20(_token).transfer(makeAddr("out"), balanceBefore);
+
             if (address(_token) == AddrLib.getAddress(AddrKey.WINJ)) {
                 vm.deal(_depositor, _amount);
-                console2.log("tsilo ID", SILO_CONFIG.SILO_ID());
-                console2.log("silo symbol", SILO1.symbol());
-                console2.log("address", address(TOKEN0));
-                // console2.log("total supply 1", IERC20(TOKEN0).totalSupply());
-                // console2.log("total supply", IERC20(_token).totalSupply());
-                console2.log(
-                    "balance 0xd559eD7B8Eef35708793b7239493f83b9c0e686a",
-                    IERC20(_token).balanceOf(0xd559eD7B8Eef35708793b7239493f83b9c0e686a)
-                );
                 vm.prank(_depositor);
                 IWrappedNativeToken(payable(_token)).deposit{value: _amount}();
             } else {

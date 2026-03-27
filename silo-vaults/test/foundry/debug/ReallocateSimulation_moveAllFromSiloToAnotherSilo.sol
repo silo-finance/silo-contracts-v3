@@ -117,10 +117,14 @@ contract ReallocateSimulation_moveAllFromSiloToAnotherSilo_Test is Test {
 
         console2.log("\n-------------------------------- multisig tx:\n");
         console2.log("1. approve USDC for silo ", address(fromSilo));
-        emit log_named_decimal_uint(string.concat("2. deposit ", symbol, "amount to silo"), amountToDeposit, decimals);
+        emit log_named_decimal_uint(
+            string.concat("2. deposit ", symbol, " amount to silo"), amountToDeposit, decimals
+        );
         console2.log("\tthis amount should hold for ~1h");
-        console2.log("3.execute realocation tx: vault.reallocate(allocations);");
+        console2.log("3. execute reallocation tx: vault.reallocate(allocations);");
         _printAllocation(allocations);
+
+        console2.log("\n\tthis data are calculated on block", block.number);
     }
 
     function _printVaultBalance(IERC4626 _silo, address _vault) internal returns (uint256 vaultAssets) {

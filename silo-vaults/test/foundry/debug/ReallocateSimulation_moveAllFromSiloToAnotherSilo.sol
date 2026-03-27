@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
 
-import {IERC4626, IERC20} from "openzeppelin5/interfaces/IERC4626.sol";
+import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 import {IERC20Metadata} from "openzeppelin5/interfaces/IERC20Metadata.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";

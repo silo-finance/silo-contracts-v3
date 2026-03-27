@@ -10,7 +10,7 @@ import {ChainlinkV3OracleFactory} from "silo-oracles/contracts/chainlinkV3/Chain
 /*
 FOUNDRY_PROFILE=oracles \
     forge script silo-oracles/deploy/chainlink-v3-oracle/ChainlinkV3OracleFactoryDeploy.s.sol \
-    --ffi --rpc-url $RPC_INJECTIVE --broadcast --slow --verify
+    --ffi --rpc-url $RPC_XDC --broadcast --slow --legacy
 
 Resume verification:
 FOUNDRY_PROFILE=oracles \
@@ -29,10 +29,6 @@ FOUNDRY_PROFILE=oracles forge verify-contract <contract-address> \
     --watch
 
     XDC chain deployment:
-
-    FOUNDRY_PROFILE=oracles \
-        forge script silo-oracles/deploy/chainlink-v3-oracle/ChainlinkV3OracleFactoryDeploy.s.sol \
-        --ffi --rpc-url $RPC_XDC --legacy --broadcast --verify
 
     FOUNDRY_PROFILE=oracles \
         forge script silo-oracles/deploy/chainlink-v3-oracle/ChainlinkV3OracleFactoryDeploy.s.sol \

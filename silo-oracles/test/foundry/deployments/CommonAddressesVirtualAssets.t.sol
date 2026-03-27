@@ -42,6 +42,10 @@ contract CommonAddressesVirtualAssetsTest is Test {
     function test_CommonAddressesVirtualAssets_matchDeployments_okx() public {
         _assertVirtualAssetsMatch("okx");
     }
+    
+    function test_CommonAddressesVirtualAssets_matchDeployments_xdc() public {
+        _assertVirtualAssetsMatch("xdc");
+    }
 
     function test_CommonAddressesVirtualAssets_matchDeployments_sonic() public {
         _assertVirtualAssetsMatch("sonic");

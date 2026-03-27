@@ -34,4 +34,9 @@ contract SiloDeployWithDeployerOwner is SiloDeploy {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
         owner = vm.addr(deployerPrivateKey);
     }
+
+    function _getClonableHookReceiverOwner() internal view virtual override returns (address owner) {
+        uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
+        owner = vm.addr(deployerPrivateKey);
+    }
 }

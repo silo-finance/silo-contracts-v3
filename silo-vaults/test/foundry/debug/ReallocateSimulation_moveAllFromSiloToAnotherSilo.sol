@@ -142,11 +142,11 @@ contract ReallocateSimulation_moveAllFromSiloToAnotherSilo_Test is Test {
         for (uint256 i; i < _allocation.length; ++i) {
             allocations = string.concat(
                 allocations,
-                "[",
+                "[\"",
                 Strings.toHexString(address(_allocation[i].market)),
-                ", ",
+                "\",\"",
                 Strings.toString(_allocation[i].assets),
-                "]",
+                "\"]",
                 i < _allocation.length - 1 ? "," : ""
             );
         }

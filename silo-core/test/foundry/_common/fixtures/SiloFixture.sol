@@ -82,6 +82,10 @@ contract SiloDeploy_Local is SiloDeployWithDeployerOwner {
             hookImplementation = _hookReceiverImplementation;
         }
     }
+
+    function _getClonableHookReceiverOwner() internal view virtual override returns (address owner) {
+        return msg.sender;
+    }
 }
 
 contract SiloFixture is StdCheats, CommonBase {

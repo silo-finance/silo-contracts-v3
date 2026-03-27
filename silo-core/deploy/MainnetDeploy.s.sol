@@ -34,24 +34,17 @@ import {
     Resume verification:
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_XDC \
+        --ffi --rpc-url $RPC_XDC --chain 50 \
         --verify \
         --private-key $PRIVATE_KEY \
-        --legacy \
-        --resume --watch
+        --resume
 
-    XDC chain deployment:
-
-    !! check XDC TODO in foundry.toml !!
+    XDC chain verification:
 
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_XDC --legacy --slow --broadcast --slow --verify
-
-    FOUNDRY_PROFILE=core \
-        forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --verifier-url $VERIFIER_URL_ETHERSCAN_V2 \
-        --verifier etherscan \
+        --verifier-url $VERIFIER_URL_XDC \
+        --verifier custom \
         --chain 50 \
         --ffi --rpc-url $RPC_XDC \
         --etherscan-api-key $ETHERSCAN_API_KEY \

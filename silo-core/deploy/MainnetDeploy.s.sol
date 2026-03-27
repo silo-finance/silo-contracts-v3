@@ -34,11 +34,11 @@ import {
     Resume verification:
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_INJECTIVE \
+        --ffi --rpc-url $RPC_XDC \
         --verify \
-        --verifier blockscout \
-        --verifier-url $VERIFIER_URL_INJECTIVE \
         --private-key $PRIVATE_KEY \
+        --legacy \
+        --resume --watch
 
     XDC chain deployment:
 

@@ -46,6 +46,7 @@ CHAIN_CONFIG: dict[str, tuple[str, str]] = {
     "okx": ("OKX", "https://www.oklink.com/x-layer/address/"),
     "sonic": ("Sonic", "https://sonicscan.org/address/"),
     "ink": ("Ink", "https://explorer.inkonchain.com/address/"),
+    "xdc": ("XDC", "https://xdcscan.com/address/"),
 }
 
 SILO_MARKET_CRAFTER_BASE = "https://silo-finance.github.io/silo-market-crafter/wizard/?step=13&address="
@@ -62,6 +63,7 @@ CHAIN_IDS: dict[str, int] = {
     "okx": 196,
     "sonic": 146,
     "ink": 57073,
+    "xdc": 50,
 }
 
 SILO_DEPLOYMENTS_JSON = "silo-core/deploy/silo/_siloDeployments.json"

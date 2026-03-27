@@ -14,6 +14,7 @@ env:
     RPC_BNB: ${{ secrets.RPC_BNB }}
     RPC_BASE: ${{ secrets.RPC_BASE }}
     RPC_OKX: ${{ secrets.RPC_OKX }}
+    RPC_XDC: ${{ secrets.RPC_XDC }}
 
 on:
     push:
@@ -48,6 +49,7 @@ jobs:
                     - RPC_BNB
                     - RPC_BASE
                     - RPC_OKX
+                    - RPC_XDC
 
         runs-on: ubuntu-latest
         steps:

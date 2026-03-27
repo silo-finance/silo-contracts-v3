@@ -15,6 +15,7 @@ env:
     RPC_BNB: ${{ secrets.RPC_BNB }}
     RPC_BASE: ${{ secrets.RPC_BASE }}
     RPC_OKX: ${{ secrets.RPC_OKX }}
+    RPC_XDC: ${{ secrets.RPC_XDC }}
     PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
     VERIFIER_URL_SONIC: ${{ secrets.VERIFIER_URL_SONIC }}
     VERIFIER_API_KEY_SONIC: ${{ secrets.VERIFIER_API_KEY_SONIC }}
@@ -51,7 +52,8 @@ jobs:
                     RPC_INJECTIVE,
                     RPC_BNB,
                     RPC_BASE,
-                    RPC_OKX
+                    RPC_OKX,
+                    RPC_XDC
                ]
 
         runs-on: ubuntu-latest

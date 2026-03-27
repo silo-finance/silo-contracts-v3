@@ -208,9 +208,28 @@ jobs:
           name: verification-sonic
           path: verification_sonic.json
 
+  verify-xdc:
+    name: xdc
+    needs: [verify-sonic]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python3 scripts/check_deployments_verified_on_explorer.py --chain xdc --no-fail --output-json-file verification_xdc.json || true
+          test -f verification_xdc.json || echo '{"sections":[]}' > verification_xdc.json
+        continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-xdc
+          path: verification_xdc.json
+
   aggregate-and-comment:
     name: Aggregate and comment
-    needs: [verify-sonic, verify-injective, verify-okx]
+    needs: [verify-xdc, verify-injective, verify-okx]
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:

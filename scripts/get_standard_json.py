@@ -68,6 +68,12 @@ EXPLORER_CONFIG = {
         "api_key_envs": ["LINEASCAN_API_KEY"],
         "chainid": 59144,
     },
+    "xdc": {
+        "api_url_default": "https://api.etherscan.io/v2/api?chainid=50",
+        "api_url_env": "VERIFIER_URL_XDCSCAN",
+        "api_key_envs": ["ETHERSCAN_API_KEY"],
+        "chainid": 50,
+    },
 }
 
 

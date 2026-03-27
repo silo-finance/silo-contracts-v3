@@ -36,6 +36,9 @@ Example for arbitrum_one:
   EXPLORER_API_URL_ARBITRUM_ONE=https://api.arbiscan.io/api   # optional (default exists)
 
 Injective uses Blockscout (https://docs.blockscout.com/devs/apis/rpc); apikey is optional for Blockscout.
+
+XDC (https://xdcscan.com/) uses the Etherscan API V2 stack (see https://docs.xdcscan.com/): same
+getsourcecode flow via api.etherscan.io/v2 with chainid=50 and the default ETHERSCAN_API_KEY.
 """
 
 from __future__ import annotations
@@ -69,6 +72,7 @@ CHAIN_TO_CHAIN_ID: dict[str, str] = {
     "base": "8453",
     "ink": "57073",
     "injective": "1776",
+    "xdc": "50",
 }
 
 # Defaults for etherscan-compatible endpoints.
@@ -94,6 +98,7 @@ CHAIN_EXPLORERS: dict[str, list[tuple[str, str]]] = {
     # OKX uses OKLink verify-contract-info (see fetch_oklink_verify_contract_info), not Etherscan-style API
     "okx": [("default", "https://www.oklink.com/api/v5/explorer/contract/verify-contract-info")],
     "sonic": [("default", "https://api.etherscan.io/v2/api?chainid=146")],
+    "xdc": [("default", "https://api.etherscan.io/v2/api?chainid=50")],
 }
 
 # Chains that have explorer config (for --chain all; excludes e.g. ink)
@@ -113,6 +118,7 @@ EXPLORER_ADDRESS_URL: dict[str, str] = {
     "optimism": "https://optimistic.etherscan.io/address/",
     "okx": "https://www.oklink.com/x-layer/address/",
     "sonic": "https://sonicscan.org/address/",
+    "xdc": "https://xdcscan.com/address/",
 }
 
 # Display names for PR comment output
@@ -126,6 +132,7 @@ CHAIN_DISPLAY_NAMES: dict[str, str] = {
     "optimism": "Optimism",
     "okx": "OKX",
     "sonic": "Sonic",
+    "xdc": "XDC",
 }
 
 USER_AGENT = "Mozilla/5.0 (compatible; explorer-api-verify-checker/1.0)"

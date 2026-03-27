@@ -43,6 +43,7 @@ env:
   RPC_BNB: ${{ secrets.RPC_BNB }}
   RPC_OKX: ${{ secrets.RPC_OKX }}
   RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
+  RPC_XDC: ${{ secrets.RPC_XDC }}
 
 jobs:
   owner-is-dao:
@@ -59,6 +60,7 @@ jobs:
           - mainnet
           - okx
           - optimism
+          - xdc
           # - sonic
     steps:
       - uses: actions/checkout@v4
@@ -85,6 +87,7 @@ jobs:
           - mainnet
           - okx
           - optimism
+          - xdc
           # - sonic
     steps:
       - uses: actions/checkout@v4
@@ -111,6 +114,7 @@ jobs:
           - mainnet
           - okx
           - optimism
+          - xdc
           # - sonic
     steps:
       - uses: actions/checkout@v4

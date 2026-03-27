@@ -62,6 +62,7 @@ CHAIN_TO_RPC_ENV: dict[str, str] = {
     "okx": "RPC_OKX",
     "optimism": "RPC_OPTIMISM",
     "sonic": "RPC_SONIC",
+    "xdc": "RPC_XDC",
 }
 
 # Chain folder name -> display name for summary lists
@@ -76,6 +77,7 @@ CHAIN_DISPLAY_NAMES: dict[str, str] = {
     "okx": "OKX",
     "optimism": "Optimism",
     "sonic": "Sonic",
+    "xdc": "XDC",
 }
 
 

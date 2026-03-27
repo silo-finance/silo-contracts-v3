@@ -41,6 +41,7 @@ SECTION_ORDER = [
     "optimism",
     "okx",
     "sonic",
+    "xdc",
 ]
 
 # Block explorer address URL (append address). summary_key -> base URL.
@@ -56,6 +57,7 @@ EXPLORER_ADDRESS_URL: dict[str, str] = {
     "optimism": "https://optimistic.etherscan.io/address/",
     "okx": "https://www.oklink.com/x-layer/address/",
     "sonic": "https://sonicscan.org/address/",
+    "xdc": "https://xdcscan.com/address/",
 }
 
 # Backward-compat mapping for sections parsed from existing PR comments.
@@ -73,6 +75,7 @@ DISPLAY_LABEL_TO_SUMMARY_KEY: dict[str, str] = {
     "Optimism": "optimism",
     "OKX": "okx",
     "Sonic": "sonic",
+    "XDC": "xdc",
 }
 
 

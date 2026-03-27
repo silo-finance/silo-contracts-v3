@@ -74,13 +74,9 @@ contract NewMarketTest is InjectiveWorkaround {
         _;
     }
 
-<<<<<<< HEAD
-    function setUp() public {
-=======
     function setUp() public virtual {
         AddrLib.init();
 
->>>>>>> e7ababb6e (debug deployer pass)
         address _siloConfig = vm.envAddress("CONFIG");
         uint256 _externalPrice0 = vm.envUint("EXTERNAL_PRICE_0");
         uint256 _externalPrice1 = vm.envUint("EXTERNAL_PRICE_1");
@@ -92,8 +88,6 @@ contract NewMarketTest is InjectiveWorkaround {
         console2.log("block.number", block.number);
 
         _customMocksOnInjective();
-
-        AddrLib.init();
 
         _beforeSetupHook();
 

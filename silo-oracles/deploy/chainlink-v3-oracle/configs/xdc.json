@@ -1,7 +1,7 @@
 {
     "CHAINLINK_XDC_USD": {
         "baseToken": "XDC",
-        "quoteToken": "SVA8D",
+        "quoteToken": "SILO_VIRTUAL_USD",
         "primaryAggregator": "CHAINLINK_XDC_USD_aggregator",
         "secondaryAggregator": "",
         "primaryHeartbeat": 0,
@@ -12,7 +12,7 @@
     },
     "CHAINLINK_USDC_USD": {
         "baseToken": "USDC",
-        "quoteToken": "SVA8D",
+        "quoteToken": "SILO_VIRTUAL_USD",
         "primaryAggregator": "CHAINLINK_USDC_USD_aggregator",
         "secondaryAggregator": "",
         "primaryHeartbeat": 0,

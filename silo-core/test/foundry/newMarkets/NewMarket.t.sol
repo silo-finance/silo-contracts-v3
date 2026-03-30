@@ -75,8 +75,6 @@ contract NewMarketTest is InjectiveWorkaround {
     }
 
     function setUp() public virtual {
-        AddrLib.init();
-
         address _siloConfig = vm.envAddress("CONFIG");
         uint256 _externalPrice0 = vm.envUint("EXTERNAL_PRICE_0");
         uint256 _externalPrice1 = vm.envUint("EXTERNAL_PRICE_1");
@@ -89,7 +87,7 @@ contract NewMarketTest is InjectiveWorkaround {
 
         _customMocksOnInjective();
 
-        _beforeSetupHook();
+        AddrLib.init();
 
         SILO_CONFIG = SiloConfig(_siloConfig);
         EXTERNAL_PRICE0 = _externalPrice0;
@@ -342,6 +340,4 @@ contract NewMarketTest is InjectiveWorkaround {
         vm.prank(Ownable(_gauge).owner());
         try OldGauge(_gauge).killGauge() {} catch {}
     }
-
-    function _beforeSetupHook() internal virtual {}
 }

@@ -4,7 +4,9 @@ Address Sorter Script
 
 This script reads all JSON files from the current directory (common/addresses),
 sorts the data alphabetically by key, and overwrites the files with sorted data.
-It also sorts silo-core/deploy/silo/_siloDeployments.json (nested: chain -> silo_name -> address).
+It also sorts nested deployment JSONs (chain -> name -> address):
+  - silo-core/deploy/silo/_siloDeployments.json
+  - silo-oracles/deploy/_oraclesDeployments.json
 
 Usage:
     python3 common/addresses/sort_addresses.py
@@ -12,8 +14,8 @@ Usage:
 
 The script will:
 1. Find all .json files in common/addresses
-2. Add silo-core/deploy/silo/_siloDeployments.json if present
-3. Sort each file alphabetically by key (for _siloDeployments.json: chains and each chain's entries)
+2. Add the nested deployment files above if present
+3. Sort each file alphabetically by key (nested files: chains and each chain's entries)
 4. Write the sorted data back to the same file
 5. Preserve the original formatting (indentation, etc.)
 """
@@ -22,8 +24,6 @@ import argparse
 import json
 import os
 import glob
-from typing import Dict, Any
-
 def sort_json_file(file_path: str) -> bool:
     """
     Sort a JSON file alphabetically by key and save it back.
@@ -61,12 +61,13 @@ def sort_json_file(file_path: str) -> bool:
 
 def sort_silo_deployments_file(file_path: str) -> bool:
     """
-    Sort silo deployments JSON (nested: chain -> silo_name -> address).
+    Sort nested deployment JSON (chain -> entry_name -> address).
+    Used for _siloDeployments.json and _oraclesDeployments.json.
     Sorts top-level keys (chains) and each chain's entries by key.
-    
+
     Args:
-        file_path: Path to _siloDeployments.json
-        
+        file_path: Path to the deployments JSON file
+
     Returns:
         bool: True if successful, False otherwise
     """
@@ -92,17 +93,18 @@ def sort_silo_deployments_file(file_path: str) -> bool:
         print(f"❌ Error processing {file_path}: {e}")
         return False
 
-# Path to silo deployments JSON (relative to repo root)
+# Paths relative to repo root (nested: chain -> name -> address)
 SILO_DEPLOYMENTS_JSON = "silo-core/deploy/silo/_siloDeployments.json"
+ORACLES_DEPLOYMENTS_JSON = "silo-oracles/deploy/_oraclesDeployments.json"
 
 
 def main():
-    """Main function to sort all JSON files in the current directory and _siloDeployments.json."""
+    """Sort common/addresses JSON files and optional nested deployment manifests."""
     parser = argparse.ArgumentParser(description="Sort address JSON files alphabetically by key.")
     parser.add_argument(
         "--only-common-addresses",
         action="store_true",
-        help="Only sort common/addresses/*.json (do not modify _siloDeployments.json).",
+        help="Only sort common/addresses/*.json (skip _siloDeployments.json and _oraclesDeployments.json).",
     )
     args = parser.parse_args()
 
@@ -117,9 +119,13 @@ def main():
     json_files = glob.glob(os.path.join(current_dir, "*.json"))
     
     silo_deployments_path = os.path.join(repo_root, SILO_DEPLOYMENTS_JSON)
-    # Add silo deployments file if present and not restricted
-    if not args.only_common_addresses and os.path.isfile(silo_deployments_path):
-        json_files.append(silo_deployments_path)
+    oracles_deployments_path = os.path.join(repo_root, ORACLES_DEPLOYMENTS_JSON)
+    nested_deployment_paths = frozenset({silo_deployments_path, oracles_deployments_path})
+
+    if not args.only_common_addresses:
+        for path in nested_deployment_paths:
+            if os.path.isfile(path):
+                json_files.append(path)
     
     if not json_files:
         print("❌ No JSON files found in the current directory")
@@ -136,7 +142,7 @@ def main():
     failed = 0
     
     for file_path in json_files:
-        if file_path == silo_deployments_path:
+        if file_path in nested_deployment_paths:
             if sort_silo_deployments_file(file_path):
                 successful += 1
             else:

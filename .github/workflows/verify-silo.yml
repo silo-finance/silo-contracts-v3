@@ -34,7 +34,7 @@ jobs:
     outputs:
       config_count: ${{ steps.count.outputs.config_count }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -57,7 +57,7 @@ jobs:
       pull-requests: write  # Required to post a comment on the PR
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           # Needed so origin/<base_ref> exists for git diff in \"Extract CONFIG and CHAIN\"
           fetch-depth: 0
@@ -283,7 +283,7 @@ jobs:
           fi
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 

@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout PR head branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
@@ -59,7 +59,7 @@ jobs:
 
       - name: Set up Python
         if: steps.deployments-diff.outputs.changed == 'true'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 

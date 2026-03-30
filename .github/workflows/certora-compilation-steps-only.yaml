@@ -17,7 +17,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       
     # Cache all git submodules (large gitmodules/* tree and .git/modules) to speed up CI.
     # Keyed only by .gitmodules so cache can be reused across commits; git will fetch deltas if submodule refs change.
@@ -37,7 +37,7 @@ jobs:
             git submodule update --init --recursive
         
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: '3.10'
         
@@ -88,7 +88,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       
     # Cache all git submodules (large gitmodules/* tree and .git/modules) to speed up CI.
     # Keyed only by .gitmodules so cache can be reused across commits; git will fetch deltas if submodule refs change.
@@ -108,7 +108,7 @@ jobs:
             git submodule update --init --recursive
         
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: '3.10'
         

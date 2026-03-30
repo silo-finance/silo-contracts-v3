@@ -51,7 +51,7 @@ jobs:
     silo-vaults-tests:
         runs-on: ubuntu-latest
         steps:
-            -   uses: actions/checkout@v3
+            -   uses: actions/checkout@v5
                 
             # Cache all git submodules (large gitmodules/* tree and .git/modules) to speed up CI.
             # Keyed only by .gitmodules so cache can be reused across commits; git will fetch deltas if submodule refs change.
@@ -109,7 +109,7 @@ jobs:
 
         steps:
             -   name: Checkout sources
-                uses: actions/checkout@v3
+                uses: actions/checkout@v5
 
             -   name: Set up Node.js
                 uses: actions/setup-node@v3

@@ -1,0 +1,125 @@
+name: deployment-freshness
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+    paths:
+      - silo-core/deployments/**
+      - silo-oracles/deployments/**
+      - silo-vaults/deployments/**
+      - scripts/check_deployments_freshness_from_broadcast.py
+      - .github/workflows/check-deployments-freshness.yml
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('{0}-pr-{1}', github.workflow, github.event.pull_request.number) || format('{0}-ref-{1}', github.workflow, github.ref) }}
+  cancel-in-progress: true
+
+env:
+  # Config: max allowed deployment age in days.
+  DEPLOYMENT_FRESHNESS_MAX_AGE_DAYS: "4"
+  RPC_MAINNET: ${{ secrets.RPC_MAINNET }}
+  RPC_ARBITRUM: ${{ secrets.RPC_ARBITRUM }}
+  RPC_OPTIMISM: ${{ secrets.RPC_OPTIMISM }}
+  RPC_SONIC: ${{ secrets.RPC_SONIC }}
+  RPC_AVALANCHE: ${{ secrets.RPC_AVALANCHE }}
+  RPC_INK: ${{ secrets.RPC_INK }}
+  RPC_BASE: ${{ secrets.RPC_BASE }}
+  RPC_BNB: ${{ secrets.RPC_BNB }}
+  RPC_OKX: ${{ secrets.RPC_OKX }}
+  RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
+  RPC_XDC: ${{ secrets.RPC_XDC }}
+
+jobs:
+  deploy-freshness-from-broadcast:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chain:
+          - arbitrum_one
+          - avalanche
+          - base
+          - bnb
+          - mainnet
+          - okx
+          - optimism
+          - xdc
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Collect changed deployments for chain
+        id: changed
+        env:
+          CHAIN: ${{ matrix.chain }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import subprocess
+          from pathlib import Path
+
+          chain = os.environ["CHAIN"]
+          base = os.environ["BASE_REF"]
+          out_file = Path(os.environ["GITHUB_OUTPUT"])
+
+          subprocess.run(["git", "fetch", "origin", base, "--depth=1"], check=True)
+          diff = subprocess.check_output(
+              ["git", "diff", "--name-only", f"origin/{base}...HEAD"],
+              text=True,
+          ).splitlines()
+
+          prefixes = (
+              f"silo-core/deployments/{chain}/",
+              f"silo-oracles/deployments/{chain}/",
+              f"silo-vaults/deployments/{chain}/",
+          )
+          changed = [p for p in diff if p.endswith(".json") and p.startswith(prefixes)]
+          changed_csv = ",".join(changed)
+
+          with out_file.open("a", encoding="utf-8") as f:
+              f.write(f"files={changed_csv}\n")
+              f.write(f"has_changes={'true' if changed else 'false'}\n")
+          PY
+
+      - name: Skip when chain has no deployment changes
+        if: steps.changed.outputs.has_changes != 'true'
+        run: echo "No changed deployments for ${{ matrix.chain }}."
+
+      - name: Deploy freshness vs run-latest (${{ matrix.chain }})
+        if: steps.changed.outputs.has_changes == 'true'
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.files }}
+          CHAIN: ${{ matrix.chain }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import shlex
+          import subprocess
+
+          files = [x for x in os.environ.get("CHANGED_FILES", "").split(",") if x]
+          chain = os.environ["CHAIN"]
+
+          cmd = [
+              "python3",
+              "scripts/check_deployments_freshness_from_broadcast.py",
+              "--chain",
+              chain,
+              "--max-age-days",
+              os.environ["DEPLOYMENT_FRESHNESS_MAX_AGE_DAYS"],
+          ]
+          for f in files:
+              cmd.extend(["--deployment-file", f])
+
+          print("Running:", " ".join(shlex.quote(x) for x in cmd))
+          subprocess.run(cmd, check=True)
+          PY

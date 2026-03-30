@@ -31,7 +31,6 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
             quoteToken: address(_config.quoteToken),
             supraFeed: _config.supraFeed,
             pairId: _config.pairId,
-            maxStaleness: _config.maxStaleness,
             priceDecimals: priceDecimals,
             normalizationDivider: divider,
             normalizationMultiplier: multiplier
@@ -56,7 +55,6 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         require(_config.supraFeed != address(0), ISupraSValueOracle.AddressZero());
         require(address(_config.baseToken) != address(_config.quoteToken), ISupraSValueOracle.TokensAreTheSame());
         require(_config.pairId != 0, ISupraSValueOracle.PairIdMustBeNonZero());
-        require(_config.maxStaleness != 0, ISupraSValueOracle.MaxStalenessMustBeNonZero());
 
         uint8 baseDecimals = _baseTokenDecimals(_config);
 
@@ -91,7 +89,7 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
 
     function _readSupraDecimals(ISupraSValueOracle.DeploymentConfig memory _config) internal view returns (uint8 priceDecimals) {
         try ISupraSValueFeed(_config.supraFeed).getSvalue(_config.pairId) returns (ISupraSValueFeed.PriceFeed memory data) {
-            require(data.price != 0 && data.time != 0, ISupraSValueOracle.InvalidPairId());
+            require(data.time != 0, ISupraSValueOracle.TimeStampZero());
             require(data.decimals <= type(uint8).max, ISupraSValueOracle.InvalidDecimals());
             // forge-lint: disable-next-line(unsafe-typecast)
             priceDecimals = uint8(data.decimals);

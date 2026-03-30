@@ -78,9 +78,7 @@ contract SupraSValueOracle is ISupraSValueOracle, ISiloOracle, Initializable, Ag
     function _readPrice(ISupraSValueOracle.OracleConfig memory _cfg) internal view returns (uint256 assetPrice) {
         ISupraSValueFeed.PriceFeed memory priceData = ISupraSValueFeed(_cfg.supraFeed).getSvalue(_cfg.pairId);
 
-        require(priceData.price != 0, InvalidPairId());
-        require(priceData.time != 0 && priceData.time <= block.timestamp, OldPrice());
-        require(block.timestamp - priceData.time <= _cfg.maxStaleness, OldPrice());
+        require(priceData.time != 0, TimeStampZero());
 
         assetPrice = priceData.price;
     }

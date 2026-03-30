@@ -41,7 +41,6 @@ contract SupraSValueOracleSiloDeployIntegrationTest is SiloDeployerWithOracle {
 
         console2.log("oracle", address(oracle));
         console2.log("pairId", cfg.pairId);
-        console2.log("maxStaleness", cfg.maxStaleness);
 
         assertEq(cfg.baseToken, address(token0), "base token mismatch");
         assertEq(cfg.quoteToken, address(token1), "quote token mismatch");
@@ -62,7 +61,6 @@ contract SupraSValueOracleSiloDeployIntegrationTest is SiloDeployerWithOracle {
             quoteToken: token1,
             supraFeed: address(feed),
             pairId: 150,
-            maxStaleness: 10 minutes,
             useCustomNormalization: false,
             fallbackPriceDecimals: 0,
             normalizationDivider: 0,

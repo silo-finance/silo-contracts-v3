@@ -85,20 +85,28 @@ contract SupraSValueOracleFactoryTest is Test {
         assertEq(q, 1e18 * 2e8 * 1e4, "manual normalization should match expected");
     }
 
-    function test_SupraSValueOracle_zero_price_reverts() public {
+    function test_SupraSValueOracle_zero_price_reverts_on_quote() public {
         feed.setData(PAIR_ID, 1, 8, block.timestamp, 0);
 
-        vm.expectRevert(ISupraSValueOracle.InvalidPairId.selector);
-        factory.create(_cfg(), keccak256("z"));
+        ISupraSValueOracle oracle = factory.create(_cfg(), keccak256("z"));
+        vm.expectRevert(ISupraSValueOracle.ZeroQuote.selector);
+        ISiloOracle(address(oracle)).quote(1e18, address(base));
     }
 
-    function test_SupraSValueOracle_stale_price_reverts() public {
+    function test_SupraSValueOracle_old_price_does_not_revert() public {
         ISupraSValueOracle oracle = factory.create(_cfg(), keccak256("stale"));
         vm.warp(2 hours);
         feed.setData(PAIR_ID, 2, 8, block.timestamp - 1 hours, 2e8);
 
-        vm.expectRevert(ISupraSValueOracle.OldPrice.selector);
-        ISiloOracle(address(oracle)).quote(1e18, address(base));
+        uint256 q = ISiloOracle(address(oracle)).quote(1e18, address(base));
+        assertEq(q, 1e18 * 2e8 * 1e4, "stale timestamp should be accepted when time is non-zero");
+    }
+
+    function test_SupraSValueOracle_zero_time_reverts() public {
+        feed.setData(PAIR_ID, 1, 8, 0, 2e8);
+
+        vm.expectRevert(ISupraSValueOracle.TimeStampZero.selector);
+        factory.create(_cfg(), keccak256("zero-time"));
     }
 
     function test_SupraSValueOracle_BaseTokenDecimalsAbove18() public {
@@ -163,10 +171,6 @@ contract SupraSValueOracleFactoryTest is Test {
         factory.verifyConfig(cfg);
 
         cfg.pairId = PAIR_ID;
-        vm.expectRevert(ISupraSValueOracle.MaxStalenessMustBeNonZero.selector);
-        factory.verifyConfig(cfg);
-
-        cfg.maxStaleness = 10 minutes;
         factory.verifyConfig(cfg);
     }
 
@@ -200,6 +204,5 @@ contract SupraSValueOracleFactoryTest is Test {
         cfg.quoteToken = quote;
         cfg.supraFeed = address(feed);
         cfg.pairId = PAIR_ID;
-        cfg.maxStaleness = 10 minutes;
     }
 }

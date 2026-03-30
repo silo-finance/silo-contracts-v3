@@ -23,7 +23,6 @@ Required env:
   PAIR_ID         - Supra pair id
   BASE_TOKEN      - priced token
   QUOTE_TOKEN     - quote token
-  MAX_STALENESS   - max accepted delay in seconds
 
 Optional env:
   EXTERNAL_SALT                   - CREATE2 salt (bytes32)
@@ -41,7 +40,6 @@ contract SupraSValueOracleDeploy is CommonDeploy {
             quoteToken: IERC20Metadata(vm.envAddress("QUOTE_TOKEN")),
             supraFeed: vm.envAddress("SUPRA_FEED"),
             pairId: vm.envUint("PAIR_ID"),
-            maxStaleness: uint32(vm.envUint("MAX_STALENESS")),
             useCustomNormalization: vm.envOr("USE_CUSTOM_NORMALIZATION", false),
             fallbackPriceDecimals: uint8(vm.envOr("FALLBACK_PRICE_DECIMALS", uint256(0))),
             normalizationDivider: vm.envOr("NORMALIZATION_DIVIDER", uint256(0)),

@@ -9,7 +9,6 @@ interface ISupraSValueOracle {
         IERC20Metadata quoteToken;
         address supraFeed;
         uint256 pairId;
-        uint32 maxStaleness;
         bool useCustomNormalization;
         uint8 fallbackPriceDecimals;
         uint256 normalizationDivider;
@@ -21,7 +20,6 @@ interface ISupraSValueOracle {
         address quoteToken;
         address supraFeed;
         uint256 pairId;
-        uint32 maxStaleness;
         uint8 priceDecimals;
         uint256 normalizationDivider;
         uint256 normalizationMultiplier;
@@ -35,9 +33,8 @@ interface ISupraSValueOracle {
     error BaseAmountOverflow();
     error BaseTokenDecimalsAbove18();
     error PairIdMustBeNonZero();
-    error MaxStalenessMustBeNonZero();
     error InvalidPairId();
-    error OldPrice();
+    error TimeStampZero();
     error ZeroQuote();
     error InvalidNormalization();
     error HugeDivider();

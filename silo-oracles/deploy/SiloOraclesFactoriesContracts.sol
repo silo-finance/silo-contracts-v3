@@ -23,6 +23,7 @@ library SiloOraclesFactoriesContracts {
     string public constant PT_LINEAR_ORACLE_FACTORY = "PTLinearOracleFactory.sol";
     string public constant MANAGEABLE_ORACLE_FACTORY = "ManageableOracleFactory.sol";
     string public constant CUSTOM_METHOD_ORACLE_FACTORY = "CustomMethodOracleFactory.sol";
+    string public constant SUPRA_SVALUE_ORACLE_FACTORY = "SupraSValueOracleFactory.sol";
 }
 
 library SiloOraclesFactoriesDeployments {

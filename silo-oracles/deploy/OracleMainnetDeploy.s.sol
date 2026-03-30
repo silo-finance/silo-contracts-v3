@@ -23,6 +23,7 @@ import {PTLinearOracleFactoryDeploy} from "./pendle/PTLinearOracleFactoryDeploy.
 
 import {ManageableOracleFactoryDeploy} from "./manageable/ManageableOracleFactoryDeploy.s.sol";
 import {CustomMethodOracleFactoryDeploy} from "./custom-method/CustomMethodOracleFactoryDeploy.s.sol";
+import {SupraSValueOracleFactoryDeploy} from "./supra/SupraSValueOracleFactoryDeploy.s.sol";
 import {SiloVirtualAsset8DecimalsDeploy} from "./SiloVirtualAsset8DecimalsDeploy.s.sol";
 import {WstEthToStEthAdapterMainnetDeploy} from "./WstEthToStEthAdapterMainnetDeploy.sol";
 
@@ -64,6 +65,7 @@ contract OracleMainnetDeploy is CommonDeploy {
 
         ManageableOracleFactoryDeploy manageableOracleFactoryDeploy = new ManageableOracleFactoryDeploy();
         CustomMethodOracleFactoryDeploy customMethodOracleFactoryDeploy = new CustomMethodOracleFactoryDeploy();
+        SupraSValueOracleFactoryDeploy supraSValueOracleFactoryDeploy = new SupraSValueOracleFactoryDeploy();
         SiloVirtualAsset8DecimalsDeploy siloVirtualAsset8DecimalsDeploy = new SiloVirtualAsset8DecimalsDeploy();
         WstEthToStEthAdapterMainnetDeploy wstEthToStEthAdapterMainnetDeploy = new WstEthToStEthAdapterMainnetDeploy();
 
@@ -84,6 +86,7 @@ contract OracleMainnetDeploy is CommonDeploy {
 
         manageableOracleFactoryDeploy.run();
         customMethodOracleFactoryDeploy.run();
+        supraSValueOracleFactoryDeploy.run();
 
         oracleForwarderFactoryDeploy.run();
         oracleScalerFactoryDeploy.run();

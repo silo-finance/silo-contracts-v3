@@ -9,10 +9,6 @@ interface ISupraSValueOracle {
         IERC20Metadata quoteToken;
         address supraFeed;
         uint256 pairId;
-        bool useCustomNormalization;
-        uint8 fallbackPriceDecimals;
-        uint256 normalizationDivider;
-        uint256 normalizationMultiplier;
     }
 
     struct OracleConfig {
@@ -36,11 +32,7 @@ interface ISupraSValueOracle {
     error InvalidPairId();
     error TimeStampZero();
     error ZeroQuote();
-    error InvalidNormalization();
-    error HugeDivider();
-    error HugeMultiplier();
     error InvalidDecimals();
-    error PriceReadFailed();
 
     function initialize(address _oracleConfig) external;
     function getConfig() external view returns (OracleConfig memory);

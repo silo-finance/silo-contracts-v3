@@ -60,11 +60,7 @@ contract SupraSValueOracleSiloDeployIntegrationTest is SiloDeployerWithOracle {
             baseToken: token0,
             quoteToken: token1,
             supraFeed: address(feed),
-            pairId: 150,
-            useCustomNormalization: false,
-            fallbackPriceDecimals: 0,
-            normalizationDivider: 0,
-            normalizationMultiplier: 0
+            pairId: 150
         });
 
         txData = ISiloDeployer.OracleCreationTxData({

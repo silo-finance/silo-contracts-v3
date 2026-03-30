@@ -26,10 +26,6 @@ Required env:
 
 Optional env:
   EXTERNAL_SALT                   - CREATE2 salt (bytes32)
-  USE_CUSTOM_NORMALIZATION        - bool, default false
-  FALLBACK_PRICE_DECIMALS         - uint8, used if feed read fails in factory verify
-  NORMALIZATION_DIVIDER           - uint256, used when USE_CUSTOM_NORMALIZATION=true
-  NORMALIZATION_MULTIPLIER        - uint256, used when USE_CUSTOM_NORMALIZATION=true
 */
 contract SupraSValueOracleDeploy is CommonDeploy {
     function run() public returns (ISupraSValueOracle oracle) {
@@ -39,11 +35,7 @@ contract SupraSValueOracleDeploy is CommonDeploy {
             baseToken: IERC20Metadata(vm.envAddress("BASE_TOKEN")),
             quoteToken: IERC20Metadata(vm.envAddress("QUOTE_TOKEN")),
             supraFeed: vm.envAddress("SUPRA_FEED"),
-            pairId: vm.envUint("PAIR_ID"),
-            useCustomNormalization: vm.envOr("USE_CUSTOM_NORMALIZATION", false),
-            fallbackPriceDecimals: uint8(vm.envOr("FALLBACK_PRICE_DECIMALS", uint256(0))),
-            normalizationDivider: vm.envOr("NORMALIZATION_DIVIDER", uint256(0)),
-            normalizationMultiplier: vm.envOr("NORMALIZATION_MULTIPLIER", uint256(0))
+            pairId: vm.envUint("PAIR_ID")
         });
 
         bytes32 externalSalt = vm.envOr("EXTERNAL_SALT", bytes32(0));

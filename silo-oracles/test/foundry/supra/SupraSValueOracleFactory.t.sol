@@ -15,19 +15,13 @@ import {SupraSValueOracleFactory} from "silo-oracles/contracts/supra/SupraSValue
 import {SupraSValueOracleFactoryDeploy} from "silo-oracles/deploy/supra/SupraSValueOracleFactoryDeploy.s.sol";
 
 contract MockSupraFeed is ISupraSValueFeed {
-    bool public shouldRevert;
     mapping(uint256 => PriceFeed) public data;
-
-    function setShouldRevert(bool _revert) external {
-        shouldRevert = _revert;
-    }
 
     function setData(uint256 _pairId, uint256 _round, uint256 _decimals, uint256 _time, uint256 _price) external {
         data[_pairId] = PriceFeed({round: _round, decimals: _decimals, time: _time, price: _price});
     }
 
     function getSvalue(uint256 _pairIndex) external view returns (PriceFeed memory) {
-        if (shouldRevert) revert("mock revert");
         return data[_pairIndex];
     }
 }
@@ -72,17 +66,6 @@ contract SupraSValueOracleFactoryTest is Test {
 
         uint256 q = ISiloOracle(address(oracle)).quote(1e18, address(base));
         assertEq(q, 1e18 * 2e8 * 1e4, "expected quote with 18 decimals");
-    }
-
-    function test_SupraSValueOracle_quote_manual_normalization_fallback() public {
-        ISupraSValueOracle.DeploymentConfig memory cfg = _cfg();
-        cfg.useCustomNormalization = true;
-        cfg.normalizationDivider = 0;
-        cfg.normalizationMultiplier = 1e4;
-
-        ISupraSValueOracle oracle = factory.create(cfg, keccak256("manual"));
-        uint256 q = ISiloOracle(address(oracle)).quote(1e18, address(base));
-        assertEq(q, 1e18 * 2e8 * 1e4, "manual normalization should match expected");
     }
 
     function test_SupraSValueOracle_zero_price_reverts_on_quote() public {
@@ -174,28 +157,10 @@ contract SupraSValueOracleFactoryTest is Test {
         factory.verifyConfig(cfg);
     }
 
-    function test_SupraSValueOracle_verifyConfig_fallback_decimals_when_feed_reverts() public {
+    function test_SupraSValueOracle_verifyConfig_missing_pair_data_reverts() public {
         ISupraSValueOracle.DeploymentConfig memory cfg = _cfg();
-        feed.setShouldRevert(true);
-
-        vm.expectRevert(ISupraSValueOracle.PriceReadFailed.selector);
-        factory.verifyConfig(cfg);
-
-        cfg.fallbackPriceDecimals = 8;
-        (uint256 divider, uint256 multiplier, uint8 priceDecimals) = factory.verifyConfig(cfg);
-
-        assertEq(priceDecimals, 8);
-        assertEq(divider, 0);
-        assertEq(multiplier, 1e4);
-    }
-
-    function test_SupraSValueOracle_verifyConfig_invalid_manual_normalization() public {
-        ISupraSValueOracle.DeploymentConfig memory cfg = _cfg();
-        cfg.useCustomNormalization = true;
-        cfg.normalizationDivider = 0;
-        cfg.normalizationMultiplier = 0;
-
-        vm.expectRevert(ISupraSValueOracle.InvalidNormalization.selector);
+        cfg.pairId = 999999;
+        vm.expectRevert(ISupraSValueOracle.TimeStampZero.selector);
         factory.verifyConfig(cfg);
     }
 

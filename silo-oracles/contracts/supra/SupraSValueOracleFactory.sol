@@ -57,12 +57,6 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         require(_config.pairId != 0, ISupraSValueOracle.PairIdMustBeNonZero());
 
         uint8 baseDecimals = _baseTokenDecimals(_config);
-
-        if (_config.useCustomNormalization) {
-            _validateManualNormalization(_config);
-            return (_config.normalizationDivider, _config.normalizationMultiplier, _config.fallbackPriceDecimals);
-        }
-
         priceDecimals = _readSupraDecimals(_config);
 
         (normalizationDivider, normalizationMultiplier) = OracleNormalization.calculateNormalizationData({
@@ -88,23 +82,10 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
     }
 
     function _readSupraDecimals(ISupraSValueOracle.DeploymentConfig memory _config) internal view returns (uint8 priceDecimals) {
-        try ISupraSValueFeed(_config.supraFeed).getSvalue(_config.pairId) returns (ISupraSValueFeed.PriceFeed memory data) {
-            require(data.time != 0, ISupraSValueOracle.TimeStampZero());
-            require(data.decimals <= type(uint8).max, ISupraSValueOracle.InvalidDecimals());
-            // forge-lint: disable-next-line(unsafe-typecast)
-            priceDecimals = uint8(data.decimals);
-        } catch {
-            require(_config.fallbackPriceDecimals != 0, ISupraSValueOracle.PriceReadFailed());
-            priceDecimals = _config.fallbackPriceDecimals;
-        }
-    }
-
-    function _validateManualNormalization(ISupraSValueOracle.DeploymentConfig memory _config) internal pure {
-        require(
-            _config.normalizationDivider != 0 || _config.normalizationMultiplier != 0,
-            ISupraSValueOracle.InvalidNormalization()
-        );
-        require(_config.normalizationDivider <= 1e36, ISupraSValueOracle.HugeDivider());
-        require(_config.normalizationMultiplier <= 1e36, ISupraSValueOracle.HugeMultiplier());
+        ISupraSValueFeed.PriceFeed memory data = ISupraSValueFeed(_config.supraFeed).getSvalue(_config.pairId);
+        require(data.time != 0, ISupraSValueOracle.TimeStampZero());
+        require(data.decimals <= type(uint8).max, ISupraSValueOracle.InvalidDecimals());
+        // forge-lint: disable-next-line(unsafe-typecast)
+        priceDecimals = uint8(data.decimals);
     }
 }

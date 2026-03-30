@@ -44,7 +44,7 @@ contract SupraSValueOracle is ISupraSValueOracle, ISiloOracle, Initializable, Ag
 
     // solhint-disable-next-line func-name-mixedcase
     function VERSION() external pure override returns (string memory v) {
-        v = "SupraSValueOracle 4.5.0";
+        v = "SupraSValueOracle 4.7.0";
     }
 
     function quote(uint256 _baseAmount, address _baseToken)
@@ -76,7 +76,7 @@ contract SupraSValueOracle is ISupraSValueOracle, ISiloOracle, Initializable, Ag
     }
 
     function _readPrice(ISupraSValueOracle.OracleConfig memory _cfg) internal view returns (uint256 assetPrice) {
-        ISupraSValueFeed.priceFeed memory priceData = ISupraSValueFeed(_cfg.supraFeed).getSvalue(_cfg.pairId);
+        ISupraSValueFeed.PriceFeed memory priceData = ISupraSValueFeed(_cfg.supraFeed).getSvalue(_cfg.pairId);
 
         require(priceData.price != 0, InvalidPairId());
         require(priceData.time != 0 && priceData.time <= block.timestamp, OldPrice());

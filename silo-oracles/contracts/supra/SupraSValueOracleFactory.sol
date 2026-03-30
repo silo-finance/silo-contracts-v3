@@ -90,7 +90,7 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
     }
 
     function _readSupraDecimals(ISupraSValueOracle.DeploymentConfig memory _config) internal view returns (uint8 priceDecimals) {
-        try ISupraSValueFeed(_config.supraFeed).getSvalue(_config.pairId) returns (ISupraSValueFeed.priceFeed memory data) {
+        try ISupraSValueFeed(_config.supraFeed).getSvalue(_config.pairId) returns (ISupraSValueFeed.PriceFeed memory data) {
             require(data.price != 0 && data.time != 0, ISupraSValueOracle.InvalidPairId());
             require(data.decimals <= type(uint8).max, ISupraSValueOracle.InvalidDecimals());
             // forge-lint: disable-next-line(unsafe-typecast)

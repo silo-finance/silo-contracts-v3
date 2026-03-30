@@ -16,17 +16,17 @@ import {SupraSValueOracleFactoryDeploy} from "silo-oracles/deploy/supra/SupraSVa
 
 contract MockSupraFeed is ISupraSValueFeed {
     bool public shouldRevert;
-    mapping(uint256 => priceFeed) public data;
+    mapping(uint256 => PriceFeed) public data;
 
     function setShouldRevert(bool _revert) external {
         shouldRevert = _revert;
     }
 
     function setData(uint256 _pairId, uint256 _round, uint256 _decimals, uint256 _time, uint256 _price) external {
-        data[_pairId] = priceFeed({round: _round, decimals: _decimals, time: _time, price: _price});
+        data[_pairId] = PriceFeed({round: _round, decimals: _decimals, time: _time, price: _price});
     }
 
-    function getSvalue(uint256 _pairIndex) external view returns (priceFeed memory) {
+    function getSvalue(uint256 _pairIndex) external view returns (PriceFeed memory) {
         if (shouldRevert) revert("mock revert");
         return data[_pairIndex];
     }
@@ -122,7 +122,7 @@ contract SupraSValueOracleFactoryTest is Test {
 
     function test_SupraSValueOracle_VERSION() public {
         ISupraSValueOracle oracle = factory.create(_cfg(), keccak256("v"));
-        assertEq(IVersioned(address(oracle)).VERSION(), "SupraSValueOracle 4.5.0");
+        assertEq(IVersioned(address(oracle)).VERSION(), "SupraSValueOracle 4.7.0");
     }
 
     function test_SupraSValueOracle_readPrice() public {

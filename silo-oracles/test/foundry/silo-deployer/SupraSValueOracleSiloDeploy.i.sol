@@ -18,13 +18,13 @@ import {
 import {SiloDeployerWithOracle} from "./SiloDeployerWithOracle.sol";
 
 contract _SupraFeedMock is ISupraSValueFeed {
-    priceFeed internal _data;
+    PriceFeed internal _data;
 
     constructor(uint256 _price, uint256 _decimals) {
-        _data = priceFeed({round: 1, decimals: _decimals, time: block.timestamp, price: _price});
+        _data = PriceFeed({round: 1, decimals: _decimals, time: block.timestamp, price: _price});
     }
 
-    function getSvalue(uint256) external view returns (priceFeed memory) {
+    function getSvalue(uint256) external view returns (PriceFeed memory) {
         return _data;
     }
 }

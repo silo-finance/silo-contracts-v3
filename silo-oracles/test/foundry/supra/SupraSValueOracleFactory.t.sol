@@ -108,7 +108,6 @@ contract SupraSValueOracleFactoryTest is Test {
         assertEq(oc.supraFeed, address(feed));
         assertEq(oc.baseToken, address(base));
         assertEq(oc.quoteToken, address(quote));
-        assertEq(oc.priceDecimals, 8);
     }
 
     function test_SupraSValueOracle_VERSION() public {

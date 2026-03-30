@@ -31,7 +31,6 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
             quoteToken: address(_config.quoteToken),
             supraFeed: _config.supraFeed,
             pairId: _config.pairId,
-            priceDecimals: priceDecimals,
             normalizationDivider: divider,
             normalizationMultiplier: multiplier
         });
@@ -42,7 +41,7 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
             ISupraSValueOracle(Clones.cloneDeterministic({implementation: ORACLE_IMPLEMENTATION, salt: _salt(_externalSalt)}));
 
         oracle.initialize(address(oracleConfig));
-        emit ISupraSValueOracle.SupraSValueConfigDeployed(address(oracleConfig));
+        emit ISupraSValueOracle.SupraSValueConfigDeployed(address(oracleConfig), priceDecimals);
     }
 
     function verifyConfig(ISupraSValueOracle.DeploymentConfig memory _config)

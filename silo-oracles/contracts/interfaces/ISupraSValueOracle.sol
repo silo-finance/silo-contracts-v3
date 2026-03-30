@@ -16,12 +16,11 @@ interface ISupraSValueOracle {
         address quoteToken;
         address supraFeed;
         uint256 pairId;
-        uint8 priceDecimals;
         uint256 normalizationDivider;
         uint256 normalizationMultiplier;
     }
 
-    event SupraSValueConfigDeployed(address indexed configAddress);
+    event SupraSValueConfigDeployed(address indexed configAddress, uint8 priceDecimals);
 
     error AddressZero();
     error TokensAreTheSame();

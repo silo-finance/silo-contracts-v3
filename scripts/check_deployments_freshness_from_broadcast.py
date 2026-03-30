@@ -5,9 +5,8 @@ find the contract creation in Foundry broadcast **/run-latest.json (same chain i
 the deployment block timestamp via RPC and fail if older than --max-age-days.
 
 - [ ok ]: contract_name address deploy_time (within limit)
-- [skip]: address not in any run-latest.json (broadcast overwritten or address not from last forge run)
-- [FAIL]: deployment block timestamp older than max age (only for addresses found in run-latest)
-- With --require-broadcast: [FAIL] instead of [skip] when address is missing from run-latest
+- [FAIL]: address not in any run-latest.json
+- [FAIL]: deployment block timestamp older than max age
 
 Uses the same RPC env vars as check_deployments_owner_is_dao.py / version_on_chain.
 
@@ -82,11 +81,6 @@ def parse_args() -> argparse.Namespace:
         "--dry-run",
         action="store_true",
         help="Only resolve addresses and broadcast txs; do not call RPC or enforce age.",
-    )
-    p.add_argument(
-        "--require-broadcast",
-        action="store_true",
-        help="Fail if a deployment address is not found in any run-latest.json (default: skip those).",
     )
     p.add_argument(
         "--deployment-file",
@@ -316,22 +310,28 @@ def main() -> int:
     max_age_sec = float(args.max_age_days) * 86400.0
     now = time.time()
     failed = False
+    checked_count = 0
+    found_in_broadcast_count = 0
+    ok_count = 0
+    fail_missing_broadcast = 0
+    fail_block_timestamp = 0
+    fail_too_old = 0
 
     for comp, name, addr in entries:
+        checked_count += 1
         hit = find_deploy_tx_for_address(repo_root, chain_id, addr)
         if not hit:
             msg = (
                 f"{comp}/{name} {addr} not in any */broadcast/**/{chain_id}/run-latest.json "
                 "(CREATE/CREATE2 + receipts)"
             )
-            if args.require_broadcast:
-                print(f"[FAIL] {msg}", file=sys.stderr)
-                failed = True
-            else:
-                print(f"[skip] {msg}")
+            print(f"[FAIL] {msg}", file=sys.stderr)
+            fail_missing_broadcast += 1
+            failed = True
             continue
 
         tx_hash, block_hex, run_path = hit
+        found_in_broadcast_count += 1
         rel_run = run_path.relative_to(repo_root)
         if args.dry_run:
             print(f"[dry-run] {comp}/{name} {addr} tx={tx_hash} block={block_hex} via {rel_run}")
@@ -344,6 +344,7 @@ def main() -> int:
                 f"(block={block_hex} tx={tx_hash})",
                 file=sys.stderr,
             )
+            fail_block_timestamp += 1
             failed = True
             continue
 
@@ -355,6 +356,7 @@ def main() -> int:
                 f"(limit {args.max_age_days} days) tx={tx_hash} block={block_hex} run={rel_run}",
                 file=sys.stderr,
             )
+            fail_too_old += 1
             failed = True
             continue
 
@@ -363,6 +365,20 @@ def main() -> int:
             f"[ ok ] {comp}/{name} {addr} deploy_utc={dt.isoformat()} "
             f"age_days={age_sec/86400:.2f} tx={tx_hash} run={rel_run}"
         )
+        ok_count += 1
+
+    total_fail = fail_missing_broadcast + fail_block_timestamp + fail_too_old
+    print()
+    print("=== Freshness Summary ===")
+    print(f"chain: {chain}")
+    print(f"checked contracts: {checked_count}")
+    print(f"found in run-latest: {found_in_broadcast_count}")
+    print(f"ok: {ok_count}")
+    print(f"failed: {total_fail}")
+    print(f"  - missing in run-latest: {fail_missing_broadcast}")
+    print(f"  - block timestamp unreadable: {fail_block_timestamp}")
+    print(f"  - older than max age: {fail_too_old}")
+    print()
 
     return 1 if failed else 0
 

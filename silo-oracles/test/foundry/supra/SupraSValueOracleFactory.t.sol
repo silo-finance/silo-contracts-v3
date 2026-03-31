@@ -95,8 +95,12 @@ contract SupraSValueOracleFactoryTest is Test {
         ISiloOracle(address(oracle)).quote({_baseAmount: 1e18, _baseToken: address(base)});
     }
 
+    /*
+    FOUNDRY_PROFILE=oracles forge test --mt test_SupraSValueOracle_old_price_does_not_revert -vv
+    */
     function test_SupraSValueOracle_old_price_does_not_revert() public {
         ISupraSValueOracle oracle = factory.create({_config: _cfg(), _externalSalt: keccak256("stale")});
+        vm.warp(block.timestamp + 300 days);
         feed.setData({_pairId: PAIR_ID, _round: 2, _decimals: 8, _time: block.timestamp - 100 days, _price: 1e8});
 
         uint256 q = ISiloOracle(address(oracle)).quote({_baseAmount: 1e6, _baseToken: address(base)});

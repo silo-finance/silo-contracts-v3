@@ -21,13 +21,13 @@ contract SupraSValueOracleForkIntegrationTest is Test {
         ISupraOraclePull_V2(0x2FA6DbFe4291136Cf272E1A3294362b6651e8517);
 
     function setUp() public {
-        vm.createSelectFork(vm.envString("RPC_XDC"), 100941205);
+        vm.createSelectFork(vm.envString("RPC_XDC"), 100943727);
     }
 
     function test_fork_xdc_deploy_and_read_price() public {
         SupraSValueOracleFactory factory = new SupraSValueOracleFactory(SUPRA_XDC_ORACLE_PULL);
 
-        MintableToken baseToken = new MintableToken(18);
+        MintableToken baseToken = new MintableToken(6);
         MintableToken quoteToken = new MintableToken(6);
 
         ISupraSValueOracle.DeploymentConfig memory cfg = ISupraSValueOracle.DeploymentConfig({
@@ -38,11 +38,14 @@ contract SupraSValueOracleForkIntegrationTest is Test {
 
         ISupraSValueOracle oracle = factory.create({_config: cfg, _externalSalt: bytes32(0)});
 
-        uint256 expectedPrice = 0.0306465e18;
+        uint256 expectedPrice = 0.030647e18;
         uint256 rawPrice = oracle.readPrice();
         assertEq(rawPrice, expectedPrice, "Supra raw price");
 
-        uint256 quote = ISiloOracle(address(oracle)).quote({_baseAmount: 1e18, _baseToken: address(baseToken)});
+        uint256 quote = ISiloOracle(address(oracle)).quote({_baseAmount: 1e6, _baseToken: address(baseToken)});
         assertEq(quote, expectedPrice, "Oracle quote");
+
+        quote = ISiloOracle(address(oracle)).quote({_baseAmount: 1e6 * 2, _baseToken: address(baseToken)});
+        assertEq(quote, expectedPrice * 2, "Oracle quote *2");
     }
 }

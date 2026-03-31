@@ -1,4 +1,4 @@
-name: VERSION
+name: VERSION-release-hotfix
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
     types: [opened, synchronize, reopened]
 
 concurrency:
-  group: ${{ github.event_name == 'pull_request' && format('{0}-pr-{1}', github.workflow, github.event.pull_request.number) || format('{0}-ref-{1}', github.workflow, github.ref) }}
+  group: ${{ github.event_name == 'pull_request' && format('version-release-hotfix-pr-{0}', github.event.pull_request.number) || format('version-release-hotfix-ref-{0}', github.ref) }}
   cancel-in-progress: true
 
 jobs:

@@ -7,6 +7,7 @@ import {Create2Factory} from "common/utils/Create2Factory.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 
 import {OracleNormalization} from "../lib/OracleNormalization.sol";
+import {ISupraOraclePull_V2} from "../interfaces/ISupraOraclePull_V2.sol";
 import {ISupraSValueFeed} from "../interfaces/ISupraSValueFeed.sol";
 import {ISupraSValueOracle} from "../interfaces/ISupraSValueOracle.sol";
 import {ISupraSValueOracleFactory} from "../interfaces/ISupraSValueOracleFactory.sol";
@@ -29,7 +30,7 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         ISupraSValueOracle.OracleConfig memory cfg = ISupraSValueOracle.OracleConfig({
             baseToken: address(_config.baseToken),
             quoteToken: address(_config.quoteToken),
-            supraFeed: _config.supraFeed,
+            supraOraclePull: _config.supraOraclePull,
             pairId: _config.pairId,
             normalizationDivider: divider,
             normalizationMultiplier: multiplier
@@ -37,8 +38,9 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
 
         SupraSValueOracleConfig oracleConfig = new SupraSValueOracleConfig(cfg);
 
-        oracle =
-            ISupraSValueOracle(Clones.cloneDeterministic({implementation: ORACLE_IMPLEMENTATION, salt: _salt(_externalSalt)}));
+        oracle = ISupraSValueOracle(
+            Clones.cloneDeterministic({implementation: ORACLE_IMPLEMENTATION, salt: _salt(_externalSalt)})
+        );
 
         oracle.initialize(address(oracleConfig));
         emit ISupraSValueOracle.SupraSValueConfigDeployed(address(oracleConfig), priceDecimals);
@@ -51,7 +53,7 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
     {
         require(address(_config.baseToken) != address(0), ISupraSValueOracle.AddressZero());
         require(address(_config.quoteToken) != address(0), ISupraSValueOracle.AddressZero());
-        require(_config.supraFeed != address(0), ISupraSValueOracle.AddressZero());
+        require(address(_config.supraOraclePull) != address(0), ISupraSValueOracle.AddressZero());
         require(address(_config.baseToken) != address(_config.quoteToken), ISupraSValueOracle.TokensAreTheSame());
         require(_config.pairId != 0, ISupraSValueOracle.PairIdMustBeNonZero());
 
@@ -59,31 +61,46 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         priceDecimals = _readSupraDecimals(_config);
 
         (normalizationDivider, normalizationMultiplier) = OracleNormalization.calculateNormalizationData({
-            _baseDecimals: baseDecimals,
-            _priceDecimals: priceDecimals
+            _baseDecimals: baseDecimals, _priceDecimals: priceDecimals
         });
     }
 
-    function predictAddress(address _deployer, bytes32 _externalSalt) external view returns (address predictedAddress) {
+    function predictAddress(address _deployer, bytes32 _externalSalt)
+        external
+        view
+        returns (address predictedAddress)
+    {
         require(_deployer != address(0), DeployerCannotBeZero());
 
         predictedAddress = Clones.predictDeterministicAddress({
-            implementation: ORACLE_IMPLEMENTATION,
-            salt: _createSalt(_deployer, _externalSalt)
+            implementation: ORACLE_IMPLEMENTATION, salt: _createSalt(_deployer, _externalSalt)
         });
     }
 
-    function _baseTokenDecimals(ISupraSValueOracle.DeploymentConfig memory _config) internal view returns (uint8 baseDecimals) {
+    function _baseTokenDecimals(ISupraSValueOracle.DeploymentConfig memory _config)
+        internal
+        view
+        returns (uint8 baseDecimals)
+    {
         uint256 decimals = TokenHelper.assertAndGetDecimals(address(_config.baseToken));
         require(decimals <= 18, ISupraSValueOracle.BaseTokenDecimalsAbove18());
+
         // forge-lint: disable-next-line(unsafe-typecast)
         baseDecimals = uint8(decimals);
     }
 
-    function _readSupraDecimals(ISupraSValueOracle.DeploymentConfig memory _config) internal view returns (uint8 priceDecimals) {
-        ISupraSValueFeed.PriceFeed memory data = ISupraSValueFeed(_config.supraFeed).getSvalue(_config.pairId);
+    function _readSupraDecimals(ISupraSValueOracle.DeploymentConfig memory _config)
+        internal
+        view
+        returns (uint8 priceDecimals)
+    {
+        address supraFeed = _config.supraOraclePull.checkSupraSValueFeed();
+        require(supraFeed != address(0), ISupraSValueOracle.AddressZero());
+
+        ISupraSValueFeed.PriceFeed memory data = ISupraSValueFeed(supraFeed).getSvalue(_config.pairId);
         require(data.time != 0, ISupraSValueOracle.TimeStampZero());
         require(data.decimals <= type(uint8).max, ISupraSValueOracle.InvalidDecimals());
+
         // forge-lint: disable-next-line(unsafe-typecast)
         priceDecimals = uint8(data.decimals);
     }

@@ -7,6 +7,7 @@ import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
 import {Aggregator} from "../_common/Aggregator.sol";
 import {OracleNormalization} from "../lib/OracleNormalization.sol";
+import {ISupraOraclePull_V2} from "../interfaces/ISupraOraclePull_V2.sol";
 import {ISupraSValueFeed} from "../interfaces/ISupraSValueFeed.sol";
 import {ISupraSValueOracle} from "../interfaces/ISupraSValueOracle.sol";
 import {SupraSValueOracleConfig} from "./SupraSValueOracleConfig.sol";
@@ -76,7 +77,10 @@ contract SupraSValueOracle is ISupraSValueOracle, ISiloOracle, Initializable, Ag
     }
 
     function _readPrice(ISupraSValueOracle.OracleConfig memory _cfg) internal view returns (uint256 assetPrice) {
-        ISupraSValueFeed.PriceFeed memory priceData = ISupraSValueFeed(_cfg.supraFeed).getSvalue(_cfg.pairId);
+        address supraFeed = ISupraOraclePull_V2(_cfg.supraOraclePull).checkSupraSValueFeed();
+        require(supraFeed != address(0), AddressZero());
+
+        ISupraSValueFeed.PriceFeed memory priceData = ISupraSValueFeed(supraFeed).getSvalue(_cfg.pairId);
 
         require(priceData.time != 0, TimeStampZero());
 

@@ -6,6 +6,8 @@ import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 
 import {ISiloDeployer} from "silo-core/contracts/interfaces/ISiloDeployer.sol";
 
+import {ISupraOraclePull_V2} from "silo-oracles/contracts/interfaces/ISupraOraclePull_V2.sol";
+import {ISupraSValueFeed} from "silo-oracles/contracts/interfaces/ISupraSValueFeed.sol";
 import {ISupraSValueOracle} from "silo-oracles/contracts/interfaces/ISupraSValueOracle.sol";
 import {ISupraSValueOracleFactory} from "silo-oracles/contracts/interfaces/ISupraSValueOracleFactory.sol";
 import {SupraSValueOracleFactoryDeploy} from "silo-oracles/deploy/supra/SupraSValueOracleFactoryDeploy.s.sol";
@@ -16,15 +18,35 @@ import {
 
 import {SiloDeployerWithOracle} from "./SiloDeployerWithOracle.sol";
 
+contract _SupraFeedMock is ISupraSValueFeed {
+    PriceFeed internal _data;
+
+    constructor(uint256 _price, uint256 _decimals) {
+        _data = PriceFeed({round: 1, decimals: _decimals, time: block.timestamp, price: _price});
+    }
+
+    function getSvalue(uint256) external view returns (PriceFeed memory) {
+        return _data;
+    }
+}
+
+contract _SupraOraclePullV2Mock is ISupraOraclePull_V2 {
+    address internal _feed;
+
+    constructor(address _feedAddress) {
+        _feed = _feedAddress;
+    }
+
+    function checkSupraSValueFeed() external view returns (address) {
+        return _feed;
+    }
+}
+
 /*
     FOUNDRY_PROFILE=oracles forge test --mc SupraSValueOracleSiloDeployIntegrationTest --ffi -vv
 */
 contract SupraSValueOracleSiloDeployIntegrationTest is SiloDeployerWithOracle {
     uint256 internal constant SUPRA_XDC_PAIR_ID = 150;
-
-    function _forkBlockchain() internal virtual override {
-        vm.createSelectFork(vm.envString("RPC_XDC"));
-    }
 
     function test_siloDeployer_SupraSValueOracle() public {
         _deployMarket();
@@ -47,10 +69,12 @@ contract SupraSValueOracleSiloDeployIntegrationTest is SiloDeployerWithOracle {
     }
 
     function _oracleTxData() internal override returns (ISiloDeployer.OracleCreationTxData memory txData) {
+        _SupraFeedMock feed = new _SupraFeedMock(2e8, 8);
+
         ISupraSValueOracle.DeploymentConfig memory cfg = ISupraSValueOracle.DeploymentConfig({
             baseToken: token0,
             quoteToken: token1,
-            supraFeed: vm.envAddress("SUPRA_XDC_SVALUE_FEED"),
+            supraOraclePull: ISupraOraclePull_V2(address(new _SupraOraclePullV2Mock(address(feed)))),
             pairId: SUPRA_XDC_PAIR_ID
         });
 

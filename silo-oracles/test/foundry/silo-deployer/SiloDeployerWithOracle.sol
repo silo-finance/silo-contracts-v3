@@ -34,7 +34,6 @@ abstract contract SiloDeployerWithOracle is Test, DKinkIRMConfigDataReader {
     ISiloOracle siloOracle;
 
     function setUp() public virtual {
-        _forkBlockchain();
         AddrLib.init();
         _deploySiloCoreWithSiloDeployer();
         _deployOracleFactory();
@@ -43,12 +42,6 @@ abstract contract SiloDeployerWithOracle is Test, DKinkIRMConfigDataReader {
         token1 = new MintableToken(18);
 
         siloDeployer = _resolveSiloDeployer();
-    }
-
-    /// @dev Optional hook for fork-based integration tests.
-    /// Default implementation is intentionally empty.
-    function _forkBlockchain() internal virtual {
-        // no-op
     }
 
     function _deployOracleFactory() internal virtual;

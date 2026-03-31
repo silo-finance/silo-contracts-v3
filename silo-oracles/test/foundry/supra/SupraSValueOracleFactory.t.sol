@@ -9,6 +9,7 @@ import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 
 import {Aggregator} from "silo-oracles/contracts/_common/Aggregator.sol";
+import {ISupraOraclePull_V2} from "silo-oracles/contracts/interfaces/ISupraOraclePull_V2.sol";
 import {ISupraSValueFeed} from "silo-oracles/contracts/interfaces/ISupraSValueFeed.sol";
 import {ISupraSValueOracle} from "silo-oracles/contracts/interfaces/ISupraSValueOracle.sol";
 import {SupraSValueOracleFactory} from "silo-oracles/contracts/supra/SupraSValueOracleFactory.sol";
@@ -26,6 +27,18 @@ contract MockSupraFeed is ISupraSValueFeed {
     }
 }
 
+contract MockSupraOraclePullV2 is ISupraOraclePull_V2 {
+    address public feed;
+
+    function setFeed(address _feed) external {
+        feed = _feed;
+    }
+
+    function checkSupraSValueFeed() external view returns (address) {
+        return feed;
+    }
+}
+
 /*
     FOUNDRY_PROFILE=oracles forge test --match-contract SupraSValueOracleFactoryTest -vv
 */
@@ -34,10 +47,12 @@ contract SupraSValueOracleFactoryTest is Test {
     MintableToken internal base = new MintableToken(6);
     MintableToken internal quote = new MintableToken(6);
     MockSupraFeed internal feed = new MockSupraFeed();
+    MockSupraOraclePullV2 internal oraclePull = new MockSupraOraclePullV2();
     uint256 internal constant PAIR_ID = 150;
 
     function setUp() public {
         feed.setData(PAIR_ID, 1, 8, block.timestamp, 2e8);
+        oraclePull.setFeed(address(feed));
 
         SupraSValueOracleFactoryDeploy deployer = new SupraSValueOracleFactoryDeploy();
         deployer.disableDeploymentsSync();
@@ -105,7 +120,7 @@ contract SupraSValueOracleFactoryTest is Test {
         ISupraSValueOracle.OracleConfig memory oc = oracle.getConfig();
 
         assertEq(oc.pairId, PAIR_ID);
-        assertEq(oc.supraFeed, address(feed));
+        assertEq(address(oc.supraOraclePull), address(oraclePull));
         assertEq(oc.baseToken, address(base));
         assertEq(oc.quoteToken, address(quote));
     }
@@ -144,7 +159,7 @@ contract SupraSValueOracleFactoryTest is Test {
         vm.expectRevert(ISupraSValueOracle.AddressZero.selector);
         factory.verifyConfig(cfg);
 
-        cfg.supraFeed = address(feed);
+        cfg.supraOraclePull = ISupraOraclePull_V2(address(oraclePull));
         vm.expectRevert(ISupraSValueOracle.TokensAreTheSame.selector);
         factory.verifyConfig(cfg);
 
@@ -166,7 +181,7 @@ contract SupraSValueOracleFactoryTest is Test {
     function _cfg() internal view returns (ISupraSValueOracle.DeploymentConfig memory cfg) {
         cfg.baseToken = base;
         cfg.quoteToken = quote;
-        cfg.supraFeed = address(feed);
+        cfg.supraOraclePull = ISupraOraclePull_V2(address(oraclePull));
         cfg.pairId = PAIR_ID;
     }
 }

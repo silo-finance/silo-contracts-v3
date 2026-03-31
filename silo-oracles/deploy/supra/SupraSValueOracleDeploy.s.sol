@@ -12,6 +12,7 @@ import {PriceFormatter} from "silo-core/deploy/lib/PriceFormatter.sol";
 import {CommonDeploy} from "../CommonDeploy.sol";
 import {OraclesDeployments} from "../OraclesDeployments.sol";
 import {SiloOraclesFactoriesContracts} from "../SiloOraclesFactoriesContracts.sol";
+import {ISupraOraclePull_V2} from "silo-oracles/contracts/interfaces/ISupraOraclePull_V2.sol";
 import {ISupraSValueOracle} from "silo-oracles/contracts/interfaces/ISupraSValueOracle.sol";
 import {ISupraSValueOracleFactory} from "silo-oracles/contracts/interfaces/ISupraSValueOracleFactory.sol";
 
@@ -19,7 +20,7 @@ import {ISupraSValueOracleFactory} from "silo-oracles/contracts/interfaces/ISupr
 Deploys one `SupraSValueOracle` via deployed `SupraSValueOracleFactory`.
 
 Required env:
-  SUPRA_FEED      - Supra push feed address
+  SUPRA_ORACLE_PULL - Supra oracle-pull address used to resolve current S-Value feed
   PAIR_ID         - Supra pair id
   BASE_TOKEN      - priced token
   QUOTE_TOKEN     - quote token
@@ -34,7 +35,7 @@ contract SupraSValueOracleDeploy is CommonDeploy {
         ISupraSValueOracle.DeploymentConfig memory cfg = ISupraSValueOracle.DeploymentConfig({
             baseToken: IERC20Metadata(vm.envAddress("BASE_TOKEN")),
             quoteToken: IERC20Metadata(vm.envAddress("QUOTE_TOKEN")),
-            supraFeed: vm.envAddress("SUPRA_FEED"),
+            supraOraclePull: ISupraOraclePull_V2(vm.envAddress("SUPRA_ORACLE_PULL")),
             pairId: vm.envUint("PAIR_ID")
         });
 

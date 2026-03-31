@@ -13,6 +13,7 @@ import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
 import {SiloConfig} from "silo-core/contracts/SiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
+import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
@@ -31,10 +32,10 @@ interface OldGauge {
     It is excluded from the general tests CI pipeline and has separate workflow.
 
     FOUNDRY_INJECTIVE=true \
-    FOUNDRY_PROFILE=core_test CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 \
-    EXTERNAL_PRICE_0=4147 \
-    EXTERNAL_PRICE_1=1 \
-    RPC_URL=$RPC_INJECTIVE \
+    FOUNDRY_PROFILE=core_test CONFIG=0x0d419DC8128D5738a62753DeB8eA3508AEd95253 \
+    EXTERNAL_PRICE_0=30 \
+    EXTERNAL_PRICE_1=1000 \
+    RPC_URL=$RPC_XDC \
     forge test --mc "NewMarketTest" --ffi -vvv --mt test_newMarketTest_borrowSilo1
  */
 // solhint-disable var-name-mixedcase
@@ -189,9 +190,13 @@ contract NewMarketTest is InjectiveWorkaround {
             vm.expectRevert(); // it can be ZeroQuote or AboveMaxLtv
             _scenario.debtSilo.borrow(1, borrower, borrower);
 
+            uint256 nonZeroAmount = _findNonZeroQuote(_scenario.debtSilo);
+
+            console2.log("\t- check with amount", nonZeroAmount);
+
             // in some extream case we can get ZeroQuote, but we can debug this case if needed
             vm.expectRevert(ISilo.AboveMaxLtv.selector);
-            _scenario.debtSilo.borrow(10, borrower, borrower);
+            _scenario.debtSilo.borrow(nonZeroAmount, borrower, borrower);
 
             console2.log("\t- expect revert on borrow: OK");
 
@@ -339,5 +344,20 @@ contract NewMarketTest is InjectiveWorkaround {
     function _tryKillOldGauge(address _gauge) internal {
         vm.prank(Ownable(_gauge).owner());
         try OldGauge(_gauge).killGauge() {} catch {}
+    }
+
+    function _findNonZeroQuote(ISilo _debtSilo) internal view returns (uint256 nonZeroAmount) {
+        uint256 power;
+        do {
+            ISiloOracle oracle = ISiloOracle(_debtSilo.config().getConfig(address(_debtSilo)).solvencyOracle);
+
+            try oracle.quote(10 ** power, address(_debtSilo.asset())) returns (uint256) {
+                return 10 ** power;
+            } catch {
+                power++;
+            }
+        } while (power < 6);
+
+        revert("No non-zero quote found");
     }
 }

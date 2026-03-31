@@ -10,10 +10,10 @@ import {InjectiveWorkaround} from "silo-core/test/foundry/_common/InjectiveWorka
 
 /*
 FOUNDRY_INJECTIVE=true \
-FOUNDRY_PROFILE=core CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 \
-    EXTERNAL_PRICE_0=103 EXTERNAL_PRICE_1=100 \
+FOUNDRY_PROFILE=core CONFIG=0x0d419DC8128D5738a62753DeB8eA3508AEd95253 \
+    EXTERNAL_PRICE_0=30 EXTERNAL_PRICE_1=1000 \
     forge script silo-core/deploy/silo/VerifySilo.s.sol \
-    --ffi --rpc-url $RPC_INJECTIVE
+    --ffi --rpc-url $RPC_XDC
  */
 contract VerifySilo is Script, InjectiveWorkaround {
     function run() public {

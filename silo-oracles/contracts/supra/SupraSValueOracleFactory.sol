@@ -29,12 +29,12 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         external
         returns (ISupraSValueOracle oracle)
     {
-        (uint256 divider, uint256 multiplier, uint8 priceDecimals) = verifyConfig(_config);
+        (uint256 divider, uint256 multiplier, uint8 priceDecimals, ISupraSValueFeed supraFeed) = verifyConfig(_config);
 
         ISupraSValueOracle.OracleConfig memory cfg = ISupraSValueOracle.OracleConfig({
             baseToken: address(_config.baseToken),
             quoteToken: address(_config.quoteToken),
-            supraOraclePull: SUPRA_ORACLE_PULL,
+            supraSValueFeed: supraFeed,
             pairId: _config.pairId,
             normalizationDivider: divider,
             normalizationMultiplier: multiplier
@@ -65,7 +65,12 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
     function verifyConfig(ISupraSValueOracle.DeploymentConfig memory _config)
         public
         view
-        returns (uint256 normalizationDivider, uint256 normalizationMultiplier, uint8 priceDecimals)
+        returns (
+            uint256 normalizationDivider,
+            uint256 normalizationMultiplier,
+            uint8 priceDecimals,
+            ISupraSValueFeed supraFeed
+        )
     {
         require(address(_config.baseToken) != address(0), ISupraSValueOracle.AddressZero());
         require(address(_config.quoteToken) != address(0), ISupraSValueOracle.AddressZero());
@@ -73,7 +78,7 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         require(_config.pairId != 0, ISupraSValueOracle.PairIdMustBeNonZero());
 
         uint8 baseDecimals = _baseTokenDecimals(_config);
-        priceDecimals = _readSupraDecimals(_config);
+        (priceDecimals, supraFeed) = _readSupraDecimalsAndFeed(_config);
 
         (normalizationDivider, normalizationMultiplier) = OracleNormalization.calculateNormalizationData({
             _baseDecimals: baseDecimals, _priceDecimals: priceDecimals
@@ -92,15 +97,16 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         baseDecimals = uint8(decimals);
     }
 
-    function _readSupraDecimals(ISupraSValueOracle.DeploymentConfig memory _config)
+    function _readSupraDecimalsAndFeed(ISupraSValueOracle.DeploymentConfig memory _config)
         internal
         view
-        returns (uint8 priceDecimals)
+        returns (uint8 priceDecimals, ISupraSValueFeed supraFeed)
     {
-        address supraFeed = SUPRA_ORACLE_PULL.checkSupraSValueFeed();
-        require(supraFeed != address(0), ISupraSValueOracle.AddressZero());
+        address supraFeedAddress = SUPRA_ORACLE_PULL.checkSupraSValueFeed();
+        require(supraFeedAddress != address(0), ISupraSValueOracle.AddressZero());
+        supraFeed = ISupraSValueFeed(supraFeedAddress);
 
-        ISupraSValueFeed.PriceFeed memory data = ISupraSValueFeed(supraFeed).getSvalue(_config.pairId);
+        ISupraSValueFeed.PriceFeed memory data = supraFeed.getSvalue(_config.pairId);
         require(data.time != 0, ISupraSValueOracle.TimeStampZero());
         require(data.decimals <= type(uint8).max, ISupraSValueOracle.InvalidDecimals());
 

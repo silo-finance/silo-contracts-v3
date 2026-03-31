@@ -127,7 +127,7 @@ contract SupraSValueOracleFactoryTest is Test {
         ISupraSValueOracle.OracleConfig memory oc = oracle.getConfig();
 
         assertEq(oc.pairId, PAIR_ID);
-        assertEq(address(oc.supraOraclePull), address(oraclePull));
+        assertEq(address(oc.supraSValueFeed), address(feed));
         assertEq(oc.baseToken, address(base));
         assertEq(oc.quoteToken, address(quote));
     }
@@ -171,7 +171,10 @@ contract SupraSValueOracleFactoryTest is Test {
         factory.verifyConfig(cfg);
 
         cfg.pairId = PAIR_ID;
-        factory.verifyConfig(cfg);
+        (uint256 divider, uint256 multiplier, uint8 priceDecimals, ISupraSValueFeed supraFeed) = factory.verifyConfig(cfg);
+        assertTrue(divider != 0 || multiplier != 0);
+        assertEq(priceDecimals, 8);
+        assertEq(address(supraFeed), address(feed));
     }
 
     function test_SupraSValueOracle_verifyConfig_missing_pair_data_reverts() public {

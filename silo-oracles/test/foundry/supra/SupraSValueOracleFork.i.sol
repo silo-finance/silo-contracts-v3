@@ -36,7 +36,7 @@ contract SupraSValueOracleForkIntegrationTest is Test {
             pairId: DEFAULT_XDC_USDT_PAIR_ID
         });
 
-        ISupraSValueOracle oracle = factory.create({_config: cfg, _externalSalt: bytes32("xdc-fork")});
+        ISupraSValueOracle oracle = factory.create({_config: cfg, _externalSalt: bytes32(0)});
 
         uint256 expectedPrice = 0.0306465e18;
         uint256 rawPrice = oracle.readPrice();

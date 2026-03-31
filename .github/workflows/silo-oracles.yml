@@ -12,6 +12,7 @@ env:
   RPC_AVALANCHE: ${{ secrets.RPC_AVALANCHE }}
   RPC_ANVIL: ${{ secrets.RPC_ANVIL }}
   RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
+  RPC_XDC: ${{ secrets.RPC_XDC }}
   PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
 
 on:

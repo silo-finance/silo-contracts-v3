@@ -21,7 +21,7 @@ contract SupraSValueOracleForkIntegrationTest is Test {
         ISupraOraclePull_V2(0x2FA6DbFe4291136Cf272E1A3294362b6651e8517);
 
     function setUp() public {
-        vm.createSelectFork(vm.envString("RPC_XDC"));
+        vm.createSelectFork(vm.envString("RPC_XDC"), 100941205);
     }
 
     function test_fork_xdc_deploy_and_read_price() public {

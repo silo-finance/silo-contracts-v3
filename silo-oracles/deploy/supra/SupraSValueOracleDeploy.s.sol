@@ -41,7 +41,7 @@ contract SupraSValueOracleDeploy is CommonDeploy {
         ISupraSValueOracleFactory factory = ISupraSValueOracleFactory(factoryAddr);
 
         vm.startBroadcast(deployerPrivateKey);
-        oracle = factory.create(cfg, externalSalt);
+        oracle = factory.create({_config: cfg, _externalSalt: externalSalt});
         vm.stopBroadcast();
 
         string memory oracleName = string.concat("SUPRA_SVALUE_ORACLE_", vm.toString(cfg.pairId));
@@ -50,12 +50,16 @@ contract SupraSValueOracleDeploy is CommonDeploy {
         console2.log("SupraSValueOracle:", address(oracle));
         console2.log("Oracle name (deployments key):", oracleName);
 
-        _qa(oracle, address(cfg.baseToken));
+        _qa({_oracle: oracle, _baseToken: address(cfg.baseToken)});
     }
 
     function _qa(ISupraSValueOracle _oracle, address _baseToken) internal view {
         uint256 oneBase = 10 ** IERC20Metadata(_baseToken).decimals();
-        uint256 quote = _printQuote(ISiloOracle(address(_oracle)), _baseToken, oneBase);
+        uint256 quote = _printQuote({
+            _oracle: ISiloOracle(address(_oracle)),
+            _baseToken: _baseToken,
+            _baseAmount: oneBase
+        });
 
         string memory baseSymbol = IERC20Metadata(_baseToken).symbol();
         string memory quoteSymbol = IERC20Metadata(ISiloOracle(address(_oracle)).quoteToken()).symbol();

@@ -16,7 +16,7 @@ import {SupraSValueOracleFactory} from "silo-oracles/contracts/supra/SupraSValue
 */
 contract SupraSValueOracleForkIntegrationTest is Test {
     uint256 internal constant DEFAULT_XDC_USDT_PAIR_ID = 150;
-    
+
     ISupraOraclePull_V2 internal constant SUPRA_XDC_ORACLE_PULL =
         ISupraOraclePull_V2(0x2FA6DbFe4291136Cf272E1A3294362b6651e8517);
 
@@ -36,13 +36,13 @@ contract SupraSValueOracleForkIntegrationTest is Test {
             pairId: DEFAULT_XDC_USDT_PAIR_ID
         });
 
-        ISupraSValueOracle oracle = factory.create(cfg, bytes32("xdc-fork"));
+        ISupraSValueOracle oracle = factory.create({_config: cfg, _externalSalt: bytes32("xdc-fork")});
 
         uint256 expectedPrice = 0.0306465e18;
         uint256 rawPrice = oracle.readPrice();
         assertEq(rawPrice, expectedPrice, "Supra raw price");
 
-        uint256 quote = ISiloOracle(address(oracle)).quote(1e18, address(baseToken));
+        uint256 quote = ISiloOracle(address(oracle)).quote({_baseAmount: 1e18, _baseToken: address(baseToken)});
         assertEq(quote, expectedPrice, "Oracle quote");
     }
 }

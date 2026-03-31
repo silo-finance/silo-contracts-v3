@@ -50,7 +50,7 @@ contract SupraSValueOracleFactoryTest is Test {
     uint256 internal constant PAIR_ID = 150;
 
     function setUp() public {
-        feed.setData(PAIR_ID, 1, 8, block.timestamp, 2e8);
+        feed.setData({_pairId: PAIR_ID, _round: 1, _decimals: 8, _time: block.timestamp, _price: 2e8});
         oraclePull.setFeed(address(feed));
         factory = new SupraSValueOracleFactory(ISupraOraclePull_V2(address(oraclePull)));
     }
@@ -63,49 +63,49 @@ contract SupraSValueOracleFactoryTest is Test {
     function test_SupraSValueOracle_predict_matches_create() public {
         ISupraSValueOracle.DeploymentConfig memory cfg = _cfg();
 
-        address predicted = factory.predictAddress(address(this), keccak256("salt"));
-        ISupraSValueOracle oracle = factory.create(cfg, keccak256("salt"));
+        address predicted = factory.predictAddress({_deployer: address(this), _externalSalt: keccak256("salt")});
+        ISupraSValueOracle oracle = factory.create({_config: cfg, _externalSalt: keccak256("salt")});
         assertEq(address(oracle), predicted);
     }
 
     function test_SupraSValueOracle_each_create_new_oracle_same_config_distinct_address() public {
         ISupraSValueOracle.DeploymentConfig memory cfg = _cfg();
         bytes32 salt = keccak256("same");
-        ISupraSValueOracle a = factory.create(cfg, salt);
-        ISupraSValueOracle b = factory.create(cfg, salt);
+        ISupraSValueOracle a = factory.create({_config: cfg, _externalSalt: salt});
+        ISupraSValueOracle b = factory.create({_config: cfg, _externalSalt: salt});
         assertNotEq(address(a), address(b), "each create deploys a new clone (nonce advances)");
     }
 
     function test_SupraSValueOracle_quote_auto_normalization() public {
         ISupraSValueOracle.DeploymentConfig memory cfg = _cfg();
-        ISupraSValueOracle oracle = factory.create(cfg, keccak256("x"));
+        ISupraSValueOracle oracle = factory.create({_config: cfg, _externalSalt: keccak256("x")});
 
-        uint256 q = ISiloOracle(address(oracle)).quote(1e18, address(base));
+        uint256 q = ISiloOracle(address(oracle)).quote({_baseAmount: 1e18, _baseToken: address(base)});
         assertEq(q, 1e18 * 2e8 * 1e4, "expected quote with 18 decimals");
     }
 
     function test_SupraSValueOracle_zero_price_reverts_on_quote() public {
-        feed.setData(PAIR_ID, 1, 8, block.timestamp, 0);
+        feed.setData({_pairId: PAIR_ID, _round: 1, _decimals: 8, _time: block.timestamp, _price: 0});
 
-        ISupraSValueOracle oracle = factory.create(_cfg(), keccak256("z"));
+        ISupraSValueOracle oracle = factory.create({_config: _cfg(), _externalSalt: keccak256("z")});
         vm.expectRevert(ISupraSValueOracle.ZeroQuote.selector);
-        ISiloOracle(address(oracle)).quote(1e18, address(base));
+        ISiloOracle(address(oracle)).quote({_baseAmount: 1e18, _baseToken: address(base)});
     }
 
     function test_SupraSValueOracle_old_price_does_not_revert() public {
-        ISupraSValueOracle oracle = factory.create(_cfg(), keccak256("stale"));
+        ISupraSValueOracle oracle = factory.create({_config: _cfg(), _externalSalt: keccak256("stale")});
         vm.warp(2 hours);
-        feed.setData(PAIR_ID, 2, 8, block.timestamp - 1 hours, 2e8);
+        feed.setData({_pairId: PAIR_ID, _round: 2, _decimals: 8, _time: block.timestamp - 1 hours, _price: 2e8});
 
-        uint256 q = ISiloOracle(address(oracle)).quote(1e18, address(base));
+        uint256 q = ISiloOracle(address(oracle)).quote({_baseAmount: 1e18, _baseToken: address(base)});
         assertEq(q, 1e18 * 2e8 * 1e4, "stale timestamp should be accepted when time is non-zero");
     }
 
     function test_SupraSValueOracle_zero_time_reverts() public {
-        feed.setData(PAIR_ID, 1, 8, 0, 2e8);
+        feed.setData({_pairId: PAIR_ID, _round: 1, _decimals: 8, _time: 0, _price: 2e8});
 
         vm.expectRevert(ISupraSValueOracle.TimeStampZero.selector);
-        factory.create(_cfg(), keccak256("zero-time"));
+        factory.create({_config: _cfg(), _externalSalt: keccak256("zero-time")});
     }
 
     function test_SupraSValueOracle_BaseTokenDecimalsAbove18() public {
@@ -113,11 +113,11 @@ contract SupraSValueOracleFactoryTest is Test {
         cfg.baseToken = IERC20Metadata(address(new MintableToken(19)));
 
         vm.expectRevert(ISupraSValueOracle.BaseTokenDecimalsAbove18.selector);
-        factory.create(cfg, keccak256("too-many-decimals"));
+        factory.create({_config: cfg, _externalSalt: keccak256("too-many-decimals")});
     }
 
     function test_SupraSValueOracle_getConfig_exposes_fields() public {
-        ISupraSValueOracle oracle = factory.create(_cfg(), keccak256("c"));
+        ISupraSValueOracle oracle = factory.create({_config: _cfg(), _externalSalt: keccak256("c")});
         ISupraSValueOracle.OracleConfig memory oc = oracle.getConfig();
 
         assertEq(oc.pairId, PAIR_ID);
@@ -127,22 +127,22 @@ contract SupraSValueOracleFactoryTest is Test {
     }
 
     function test_SupraSValueOracle_VERSION() public {
-        ISupraSValueOracle oracle = factory.create(_cfg(), keccak256("v"));
+        ISupraSValueOracle oracle = factory.create({_config: _cfg(), _externalSalt: keccak256("v")});
         assertEq(IVersioned(address(oracle)).VERSION(), "SupraSValueOracle 4.7.0");
     }
 
     function test_SupraSValueOracle_readPrice() public {
-        ISupraSValueOracle oracle = factory.create(_cfg(), keccak256("v"));
+        ISupraSValueOracle oracle = factory.create({_config: _cfg(), _externalSalt: keccak256("v")});
         assertEq(oracle.readPrice(), 2e8, "direct read should match feed");
     }
 
     function test_SupraSValueOracle_baseToken() public {
-        ISupraSValueOracle oracle = factory.create(_cfg(), keccak256("v"));
+        ISupraSValueOracle oracle = factory.create({_config: _cfg(), _externalSalt: keccak256("v")});
         assertEq(Aggregator(address(oracle)).baseToken(), address(base), "baseToken should match the base token");
     }
 
     function test_SupraSValueOracle_beforeQuote() public {
-        ISupraSValueOracle oracle = factory.create(_cfg(), keccak256("v"));
+        ISupraSValueOracle oracle = factory.create({_config: _cfg(), _externalSalt: keccak256("v")});
         ISiloOracle(address(oracle)).beforeQuote(address(0));
     }
 

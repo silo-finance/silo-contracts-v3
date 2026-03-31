@@ -2,7 +2,6 @@
 pragma solidity 0.8.28;
 
 import {console2} from "forge-std/console2.sol";
-import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 
 import {ISiloDeployer} from "silo-core/contracts/interfaces/ISiloDeployer.sol";
 
@@ -10,11 +9,7 @@ import {ISupraOraclePull_V2} from "silo-oracles/contracts/interfaces/ISupraOracl
 import {ISupraSValueFeed} from "silo-oracles/contracts/interfaces/ISupraSValueFeed.sol";
 import {ISupraSValueOracle} from "silo-oracles/contracts/interfaces/ISupraSValueOracle.sol";
 import {ISupraSValueOracleFactory} from "silo-oracles/contracts/interfaces/ISupraSValueOracleFactory.sol";
-import {SupraSValueOracleFactoryDeploy} from "silo-oracles/deploy/supra/SupraSValueOracleFactoryDeploy.s.sol";
-import {
-    SiloOraclesFactoriesDeployments,
-    SiloOraclesFactoriesContracts
-} from "silo-oracles/deploy/SiloOraclesFactoriesContracts.sol";
+import {SupraSValueOracleFactory} from "silo-oracles/contracts/supra/SupraSValueOracleFactory.sol";
 
 import {SiloDeployerWithOracle} from "./SiloDeployerWithOracle.sol";
 
@@ -37,6 +32,10 @@ contract _SupraOraclePullV2Mock is ISupraOraclePull_V2 {
         _feed = _feedAddress;
     }
 
+    function setFeed(address _feedAddress) external {
+        _feed = _feedAddress;
+    }
+
     function checkSupraSValueFeed() external view returns (address) {
         return _feed;
     }
@@ -47,6 +46,8 @@ contract _SupraOraclePullV2Mock is ISupraOraclePull_V2 {
 */
 contract SupraSValueOracleSiloDeployIntegrationTest is SiloDeployerWithOracle {
     uint256 internal constant SUPRA_XDC_PAIR_ID = 150;
+    ISupraSValueOracleFactory internal supraOracleFactory;
+    _SupraOraclePullV2Mock internal oraclePullMock;
 
     function test_siloDeployer_SupraSValueOracle() public {
         _deployMarket();
@@ -63,33 +64,24 @@ contract SupraSValueOracleSiloDeployIntegrationTest is SiloDeployerWithOracle {
     }
 
     function _deployOracleFactory() internal override {
-        SupraSValueOracleFactoryDeploy oracleFactoryDeploy = new SupraSValueOracleFactoryDeploy();
-        oracleFactoryDeploy.disableDeploymentsSync();
-        oracleFactoryDeploy.run();
+        oraclePullMock = new _SupraOraclePullV2Mock(address(0));
+        supraOracleFactory = ISupraSValueOracleFactory(address(new SupraSValueOracleFactory(oraclePullMock)));
     }
 
     function _oracleTxData() internal override returns (ISiloDeployer.OracleCreationTxData memory txData) {
         _SupraFeedMock feed = new _SupraFeedMock(2e8, 8);
+        oraclePullMock.setFeed(address(feed));
 
         ISupraSValueOracle.DeploymentConfig memory cfg = ISupraSValueOracle.DeploymentConfig({
             baseToken: token0,
             quoteToken: token1,
-            supraOraclePull: ISupraOraclePull_V2(address(new _SupraOraclePullV2Mock(address(feed)))),
             pairId: SUPRA_XDC_PAIR_ID
         });
 
         txData = ISiloDeployer.OracleCreationTxData({
             deployed: address(0),
-            factory: address(_resolveSupraSValueOracleFactory()),
+            factory: address(supraOracleFactory),
             txInput: abi.encodeCall(ISupraSValueOracleFactory.create, (cfg, bytes32(0)))
         });
-    }
-
-    function _resolveSupraSValueOracleFactory() internal returns (ISupraSValueOracleFactory factory) {
-        factory = ISupraSValueOracleFactory(
-            SiloOraclesFactoriesDeployments.get(
-                SiloOraclesFactoriesContracts.SUPRA_SVALUE_ORACLE_FACTORY, ChainsLib.chainAlias()
-            )
-        );
     }
 }

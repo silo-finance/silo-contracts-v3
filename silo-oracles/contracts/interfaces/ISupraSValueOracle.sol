@@ -6,7 +6,7 @@ import {ISupraOraclePull_V2} from "./ISupraOraclePull_V2.sol";
 
 /// @notice Silo final oracle backed by Supra S-Value feed.
 /// @dev Integration flow:
-/// 1) Config stores `supraOraclePull` address (not feed address).
+/// 1) Factory stores immutable `supraOraclePull` address.
 /// 2) On each read, oracle resolves current feed via `ISupraOraclePull_V2.checkSupraSValueFeed()`.
 /// 3) Oracle reads pair data from resolved feed with `getSvalue(pairId)`.
 /// This avoids oracle/config redeploys if Supra rotates feed contract address.
@@ -14,7 +14,6 @@ interface ISupraSValueOracle {
     struct DeploymentConfig {
         IERC20Metadata baseToken;
         IERC20Metadata quoteToken;
-        ISupraOraclePull_V2 supraOraclePull;
         uint256 pairId;
     }
 
@@ -42,7 +41,7 @@ interface ISupraSValueOracle {
     error InvalidDecimals();
 
     function initialize(address _oracleConfig) external;
-    
+
     function getConfig() external view returns (OracleConfig memory);
 
     function readPrice() external view returns (uint256);

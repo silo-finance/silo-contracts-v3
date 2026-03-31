@@ -13,7 +13,6 @@ import {ISupraOraclePull_V2} from "silo-oracles/contracts/interfaces/ISupraOracl
 import {ISupraSValueFeed} from "silo-oracles/contracts/interfaces/ISupraSValueFeed.sol";
 import {ISupraSValueOracle} from "silo-oracles/contracts/interfaces/ISupraSValueOracle.sol";
 import {SupraSValueOracleFactory} from "silo-oracles/contracts/supra/SupraSValueOracleFactory.sol";
-import {SupraSValueOracleFactoryDeploy} from "silo-oracles/deploy/supra/SupraSValueOracleFactoryDeploy.s.sol";
 
 contract MockSupraFeed is ISupraSValueFeed {
     mapping(uint256 => PriceFeed) public data;
@@ -53,10 +52,12 @@ contract SupraSValueOracleFactoryTest is Test {
     function setUp() public {
         feed.setData(PAIR_ID, 1, 8, block.timestamp, 2e8);
         oraclePull.setFeed(address(feed));
+        factory = new SupraSValueOracleFactory(ISupraOraclePull_V2(address(oraclePull)));
+    }
 
-        SupraSValueOracleFactoryDeploy deployer = new SupraSValueOracleFactoryDeploy();
-        deployer.disableDeploymentsSync();
-        factory = SupraSValueOracleFactory(address(deployer.run()));
+    function test_SupraSValueOracle_constructor_reverts_on_zero_oracle_pull() public {
+        vm.expectRevert(ISupraSValueOracle.AddressZero.selector);
+        new SupraSValueOracleFactory(ISupraOraclePull_V2(address(0)));
     }
 
     function test_SupraSValueOracle_predict_matches_create() public {
@@ -156,10 +157,6 @@ contract SupraSValueOracleFactoryTest is Test {
         factory.verifyConfig(cfg);
 
         cfg.quoteToken = IERC20Metadata(address(base));
-        vm.expectRevert(ISupraSValueOracle.AddressZero.selector);
-        factory.verifyConfig(cfg);
-
-        cfg.supraOraclePull = ISupraOraclePull_V2(address(oraclePull));
         vm.expectRevert(ISupraSValueOracle.TokensAreTheSame.selector);
         factory.verifyConfig(cfg);
 
@@ -181,7 +178,6 @@ contract SupraSValueOracleFactoryTest is Test {
     function _cfg() internal view returns (ISupraSValueOracle.DeploymentConfig memory cfg) {
         cfg.baseToken = base;
         cfg.quoteToken = quote;
-        cfg.supraOraclePull = ISupraOraclePull_V2(address(oraclePull));
         cfg.pairId = PAIR_ID;
     }
 }

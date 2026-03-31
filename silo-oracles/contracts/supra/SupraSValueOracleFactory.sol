@@ -16,8 +16,12 @@ import {SupraSValueOracleConfig} from "./SupraSValueOracleConfig.sol";
 
 contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
     address public immutable ORACLE_IMPLEMENTATION; // solhint-disable-line var-name-mixedcase
+    ISupraOraclePull_V2 public immutable SUPRA_ORACLE_PULL; // solhint-disable-line var-name-mixedcase
 
-    constructor() {
+    constructor(ISupraOraclePull_V2 _supraOraclePull) {
+        require(address(_supraOraclePull) != address(0), ISupraSValueOracle.AddressZero());
+
+        SUPRA_ORACLE_PULL = _supraOraclePull;
         ORACLE_IMPLEMENTATION = address(new SupraSValueOracle());
     }
 
@@ -30,7 +34,7 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         ISupraSValueOracle.OracleConfig memory cfg = ISupraSValueOracle.OracleConfig({
             baseToken: address(_config.baseToken),
             quoteToken: address(_config.quoteToken),
-            supraOraclePull: _config.supraOraclePull,
+            supraOraclePull: SUPRA_ORACLE_PULL,
             pairId: _config.pairId,
             normalizationDivider: divider,
             normalizationMultiplier: multiplier
@@ -53,7 +57,6 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
     {
         require(address(_config.baseToken) != address(0), ISupraSValueOracle.AddressZero());
         require(address(_config.quoteToken) != address(0), ISupraSValueOracle.AddressZero());
-        require(address(_config.supraOraclePull) != address(0), ISupraSValueOracle.AddressZero());
         require(address(_config.baseToken) != address(_config.quoteToken), ISupraSValueOracle.TokensAreTheSame());
         require(_config.pairId != 0, ISupraSValueOracle.PairIdMustBeNonZero());
 
@@ -94,7 +97,7 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         view
         returns (uint8 priceDecimals)
     {
-        address supraFeed = _config.supraOraclePull.checkSupraSValueFeed();
+        address supraFeed = SUPRA_ORACLE_PULL.checkSupraSValueFeed();
         require(supraFeed != address(0), ISupraSValueOracle.AddressZero());
 
         ISupraSValueFeed.PriceFeed memory data = ISupraSValueFeed(supraFeed).getSvalue(_config.pairId);

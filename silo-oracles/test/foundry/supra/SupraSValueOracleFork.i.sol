@@ -25,7 +25,7 @@ contract SupraSValueOracleForkIntegrationTest is Test {
     }
 
     function test_fork_xdc_deploy_and_read_price() public {
-        SupraSValueOracleFactory factory = new SupraSValueOracleFactory();
+        SupraSValueOracleFactory factory = new SupraSValueOracleFactory(SUPRA_XDC_ORACLE_PULL);
 
         MintableToken baseToken = new MintableToken(18);
         MintableToken quoteToken = new MintableToken(6);
@@ -33,7 +33,6 @@ contract SupraSValueOracleForkIntegrationTest is Test {
         ISupraSValueOracle.DeploymentConfig memory cfg = ISupraSValueOracle.DeploymentConfig({
             baseToken: IERC20Metadata(address(baseToken)),
             quoteToken: IERC20Metadata(address(quoteToken)),
-            supraOraclePull: SUPRA_XDC_ORACLE_PULL,
             pairId: DEFAULT_XDC_USDT_PAIR_ID
         });
 

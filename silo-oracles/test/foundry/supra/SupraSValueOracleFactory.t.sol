@@ -76,6 +76,9 @@ contract SupraSValueOracleFactoryTest is Test {
         assertNotEq(address(a), address(b), "each create deploys a new clone (nonce advances)");
     }
 
+    /*
+    FOUNDRY_PROFILE=oracles forge test --mt test_SupraSValueOracle_quote_auto_normalization -vv
+    */
     function test_SupraSValueOracle_quote_auto_normalization() public {
         ISupraSValueOracle.DeploymentConfig memory cfg = _cfg();
         ISupraSValueOracle oracle = factory.create({_config: cfg, _externalSalt: keccak256("x")});
@@ -94,11 +97,10 @@ contract SupraSValueOracleFactoryTest is Test {
 
     function test_SupraSValueOracle_old_price_does_not_revert() public {
         ISupraSValueOracle oracle = factory.create({_config: _cfg(), _externalSalt: keccak256("stale")});
-        vm.warp(2 hours);
-        feed.setData({_pairId: PAIR_ID, _round: 2, _decimals: 8, _time: block.timestamp - 1 hours, _price: 2e8});
+        feed.setData({_pairId: PAIR_ID, _round: 2, _decimals: 8, _time: block.timestamp - 100 days, _price: 1e8});
 
-        uint256 q = ISiloOracle(address(oracle)).quote({_baseAmount: 1e18, _baseToken: address(base)});
-        assertEq(q, 1e18 * 2e8 * 1e4, "stale timestamp should be accepted when time is non-zero");
+        uint256 q = ISiloOracle(address(oracle)).quote({_baseAmount: 1e6, _baseToken: address(base)});
+        assertEq(q, 1e6 * 1e8 * 1e4, "stale timestamp should be accepted when time is non-zero");
     }
 
     function test_SupraSValueOracle_zero_time_reverts() public {

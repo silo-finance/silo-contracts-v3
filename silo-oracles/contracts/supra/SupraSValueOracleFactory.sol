@@ -50,6 +50,18 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         emit ISupraSValueOracle.SupraSValueConfigDeployed(address(oracleConfig), priceDecimals);
     }
 
+    function predictAddress(address _deployer, bytes32 _externalSalt)
+        external
+        view
+        returns (address predictedAddress)
+    {
+        require(_deployer != address(0), DeployerCannotBeZero());
+
+        predictedAddress = Clones.predictDeterministicAddress({
+            implementation: ORACLE_IMPLEMENTATION, salt: _createSalt(_deployer, _externalSalt)
+        });
+    }
+
     function verifyConfig(ISupraSValueOracle.DeploymentConfig memory _config)
         public
         view
@@ -65,18 +77,6 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
 
         (normalizationDivider, normalizationMultiplier) = OracleNormalization.calculateNormalizationData({
             _baseDecimals: baseDecimals, _priceDecimals: priceDecimals
-        });
-    }
-
-    function predictAddress(address _deployer, bytes32 _externalSalt)
-        external
-        view
-        returns (address predictedAddress)
-    {
-        require(_deployer != address(0), DeployerCannotBeZero());
-
-        predictedAddress = Clones.predictDeterministicAddress({
-            implementation: ORACLE_IMPLEMENTATION, salt: _createSalt(_deployer, _externalSalt)
         });
     }
 

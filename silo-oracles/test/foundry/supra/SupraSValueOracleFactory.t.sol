@@ -51,6 +51,7 @@ contract SupraSValueOracleFactoryTest is Test {
 
     function setUp() public {
         feed.setData({_pairId: PAIR_ID, _round: 1, _decimals: 8, _time: block.timestamp, _price: 2e8});
+        feed.setData({_pairId: 0, _round: 1, _decimals: 8, _time: block.timestamp, _price: 1e8});
         oraclePull.setFeed(address(feed));
         factory = new SupraSValueOracleFactory(ISupraOraclePull_V2(address(oraclePull)));
     }
@@ -167,7 +168,7 @@ contract SupraSValueOracleFactoryTest is Test {
         factory.verifyConfig(cfg);
 
         cfg.quoteToken = IERC20Metadata(address(quote));
-        vm.expectRevert(ISupraSValueOracle.PairIdMustBeNonZero.selector);
+        cfg.pairId = 0;
         factory.verifyConfig(cfg);
 
         cfg.pairId = PAIR_ID;

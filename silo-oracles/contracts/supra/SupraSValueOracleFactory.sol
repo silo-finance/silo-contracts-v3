@@ -75,7 +75,6 @@ contract SupraSValueOracleFactory is Create2Factory, ISupraSValueOracleFactory {
         require(address(_config.baseToken) != address(0), ISupraSValueOracle.AddressZero());
         require(address(_config.quoteToken) != address(0), ISupraSValueOracle.AddressZero());
         require(address(_config.baseToken) != address(_config.quoteToken), ISupraSValueOracle.TokensAreTheSame());
-        require(_config.pairId != 0, ISupraSValueOracle.PairIdMustBeNonZero());
 
         uint8 baseDecimals = _baseTokenDecimals(_config);
         (priceDecimals, supraFeed) = _readSupraDecimalsAndFeed(_config);

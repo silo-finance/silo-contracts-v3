@@ -33,7 +33,6 @@ interface ISupraSValueOracle {
     error AssetNotSupported();
     error BaseAmountOverflow();
     error BaseTokenDecimalsAbove18();
-    error PairIdMustBeNonZero();
     error InvalidPairId();
     error TimeStampZero();
     error ZeroQuote();

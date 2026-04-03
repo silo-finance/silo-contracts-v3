@@ -6,6 +6,7 @@ import {console2} from "forge-std/console2.sol";
 import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {AddrKey} from "common/addresses/AddrKey.sol";
+import {RevertLib} from "silo-core/contracts/lib/RevertLib.sol";
 
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 import {Ownable} from "openzeppelin5/access/Ownable2Step.sol";
@@ -23,19 +24,42 @@ import {Utils} from "silo-core/deploy/silo/verifier/Utils.sol";
 import {IWrappedNativeToken} from "silo-core/contracts/interfaces/IWrappedNativeToken.sol";
 import {InjectiveWorkaround} from "../_common/InjectiveWorkaround.sol";
 
+import {IManageableOracle} from "silo-oracles/contracts/interfaces/IManageableOracle.sol";
+import {ChainlinkV3Oracle} from "silo-oracles/contracts/chainlinkV3/ChainlinkV3Oracle.sol";
+import {AggregatorV3Interface} from "chainlink/v0.8/interfaces/AggregatorV3Interface.sol";
+
 interface OldGauge {
     function killGauge() external;
 }
+
+// RedStone Interfaces
+interface EthereumMultiFeedAdapterWithoutRoundsV3 {
+    function getLastUpdateDetails(bytes32 dataFeedId)
+        external
+        view
+        returns (uint256 lastDataTimestamp, uint256 lastBlockTimestamp, uint256 lastValue);
+}
+
+interface EthereumPriceFeedMsyFundamentalusdWithoutRoundsV1 {
+    function description() external view returns (string memory);
+    function getDataFeedId() external view returns (bytes32);
+    function getPriceFeedAdapter() external view returns (EthereumMultiFeedAdapterWithoutRoundsV3);
+}
+// END
+
+error InvalidLastUpdateDetails(
+    bytes32 dataFeedId, uint256 lastDataTimestamp, uint256 lastBlockTimestamp, uint256 lastValue
+);
 
 /*
     The test is designed to be run right after the silo lending market deployment.
     It is excluded from the general tests CI pipeline and has separate workflow.
 
     FOUNDRY_INJECTIVE=true \
-    FOUNDRY_PROFILE=core_test CONFIG=0x0d419DC8128D5738a62753DeB8eA3508AEd95253 \
+    FOUNDRY_PROFILE=core_test CONFIG=0xb61AD7976c49F1Fd651d183491f5e2a28d7Ece17 \
     EXTERNAL_PRICE_0=30 \
     EXTERNAL_PRICE_1=1000 \
-    RPC_URL=$RPC_XDC \
+    RPC_URL=$RPC_MAINNET \
     forge test --mc "NewMarketTest" --ffi -vvv --mt test_newMarketTest_borrowSilo1
  */
 // solhint-disable var-name-mixedcase
@@ -180,7 +204,23 @@ contract NewMarketTest is InjectiveWorkaround {
         }
 
         console2.log("\t- check for maxBorrow...");
-        uint256 maxBorrow = _scenario.debtSilo.maxBorrow(borrower);
+        uint256 maxBorrow;
+
+        try _scenario.debtSilo.maxBorrow(borrower) returns (uint256 _maxBorrow) {
+            maxBorrow = _maxBorrow;
+        } catch (bytes memory returnData) {
+            (bool isRedstone, uint256 aggregatorLastPrice) = _checkIfRedstoneInvalidLastUpdateDetails(returnData);
+
+            if (isRedstone) {
+                address oracle =
+                    _scenario.collateralSilo.config().getConfig(address(_scenario.collateralSilo)).solvencyOracle;
+                _mockRedstoneAggretatorWithLastValue(oracle, aggregatorLastPrice);
+                maxBorrow = _scenario.debtSilo.maxBorrow(borrower);
+            } else {
+                RevertLib.revertBytes(returnData, "max borrow failed");
+            }
+        }
+
         console2.log("\t- check for maxBorrow", maxBorrow);
 
         uint256 colateralMaxLtv = SILO_CONFIG.getConfig(address(_scenario.collateralSilo)).maxLtv;
@@ -346,18 +386,75 @@ contract NewMarketTest is InjectiveWorkaround {
         try OldGauge(_gauge).killGauge() {} catch {}
     }
 
-    function _findNonZeroQuote(ISilo _debtSilo) internal view returns (uint256 nonZeroAmount) {
+    function _findNonZeroQuote(ISilo _debtSilo) internal returns (uint256 nonZeroAmount) {
         uint256 power;
         do {
             ISiloOracle oracle = ISiloOracle(_debtSilo.config().getConfig(address(_debtSilo)).solvencyOracle);
 
             try oracle.quote(10 ** power, address(_debtSilo.asset())) returns (uint256) {
                 return 10 ** power;
-            } catch {
+            } catch (bytes memory returnData) {
+                (bool isRedstone, uint256 aggregatorLastPrice) = _checkIfRedstoneInvalidLastUpdateDetails(returnData);
+
+                if (isRedstone) {
+                    _mockRedstoneAggretatorWithLastValue(address(oracle), aggregatorLastPrice);
+                    return 10 ** power;
+                }
+
+                console2.log("fail for", 10 ** power);
                 power++;
             }
         } while (power < 6);
 
         revert("No non-zero quote found");
+    }
+
+    /// @dev Revert payload: 4-byte selector + abi.encode(bytes32,uint256,uint256,uint256).
+    function _returnDataAfterSelector(bytes memory returnData) internal pure returns (bytes memory payload) {
+        require(returnData.length > 4, "returnData too short");
+        payload = new bytes(returnData.length - 4);
+        for (uint256 i; i < payload.length; ++i) {
+            payload[i] = returnData[i + 4];
+        }
+    }
+
+    function _checkIfRedstoneInvalidLastUpdateDetails(bytes memory returnData)
+        internal
+        pure
+        returns (bool check, uint256 aggregatorLastPrice)
+    {
+        // forge-lint: disable-next-line(unsafe-typecast)
+        bytes4 sel = bytes4(returnData);
+
+        if (sel == InvalidLastUpdateDetails.selector) {
+            (, uint256 lastDataTimestamp, uint256 lastBlockTimestamp, uint256 lastValue) =
+                abi.decode(_returnDataAfterSelector(returnData), (bytes32, uint256, uint256, uint256));
+
+            console2.log("\t\tInvalidLastUpdateDetails on Redstone aggregator");
+            console2.log("\t\tlastDataTimestamp", lastDataTimestamp);
+            console2.log("\t\tlastBlockTimestamp", lastBlockTimestamp);
+            console2.log("\t\tlastValue", lastValue);
+
+            return (true, lastValue);
+        }
+    }
+
+    function _mockRedstoneAggretatorWithLastValue(address _oracle, uint256 _lastValue) internal {
+        ChainlinkV3Oracle c = ChainlinkV3Oracle(_oracle);
+
+        try IManageableOracle(_oracle).oracle() returns (ISiloOracle oracle) {
+            c = ChainlinkV3Oracle(address(oracle));
+            console2.log("\t\tOracle is ManageableOracle -> ChainlinkV3Oracle");
+        } catch {
+            console2.log("\t\tOracle is ChainlinkV3Oracle");
+        }
+
+        address aggregator = address(c.oracleConfig().getConfig().primaryAggregator);
+
+        vm.mockCall(
+            aggregator,
+            abi.encodeWithSelector(AggregatorV3Interface.latestRoundData.selector),
+            abi.encode(0, _lastValue, 0, 0, 0)
+        );
     }
 }

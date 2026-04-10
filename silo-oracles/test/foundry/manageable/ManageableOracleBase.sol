@@ -3,6 +3,8 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 
+import {RevertingOracle} from "silo-oracles/contracts/reverting/RevertingOracle.sol";
+
 import {IERC20Metadata} from "silo-oracles/test/foundry/interfaces/IERC20Metadata.sol";
 import {ManageableOracleFactory} from "silo-oracles/contracts/manageable/ManageableOracleFactory.sol";
 import {IManageableOracleFactory} from "silo-oracles/contracts/interfaces/IManageableOracleFactory.sol";
@@ -395,6 +397,30 @@ abstract contract ManageableOracleBase is Test {
         assertEq(pendingOracleValue, address(0), "pendingOracle not cleared after accept");
         assertEq(pendingOracleValidAt, 0, "pendingOracle validAt not cleared after accept");
         assertEq(address(oracle.oracle()), address(otherOracleMock), "oracle not updated after accept");
+    }
+    
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_proposeOracle_ThisOracleAlwaysReverts
+    */
+    function test_proposeOracle_ThisOracleAlwaysReverts() public {
+        RevertingOracle oracleReverts = new RevertingOracle();
+
+        vm.prank(owner);
+        oracle.proposeOracle(oracleReverts);
+
+        vm.warp(block.timestamp + TIMELOCK);
+        vm.prank(owner);
+        oracle.acceptOracle();
+
+        assertEq(oracleReverts.quote(1e6, baseToken), 1, "It does not revert if it is not active yet");
+
+        vm.expectRevert(RevertingOracle.ThisOracleAlwaysReverts.selector);
+        ISiloOracle(address(oracle)).quote(1e6, baseToken);
+
+        vm.expectRevert(RevertingOracle.ThisOracleAlwaysReverts.selector);
+        ISiloOracle(address(oracle)).beforeQuote(baseToken);
+
+        assertEq(oracleReverts.quote(1e6, baseToken), 1, "It does not revert if it is not asked by manageable oracle");
     }
 
     /*

@@ -6,9 +6,10 @@ import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IManageableOracle} from "silo-oracles/contracts/interfaces/IManageableOracle.sol";
 
+/// @dev this oracle is created to use as underlying for ManageableOracle.
+/// It will pass the verification process so it can be set as underlying oracle, 
+/// but once it is set, it will always revert.
 contract RevertingOracle is Aggregator, IVersioned, ISiloOracle {
-    string private constant _MANAGEABLE_ORACLE_VERSION = "ManageableOracle";
-
     error ThisOracleAlwaysReverts();
 
     function description() external view virtual override returns (string memory) {
@@ -50,28 +51,8 @@ contract RevertingOracle is Aggregator, IVersioned, ISiloOracle {
     }
 
     function _isRevertingActive() internal view returns (bool) {
-        if (!_detectManageableOracle()) return false;
-
-        return address(IManageableOracle(msg.sender).oracle()) == address(this);
-    }
-
-    function _detectManageableOracle() internal view returns (bool) {
-        uint256 versionLength = bytes(_MANAGEABLE_ORACLE_VERSION).length;
-
-        try IVersioned(msg.sender).VERSION() returns (string memory version) {
-            if (bytes(version).length < versionLength) {
-                return false;
-            }
-
-
-            for (uint256 i = 0; i < versionLength; i++) {
-                if (bytes1(bytes(version)[i]) != bytes1(bytes(_MANAGEABLE_ORACLE_VERSION)[i])) {
-                    return false;
-                }
-            }
-            
-            return true;
-
+        try IManageableOracle(msg.sender).oracle() returns (ISiloOracle oracle) {
+            return address(oracle) == address(this);
         } catch {
             return false;
         }

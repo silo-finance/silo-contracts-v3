@@ -7,12 +7,27 @@ import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IManageableOracle} from "silo-oracles/contracts/interfaces/IManageableOracle.sol";
 
 contract RevertingOracle is Aggregator, IVersioned, ISiloOracle {
-    string private constant MANAGEABLE_ORACLE_VERSION = "ManageableOracle";
+    string private constant _MANAGEABLE_ORACLE_VERSION = "ManageableOracle";
 
     error ThisOracleAlwaysReverts();
 
     function description() external view virtual override returns (string memory) {
         return "This oracle always reverts";
+    }
+
+    /// @notice copy quote token from msg.sender
+    function quoteToken() external view override returns (address) {
+        // Purpose of this is only to pass verification on a ManageableOracle.
+        return ISiloOracle(msg.sender).quoteToken();
+    }
+
+    /// @notice always reverts
+    function beforeQuote(address /* _baseToken */) external pure override {
+        revert ThisOracleAlwaysReverts();
+    }
+
+    function VERSION() external pure override returns (string memory) { // solhint-disable-line func-name-mixedcase
+        return "RevertingOracle 4.8.0";
     }
 
     /// @notice always reverts
@@ -27,25 +42,10 @@ contract RevertingOracle is Aggregator, IVersioned, ISiloOracle {
         return 1;
     }
 
-    /// @notice always reverts
-    function beforeQuote(address /* _baseToken */) external pure override {
-        revert ThisOracleAlwaysReverts();
-    }
-
-    /// @notice copy quote token from msg.sender
-    function quoteToken() external view override returns (address) {
-        // Purpose of this is only to pass verification on a ManageableOracle.
-        return ISiloOracle(msg.sender).quoteToken();
-    }
-
     /// @notice copy base token from msg.sender
     function baseToken() public view override returns (address) {
         // Purpose of this is only to pass verification on a ManageableOracle.
         return Aggregator(msg.sender).baseToken();
-    }
-
-    function VERSION() external pure override returns (string memory) {
-        return "RevertingOracle 4.7.0";
     }
 
     function _isRevertingActive() internal view returns (bool) {
@@ -55,16 +55,16 @@ contract RevertingOracle is Aggregator, IVersioned, ISiloOracle {
     }
 
     function _detectManageableOracle() internal view returns (bool) {
-        uint256 l = bytes(MANAGEABLE_ORACLE_VERSION).length;
+        uint256 versionLength = bytes(_MANAGEABLE_ORACLE_VERSION).length;
 
         try IVersioned(msg.sender).VERSION() returns (string memory version) {
-            if (bytes(version).length < l) {
+            if (bytes(version).length < versionLength) {
                 return false;
             }
 
 
-            for (uint256 i = 0; i < l; i++) {
-                if (bytes1(bytes(version)[i]) != bytes1(bytes(MANAGEABLE_ORACLE_VERSION)[i])) {
+            for (uint256 i = 0; i < versionLength; i++) {
+                if (bytes1(bytes(version)[i]) != bytes1(bytes(_MANAGEABLE_ORACLE_VERSION)[i])) {
                     return false;
                 }
             }

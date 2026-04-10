@@ -39,6 +39,7 @@ contract RevertingOracle is Aggregator, IVersioned, ISiloOracle {
     {
         if (_isRevertingActive()) revert ThisOracleAlwaysReverts();
 
+        // Purpose of this is only to pass verification on a ManageableOracle.
         return 1;
     }
 

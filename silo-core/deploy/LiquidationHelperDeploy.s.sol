@@ -16,17 +16,18 @@ import {
 import {CommonDeploy} from "./_CommonDeploy.sol";
 
 /*
-    FOUNDRY_PROFILE=core AGGREGATOR=ENSO \
+    FOUNDRY_PROFILE=core AGGREGATOR=LI_FI \
         forge script silo-core/deploy/LiquidationHelperDeploy.s.sol:LiquidationHelperDeploy \
-        --ffi --rpc-url $RPC_AVALANCHE \
+        --ffi --rpc-url $RPC_XDC \
         --broadcast --verify
 
     Resume verification:
-    FOUNDRY_PROFILE=core AGGREGATOR=ODOS \
+    FOUNDRY_PROFILE=core AGGREGATOR=LI_FI \
         forge script silo-core/deploy/LiquidationHelperDeploy.s.sol:LiquidationHelperDeploy \
-        --ffi --rpc-url $RPC_MAINNET \
+        --ffi --rpc-url $RPC_XDC \
         --verify \
         --verifier blockscout \
+        --verifier-url $VERIFIER_URL_XDC \
         --private-key $PRIVATE_KEY \
         --resume
 
@@ -100,6 +101,7 @@ contract LiquidationHelperDeploy is CommonDeploy {
         if (_isRequestedAggregator(AGGREGATOR_ODOS)) return string.concat(mainPart, AGGREGATOR_ODOS);
         if (_isRequestedAggregator(AGGREGATOR_ENSO)) return string.concat(mainPart, AGGREGATOR_ENSO);
         if (_isRequestedAggregator(AGGREGATOR_0X)) return string.concat(mainPart, AGGREGATOR_0X);
+        if (_isRequestedAggregator(AGGREGATOR_LI_FI)) return string.concat(mainPart, AGGREGATOR_LI_FI);
 
         revert("unknown aggregator");
     }

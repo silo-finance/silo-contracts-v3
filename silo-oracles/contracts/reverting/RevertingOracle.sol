@@ -9,6 +9,8 @@ import {IManageableOracle} from "silo-oracles/contracts/interfaces/IManageableOr
 /// @dev this oracle is created to use as underlying for ManageableOracle.
 /// It will pass the verification process so it can be set as underlying oracle, 
 /// but once it is set, it will always revert.
+/// If the message sender has the oracle() method and the value of oracle() is not set 
+/// to the RevertingOracle contract, then we will not revert.
 contract RevertingOracle is Aggregator, IVersioned, ISiloOracle {
     error ThisOracleAlwaysReverts();
 
@@ -28,7 +30,7 @@ contract RevertingOracle is Aggregator, IVersioned, ISiloOracle {
     }
 
     function VERSION() external pure override returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "RevertingOracle 4.8.0";
+        return "RevertingOracle 4.9.0";
     }
 
     /// @notice always reverts
@@ -54,7 +56,7 @@ contract RevertingOracle is Aggregator, IVersioned, ISiloOracle {
         try IManageableOracle(msg.sender).oracle() returns (ISiloOracle oracle) {
             return address(oracle) == address(this);
         } catch {
-            return false;
+            return true;
         }
     }
 }

@@ -127,12 +127,15 @@ abstract contract ManageableOracleBase is Test {
             abi.encodeWithSelector(ISiloOracle.quoteToken.selector),
             abi.encode(oracleMock.quoteToken())
         );
+        
         vm.mockCall(
             revertingOracle, abi.encodeWithSelector(IManageableOracle.baseToken.selector), abi.encode(baseToken)
         );
+        
         vm.mockCallRevert(
             revertingOracle, abi.encodeWithSelector(ISiloOracle.quote.selector, 10 ** 18, baseToken), ""
         );
+
         vm.expectRevert(IManageableOracle.OracleQuoteFailed.selector);
         oracle.oracleVerification(ISiloOracle(revertingOracle));
     }
@@ -405,14 +408,26 @@ abstract contract ManageableOracleBase is Test {
     function test_proposeOracle_ThisOracleAlwaysReverts() public {
         RevertingOracle oracleReverts = new RevertingOracle();
 
+        vm.expectRevert(RevertingOracle.ThisOracleAlwaysReverts.selector);
+        oracleReverts.quote(1e6, baseToken); // It does revert if ask direcly
+
         vm.prank(owner);
         oracle.proposeOracle(oracleReverts);
+
+        vm.startPrank(address(oracle));
+        assertEq(
+            oracleReverts.quote(1e6, baseToken), 
+            1, 
+            "It does not revert if it is not active yet and call is from managable oracle"
+        );
+        vm.stopPrank();
+
+        vm.expectRevert(RevertingOracle.ThisOracleAlwaysReverts.selector);
+        ISiloOracle(address(oracleReverts)).quote(1e6, baseToken);
 
         vm.warp(block.timestamp + TIMELOCK);
         vm.prank(owner);
         oracle.acceptOracle();
-
-        assertEq(oracleReverts.quote(1e6, baseToken), 1, "It does not revert if it is not active yet");
 
         vm.expectRevert(RevertingOracle.ThisOracleAlwaysReverts.selector);
         ISiloOracle(address(oracle)).quote(1e6, baseToken);
@@ -420,7 +435,8 @@ abstract contract ManageableOracleBase is Test {
         vm.expectRevert(RevertingOracle.ThisOracleAlwaysReverts.selector);
         ISiloOracle(address(oracle)).beforeQuote(baseToken);
 
-        assertEq(oracleReverts.quote(1e6, baseToken), 1, "It does not revert if it is not asked by manageable oracle");
+        vm.expectRevert(RevertingOracle.ThisOracleAlwaysReverts.selector);
+        oracleReverts.quote(1e6, baseToken); // It does revert if ask direcly
     }
 
     /*

@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.28;
 
-import {SiloIncentivesControllerCompatible} from "./SiloIncentivesControllerCompatible.sol";
-import {ISiloVault} from "silo-vaults/contracts/interfaces/ISiloVault.sol";
+import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
+
+import {SiloIncentivesControllerCompatible} from "../SiloIncentivesControllerCompatible.sol";
+import {ISiloVault, MarketAllocation} from "silo-vaults/contracts/interfaces/ISiloVault.sol";
+import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 
 /// @notice the goal of this contract is to reallocate funds (withdraw all from silo)
 /// immediately after any repay happens in silo.

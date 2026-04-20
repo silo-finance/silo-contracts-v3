@@ -69,7 +69,7 @@ contract PermissionedLiquidationController is SiloIncentivesControllerCompatible
         // is this liquidation?
         // After transferring collateral, the user will always be insolvent.
         IERC4626 silo = IERC4626(IShareToken(msg.sender).silo());
-        bool isLiquidation = !ISilo(address(silo)).isSolvent(_recipient);
+        bool isLiquidation = !ISilo(address(silo)).isSolvent(_sender);
 
         if (isLiquidation && !_liquidationAllowed) revert LiquidationNotAllowed();
     }

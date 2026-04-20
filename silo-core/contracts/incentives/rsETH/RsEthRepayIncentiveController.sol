@@ -77,7 +77,7 @@ contract RsEthRepayIncentiveController is SiloIncentivesControllerCompatible {
     /// @notice this is public, so anyone can execute it; 
     /// however, because our goal is to do it in one specific way, 
     /// there is no threat to that process.
-    function realocate(address _vault, IERC4626 _silo) public {
+    function reallocate(address _vault, IERC4626 _silo) public {
         // This is an optional condition because reallocate will check it internally
         if (_silo.maxWithdraw(_vault) == 0) return;
 

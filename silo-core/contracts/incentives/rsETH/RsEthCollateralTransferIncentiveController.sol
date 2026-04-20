@@ -12,7 +12,7 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 
-contract RsEthCollateralTransferIncentiveController is SiloIncentivesControllerCompatible, Whitelist {
+contract PermissionedLiquidationController is SiloIncentivesControllerCompatible, Whitelist {
     using SafeERC20 for IERC20;
 
     address public immutable HOOK_RECEIVER;

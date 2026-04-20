@@ -13,6 +13,7 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 contract SiloVaultReallocationController is SiloIncentivesControllerCompatible {
     mapping(address vault => IERC4626 idleVault) public idleVaults;
 
+    /// @dev list of suported vaults, for which we trigger reallocation after any repay happens in silo.
     address[] public vaults;
 
     bool public enabled = true;
@@ -67,8 +68,8 @@ contract SiloVaultReallocationController is SiloIncentivesControllerCompatible {
 
         // do realocation
         IERC4626 silo = IERC4626(IShareToken(msg.sender).silo());
-
         uint256 vaultsLength = vaults.length;
+
         for (uint256 i = 0; i < vaultsLength; i++) {
             realocate(vaults[i], silo);
         }

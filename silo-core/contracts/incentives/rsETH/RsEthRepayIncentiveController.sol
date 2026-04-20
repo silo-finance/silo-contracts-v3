@@ -10,7 +10,7 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 /// @notice the goal of this contract is to reallocate funds (withdraw all from silo)
 /// immediately after any repay happens in silo.
 /// This contract requires the allocator role for the vault.
-contract RsEthRepayIncentiveController is SiloIncentivesControllerCompatible {
+contract SiloVaultReallocationController is SiloIncentivesControllerCompatible {
     mapping(address vault => IERC4626 idleVault) public idleVaults;
 
     address[] public vaults;

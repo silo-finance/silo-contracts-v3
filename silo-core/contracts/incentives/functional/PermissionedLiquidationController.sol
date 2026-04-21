@@ -49,15 +49,11 @@ contract PermissionedLiquidationController is SiloIncentivesControllerCompatible
 
     /// @dev this incentive controller needs to be set for protected and collateral
     function afterTokenTransfer(
-        address,
-        /*_sender*/
-        uint256,
-        /*_senderBalance*/
-        address _recipient,
-        uint256,
-        /*_recipientBalance*/
-        uint256,
-        /*_totalSupply*/
+        address _sender,
+        uint256 /*_senderBalance*/,
+        address /*_recipient*/,
+        uint256 /*_recipientBalance*/,
+        uint256 /*_totalSupply*/,
         uint256 /*_amount*/
     )
         public
@@ -82,9 +78,9 @@ contract PermissionedLiquidationController is SiloIncentivesControllerCompatible
         address _debtAsset,
         address _borrower,
         uint256 _maxDebtToCover,
-        bool _receiveSToken
+        bool _receiveSToken // TODO support?
     ) external virtual onlyAllowed returns (uint256 withdrawCollateral, uint256 repayDebtAssets) {
-        // we can also use maxLiquidation to det exac debt amount TODO
+        // we can also use maxLiquidation to get exac debt amount TODO
         DEBT_ASSET.safeTransferFrom(msg.sender, address(this), _maxDebtToCover);
         DEBT_ASSET.safeIncreaseAllowance(DEBT_SILO, _maxDebtToCover);
 
@@ -95,9 +91,12 @@ contract PermissionedLiquidationController is SiloIncentivesControllerCompatible
 
         _liquidationAllowed = false;
 
-        uint256 debtBalance = DEBT_ASSET.balanceOf(address(this));
-        uint256 collateralBalance = COLLATERAL_ASSET.balanceOf(address(this));
-        if (debtBalance > 0) DEBT_ASSET.safeTransfer(msg.sender, debtBalance);
-        if (collateralBalance > 0) COLLATERAL_ASSET.safeTransfer(msg.sender, collateralBalance);
+        _transferBalance(DEBT_ASSET);
+        _transferBalance(COLLATERAL_ASSET);
+    }
+
+    function _transferBalance(IERC20 _token) internal {
+        uint256 balance = _token.balanceOf(address(this));
+        if (balance > 0) _token.safeTransfer(msg.sender, balance);
     }
 }

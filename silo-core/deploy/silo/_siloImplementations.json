@@ -124,5 +124,11 @@
             "implementation": "0x72ED066BB31F4a53081fb6Aec8caE602AD039a5d",
             "description": "XDC initial implementation"
         }
+    ],
+    "mantle": [
+        {
+            "implementation": "0xf0c5EA70A0f3B0f6238139043979F98D83CFa0D3",
+            "description": "silo v3 implementation"
+        }
     ]
 }

@@ -74,6 +74,12 @@ EXPLORER_CONFIG = {
         "api_key_envs": ["ETHERSCAN_API_KEY"],
         "chainid": 50,
     },
+    "mantle": {
+        "api_url_default": "https://api.etherscan.io/v2/api?chainid=5000",
+        "api_url_env": "VERIFIER_URL_MANTLE",
+        "api_key_envs": ["ETHERSCAN_API_KEY"],
+        "chainid": 5000,
+    },
 }
 
 

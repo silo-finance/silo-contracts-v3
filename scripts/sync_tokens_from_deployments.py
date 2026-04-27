@@ -14,7 +14,8 @@ Usage:
 
 Environment:
   RPC_MAINNET, RPC_ARBITRUM_ONE, RPC_AVALANCHE, RPC_BASE, RPC_BNB, RPC_INJECTIVE,
-  RPC_OPTIMISM, RPC_OKX, RPC_SONIC, RPC_INK, RPC_XDC (same mapping as verify-silo workflow)
+  RPC_OPTIMISM, RPC_OKX, RPC_SONIC, RPC_INK, RPC_XDC, RPC_MANTLE
+  (same mapping as verify-silo workflow)
 """
 
 from __future__ import annotations
@@ -39,6 +40,7 @@ CHAIN_RPC_SUFFIX = {
     "sonic": "SONIC",
     "ink": "INK",
     "xdc": "XDC",
+    "mantle": "MANTLE",
 }
 
 SILO_DEPLOYMENTS_JSON = "silo-core/deploy/silo/_siloDeployments.json"

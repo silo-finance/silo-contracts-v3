@@ -42,6 +42,7 @@ SECTION_ORDER = [
     "okx",
     "sonic",
     "xdc",
+    "mantle",
 ]
 
 # Block explorer address URL (append address). summary_key -> base URL.
@@ -58,6 +59,7 @@ EXPLORER_ADDRESS_URL: dict[str, str] = {
     "okx": "https://www.oklink.com/x-layer/address/",
     "sonic": "https://sonicscan.org/address/",
     "xdc": "https://xdcscan.com/address/",
+    "mantle": "https://mantlescan.xyz/address/",
 }
 
 # Backward-compat mapping for sections parsed from existing PR comments.
@@ -76,6 +78,7 @@ DISPLAY_LABEL_TO_SUMMARY_KEY: dict[str, str] = {
     "OKX": "okx",
     "Sonic": "sonic",
     "XDC": "xdc",
+    "Mantle": "mantle",
 }
 
 

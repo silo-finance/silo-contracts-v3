@@ -15,6 +15,7 @@ env:
     RPC_BASE: ${{ secrets.RPC_BASE }}
     RPC_OKX: ${{ secrets.RPC_OKX }}
     RPC_XDC: ${{ secrets.RPC_XDC }}
+    RPC_MANTLE: ${{ secrets.RPC_MANTLE }}
 
 on:
     push:

@@ -13,6 +13,7 @@ env:
     RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
     RPC_INK: ${{ secrets.RPC_INK }}
     RPC_XDC: ${{ secrets.RPC_XDC }}
+    RPC_MANTLE: ${{ secrets.RPC_MANTLE }}
     PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
     VERIFIER_URL_SONIC: ${{ secrets.VERIFIER_URL_SONIC }}
     VERIFIER_API_KEY_SONIC: ${{ secrets.VERIFIER_API_KEY_SONIC }}

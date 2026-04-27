@@ -25,6 +25,7 @@ env:
   RPC_AVALANCHE: ${{ secrets.RPC_AVALANCHE }}
   RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
   RPC_XDC: ${{ secrets.RPC_XDC }}
+  RPC_MANTLE: ${{ secrets.RPC_MANTLE }}
   PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
 
 jobs:

@@ -207,6 +207,7 @@ ink = "${RPC_INK}"
 okx = "${RPC_OKX}"
 injective = "${RPC_INJECTIVE}"
 xdc = "${RPC_XDC}"
+mantle = "${RPC_MANTLE}"
 
 [etherscan]
 mainnet = { key = "${ETHERSCAN_API_KEY}", chain = 1, url = "${VERIFIER_URL_MAINNET}" }

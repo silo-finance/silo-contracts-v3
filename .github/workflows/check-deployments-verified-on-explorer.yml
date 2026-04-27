@@ -227,9 +227,28 @@ jobs:
           name: verification-xdc
           path: verification_xdc.json
 
+  verify-mantle:
+    name: mantle
+    needs: [verify-xdc]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: |
+          python3 scripts/check_deployments_verified_on_explorer.py --chain mantle --no-fail --output-json-file verification_mantle.json || true
+          test -f verification_mantle.json || echo '{"sections":[]}' > verification_mantle.json
+        continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-mantle
+          path: verification_mantle.json
+
   aggregate-and-comment:
     name: Aggregate and comment
-    needs: [verify-xdc, verify-injective, verify-okx]
+    needs: [verify-mantle, verify-injective, verify-okx]
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:

@@ -31,6 +31,7 @@ env:
   RPC_OKX: ${{ secrets.RPC_OKX }}
   RPC_INJECTIVE: ${{ secrets.RPC_INJECTIVE }}
   RPC_XDC: ${{ secrets.RPC_XDC }}
+  RPC_MANTLE: ${{ secrets.RPC_MANTLE }}
 
 jobs:
   deploy-freshness-from-broadcast:

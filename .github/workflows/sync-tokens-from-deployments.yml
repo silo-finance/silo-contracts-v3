@@ -21,6 +21,7 @@ env:
   RPC_OKX: ${{ secrets.RPC_OKX }}
   RPC_INK: ${{ secrets.RPC_INK }}
   RPC_XDC: ${{ secrets.RPC_XDC }}
+  RPC_MANTLE: ${{ secrets.RPC_MANTLE }}
 
 concurrency:
   group: ${{ github.event_name == 'pull_request' && format('{0}-pr-{1}', github.workflow, github.event.pull_request.number) || format('{0}-ref-{1}', github.workflow, github.ref) }}

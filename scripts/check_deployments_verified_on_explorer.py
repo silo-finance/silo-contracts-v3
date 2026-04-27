@@ -39,6 +39,8 @@ Injective uses Blockscout (https://docs.blockscout.com/devs/apis/rpc); apikey is
 
 XDC (https://xdcscan.com/) uses the Etherscan API V2 stack (see https://docs.xdcscan.com/): same
 getsourcecode flow via api.etherscan.io/v2 with chainid=50 and the default ETHERSCAN_API_KEY.
+
+Mantle uses Mantlescan API URL from VERIFIER_URL_MANTLE.
 """
 
 from __future__ import annotations
@@ -73,6 +75,7 @@ CHAIN_TO_CHAIN_ID: dict[str, str] = {
     "ink": "57073",
     "injective": "1776",
     "xdc": "50",
+    "mantle": "5000",
 }
 
 # Defaults for etherscan-compatible endpoints.
@@ -99,6 +102,7 @@ CHAIN_EXPLORERS: dict[str, list[tuple[str, str]]] = {
     "okx": [("default", "https://www.oklink.com/api/v5/explorer/contract/verify-contract-info")],
     "sonic": [("default", "https://api.etherscan.io/v2/api?chainid=146")],
     "xdc": [("default", "https://api.etherscan.io/v2/api?chainid=50")],
+    "mantle": [("default", "https://api.etherscan.io/v2/api?chainid=5000")],
 }
 
 # Chains that have explorer config (for --chain all; excludes e.g. ink)
@@ -119,6 +123,7 @@ EXPLORER_ADDRESS_URL: dict[str, str] = {
     "okx": "https://www.oklink.com/x-layer/address/",
     "sonic": "https://sonicscan.org/address/",
     "xdc": "https://xdcscan.com/address/",
+    "mantle": "https://mantlescan.xyz/address/",
 }
 
 # Display names for PR comment output
@@ -133,6 +138,7 @@ CHAIN_DISPLAY_NAMES: dict[str, str] = {
     "okx": "OKX",
     "sonic": "Sonic",
     "xdc": "XDC",
+    "mantle": "Mantle",
 }
 
 USER_AGENT = "Mozilla/5.0 (compatible; explorer-api-verify-checker/1.0)"
@@ -237,6 +243,11 @@ def resolve_api_config(chain: str) -> tuple[list[tuple[str, str]], str]:
     if env_url:
         # Env override: single explorer
         return [("default", env_url)], api_key
+
+    if chain == "mantle":
+        return [
+            ("default", os.environ.get("VERIFIER_URL_MANTLE") or "https://api.etherscan.io/v2/api?chainid=5000"),
+        ], api_key
 
     explorers = CHAIN_EXPLORERS.get(chain)
     if not explorers:

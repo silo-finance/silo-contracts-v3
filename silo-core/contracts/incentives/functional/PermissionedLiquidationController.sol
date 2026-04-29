@@ -29,24 +29,24 @@ contract PermissionedLiquidationController is
 
     /// @param _owner owner of the contract
     /// @param _notifier for Silo it should be hook address
-    /// @param _shareTokenAddress protected or collateral share token address
-    constructor(address _owner, address _notifier, address _shareTokenAddress)
-        SiloIncentivesControllerCompatible(_owner, _notifier, _shareTokenAddress)
+    /// @param _collateralShareTokenAddress protected or collateral share token address
+    constructor(address _owner, address _notifier, address _collateralShareTokenAddress)
+        SiloIncentivesControllerCompatible(_owner, _notifier, _collateralShareTokenAddress)
     {
         __Whitelist_init(_owner);
 
-        HOOK_RECEIVER = IShareToken(_shareTokenAddress).hookReceiver();
+        HOOK_RECEIVER = IShareToken(_collateralShareTokenAddress).hookReceiver();
         require(address(HOOK_RECEIVER) == _notifier, InvalidHookReceiver());
 
-        address collateralSilo = address(IShareToken(_shareTokenAddress).silo());
-        ISiloConfig siloConfig = IShareToken(_shareTokenAddress).siloConfig();
+        address collateralSilo = address(IShareToken(_collateralShareTokenAddress).silo());
+        ISiloConfig siloConfig = IShareToken(_collateralShareTokenAddress).siloConfig();
 
         ISiloConfig.ConfigData memory collateralConfig = siloConfig.getConfig(collateralSilo);
         require(collateralConfig.lt != 0, NotCollateralSilo());
 
         require(
-            collateralConfig.collateralShareToken == _shareTokenAddress
-                || collateralConfig.protectedShareToken == _shareTokenAddress,
+            collateralConfig.collateralShareToken == _collateralShareTokenAddress
+                || collateralConfig.protectedShareToken == _collateralShareTokenAddress,
             NotCollateralShareToken()
         );
     }

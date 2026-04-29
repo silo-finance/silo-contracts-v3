@@ -4,3 +4,4 @@ contracts/hooks/_common/TransientReentrancy.sol
 contracts/hooks/PendleRewardsClaimer.sol
 contracts/leverage/modules/LeverageTxState.sol
 contracts/SiloDeployer.sol
+contracts/incentives/functional/PermissionedLiquidationController.sol

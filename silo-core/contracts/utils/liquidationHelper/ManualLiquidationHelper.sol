@@ -94,6 +94,7 @@ contract ManualLiquidationHelper is TokenRescuer {
         _executeLiquidation(_siloWithDebt, _borrower, _maxDebtToCover, _receiveSToken, _receiver);
     }
 
+    // solhint-disable-next-line function-max-lines
     function _executeLiquidation(
         ISilo _siloWithDebt,
         address _borrower,
@@ -112,8 +113,8 @@ contract ManualLiquidationHelper is TokenRescuer {
         ) = _siloWithDebt.config().getConfigsForSolvency(_borrower);
 
         IPartialLiquidation liquidation = IPartialLiquidation(debtConfig.hookReceiver);
-        _allowMeToLiquidate(debtConfig.hookReceiver, collateralConfig.collateralShareToken);
-        _allowMeToLiquidate(debtConfig.hookReceiver, collateralConfig.protectedShareToken);
+        _allowMeToLiquidate(debtConfig.hookReceiver, IShareToken(collateralConfig.collateralShareToken));
+        _allowMeToLiquidate(debtConfig.hookReceiver, IShareToken(collateralConfig.protectedShareToken));
 
         IERC20 debtAsset = IERC20(debtConfig.token);
 
@@ -166,8 +167,8 @@ contract ManualLiquidationHelper is TokenRescuer {
         _receiver.sendValue(_amount);
     }
 
-    function _allowMeToLiquidate(address _hookReceiver, address _shareToken) internal virtual {
-        ISiloIncentivesController controller = IGaugeHookReceiver(_hookReceiver).configuredGauges(IShareToken(_shareToken));
+    function _allowMeToLiquidate(address _hookReceiver, IShareToken _shareToken) internal virtual {
+        ISiloIncentivesController controller = IGaugeHookReceiver(_hookReceiver).configuredGauges(_shareToken);
         
         try IPermissionedLiquidationController(address(controller)).allowMeToLiquidate() {
             // allowed

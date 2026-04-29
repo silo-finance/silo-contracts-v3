@@ -11,6 +11,7 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
+import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiver.sol";
 
 contract PermissionedLiquidationController is SiloIncentivesControllerCompatible, Whitelist {
     using SafeERC20 for IERC20;
@@ -27,6 +28,9 @@ contract PermissionedLiquidationController is SiloIncentivesControllerCompatible
     error LiquidationNotAllowed();
     error STokenNotSupported();
 
+    /// @param _owner owner of the contract
+    /// @param _notifier for Silo it should be hook address
+    /// @param _shareTokenAddress any share token address, it will be used to get hook receiver and silo
     constructor(address _owner, address _notifier, address _shareTokenAddress)
         SiloIncentivesControllerCompatible(_owner, _notifier, _shareTokenAddress)
     {
@@ -65,8 +69,8 @@ contract PermissionedLiquidationController is SiloIncentivesControllerCompatible
 
         // is this liquidation?
         // After transferring collateral, the user will always be insolvent.
-        IERC4626 silo = IERC4626(IShareToken(msg.sender).silo());
-        bool isLiquidation = !ISilo(address(silo)).isSolvent(_sender);
+        (address silo,) = BaseHookReceiver(msg.sender).siloConfig().getSilos();
+        bool isLiquidation = !ISilo(silo).isSolvent(_sender);
 
         if (isLiquidation && !_liquidationAllowed) revert LiquidationNotAllowed();
     }

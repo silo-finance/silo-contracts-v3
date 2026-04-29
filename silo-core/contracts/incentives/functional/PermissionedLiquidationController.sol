@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.28;
 
-import {console2} from "forge-std/console2.sol";
-
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
@@ -83,17 +81,14 @@ contract PermissionedLiquidationController is
         override
     {
         if (!enabled) return;
+        if (_liquidationAllowed) return;
 
         // is this liquidation?
         // After transferring collateral, the user will always be insolvent.
         (address anySilo,) = BaseHookReceiver(msg.sender).siloConfig().getSilos();
         bool isLiquidation = !ISilo(anySilo).isSolvent(_sender);
 
-        console2.log("isLiquidation", isLiquidation);
-        console2.log("liquidationAllowed", _liquidationAllowed);
-        console2.log("reverting?", isLiquidation && !_liquidationAllowed);
-
-        if (isLiquidation && !_liquidationAllowed) revert LiquidationNotAllowed();
+        if (isLiquidation) revert LiquidationNotAllowed();
     }
 
     /// @inheritdoc IPermissionedLiquidationController

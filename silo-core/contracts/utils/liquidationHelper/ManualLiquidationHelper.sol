@@ -7,6 +7,10 @@ import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 
 import {IPartialLiquidation} from "../../interfaces/IPartialLiquidation.sol";
+import {IShareToken} from "../../interfaces/IShareToken.sol";
+import {IGaugeHookReceiver} from "../../interfaces/IGaugeHookReceiver.sol";
+import {ISiloIncentivesController} from "../../incentives/interfaces/ISiloIncentivesController.sol";
+import {IPermissionedLiquidationController} from "../../interfaces/IPermissionedLiquidationController.sol";
 
 import {ISilo} from "../../interfaces/ISilo.sol";
 import {ISiloConfig} from "../../interfaces/ISiloConfig.sol";
@@ -108,6 +112,9 @@ contract ManualLiquidationHelper is TokenRescuer {
         ) = _siloWithDebt.config().getConfigsForSolvency(_borrower);
 
         IPartialLiquidation liquidation = IPartialLiquidation(debtConfig.hookReceiver);
+        _allowMeToLiquidate(debtConfig.hookReceiver, collateralConfig.collateralShareToken);
+        _allowMeToLiquidate(debtConfig.hookReceiver, collateralConfig.protectedShareToken);
+
         IERC20 debtAsset = IERC20(debtConfig.token);
 
         (, uint256 debtToRepay,) = liquidation.maxLiquidation(_borrower);
@@ -157,5 +164,15 @@ contract ManualLiquidationHelper is TokenRescuer {
     function _transferNative(address payable _receiver, uint256 _amount) internal virtual {
         IWrappedNativeToken(address(NATIVE_TOKEN)).withdraw(_amount);
         _receiver.sendValue(_amount);
+    }
+
+    function _allowMeToLiquidate(address _hookReceiver, address _shareToken) internal virtual {
+        ISiloIncentivesController controller = IGaugeHookReceiver(_hookReceiver).configuredGauges(IShareToken(_shareToken));
+        
+        try IPermissionedLiquidationController(address(controller)).allowMeToLiquidate() {
+            // allowed
+        } catch {
+            // not allwoed or not supported
+        }
     }
 }

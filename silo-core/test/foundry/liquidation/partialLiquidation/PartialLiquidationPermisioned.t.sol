@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import {console2} from "forge-std/console2.sol";
-
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
@@ -19,8 +17,6 @@ import {SiloConfigOverride} from "../../_common/fixtures/SiloFixture.sol";
 import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
 import {IntegrationTest} from "silo-foundry-utils/networks/IntegrationTest.sol";
 import {MintableToken} from "../../_common/MintableToken.sol";
-import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
-import {IUSDT} from "../../_common/IUSDT.sol";
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ManualLiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/ManualLiquidationHelper.sol";
 import {
@@ -133,7 +129,6 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
     function _setPermissionedLiquidation() internal {
         IGaugeHookReceiver hook = IGaugeHookReceiver(IShareToken(address(silo0)).hookReceiver());
-        address debtShareToken = silo0.config().getConfig(address(silo1)).debtShareToken;
         address collateralShareToken = silo0.config().getConfig(address(silo0)).collateralShareToken;
         address protectedShareToken = silo0.config().getConfig(address(silo0)).protectedShareToken;
 

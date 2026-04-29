@@ -20,12 +20,15 @@ import {MintableToken} from "../../_common/MintableToken.sol";
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ManualLiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/ManualLiquidationHelper.sol";
 import {
-    PermissionedLiquidationController
-} from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
+    PermissionedLiquidationControllerFactory
+} from "silo-core/contracts/incentives/functional/PermissionedLiquidationControllerFactory.sol";
 import {
     IPermissionedLiquidationController
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 
+/*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc PartialLiquidationPermissionedTest
+*/
 contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest {
     using SafeERC20 for IERC20;
 
@@ -131,9 +134,10 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         IGaugeHookReceiver hook = IGaugeHookReceiver(IShareToken(address(silo0)).hookReceiver());
         address collateralShareToken = silo0.config().getConfig(address(silo0)).collateralShareToken;
         address protectedShareToken = silo0.config().getConfig(address(silo0)).protectedShareToken;
+        PermissionedLiquidationControllerFactory factory = new PermissionedLiquidationControllerFactory();
 
-        controllerC = new PermissionedLiquidationController(address(this), address(hook), collateralShareToken);
-        controllerP = new PermissionedLiquidationController(address(this), address(hook), protectedShareToken);
+        controllerC = ISiloIncentivesController(factory.create(IShareToken(collateralShareToken)));
+        controllerP = ISiloIncentivesController(factory.create(IShareToken(protectedShareToken)));
 
         vm.prank(Ownable(address(hook)).owner());
         hook.setGauge(controllerC, IShareToken(collateralShareToken));

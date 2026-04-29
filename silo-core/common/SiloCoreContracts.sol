@@ -28,6 +28,8 @@ library SiloCoreContracts {
     string public constant LEVERAGE_ROUTER = "LeverageRouter.sol";
     string public constant SILO_ROUTER_V2 = "SiloRouterV2.sol";
     string public constant INCENTIVES_CONTROLLER_FACTORY = "SiloIncentivesControllerFactory.sol";
+    string public constant PERMISSIONED_LIQUIDATION_CONTROLLER_FACTORY =
+        "PermissionedLiquidationControllerFactory.sol";
     string public constant GLOBAL_PAUSE = "GlobalPause.sol";
 }
 

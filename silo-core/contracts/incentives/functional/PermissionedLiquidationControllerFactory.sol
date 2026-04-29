@@ -11,6 +11,8 @@ import {
     PermissionedLiquidationController
 } from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
 
+import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
+
 /// @notice Minimal factory for upgradeable PermissionedLiquidationController proxies.
 contract PermissionedLiquidationControllerFactory is IPermissionedLiquidationControllerFactory {
     /// @dev Implementation used by all created proxies.
@@ -21,12 +23,12 @@ contract PermissionedLiquidationControllerFactory is IPermissionedLiquidationCon
     }
 
     /// @inheritdoc IPermissionedLiquidationControllerFactory
-    function create(address _notifier) external returns (address controller) {
-        address proxyAdminOwner = Ownable(_notifier).owner();
-        bytes memory initData = abi.encodeCall(PermissionedLiquidationController.initialize, (_notifier));
+    function create(IShareToken _collateralShareToken) external returns (address controller) {
+        address proxyAdminOwner = Ownable(_collateralShareToken.hookReceiver()).owner();
+        bytes memory initData = abi.encodeCall(PermissionedLiquidationController.initialize, (_collateralShareToken));
 
         controller = address(new TransparentUpgradeableProxy(IMPLEMENTATION, proxyAdminOwner, initData));
 
-        emit PermissionedLiquidationControllerCreated(controller, _notifier, proxyAdminOwner);
+        emit PermissionedLiquidationControllerCreated(controller, address(_collateralShareToken));
     }
 }

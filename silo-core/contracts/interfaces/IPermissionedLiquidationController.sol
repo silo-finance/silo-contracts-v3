@@ -5,6 +5,8 @@ interface IPermissionedLiquidationController {
     error LiquidationNotAllowed();
     error OnlyHookReceiver();
     error OnlyOwner();
+    error NotCollateralSilo();
+    error NotCollateralShareToken();
 
     function setEnabled(bool _enabled) external;
 

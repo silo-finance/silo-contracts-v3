@@ -3,14 +3,20 @@ pragma solidity 0.8.28;
 
 import {Initializable} from "openzeppelin5/proxy/utils/Initializable.sol";
 
+import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
+import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
+import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
+import {IBackwardsCompatibleGaugeLike} from "../interfaces/IBackwardsCompatibleGaugeLike.sol";
+import {ISiloIncentivesController} from "../interfaces/ISiloIncentivesController.sol";
+
 import {BaseIncentivesControllerCompatible} from "../base/BaseIncentivesControllerCompatible.sol";
 import {
     IPermissionedLiquidationController
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiver.sol";
-import {Versioned} from "silo-core/contracts/interfaces/Versioned.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
 /// @dev this contract should be set as a gauge for collateral or protected share tokens.
 /// It will not work if it will be set for the shared debt token.
@@ -19,11 +25,13 @@ contract PermissionedLiquidationController is
     BaseIncentivesControllerCompatible,
     Whitelist,
     Initializable,
-    Versioned
+    IVersioned
 {
     address public hookReceiver;
 
     address public anySilo;
+
+    address public collateralShareToken;
 
     bool public enabled = true;
 
@@ -38,17 +46,45 @@ contract PermissionedLiquidationController is
         _disableInitializers();
     }
 
-    /// @param _notifier hook address
-    function initialize(address _notifier) external initializable {
-        hookReceiver = _notifier;
-        __Whitelist_init(Ownable(_notifier).owner());
+    /// @param _collateralShareToken collateral or protected share token address
+    function initialize(IShareToken _collateralShareToken) external initializer {
+        address hook = _collateralShareToken.hookReceiver();
+        ISiloConfig siloConfig = _collateralShareToken.siloConfig();
+        address collateralSilo = address(_collateralShareToken.silo());
 
-        (anySilo,) = BaseHookReceiver(_notifier).siloConfig().getSilos();
+        ISiloConfig.ConfigData memory collateralConfig = siloConfig.getConfig(collateralSilo);
+        require(collateralConfig.lt != 0, NotCollateralSilo());
+
+        require(
+            collateralConfig.collateralShareToken == address(_collateralShareToken)
+                || collateralConfig.protectedShareToken == address(_collateralShareToken),
+            NotCollateralShareToken()
+        );
+
+        hookReceiver = hook;
+        anySilo = collateralSilo;
+        collateralShareToken = address(_collateralShareToken);
+
+        __Whitelist_init(Ownable(hook).owner());
     }
 
     /// @inheritdoc IPermissionedLiquidationController
     function setEnabled(bool _enabled) external onlyOwner {
         enabled = _enabled;
+    }
+
+    // solhint-disable-next-line func-name-mixedcase
+    function share_token() external view virtual returns (address) {
+        return collateralShareToken;
+    }
+    
+    // solhint-disable-next-line func-name-mixedcase
+    function SHARE_TOKEN() external view returns (address) {
+        return collateralShareToken;
+    }
+
+    function NOTIFIER() external view returns (address) { // solhint-disable-line func-name-mixedcase
+        return hookReceiver;
     }
 
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
@@ -65,7 +101,7 @@ contract PermissionedLiquidationController is
     )
         public
         virtual
-        override
+        override // (BaseIncentivesControllerCompatible, IBackwardsCompatibleGaugeLike, ISiloIncentivesController)
         onlyHookReceiver
     {
         if (!enabled) return;

@@ -169,7 +169,7 @@ contract ManualLiquidationHelper is TokenRescuer {
 
     function _allowMeToLiquidate(address _hookReceiver, IShareToken _shareToken) internal virtual {
         ISiloIncentivesController controller = IGaugeHookReceiver(_hookReceiver).configuredGauges(_shareToken);
-        if (controller == address(0)) return;
+        if (address(controller) == address(0)) return;
         
         try IPermissionedLiquidationController(address(controller)).allowMeToLiquidate() {
             // allowed

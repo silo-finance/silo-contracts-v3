@@ -25,6 +25,7 @@ contract PermissionedLiquidationController is SiloIncentivesControllerCompatible
     bool private transient _liquidationAllowed;
 
     error LiquidationNotAllowed();
+    error STokenNotSupported();
 
     constructor(address _owner, address _notifier, address _shareTokenAddress)
         SiloIncentivesControllerCompatible(_owner, _notifier, _shareTokenAddress)
@@ -78,9 +79,11 @@ contract PermissionedLiquidationController is SiloIncentivesControllerCompatible
         address _debtAsset,
         address _borrower,
         uint256 _maxDebtToCover,
-        bool _receiveSToken // TODO support?
+        bool _receiveSToken
     ) external virtual onlyAllowed returns (uint256 withdrawCollateral, uint256 repayDebtAssets) {
-        // we can also use maxLiquidation to get exac debt amount TODO
+        require(_receiveSToken, STokenNotSupported());
+
+        // we can also use maxLiquidation to get exact debt amount TODO
         DEBT_ASSET.safeTransferFrom(msg.sender, address(this), _maxDebtToCover);
         DEBT_ASSET.safeIncreaseAllowance(DEBT_SILO, _maxDebtToCover);
 

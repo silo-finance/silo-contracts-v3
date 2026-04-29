@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import {console2} from "forge-std/console2.sol";
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
-import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol"; 
+import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
@@ -24,8 +24,12 @@ import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 import {IUSDT} from "../../_common/IUSDT.sol";
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ManualLiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/ManualLiquidationHelper.sol";
-import {PermissionedLiquidationController} from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
-import {IPermissionedLiquidationController} from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
+import {
+    PermissionedLiquidationController
+} from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
+import {
+    IPermissionedLiquidationController
+} from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 
 contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest {
     using SafeERC20 for IERC20;
@@ -93,7 +97,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _printBorrowerLTV();
     }
-    
+
     function test_permisioned_liquidation_collteral() public {
         _createPositionToLiquidate(ISilo.CollateralType.Collateral);
 

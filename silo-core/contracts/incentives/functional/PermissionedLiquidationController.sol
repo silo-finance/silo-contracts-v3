@@ -1,15 +1,10 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.28;
 
-import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
-import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
-import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
-
 import {SiloIncentivesControllerCompatible} from "../SiloIncentivesControllerCompatible.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
-import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {
     IPermissionedLiquidationController
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
@@ -21,16 +16,16 @@ contract PermissionedLiquidationController is
     SiloIncentivesControllerCompatible,
     Whitelist
 {
-    using SafeERC20 for IERC20;
-
     address public immutable HOOK_RECEIVER;
-    IERC20 public immutable DEBT_ASSET;
-    address public immutable DEBT_SILO;
-    IERC20 public immutable COLLATERAL_ASSET;
 
     bool public enabled = true;
 
     bool private transient _liquidationAllowed;
+
+    modifier onlyHookReceiver() {
+        require(msg.sender == HOOK_RECEIVER, OnlyHookReceiver());
+        _;
+    }
 
     /// @param _owner owner of the contract
     /// @param _notifier for Silo it should be hook address
@@ -45,8 +40,6 @@ contract PermissionedLiquidationController is
 
         address collateralSilo = address(IShareToken(_shareTokenAddress).silo());
         ISiloConfig siloConfig = IShareToken(_shareTokenAddress).siloConfig();
-        (address silo0, address silo1) = siloConfig.getSilos();
-        DEBT_SILO = silo0 == collateralSilo ? silo1 : silo0;
 
         ISiloConfig.ConfigData memory collateralConfig = siloConfig.getConfig(collateralSilo);
         require(collateralConfig.lt != 0, NotCollateralSilo());
@@ -56,11 +49,6 @@ contract PermissionedLiquidationController is
                 || collateralConfig.protectedShareToken == _shareTokenAddress,
             NotCollateralShareToken()
         );
-
-        DEBT_ASSET = IERC20(siloConfig.getAssetForSilo(DEBT_SILO));
-        COLLATERAL_ASSET = IERC20(collateralConfig.token);
-
-        DEBT_ASSET.approve(HOOK_RECEIVER, type(uint256).max);
     }
 
     /// @inheritdoc IPermissionedLiquidationController
@@ -79,6 +67,7 @@ contract PermissionedLiquidationController is
         public
         virtual
         override
+        onlyHookReceiver
     {
         if (!enabled) return;
         if (_liquidationAllowed) return;
@@ -94,38 +83,5 @@ contract PermissionedLiquidationController is
     /// @inheritdoc IPermissionedLiquidationController
     function allowMeToLiquidate() external virtual onlyAllowed {
         _liquidationAllowed = true;
-    }
-
-    // TODO check allowances
-    // TODO should we adapt liquidation helper?
-    // TODO should we adapt manual liquidation?
-    /// @inheritdoc IPermissionedLiquidationController
-    function liquidationCall( // solhint-disable-line function-max-lines, code-complexity
-        address _collateralAsset,
-        address _debtAsset,
-        address _borrower,
-        uint256 _maxDebtToCover,
-        bool _receiveSToken
-    ) external virtual onlyAllowed returns (uint256 withdrawCollateral, uint256 repayDebtAssets) {
-        require(_receiveSToken, STokenNotSupported());
-
-        // we can also use maxLiquidation to get exact debt amount TODO
-        DEBT_ASSET.safeTransferFrom(msg.sender, address(this), _maxDebtToCover);
-        DEBT_ASSET.safeIncreaseAllowance(DEBT_SILO, _maxDebtToCover);
-
-        _liquidationAllowed = true;
-
-        (withdrawCollateral, repayDebtAssets) = IPartialLiquidation(HOOK_RECEIVER)
-            .liquidationCall(_collateralAsset, _debtAsset, _borrower, _maxDebtToCover, _receiveSToken);
-
-        _liquidationAllowed = false;
-
-        _transferBalance(DEBT_ASSET);
-        _transferBalance(COLLATERAL_ASSET);
-    }
-
-    function _transferBalance(IERC20 _token) internal {
-        uint256 balance = _token.balanceOf(address(this));
-        if (balance > 0) _token.safeTransfer(msg.sender, balance);
     }
 }

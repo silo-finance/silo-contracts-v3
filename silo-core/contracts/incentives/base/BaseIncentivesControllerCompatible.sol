@@ -20,18 +20,6 @@ abstract contract BaseIncentivesControllerCompatible is IBackwardsCompatibleGaug
         _;
     }
 
-    function afterTokenTransfer(
-        address _sender,
-        uint256 _senderBalance,
-        address _recipient,
-        uint256 _recipientBalance,
-        uint256 _totalSupply,
-        uint256 _amount
-    )
-        public
-        virtual
-        override(IBackwardsCompatibleGaugeLike, ISiloIncentivesController);
-
     function killGauge() external virtual onlyOwner {
         _isKilled = true;
         emit GaugeKilled();
@@ -142,6 +130,18 @@ abstract contract BaseIncentivesControllerCompatible is IBackwardsCompatibleGaug
     function getUserUnclaimedRewards(address, string calldata) external pure returns (uint256) {
         return 0;
     }
+
+    function afterTokenTransfer(
+        address _sender,
+        uint256 _senderBalance,
+        address _recipient,
+        uint256 _recipientBalance,
+        uint256 _totalSupply,
+        uint256 _amount
+    )
+        public
+        virtual
+        override(IBackwardsCompatibleGaugeLike, ISiloIncentivesController);
     
     function _onlyOwner() internal view virtual;
 }

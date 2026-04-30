@@ -2,7 +2,6 @@
 pragma solidity 0.8.28;
 
 import {Ownable} from "openzeppelin5/access/Ownable.sol";
-import {TransparentUpgradeableProxy} from "openzeppelin5/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 import {
     IPermissionedLiquidationControllerFactory
@@ -10,6 +9,7 @@ import {
 import {
     PermissionedLiquidationController
 } from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
+import {TransparentProxy} from "silo-core/contracts/utils/TransparentProxy.sol";
 
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 
@@ -27,7 +27,7 @@ contract PermissionedLiquidationControllerFactory is IPermissionedLiquidationCon
         address proxyAdminOwner = Ownable(_collateralShareToken.hookReceiver()).owner();
         bytes memory initData = abi.encodeCall(PermissionedLiquidationController.initialize, (_collateralShareToken));
 
-        controller = address(new TransparentUpgradeableProxy(IMPLEMENTATION, proxyAdminOwner, initData));
+        controller = address(new TransparentProxy(IMPLEMENTATION, proxyAdminOwner, initData));
 
         emit PermissionedLiquidationControllerCreated(controller, address(_collateralShareToken));
     }

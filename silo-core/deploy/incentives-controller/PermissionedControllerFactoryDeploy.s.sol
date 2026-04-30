@@ -8,7 +8,7 @@ import {
 } from "silo-core/contracts/incentives/functional/PermissionedLiquidationControllerFactory.sol";
 import {
     IPermissionedLiquidationControllerFactory
-} from "silo-core/contracts/incentives/interfaces/IPermissionedLiquidationControllerFactory.sol";
+} from "silo-core/contracts/interfaces/IPermissionedLiquidationControllerFactory.sol";
 
 /*
     FOUNDRY_PROFILE=core \

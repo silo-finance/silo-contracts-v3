@@ -16,7 +16,7 @@ import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {
     IPermissionedLiquidationControllerFactory
-} from "silo-core/contracts/incentives/interfaces/IPermissionedLiquidationControllerFactory.sol";
+} from "silo-core/contracts/interfaces/IPermissionedLiquidationControllerFactory.sol";
 
 /*
     SILO=0xe394050D179b72197A458Fdfb962Ae69908Aa5A0 \
@@ -34,9 +34,11 @@ contract PermissionedControllerDeploy is CommonDeploy {
 
         address notifier = IShareToken(address(silo)).hookReceiver();
         address owner = Ownable(notifier).owner();
+        
         address factory = SiloCoreDeployments.get(
             SiloCoreContracts.PERMISSIONED_LIQUIDATION_CONTROLLER_FACTORY, ChainsLib.chainAlias()
         );
+
         require(factory != address(0), FactoryNotFound());
 
         ISiloConfig cfg = silo.config();

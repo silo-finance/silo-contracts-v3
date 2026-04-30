@@ -29,6 +29,11 @@ import {
 import {
     BaseIncentivesControllerCompatible
 } from "silo-core/contracts/incentives/base/BaseIncentivesControllerCompatible.sol";
+import {PermissionedLiquidationController} from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
+
+import {PermissionedControllerDeploy} from "silo-core/deploy/incentives-controller/PermissionedControllerDeploy.s.sol";
+import {PermissionedControllerUpgrade} from "silo-core/deploy/incentives-controller/PermissionedControllerUpgrade.s.sol";
+import {PermissionedControllerFactoryDeploy} from "silo-core/deploy/incentives-controller/PermissionedControllerFactoryDeploy.s.sol";
 
 /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc PartialLiquidationPermissionedTest
@@ -196,6 +201,36 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
 
         _printBorrowerLTV();
+    }
+
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_deployment
+    */
+    function test_permisioned_liquidation_deployment() public {
+        _setPermissionedLiquidation();
+        
+        assertTrue(controllerC.enabled(), "active controller is enabled");
+
+        IPermissionedLiquidationController newImplementation = new PermissionedLiquidationController();
+        assertFalse(newImplementation.enabled(), "inactive controller is disabled");
+
+        vm.startPrank(controllerC.owner());
+
+        IGaugeHookReceiver hook = IGaugeHookReceiver(address(partialLiquidation));
+        IShareToken shareToken = IShareToken(address(silo0));
+
+        hook.setGauge(controllerC, shareToken);
+
+        address beforeUpgrade = address(hook.configuredGauges(shareToken));
+
+        PermissionedControllerUpgrade upgradeDeployer = new PermissionedControllerUpgrade();
+        upgradeDeployer.disableDeploymentsSync();
+
+        upgradeDeployer.run();
+
+        address afterUpgrade = address(hook.configuredGauges(shareToken));
+        assertEq(beforeUpgrade, afterUpgrade, "configured gauge addressshould not change");
+        assertFalse(IPermissionedLiquidationController(afterUpgrade).enabled(), "after upgrade enabled flag should be disabled");
     }
 
     function _grantAllowedRole() internal {

@@ -9,7 +9,6 @@ import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 interface IPermissionedLiquidationController is ISiloIncentivesController, IAccessControl, IVersioned {
     error LiquidationNotAllowed();
     error OnlyHookReceiver();
-    error OnlyOwner();
     error NotCollateralSilo();
     error NotCollateralShareToken();
     error EnabledAlreadySet();
@@ -29,6 +28,4 @@ interface IPermissionedLiquidationController is ISiloIncentivesController, IAcce
     function anySilo() external view returns (address);
 
     function enabled() external view returns (bool);
-
-    function owner() external view returns (address);
 }

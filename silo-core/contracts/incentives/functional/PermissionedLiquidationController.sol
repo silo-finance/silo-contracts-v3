@@ -8,8 +8,13 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISiloIncentivesController} from "../interfaces/ISiloIncentivesController.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
-import {BaseIncentivesControllerCompatible} from "../base/BaseIncentivesControllerCompatible.sol";
+import {IDistributionManager} from "../interfaces/IDistributionManager.sol";
+import {DistributionManager} from "../base/DistributionManager.sol";
+import {SiloIncentivesController} from "../SiloIncentivesController.sol";
+
+import {SiloIncentivesControllerCompatible} from "../SiloIncentivesControllerCompatible.sol";
 import {
     IPermissionedLiquidationController
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
@@ -19,7 +24,7 @@ import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 /// It will not work if it will be set for the shared debt token.
 contract PermissionedLiquidationController is
     IPermissionedLiquidationController,
-    BaseIncentivesControllerCompatible,
+    SiloIncentivesControllerCompatible,
     Whitelist,
     Initializable
 {
@@ -38,7 +43,7 @@ contract PermissionedLiquidationController is
         _;
     }
 
-    constructor() {
+    constructor() SiloIncentivesControllerCompatible(address(0xdead), address(0xdead), address(0xdead)) {
         _disableInitializers();
     }
 
@@ -79,20 +84,20 @@ contract PermissionedLiquidationController is
     }
 
     // solhint-disable-next-line func-name-mixedcase
-    function share_token() external view virtual returns (address) {
+    function share_token() external view virtual override returns (address) {
         return collateralShareToken;
     }
 
     // solhint-disable-next-line func-name-mixedcase
-    function SHARE_TOKEN() external view returns (address) {
+    function SHARE_TOKEN() public view override(SiloIncentivesController, ISiloIncentivesController) returns (address) {
         return collateralShareToken;
     }
 
-    function NOTIFIER() external view returns (address) { // solhint-disable-line func-name-mixedcase
+    function NOTIFIER() public view override(DistributionManager, IDistributionManager) returns (address) { // solhint-disable-line func-name-mixedcase
         return hookReceiver;
     }
 
-    function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
+    function VERSION() external pure virtual override(SiloIncentivesController, IVersioned) returns (string memory) { // solhint-disable-line func-name-mixedcase
         return "PermissionedLiquidationController 4.12.0";
     }
 
@@ -106,7 +111,7 @@ contract PermissionedLiquidationController is
     )
         public
         virtual
-        override(BaseIncentivesControllerCompatible, ISiloIncentivesController)
+        override(SiloIncentivesControllerCompatible, ISiloIncentivesController)
         onlyHookReceiver
     {
         if (!enabled) return;
@@ -117,13 +122,5 @@ contract PermissionedLiquidationController is
         bool isLiquidation = !ISilo(anySilo).isSolvent(_sender);
 
         if (isLiquidation) revert LiquidationNotAllowed();
-    }
-
-    function owner() public view virtual returns (address) {
-        return Ownable(hookReceiver).owner();
-    }
-
-    function _onlyOwner() internal view virtual override {
-        require(msg.sender == owner(), OnlyOwner());
     }
 }

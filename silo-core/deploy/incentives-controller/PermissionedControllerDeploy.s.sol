@@ -53,6 +53,7 @@ contract PermissionedControllerDeploy is CommonDeploy {
 
         address incentivesControllerC =
             IPermissionedLiquidationControllerFactory(factory).create(IShareToken(collateralShareTokenAddress));
+        
         address incentivesControllerP =
             IPermissionedLiquidationControllerFactory(factory).create(IShareToken(protectedShareTokenAddress));
 
@@ -65,6 +66,7 @@ contract PermissionedControllerDeploy is CommonDeploy {
             incentivesControllerC,
             collateralShareTokenAddress
         );
+        
         console2.log(
             "\nHook(%s).setGauge(ic: %s, shareToken: %s)", notifier, incentivesControllerP, protectedShareTokenAddress
         );

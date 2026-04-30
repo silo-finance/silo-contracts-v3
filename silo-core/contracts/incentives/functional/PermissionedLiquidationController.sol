@@ -121,7 +121,7 @@ contract PermissionedLiquidationController is
         if (isLiquidation) revert LiquidationNotAllowed();
     }
 
-    function owner() public view returns (address) {
+    function owner() public view virtual returns (address) {
         return Ownable(hookReceiver).owner();
     }
 

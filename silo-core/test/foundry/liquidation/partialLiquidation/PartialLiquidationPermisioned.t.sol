@@ -37,11 +37,21 @@ import {
     PermissionedControllerDeploy
 } from "silo-core/deploy/incentives-controller/PermissionedControllerDeploy.s.sol";
 import {
-    PermissionedControllerUpgrade
-} from "silo-core/deploy/incentives-controller/PermissionedControllerUpgrade.s.sol";
-import {
     PermissionedControllerFactoryDeploy
 } from "silo-core/deploy/incentives-controller/PermissionedControllerFactoryDeploy.s.sol";
+import {ProxyAdmin} from "openzeppelin5/proxy/transparent/ProxyAdmin.sol";
+import {ITransparentUpgradeableProxy} from "openzeppelin5/proxy/transparent/TransparentUpgradeableProxy.sol";
+import {TransparentProxy} from "silo-core/contracts/utils/TransparentProxy.sol";
+
+contract NewImplementation is PermissionedLiquidationController {
+    function owner() public view override returns (address) {
+        return msg.sender;
+    }
+
+    function abc() public pure returns (string memory) {
+        return "abc";
+    }
+}
 
 /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc PartialLiquidationPermissionedTest
@@ -212,14 +222,14 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_deployment
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_upgrade
     */
-    function test_permisioned_liquidation_deployment() public {
+    function test_permisioned_liquidation_upgrade() public {
         _setPermissionedLiquidation();
 
         assertTrue(controllerC.enabled(), "active controller is enabled");
 
-        IPermissionedLiquidationController newImplementation = new PermissionedLiquidationController();
+        IPermissionedLiquidationController newImplementation = new NewImplementation();
         assertFalse(newImplementation.enabled(), "inactive controller is disabled");
 
         vm.startPrank(controllerC.owner());
@@ -227,21 +237,18 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         IGaugeHookReceiver hook = IGaugeHookReceiver(address(partialLiquidation));
         IShareToken shareToken = IShareToken(address(silo0));
 
-        hook.setGauge(controllerC, shareToken);
-
         address beforeUpgrade = address(hook.configuredGauges(shareToken));
 
-        PermissionedControllerUpgrade upgradeDeployer = new PermissionedControllerUpgrade();
-        upgradeDeployer.disableDeploymentsSync();
-
-        upgradeDeployer.run();
+        _upgrade(address(controllerC), address(newImplementation));
 
         address afterUpgrade = address(hook.configuredGauges(shareToken));
         assertEq(beforeUpgrade, afterUpgrade, "configured gauge addressshould not change");
-        assertFalse(
+        assertTrue(
             IPermissionedLiquidationController(afterUpgrade).enabled(),
-            "after upgrade enabled flag should be disabled"
+            "after upgrade enabled flag should stay enabled, because storage is contant"
         );
+
+        assertEq(NewImplementation(afterUpgrade).abc(), "abc", "after upgrade we have new method abc");
     }
 
     function _grantAllowedRole() internal {
@@ -281,5 +288,12 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
     function _printBorrowerLTV() internal {
         emit log_named_decimal_uint("borrower LTV", siloLens.getUserLTV(silo0, borrower), 16);
+    }
+
+    function _upgrade(address _controllerProxy, address _newImplementation) internal {
+        address proxyAdmin = TransparentProxy(payable(_controllerProxy)).getAdmin();
+
+        ProxyAdmin(proxyAdmin)
+            .upgradeAndCall(ITransparentUpgradeableProxy(payable(_controllerProxy)), _newImplementation, bytes(""));
     }
 }

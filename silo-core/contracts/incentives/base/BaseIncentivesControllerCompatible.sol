@@ -40,31 +40,31 @@ abstract contract BaseIncentivesControllerCompatible is IBackwardsCompatibleGaug
     }
 
     function getDistributionEnd(string calldata) external pure returns (uint256) {
-        return 0;
-    }
-
-    function getUserData(address, string calldata) external pure returns (uint256) {
-        return 0;
-    }
-
-    function incentivesProgram(string calldata) external pure returns (IncentiveProgramDetails memory details) {
         // do nothing
     }
 
-    function getAllProgramsNames() external pure returns (string[] memory programsNames) {
-        programsNames = new string[](0);
+    function getUserData(address, string calldata) external pure returns (uint256) {
+        // do nothing
     }
 
-    function getProgramName(bytes32) external pure returns (string memory programName) {
-        programName = "";
+    function incentivesProgram(string calldata) external pure returns (IncentiveProgramDetails memory) {
+        // do nothing
     }
 
-    function getProgramId(string calldata) external pure returns (bytes32 programId) {
-        programId = bytes32(0);
+    function getAllProgramsNames() external pure returns (string[] memory) {
+        // do nothing
     }
 
-    function immediateDistribution(address, uint256) external pure returns (bytes32 programId) {
-        programId = bytes32(0);
+    function getProgramName(bytes32) external pure returns (string memory) {
+        // do nothing
+    }
+
+    function getProgramId(string calldata) external pure returns (bytes32) {
+        // do nothing
+    }
+
+    function immediateDistribution(address, uint256) external pure returns (bytes32) {
+        // do nothing
     }
 
     function rescueRewards(address) external pure {
@@ -84,35 +84,35 @@ abstract contract BaseIncentivesControllerCompatible is IBackwardsCompatibleGaug
     }
 
     function claimRewards(address) external pure returns (AccruedRewards[] memory accruedRewards) {
-        accruedRewards = new AccruedRewards[](0);
+        // do nothing
     }
 
-    function claimRewards(address, string[] calldata) external pure returns (AccruedRewards[] memory accruedRewards) {
+    function claimRewards(address, string[] calldata) external pure returns (AccruedRewards[] memory) {
         // do nothing
     }
 
     function claimRewardsOnBehalf(address, address, string[] calldata)
         external
         pure
-        returns (AccruedRewards[] memory accruedRewards)
+        returns (AccruedRewards[] memory)
     {
         // do nothing
     }
 
     function getClaimer(address) external pure returns (address) {
-        return address(0);
+        // do nothing
     }
 
-    function getRewardsBalance(address, string calldata) external pure returns (uint256 unclaimedRewards) {
-        unclaimedRewards = 0;
+    function getRewardsBalance(address, string calldata) external pure returns (uint256) {
+        // do nothing
     }
 
-    function getRewardsBalance(address, string[] calldata) external pure returns (uint256 unclaimedRewards) {
-        unclaimedRewards = 0;
+    function getRewardsBalance(address, string[] calldata) external pure returns (uint256) {
+        // do nothing
     }
 
     function getUserUnclaimedRewards(address, string calldata) external pure returns (uint256) {
-        return 0;
+        // do nothing
     }
 
     function afterTokenTransfer(

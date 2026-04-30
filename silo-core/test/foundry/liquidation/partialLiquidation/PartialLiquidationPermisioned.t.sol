@@ -215,6 +215,28 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     }
 
     /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_disable
+    */
+    function test_permisioned_liquidation_disable() public {
+        _createPositionToLiquidate(ISilo.CollateralType.Collateral);
+
+        _printBorrowerLTV();
+
+        _setPermissionedLiquidation();
+
+        vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+        manualLiquidation.executeLiquidation(siloUsdc, borrower);
+
+        vm.prank(controllerC.owner());
+        controllerC.setEnabled(false);
+
+        // when disabled, liquidation is allowed
+        manualLiquidation.executeLiquidation(siloUsdc, borrower);
+
+        _printBorrowerLTV();
+    }
+
+    /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_upgrade
     */
     function test_permisioned_liquidation_upgrade() public {

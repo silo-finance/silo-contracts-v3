@@ -7,6 +7,10 @@ import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 
 import {IPartialLiquidation} from "../../interfaces/IPartialLiquidation.sol";
+import {IShareToken} from "../../interfaces/IShareToken.sol";
+import {IGaugeHookReceiver} from "../../interfaces/IGaugeHookReceiver.sol";
+import {ISiloIncentivesController} from "../../incentives/interfaces/ISiloIncentivesController.sol";
+import {IPermissionedLiquidationController} from "../../interfaces/IPermissionedLiquidationController.sol";
 
 import {ISilo} from "../../interfaces/ISilo.sol";
 import {ISiloConfig} from "../../interfaces/ISiloConfig.sol";
@@ -90,6 +94,7 @@ contract ManualLiquidationHelper is TokenRescuer {
         _executeLiquidation(_siloWithDebt, _borrower, _maxDebtToCover, _receiveSToken, _receiver);
     }
 
+    // solhint-disable-next-line function-max-lines
     function _executeLiquidation(
         ISilo _siloWithDebt,
         address _borrower,
@@ -108,6 +113,9 @@ contract ManualLiquidationHelper is TokenRescuer {
         ) = _siloWithDebt.config().getConfigsForSolvency(_borrower);
 
         IPartialLiquidation liquidation = IPartialLiquidation(debtConfig.hookReceiver);
+        _allowMeToLiquidate(debtConfig.hookReceiver, IShareToken(collateralConfig.collateralShareToken));
+        _allowMeToLiquidate(debtConfig.hookReceiver, IShareToken(collateralConfig.protectedShareToken));
+
         IERC20 debtAsset = IERC20(debtConfig.token);
 
         (, uint256 debtToRepay,) = liquidation.maxLiquidation(_borrower);
@@ -157,5 +165,16 @@ contract ManualLiquidationHelper is TokenRescuer {
     function _transferNative(address payable _receiver, uint256 _amount) internal virtual {
         IWrappedNativeToken(address(NATIVE_TOKEN)).withdraw(_amount);
         _receiver.sendValue(_amount);
+    }
+
+    function _allowMeToLiquidate(address _hookReceiver, IShareToken _shareToken) internal virtual {
+        ISiloIncentivesController controller = IGaugeHookReceiver(_hookReceiver).configuredGauges(_shareToken);
+        if (address(controller) == address(0)) return;
+        
+        try IPermissionedLiquidationController(address(controller)).allowMeToLiquidate() {
+            // allowed
+        } catch {
+            // not allwoed or not supported
+        }
     }
 }

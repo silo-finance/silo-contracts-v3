@@ -8,7 +8,6 @@ import {IAccessControl} from "openzeppelin5/access/IAccessControl.sol";
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
-import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
@@ -33,12 +32,6 @@ import {
     PermissionedLiquidationController
 } from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
 
-import {
-    PermissionedControllerDeploy
-} from "silo-core/deploy/incentives-controller/PermissionedControllerDeploy.s.sol";
-import {
-    PermissionedControllerFactoryDeploy
-} from "silo-core/deploy/incentives-controller/PermissionedControllerFactoryDeploy.s.sol";
 import {ProxyAdmin} from "openzeppelin5/proxy/transparent/ProxyAdmin.sol";
 import {ITransparentUpgradeableProxy} from "openzeppelin5/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {TransparentProxy} from "silo-core/contracts/utils/TransparentProxy.sol";

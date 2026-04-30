@@ -6,13 +6,13 @@ import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {
-    IPermissionedLiquidationIncentiveController
-} from "silo-core/contracts/interfaces/IPermissionedLiquidationIncentiveController.sol";
+    IPermissionedLiquidationController
+} from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiver.sol";
 
-contract PermissionedLiquidationIncentiveController is
-    IPermissionedLiquidationIncentiveController,
+contract PermissionedLiquidationController is
+    IPermissionedLiquidationController,
     SiloIncentivesControllerCompatible,
     Whitelist
 {
@@ -51,7 +51,7 @@ contract PermissionedLiquidationIncentiveController is
         );
     }
 
-    /// @inheritdoc IPermissionedLiquidationIncentiveController
+    /// @inheritdoc IPermissionedLiquidationController
     function setEnabled(bool _enabled) external onlyOwner {
         enabled = _enabled;
     }
@@ -80,7 +80,7 @@ contract PermissionedLiquidationIncentiveController is
         if (isLiquidation) revert LiquidationNotAllowed();
     }
 
-    /// @inheritdoc IPermissionedLiquidationIncentiveController
+    /// @inheritdoc IPermissionedLiquidationController
     function allowMeToLiquidate() external virtual onlyAllowed {
         _liquidationAllowed = true;
     }

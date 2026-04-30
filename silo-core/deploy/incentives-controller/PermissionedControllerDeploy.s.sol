@@ -15,8 +15,8 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {
-    PermissionedLiquidationIncentiveController
-} from "silo-core/contracts/incentives/functional/PermissionedLiquidationIncentiveController.sol";
+    PermissionedLiquidationController
+} from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
 
 /*
     SILO=0xe394050D179b72197A458Fdfb962Ae69908Aa5A0 \
@@ -42,11 +42,11 @@ contract PermissionedControllerDeploy is CommonDeploy {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        PermissionedLiquidationIncentiveController incentivesControllerC =
-            new PermissionedLiquidationIncentiveController(owner, notifier, collateralShareTokenAddress);
+        PermissionedLiquidationController incentivesControllerC =
+            new PermissionedLiquidationController(owner, notifier, collateralShareTokenAddress);
         
-        PermissionedLiquidationIncentiveController incentivesControllerP =
-            new PermissionedLiquidationIncentiveController(owner, notifier, protectedShareTokenAddress);
+        PermissionedLiquidationController incentivesControllerP =
+            new PermissionedLiquidationController(owner, notifier, protectedShareTokenAddress);
 
         vm.stopBroadcast();
 

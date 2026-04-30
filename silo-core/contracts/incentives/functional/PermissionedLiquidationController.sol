@@ -71,7 +71,7 @@ contract PermissionedLiquidationController is
     }
 
     /// @inheritdoc IPermissionedLiquidationController
-    function setEnabled(bool _enabled) external onlyOwner {
+    function setEnabled(bool _enabled) external virtual onlyOwner {
         require(enabled != _enabled, EnabledAlreadySet());
 
         enabled = _enabled;
@@ -89,24 +89,20 @@ contract PermissionedLiquidationController is
     }
 
     // solhint-disable-next-line func-name-mixedcase
-    function SHARE_TOKEN() public view override(SiloIncentivesController, ISiloIncentivesController) returns (address) {
-        return collateralShareToken;
-    }
-
-    function NOTIFIER() public view override(DistributionManager, IDistributionManager) returns (address) { // solhint-disable-line func-name-mixedcase
-        return hookReceiver;
-    }
-
-    function VERSION() external pure virtual override(SiloIncentivesController, IVersioned) returns (string memory) { // solhint-disable-line func-name-mixedcase
+    function VERSION() external pure virtual override(SiloIncentivesController, IVersioned) returns (string memory) {
         return "PermissionedLiquidationController 4.12.0";
     }
 
     function afterTokenTransfer(
         address _sender,
-        uint256 /*_senderBalance*/,
-        address /*_recipient*/,
-        uint256 /*_recipientBalance*/,
-        uint256 /*_totalSupply*/,
+        uint256,
+        /*_senderBalance*/
+        address,
+        /*_recipient*/
+        uint256,
+        /*_recipientBalance*/
+        uint256,
+        /*_totalSupply*/
         uint256 /*_amount*/
     )
         public
@@ -122,5 +118,20 @@ contract PermissionedLiquidationController is
         bool isLiquidation = !ISilo(anySilo).isSolvent(_sender);
 
         if (isLiquidation) revert LiquidationNotAllowed();
+    }
+
+    // solhint-disable-next-line func-name-mixedcase
+    function SHARE_TOKEN()
+        public
+        view
+        override(SiloIncentivesController, ISiloIncentivesController)
+        returns (address)
+    {
+        return collateralShareToken;
+    }
+
+    // solhint-disable-next-line func-name-mixedcase
+    function NOTIFIER() public view override(DistributionManager, IDistributionManager) returns (address) {
+        return hookReceiver;
     }
 }

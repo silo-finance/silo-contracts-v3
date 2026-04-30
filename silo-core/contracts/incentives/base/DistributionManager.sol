@@ -29,18 +29,18 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
 
     /// @dev notifier is contract with IERC20 interface with users balances, based based on which
     /// rewards distribution is calculated
-    address public immutable NOTIFIER; // solhint-disable-line var-name-mixedcase
+    address private immutable _IMMUTABLE_NOTIFIER; // solhint-disable-line var-name-mixedcase
 
     uint8 public constant PRECISION = 36;
     uint256 public constant TEN_POW_PRECISION = 10 ** PRECISION;
 
     modifier onlyNotifier() {
-        if (msg.sender != NOTIFIER) revert OnlyNotifier();
+        if (msg.sender != NOTIFIER()) revert OnlyNotifier();
         _;
     }
 
     modifier onlyNotifierOrOwner() {
-        if (msg.sender != NOTIFIER && msg.sender != owner()) revert OnlyNotifierOrOwner();
+        if (msg.sender != NOTIFIER() && msg.sender != owner()) revert OnlyNotifierOrOwner();
         _;
     }
 
@@ -49,7 +49,7 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
     constructor(address _owner, address _notifier) Ownable(_owner) {
         require(_notifier != address(0), ZeroAddress());
 
-        NOTIFIER = _notifier;
+        _IMMUTABLE_NOTIFIER = _notifier;
     }
 
     /// @inheritdoc IDistributionManager
@@ -76,6 +76,12 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
     function getDistributionEnd(string calldata _incentivesProgram) external view virtual override returns (uint256) {
         bytes32 incentivesProgramId = getProgramId(_incentivesProgram);
         return incentivesPrograms[incentivesProgramId].distributionEnd;
+    }
+
+    /// @dev notifier is contract with IERC20 interface with users balances, based based on which
+    /// rewards distribution is calculated
+    function NOTIFIER() public view virtual returns (address) {
+        return _IMMUTABLE_NOTIFIER;
     }
 
     /// @inheritdoc IDistributionManager
@@ -343,7 +349,7 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
     }
 
     function _shareToken() internal view virtual returns (IERC20 shareToken) {
-        shareToken = IERC20(NOTIFIER);
+        shareToken = IERC20(NOTIFIER());
     }
 
     function _getScaledUserBalanceAndSupply(address _user)

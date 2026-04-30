@@ -26,8 +26,7 @@ abstract contract SiloIncentivesController is BaseIncentivesController, IVersion
     using EnumerableSet for EnumerableSet.Bytes32Set;
     using SafeERC20 for IERC20;
 
-    /// @inheritdoc ISiloIncentivesController
-    address public immutable SHARE_TOKEN;
+    address private immutable _IMMUTABLE_SHARE_TOKEN;
 
     /// @param _owner address of wallet that can manage the storage
     /// @param _notifier address of the notifier
@@ -37,12 +36,17 @@ abstract contract SiloIncentivesController is BaseIncentivesController, IVersion
         BaseIncentivesController(_owner, _notifier)
     {
         require(_shareTokenAddress != address(0), EmptyShareToken());
-        SHARE_TOKEN = _shareTokenAddress;
+        _IMMUTABLE_SHARE_TOKEN = _shareTokenAddress;
     }
 
     /// @inheritdoc IVersioned
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
         return "SiloIncentivesController 4.0.0";
+    }
+
+    /// @inheritdoc ISiloIncentivesController
+    function SHARE_TOKEN() public view virtual override returns (address) {
+        return _IMMUTABLE_SHARE_TOKEN;
     }
 
     /// @inheritdoc ISiloIncentivesController
@@ -168,6 +172,6 @@ abstract contract SiloIncentivesController is BaseIncentivesController, IVersion
     }
 
     function _shareToken() internal view override returns (IERC20 shareToken) {
-        shareToken = IERC20(SHARE_TOKEN);
+        shareToken = IERC20(SHARE_TOKEN());
     }
 }

@@ -38,8 +38,8 @@ contract SiloIncentivesControllerCompatible is IBackwardsCompatibleGaugeLike, Si
     }
 
     // solhint-disable-next-line func-name-mixedcase
-    function share_token() external view returns (address) {
-        return SHARE_TOKEN;
+    function share_token() external view virtual returns (address) {
+        return SHARE_TOKEN();
     }
 
     // solhint-disable-next-line func-name-mixedcase

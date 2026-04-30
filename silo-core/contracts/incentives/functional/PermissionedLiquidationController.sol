@@ -1,59 +1,99 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.28;
 
-import {SiloIncentivesControllerCompatible} from "../SiloIncentivesControllerCompatible.sol";
-import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
+import {Initializable} from "openzeppelin5/proxy/utils/Initializable.sol";
+
+import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
+import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
+import {ISiloIncentivesController} from "../interfaces/ISiloIncentivesController.sol";
+
+import {BaseIncentivesControllerCompatible} from "../base/BaseIncentivesControllerCompatible.sol";
 import {
     IPermissionedLiquidationController
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
-import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiver.sol";
 
+/// @dev this contract should be set as a gauge for collateral or protected share tokens.
+/// It will not work if it will be set for the shared debt token.
 contract PermissionedLiquidationController is
     IPermissionedLiquidationController,
-    SiloIncentivesControllerCompatible,
-    Whitelist
+    BaseIncentivesControllerCompatible,
+    Whitelist,
+    Initializable
 {
-    address public immutable HOOK_RECEIVER;
+    address public hookReceiver;
 
-    bool public enabled = true;
+    address public anySilo;
+
+    address public collateralShareToken;
+
+    bool public enabled;
 
     bool private transient _liquidationAllowed;
 
     modifier onlyHookReceiver() {
-        require(msg.sender == HOOK_RECEIVER, OnlyHookReceiver());
+        require(msg.sender == hookReceiver, OnlyHookReceiver());
         _;
     }
 
-    /// @param _owner owner of the contract
-    /// @param _notifier for Silo it should be hook address
-    /// @param _collateralShareTokenAddress protected or collateral share token address
-    constructor(address _owner, address _notifier, address _collateralShareTokenAddress)
-        SiloIncentivesControllerCompatible(_owner, _notifier, _collateralShareTokenAddress)
-    {
-        __Whitelist_init(_owner);
+    constructor() {
+        _disableInitializers();
+    }
 
-        HOOK_RECEIVER = IShareToken(_collateralShareTokenAddress).hookReceiver();
-        require(address(HOOK_RECEIVER) == _notifier, InvalidHookReceiver());
-
-        address collateralSilo = address(IShareToken(_collateralShareTokenAddress).silo());
-        ISiloConfig siloConfig = IShareToken(_collateralShareTokenAddress).siloConfig();
+    /// @param _collateralShareToken collateral or protected share token address
+    function initialize(IShareToken _collateralShareToken) external initializer {
+        address hook = _collateralShareToken.hookReceiver();
+        ISiloConfig siloConfig = _collateralShareToken.siloConfig();
+        address collateralSilo = address(_collateralShareToken.silo());
 
         ISiloConfig.ConfigData memory collateralConfig = siloConfig.getConfig(collateralSilo);
         require(collateralConfig.lt != 0, NotCollateralSilo());
 
         require(
-            collateralConfig.collateralShareToken == _collateralShareTokenAddress
-                || collateralConfig.protectedShareToken == _collateralShareTokenAddress,
+            collateralConfig.collateralShareToken == address(_collateralShareToken)
+                || collateralConfig.protectedShareToken == address(_collateralShareToken),
             NotCollateralShareToken()
         );
+
+        hookReceiver = hook;
+        anySilo = collateralSilo;
+        collateralShareToken = address(_collateralShareToken);
+        enabled = true;
+
+        __Whitelist_init(Ownable(hook).owner());
     }
 
     /// @inheritdoc IPermissionedLiquidationController
     function setEnabled(bool _enabled) external onlyOwner {
+        require(enabled != _enabled, EnabledAlreadySet());
+
         enabled = _enabled;
+        emit EnabledChanged(_enabled);
+    }
+
+    /// @inheritdoc IPermissionedLiquidationController
+    function allowMeToLiquidate() external virtual onlyAllowed {
+        _liquidationAllowed = true;
+    }
+
+    // solhint-disable-next-line func-name-mixedcase
+    function share_token() external view virtual returns (address) {
+        return collateralShareToken;
+    }
+
+    // solhint-disable-next-line func-name-mixedcase
+    function SHARE_TOKEN() external view returns (address) {
+        return collateralShareToken;
+    }
+
+    function NOTIFIER() external view returns (address) { // solhint-disable-line func-name-mixedcase
+        return hookReceiver;
+    }
+
+    function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
+        return "PermissionedLiquidationController 4.12.0";
     }
 
     function afterTokenTransfer(
@@ -66,7 +106,7 @@ contract PermissionedLiquidationController is
     )
         public
         virtual
-        override
+        override(BaseIncentivesControllerCompatible, ISiloIncentivesController)
         onlyHookReceiver
     {
         if (!enabled) return;
@@ -74,14 +114,16 @@ contract PermissionedLiquidationController is
 
         // is this liquidation?
         // After transferring collateral, the user will always be insolvent.
-        (address anySilo,) = BaseHookReceiver(msg.sender).siloConfig().getSilos();
         bool isLiquidation = !ISilo(anySilo).isSolvent(_sender);
 
         if (isLiquidation) revert LiquidationNotAllowed();
     }
 
-    /// @inheritdoc IPermissionedLiquidationController
-    function allowMeToLiquidate() external virtual onlyAllowed {
-        _liquidationAllowed = true;
+    function owner() public view virtual returns (address) {
+        return Ownable(hookReceiver).owner();
+    }
+
+    function _onlyOwner() internal view virtual override {
+        require(msg.sender == owner(), OnlyOwner());
     }
 }

@@ -34,7 +34,7 @@ contract PermissionedControllerDeploy is CommonDeploy {
 
         address notifier = IShareToken(address(silo)).hookReceiver();
         address owner = Ownable(notifier).owner();
-        
+
         address factory = SiloCoreDeployments.get(
             SiloCoreContracts.PERMISSIONED_LIQUIDATION_CONTROLLER_FACTORY, ChainsLib.chainAlias()
         );
@@ -51,8 +51,10 @@ contract PermissionedControllerDeploy is CommonDeploy {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        address incentivesControllerC = IPermissionedLiquidationControllerFactory(factory).create(IShareToken(collateralShareTokenAddress));
-        address incentivesControllerP = IPermissionedLiquidationControllerFactory(factory).create(IShareToken(protectedShareTokenAddress));
+        address incentivesControllerC =
+            IPermissionedLiquidationControllerFactory(factory).create(IShareToken(collateralShareTokenAddress));
+        address incentivesControllerP =
+            IPermissionedLiquidationControllerFactory(factory).create(IShareToken(protectedShareTokenAddress));
 
         vm.stopBroadcast();
 
@@ -64,20 +66,21 @@ contract PermissionedControllerDeploy is CommonDeploy {
             collateralShareTokenAddress
         );
         console2.log(
-            "\nHook(%s).setGauge(ic: %s, shareToken: %s)",
-            notifier,
-            incentivesControllerP,
-            protectedShareTokenAddress
+            "\nHook(%s).setGauge(ic: %s, shareToken: %s)", notifier, incentivesControllerP, protectedShareTokenAddress
         );
 
         console2.log("QA ---");
 
         vm.startPrank(owner);
         IGaugeHookReceiver(notifier)
-            .setGauge(ISiloIncentivesController(address(incentivesControllerC)), IShareToken(collateralShareTokenAddress));
+            .setGauge(
+                ISiloIncentivesController(address(incentivesControllerC)), IShareToken(collateralShareTokenAddress)
+            );
 
         IGaugeHookReceiver(notifier)
-            .setGauge(ISiloIncentivesController(address(incentivesControllerP)), IShareToken(protectedShareTokenAddress));
+            .setGauge(
+                ISiloIncentivesController(address(incentivesControllerP)), IShareToken(protectedShareTokenAddress)
+            );
 
         IGaugeHookReceiver(notifier).removeGauge(IShareToken(collateralShareTokenAddress));
         IGaugeHookReceiver(notifier).removeGauge(IShareToken(protectedShareTokenAddress));
@@ -85,15 +88,11 @@ contract PermissionedControllerDeploy is CommonDeploy {
         vm.stopPrank();
 
         SiloIncentivesControllerDeployments.save({
-            _chain: ChainsLib.chainAlias(),
-            _shareToken: collateralShareTokenAddress,
-            _deployed: incentivesControllerC
+            _chain: ChainsLib.chainAlias(), _shareToken: collateralShareTokenAddress, _deployed: incentivesControllerC
         });
 
         SiloIncentivesControllerDeployments.save({
-            _chain: ChainsLib.chainAlias(),
-            _shareToken: protectedShareTokenAddress,
-            _deployed: incentivesControllerP
+            _chain: ChainsLib.chainAlias(), _shareToken: protectedShareTokenAddress, _deployed: incentivesControllerP
         });
     }
 }

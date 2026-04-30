@@ -33,12 +33,10 @@ contract PermissionedControllerUpgrade is CommonDeploy {
         ISilo silo = ISilo(vm.envAddress("SILO"));
         ISiloConfig.ConfigData memory config = silo.config().getConfig(address(silo));
 
-        address collateralController = SiloIncentivesControllerDeployments.get(
-            ChainsLib.chainAlias(), config.collateralShareToken
-        );
-        address protectedController = SiloIncentivesControllerDeployments.get(
-            ChainsLib.chainAlias(), config.protectedShareToken
-        );
+        address collateralController =
+            SiloIncentivesControllerDeployments.get(ChainsLib.chainAlias(), config.collateralShareToken);
+        address protectedController =
+            SiloIncentivesControllerDeployments.get(ChainsLib.chainAlias(), config.protectedShareToken);
 
         require(collateralController != address(0), ControllerNotFound());
         require(protectedController != address(0), ControllerNotFound());
@@ -59,8 +57,7 @@ contract PermissionedControllerUpgrade is CommonDeploy {
     function _upgrade(address _controllerProxy, address _newImplementation) internal {
         address proxyAdmin = TransparentProxy(payable(_controllerProxy)).getAdmin();
 
-        ProxyAdmin(proxyAdmin).upgradeAndCall(
-            ITransparentUpgradeableProxy(payable(_controllerProxy)), _newImplementation, bytes("")
-        );
+        ProxyAdmin(proxyAdmin)
+            .upgradeAndCall(ITransparentUpgradeableProxy(payable(_controllerProxy)), _newImplementation, bytes(""));
     }
 }

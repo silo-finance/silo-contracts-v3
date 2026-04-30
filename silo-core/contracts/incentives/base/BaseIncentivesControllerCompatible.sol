@@ -47,11 +47,7 @@ abstract contract BaseIncentivesControllerCompatible is IBackwardsCompatibleGaug
         return 0;
     }
 
-    function incentivesProgram(string calldata)
-        external
-        pure
-        returns (IncentiveProgramDetails memory details)
-    {
+    function incentivesProgram(string calldata) external pure returns (IncentiveProgramDetails memory details) {
         // do nothing
     }
 
@@ -62,7 +58,7 @@ abstract contract BaseIncentivesControllerCompatible is IBackwardsCompatibleGaug
     function getProgramName(bytes32) external pure returns (string memory programName) {
         programName = "";
     }
-    
+
     function getProgramId(string calldata) external pure returns (bytes32 programId) {
         programId = bytes32(0);
     }
@@ -91,11 +87,7 @@ abstract contract BaseIncentivesControllerCompatible is IBackwardsCompatibleGaug
         accruedRewards = new AccruedRewards[](0);
     }
 
-    function claimRewards(address, string[] calldata)
-        external
-        pure
-        returns (AccruedRewards[] memory accruedRewards)
-    {
+    function claimRewards(address, string[] calldata) external pure returns (AccruedRewards[] memory accruedRewards) {
         // do nothing
     }
 
@@ -111,19 +103,11 @@ abstract contract BaseIncentivesControllerCompatible is IBackwardsCompatibleGaug
         return address(0);
     }
 
-    function getRewardsBalance(address, string calldata)
-        external
-        pure
-        returns (uint256 unclaimedRewards)
-    {
+    function getRewardsBalance(address, string calldata) external pure returns (uint256 unclaimedRewards) {
         unclaimedRewards = 0;
     }
 
-    function getRewardsBalance(address, string[] calldata)
-        external
-        pure
-        returns (uint256 unclaimedRewards) 
-    {
+    function getRewardsBalance(address, string[] calldata) external pure returns (uint256 unclaimedRewards) {
         unclaimedRewards = 0;
     }
 
@@ -138,10 +122,7 @@ abstract contract BaseIncentivesControllerCompatible is IBackwardsCompatibleGaug
         uint256 _recipientBalance,
         uint256 _totalSupply,
         uint256 _amount
-    )
-        public
-        virtual
-        override(IBackwardsCompatibleGaugeLike, ISiloIncentivesController);
-    
+    ) public virtual override(IBackwardsCompatibleGaugeLike, ISiloIncentivesController);
+
     function _onlyOwner() internal view virtual;
 }

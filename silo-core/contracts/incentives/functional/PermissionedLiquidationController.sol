@@ -16,7 +16,6 @@ import {
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiver.sol";
-import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
 /// @dev this contract should be set as a gauge for collateral or protected share tokens.
 /// It will not work if it will be set for the shared debt token.
@@ -24,8 +23,7 @@ contract PermissionedLiquidationController is
     IPermissionedLiquidationController,
     BaseIncentivesControllerCompatible,
     Whitelist,
-    Initializable,
-    IVersioned
+    Initializable
 {
     address public hookReceiver;
 
@@ -33,7 +31,7 @@ contract PermissionedLiquidationController is
 
     address public collateralShareToken;
 
-    bool public enabled = true;
+    bool public enabled;
 
     bool private transient _liquidationAllowed;
 
@@ -64,20 +62,29 @@ contract PermissionedLiquidationController is
         hookReceiver = hook;
         anySilo = collateralSilo;
         collateralShareToken = address(_collateralShareToken);
+        enabled = true;
 
         __Whitelist_init(Ownable(hook).owner());
     }
 
     /// @inheritdoc IPermissionedLiquidationController
     function setEnabled(bool _enabled) external onlyOwner {
+        require(enabled != _enabled, EnabledAlreadySet());
+
         enabled = _enabled;
+        emit EnabledChanged(_enabled);
+    }
+
+    /// @inheritdoc IPermissionedLiquidationController
+    function allowMeToLiquidate() external virtual onlyAllowed {
+        _liquidationAllowed = true;
     }
 
     // solhint-disable-next-line func-name-mixedcase
     function share_token() external view virtual returns (address) {
         return collateralShareToken;
     }
-    
+
     // solhint-disable-next-line func-name-mixedcase
     function SHARE_TOKEN() external view returns (address) {
         return collateralShareToken;
@@ -101,7 +108,7 @@ contract PermissionedLiquidationController is
     )
         public
         virtual
-        override // (BaseIncentivesControllerCompatible, IBackwardsCompatibleGaugeLike, ISiloIncentivesController)
+        override(BaseIncentivesControllerCompatible, ISiloIncentivesController)
         onlyHookReceiver
     {
         if (!enabled) return;
@@ -114,12 +121,11 @@ contract PermissionedLiquidationController is
         if (isLiquidation) revert LiquidationNotAllowed();
     }
 
-    /// @inheritdoc IPermissionedLiquidationController
-    function allowMeToLiquidate() external virtual onlyAllowed {
-        _liquidationAllowed = true;
+    function owner() public view returns (address) {
+        return Ownable(hookReceiver).owner();
     }
 
     function _onlyOwner() internal view virtual override {
-        require(msg.sender == Ownable(hookReceiver).owner(), OnlyOwner());
+        require(msg.sender == owner(), OnlyOwner());
     }
 }

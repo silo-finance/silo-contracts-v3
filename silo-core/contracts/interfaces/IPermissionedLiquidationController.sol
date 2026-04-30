@@ -1,12 +1,20 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity 0.8.28;
 
-interface IPermissionedLiquidationController {
+import {IAccessControl} from "openzeppelin5/access/IAccessControl.sol";
+
+import {ISiloIncentivesController} from "../incentives/interfaces/ISiloIncentivesController.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
+
+interface IPermissionedLiquidationController is ISiloIncentivesController, IAccessControl, IVersioned {
     error LiquidationNotAllowed();
     error OnlyHookReceiver();
     error OnlyOwner();
     error NotCollateralSilo();
     error NotCollateralShareToken();
+    error EnabledAlreadySet();
+
+    event EnabledChanged(bool _enabled);
 
     function setEnabled(bool _enabled) external;
 
@@ -21,4 +29,6 @@ interface IPermissionedLiquidationController {
     function anySilo() external view returns (address);
 
     function enabled() external view returns (bool);
+
+    function owner() external view returns (address);
 }

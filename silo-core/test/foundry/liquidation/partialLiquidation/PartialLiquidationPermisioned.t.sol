@@ -20,11 +20,11 @@ import {MintableToken} from "../../_common/MintableToken.sol";
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ManualLiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/ManualLiquidationHelper.sol";
 import {
-    PermissionedLiquidationController
-} from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
+    PermissionedLiquidationIncentiveController
+} from "silo-core/contracts/incentives/functional/PermissionedLiquidationIncentiveController.sol";
 import {
-    IPermissionedLiquidationController
-} from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
+    IPermissionedLiquidationIncentiveController
+} from "silo-core/contracts/interfaces/IPermissionedLiquidationIncentiveController.sol";
 
 contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest {
     using SafeERC20 for IERC20;
@@ -84,7 +84,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _setPermissionedLiquidation();
 
-        vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+        vm.expectRevert(IPermissionedLiquidationIncentiveController.LiquidationNotAllowed.selector);
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
 
         _grantAllowedRole();
@@ -100,7 +100,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _setPermissionedLiquidation();
 
-        vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+        vm.expectRevert(IPermissionedLiquidationIncentiveController.LiquidationNotAllowed.selector);
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
 
         _grantAllowedRole();
@@ -132,8 +132,8 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         address collateralShareToken = silo0.config().getConfig(address(silo0)).collateralShareToken;
         address protectedShareToken = silo0.config().getConfig(address(silo0)).protectedShareToken;
 
-        controllerC = new PermissionedLiquidationController(address(this), address(hook), collateralShareToken);
-        controllerP = new PermissionedLiquidationController(address(this), address(hook), protectedShareToken);
+        controllerC = new PermissionedLiquidationIncentiveController(address(this), address(hook), collateralShareToken);
+        controllerP = new PermissionedLiquidationIncentiveController(address(this), address(hook), protectedShareToken);
 
         vm.prank(Ownable(address(hook)).owner());
         hook.setGauge(controllerC, IShareToken(collateralShareToken));

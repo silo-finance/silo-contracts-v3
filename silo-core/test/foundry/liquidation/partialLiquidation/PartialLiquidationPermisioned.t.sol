@@ -12,6 +12,11 @@ import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookRecei
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 
+import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
+import {
+    IBackwardsCompatibleGaugeLike
+} from "silo-core/contracts/incentives/interfaces/IBackwardsCompatibleGaugeLike.sol";
+
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 import {SiloConfigOverride} from "../../_common/fixtures/SiloFixture.sol";
 import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
@@ -25,9 +30,6 @@ import {
 import {
     IPermissionedLiquidationController
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
-import {
-    BaseIncentivesControllerCompatible
-} from "silo-core/contracts/incentives/base/BaseIncentivesControllerCompatible.sol";
 import {
     PermissionedLiquidationController
 } from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
@@ -51,6 +53,8 @@ contract NewImplementation is PermissionedLiquidationController {
 */
 contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest {
     using SafeERC20 for IERC20;
+
+    error OnlyOwner();
 
     bytes32 public constant ALLOWED_ROLE = keccak256("ALLOWED_ROLE");
 
@@ -108,10 +112,10 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     function test_permisioned_liquidation_enabled() public {
         _setPermissionedLiquidation();
 
-        vm.expectRevert(abi.encodeWithSelector(IPermissionedLiquidationController.OnlyOwner.selector));
+        vm.expectRevert(OnlyOwner.selector);
         controllerC.setEnabled(false);
 
-        vm.startPrank(IPermissionedLiquidationController(address(controllerC)).owner());
+        vm.startPrank(Ownable(address(controllerC)).owner());
 
         vm.expectRevert(abi.encodeWithSelector(IPermissionedLiquidationController.EnabledAlreadySet.selector));
         controllerC.setEnabled(true);
@@ -136,7 +140,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         );
         controllerC.grantRole(ALLOWED_ROLE, address(manualLiquidation));
 
-        vm.prank(IPermissionedLiquidationController(address(controllerC)).owner());
+        vm.prank(Ownable(address(controllerC)).owner());
         controllerC.grantRole(ALLOWED_ROLE, address(manualLiquidation));
     }
 
@@ -160,15 +164,19 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     }
 
     function _permisioned_liquidation_vars(address _collateralController, IShareToken _shareToken) internal view {
-        BaseIncentivesControllerCompatible controller = BaseIncentivesControllerCompatible(_collateralController);
+        ISiloIncentivesController controller = ISiloIncentivesController(_collateralController);
 
         assertEq(
-            IPermissionedLiquidationController(_collateralController).owner(),
+            Ownable(address(_collateralController)).owner(),
             Ownable(address(partialLiquidation)).owner(),
             "controller owner is a hook owner"
         );
 
-        assertEq(controller.share_token(), address(_shareToken), "controller share token should match");
+        assertEq(
+            IBackwardsCompatibleGaugeLike(_collateralController).share_token(),
+            address(_shareToken),
+            "controller share token should match"
+        );
         assertEq(controller.SHARE_TOKEN(), address(_shareToken), "controller SHARE_TOKEN should match");
         assertEq(controller.NOTIFIER(), address(partialLiquidation), "controller notifier should be hook");
 
@@ -227,7 +235,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
 
-        vm.prank(controllerC.owner());
+        vm.prank(Ownable(address(controllerC)).owner());
         controllerC.setEnabled(false);
 
         // when disabled, liquidation is allowed
@@ -247,7 +255,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         IPermissionedLiquidationController newImplementation = new NewImplementation();
         assertFalse(newImplementation.enabled(), "inactive controller is disabled");
 
-        vm.startPrank(controllerC.owner());
+        vm.startPrank(Ownable(address(controllerC)).owner());
 
         IGaugeHookReceiver hook = IGaugeHookReceiver(address(partialLiquidation));
         IShareToken shareToken = IShareToken(address(silo0));
@@ -267,7 +275,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     }
 
     function _grantAllowedRole() internal {
-        vm.startPrank(IPermissionedLiquidationController(address(controllerC)).owner());
+        vm.startPrank(Ownable(address(controllerC)).owner());
         controllerC.grantRole(ALLOWED_ROLE, address(manualLiquidation));
         controllerP.grantRole(ALLOWED_ROLE, address(manualLiquidation));
         vm.stopPrank();

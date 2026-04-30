@@ -7,7 +7,6 @@ import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
-import {IBackwardsCompatibleGaugeLike} from "../interfaces/IBackwardsCompatibleGaugeLike.sol";
 import {ISiloIncentivesController} from "../interfaces/ISiloIncentivesController.sol";
 
 import {BaseIncentivesControllerCompatible} from "../base/BaseIncentivesControllerCompatible.sol";
@@ -15,7 +14,6 @@ import {
     IPermissionedLiquidationController
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
-import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiver.sol";
 
 /// @dev this contract should be set as a gauge for collateral or protected share tokens.
 /// It will not work if it will be set for the shared debt token.

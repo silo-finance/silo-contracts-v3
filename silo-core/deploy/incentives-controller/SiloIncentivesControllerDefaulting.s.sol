@@ -43,7 +43,7 @@ contract SiloIncentivesControllerDefaulting is CommonDeploy {
         address deployer = vm.addr(deployerPrivateKey);
 
         address factory =
-            SiloCoreDeployments.get(SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY, ChainsLib.chainAlias());
+            SiloCoreDeployments.get(SiloCoreContracts.PERMISSIONED_LIQUIDATION_INCENTIVE_CONTROLLER_FACTORY, ChainsLib.chainAlias());
 
         string memory siloKey = vm.envString("SILO");
         address siloConfig = SiloDeployments.get(ChainsLib.chainAlias(), siloKey);
@@ -61,8 +61,8 @@ contract SiloIncentivesControllerDefaulting is CommonDeploy {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        address incentivesController = SiloIncentivesControllerFactory(factory)
-            .create({_owner: deployer, _notifier: hookReceiver, _shareToken: shareToken, _externalSalt: bytes32(0)});
+        address incentivesController = IPermissionedLiquidationIncentiveControllerFactory(factory)
+            .create({_shareToken: IShareToken(shareToken), _liquidationEnabled: false});
 
         IGaugeHookReceiver(hookReceiver)
             .setGauge(ISiloIncentivesController(incentivesController), IShareToken(shareToken));

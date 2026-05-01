@@ -70,7 +70,7 @@ contract XSiloIncentivesControllerCreate is CommonDeploy {
         }
 
         address factory = SiloCoreDeployments.get(
-            SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY,
+            SiloCoreContracts.PERMISSIONED_LIQUIDATION_INCENTIVE_CONTROLLER_FACTORY,
             ChainsLib.chainAlias()
         );
 
@@ -80,11 +80,9 @@ contract XSiloIncentivesControllerCreate is CommonDeploy {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        incentivesController = SiloIncentivesControllerFactory(factory).create({
-            _owner: incentivesOwner,
-            _notifier: address(xSilo),
-            _shareToken: address(xSilo),
-            _externalSalt: bytes32(0)
+        incentivesController = IPermissionedLiquidationIncentiveControllerFactory(factory).create({
+            _shareToken: IShareToken(address(xSilo)),
+            _liquidationEnabled: false
         });
 
         vm.stopBroadcast();

@@ -26,8 +26,7 @@ import {PendleMarketThatReverts} from "../../../_mocks/PendleMarketThatReverts.s
 import {PendleMarketGasWaster} from "../../../_mocks/PendleMarketGasWaster.sol";
 import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 import {TransferOwnership} from "../../../_common/TransferOwnership.sol";
-import {ISiloIncentivesControllerFactory} from
-    "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
+import {IPermissionedLiquidationIncentiveControllerFactory} from "silo-core/contracts/interfaces/IPermissionedLiquidationIncentiveControllerFactory.sol";
 import {PendleRewardsClaimerHarness} from
     "silo-core/test/foundry/utils/hook-receivers/pendle-rewards-claimer/PendleRewardsClaimerHarness.sol";
 import {SiloImplementationDeploy} from "silo-core/deploy/SiloImplementationDeploy.s.sol";
@@ -48,7 +47,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
     PendleRewardsClaimerHarness internal _hookReceiverHarness;
     ISiloConfig internal _siloConfig;
     ISiloIncentivesController internal _incentivesController;
-    ISiloIncentivesControllerFactory internal _factory;
+    IPermissionedLiquidationIncentiveControllerFactory internal _factory;
 
     event FailedToClaimIncentives(address _silo);
 
@@ -69,8 +68,8 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
 
         _hookReceiver = IPendleRewardsClaimer(address(IShareToken(address(silo0)).hookSetup().hookReceiver));
 
-        _factory = ISiloIncentivesControllerFactory(
-            SiloCoreDeployments.get(SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY, ChainsLib.chainAlias())
+        _factory = IPermissionedLiquidationIncentiveControllerFactory(
+            SiloCoreDeployments.get(SiloCoreContracts.PERMISSIONED_LIQUIDATION_INCENTIVE_CONTROLLER_FACTORY, ChainsLib.chainAlias())
         );
 
         _dao = AddrLib.getAddress(AddrKey.DAO);
@@ -78,7 +77,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         (address protected,,) = _siloConfig.getShareTokens(address(silo0));
 
         _incentivesController =
-            ISiloIncentivesController(_factory.create(_dao, address(_hookReceiver), address(protected), bytes32(0)));
+            ISiloIncentivesController(_factory.create({_shareToken: IShareToken(address(protected)), _liquidationEnabled: false}));
 
         IGaugeHookReceiver gaugeHookReceiver = IGaugeHookReceiver(address(_hookReceiver));
 

@@ -110,11 +110,11 @@ contract SiloDeployerDeploy is CommonDeploy {
         console2.log("irmConfigFactory", irmConfigFactory);
 
         address siloIncentivesControllerFactory =
-            SiloCoreDeployments.get(SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY, chainAlias);
+            SiloCoreDeployments.get(SiloCoreContracts.PERMISSIONED_LIQUIDATION_INCENTIVE_CONTROLLER_FACTORY, chainAlias);
 
         require(
             siloIncentivesControllerFactory != address(0),
-            string.concat(SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY, " not deployed")
+            string.concat(SiloCoreContracts.PERMISSIONED_LIQUIDATION_INCENTIVE_CONTROLLER_FACTORY, " not deployed")
         );
 
         console2.log("siloIncentivesControllerFactory", siloIncentivesControllerFactory);

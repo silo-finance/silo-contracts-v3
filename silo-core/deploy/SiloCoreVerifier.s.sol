@@ -38,7 +38,7 @@ contract SiloCoreVerifier is CommonDeploy {
         SiloCoreContracts.SHARE_DEBT_TOKEN,
         SiloCoreContracts.SILO_LENS,
         SiloCoreContracts.SILO_ROUTER_V2,
-        SiloCoreContracts.INCENTIVES_CONTROLLER_FACTORY
+        SiloCoreContracts.PERMISSIONED_LIQUIDATION_INCENTIVE_CONTROLLER_FACTORY
     ];
 
     /// @dev list of core contracts name to skip ownership check.

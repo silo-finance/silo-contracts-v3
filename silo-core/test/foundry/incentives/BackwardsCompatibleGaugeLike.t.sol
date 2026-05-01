@@ -9,9 +9,8 @@ import {IERC4626} from "forge-std/interfaces/IERC4626.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {IERC20Metadata} from "openzeppelin5/token/ERC20/extensions/IERC20Metadata.sol";
 
-import {SiloIncentivesControllerFactoryDeploy} from "silo-core/deploy/SiloIncentivesControllerFactoryDeploy.s.sol";
-import {ISiloIncentivesControllerFactory} from
-    "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
+import {PermissionedLiquidationIncentiveControllerFactoryDeploy} from "silo-core/deploy/incentives-controller/PermissionedLiquidationIncentiveControllerFactoryDeploy.s.sol";
+import {IPermissionedLiquidationIncentiveControllerFactory} from "silo-core/contracts/interfaces/IPermissionedLiquidationIncentiveControllerFactory.sol";
 import {RevertLib} from "silo-core/contracts/lib/RevertLib.sol";
 
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
@@ -48,7 +47,7 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
     mapping(string network => address[] siloConfigs) public deployedSiloConfigs;
     string[] public networks;
 
-    ISiloIncentivesControllerFactory internal _factory;
+    IPermissionedLiquidationIncentiveControllerFactory internal _factory;
 
     error CantRemoveActiveGauge();
 
@@ -143,12 +142,10 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
             return;
         }
 
-        IGaugeHookReceiver hookReceiver = _getSiloHookReceiver(silo0);
-
         ISiloIncentivesController controller0 =
-            ISiloIncentivesController(_factory.create(address(this), address(hookReceiver), silo0, bytes32(0)));
+            ISiloIncentivesController(_factory.create({_shareToken: IShareToken(address(silo0)), _liquidationEnabled: false}));
         ISiloIncentivesController controller1 =
-            ISiloIncentivesController(_factory.create(address(this), address(hookReceiver), silo1, bytes32(0)));
+            ISiloIncentivesController(_factory.create({_shareToken: IShareToken(address(silo1)), _liquidationEnabled: false}));
 
         // QA
 
@@ -465,7 +462,7 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
     }
 
     function _deployFactory() internal {
-        SiloIncentivesControllerFactoryDeploy deploy = new SiloIncentivesControllerFactoryDeploy();
+        PermissionedLiquidationIncentiveControllerFactoryDeploy deploy = new PermissionedLiquidationIncentiveControllerFactoryDeploy();
         deploy.disableDeploymentsSync();
         _factory = deploy.run();
     }

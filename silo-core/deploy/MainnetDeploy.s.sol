@@ -18,7 +18,7 @@ import {TowerDeploy} from "./TowerDeploy.s.sol";
 import {SiloLensDeploy} from "./SiloLensDeploy.s.sol";
 import {SiloRouterV2Deploy} from "./SiloRouterV2Deploy.s.sol";
 import {SiloFactoryDeploy} from "./SiloFactoryDeploy.s.sol";
-import {SiloIncentivesControllerFactoryDeploy} from "silo-core/deploy/SiloIncentivesControllerFactoryDeploy.s.sol";
+import {PermissionedLiquidationIncentiveControllerFactoryDeploy} from "silo-core/deploy/incentives-controller/PermissionedLiquidationIncentiveControllerFactoryDeploy.s.sol";
 import {ManualLiquidationHelperDeploy} from "silo-core/deploy/ManualLiquidationHelperDeploy.s.sol";
 import {DKinkIRMFactoryDeploy} from "silo-core/deploy/DKinkIRMFactoryDeploy.s.sol";
 import {SiloImplementationDeploy} from "silo-core/deploy/SiloImplementationDeploy.s.sol";
@@ -71,8 +71,8 @@ contract MainnetDeploy is CommonDeploy {
         ManualLiquidationHelperDeploy manualLiquidationHelperDeploy = new ManualLiquidationHelperDeploy();
         DKinkIRMFactoryDeploy dkinkIRMFactoryDeploy = new DKinkIRMFactoryDeploy();
 
-        SiloIncentivesControllerFactoryDeploy siloIncentivesControllerFactoryDeploy =
-            new SiloIncentivesControllerFactoryDeploy();
+        PermissionedLiquidationIncentiveControllerFactoryDeploy permissionedLiquidationIncentiveControllerFactoryDeploy =
+            new PermissionedLiquidationIncentiveControllerFactoryDeploy();
 
         LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy leverageRouterDeploy =
             new LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy();
@@ -88,7 +88,7 @@ contract MainnetDeploy is CommonDeploy {
         liquidationHelperDeploy.run();
         siloLensDeploy.run();
         siloRouterV2Deploy.run();
-        siloIncentivesControllerFactoryDeploy.run();
+        permissionedLiquidationIncentiveControllerFactoryDeploy.run();
         leverageRouterDeploy.run();
 
         manualLiquidationHelperDeploy.run(); // not for V3

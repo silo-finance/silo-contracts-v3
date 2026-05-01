@@ -42,8 +42,6 @@ abstract contract BaseIncentivesController is DistributionManager, ISiloIncentiv
         _;
     }
 
-    constructor(address _owner, address _notifier) DistributionManager(_owner, _notifier) {}
-
     /// @inheritdoc ISiloIncentivesController
     function createIncentivesProgram(DistributionTypes.IncentivesProgramCreationInput memory _incentivesProgramInput)
         external

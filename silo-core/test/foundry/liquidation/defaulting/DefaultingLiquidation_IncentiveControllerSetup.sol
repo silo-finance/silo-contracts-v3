@@ -10,9 +10,7 @@ import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IP
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
 
-import {
-    SiloIncentivesControllerCompatible
-} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
+import {PermissionedLiquidationIncentiveControllerFactory} from "silo-core/contracts/incentives/functional/PermissionedLiquidationIncentiveControllerFactory.sol";
 
 import {CloneHookV2} from "./common/CloneHookV2.sol";
 
@@ -21,9 +19,11 @@ FOUNDRY_PROFILE=core_test forge test --ffi --mc DefaultingLiquidation_IncentiveC
 */
 contract DefaultingLiquidation_IncentiveControllerSetupTest is CloneHookV2 {
     ISiloIncentivesController gauge;
+    PermissionedLiquidationIncentiveControllerFactory sicFactory;
 
-    function setUp() public view {
+    function setUp() public {
         require(silo0 == collateralShareToken, "silo0 must be collateralShareToken");
+        sicFactory = new PermissionedLiquidationIncentiveControllerFactory();
     }
 
     /*
@@ -65,7 +65,7 @@ contract DefaultingLiquidation_IncentiveControllerSetupTest is CloneHookV2 {
 
         _mockGetShareTokens();
 
-        gauge = new SiloIncentivesControllerCompatible(address(this), address(defaulting), collateralShareToken);
+        gauge = ISiloIncentivesController(sicFactory.create({_shareToken: IShareToken(collateralShareToken), _liquidationEnabled: true}));
 
         _setGauge(gauge, collateralShareToken);
 
@@ -81,7 +81,7 @@ contract DefaultingLiquidation_IncentiveControllerSetupTest is CloneHookV2 {
 
         _mockGetShareTokens();
 
-        gauge = new SiloIncentivesControllerCompatible(address(this), address(defaulting), collateralShareToken);
+        gauge = ISiloIncentivesController(sicFactory.create({_shareToken: IShareToken(collateralShareToken), _liquidationEnabled: true}));
         _setGauge(gauge, collateralShareToken);
 
         vm.expectRevert(IPartialLiquidationByDefaulting.NoControllerForCollateral.selector);

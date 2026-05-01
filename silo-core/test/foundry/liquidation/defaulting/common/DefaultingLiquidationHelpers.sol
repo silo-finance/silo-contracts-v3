@@ -19,8 +19,7 @@ import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookRecei
 import {IDistributionManager} from "silo-core/contracts/incentives/interfaces/IDistributionManager.sol";
 
 import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
-import {SiloIncentivesControllerCompatible} from
-    "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
+import {PermissionedLiquidationIncentiveControllerFactory} from "silo-core/contracts/incentives/functional/PermissionedLiquidationIncentiveControllerFactory.sol";
 import {RevertLib} from "silo-core/contracts/lib/RevertLib.sol";
 
 import {DummyOracle} from "silo-core/test/foundry/_common/DummyOracle.sol";
@@ -61,6 +60,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
 
     IPartialLiquidationByDefaulting defaulting;
     ISiloIncentivesController gauge;
+    PermissionedLiquidationIncentiveControllerFactory sicFactory;
 
     function _mockQuote(uint256 _amountIn, uint256 _price) public {
         vm.mockCall(
@@ -273,7 +273,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
 
     function _createIncentiveController() internal returns (ISiloIncentivesController newGauge) {
         (, ISilo debtSilo) = _getSilos();
-        gauge = new SiloIncentivesControllerCompatible(address(this), address(partialLiquidation), address(debtSilo));
+        gauge = ISiloIncentivesController(sicFactory.create({_shareToken: IShareToken(address(debtSilo)), _liquidationEnabled: false}));
 
         address owner = Ownable(address(defaulting)).owner();
         vm.prank(owner);

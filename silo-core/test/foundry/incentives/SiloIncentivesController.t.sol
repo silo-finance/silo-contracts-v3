@@ -9,8 +9,9 @@ import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {ERC20Mock} from "openzeppelin5/mocks/token/ERC20Mock.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
 
-import {ISiloIncentivesControllerFactory} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
-import {SiloIncentivesControllerFactoryDeploy} from "silo-core/deploy/SiloIncentivesControllerFactoryDeploy.s.sol";
+import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
+import {IPermissionedLiquidationIncentiveControllerFactory} from "silo-core/contracts/interfaces/IPermissionedLiquidationIncentiveControllerFactory.sol";
+import {PermissionedLiquidationIncentiveControllerFactoryDeploy} from "silo-core/deploy/incentives-controller/PermissionedLiquidationIncentiveControllerFactoryDeploy.s.sol";
 import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 import {DistributionTypes} from "silo-core/contracts/incentives/lib/DistributionTypes.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
@@ -30,7 +31,7 @@ contract SiloIncentivesControllerTest is Test {
     address internal _owner = makeAddr("Owner");
     address internal _notifier;
     address internal _rewardToken;
-    ISiloIncentivesControllerFactory internal _factory;
+    IPermissionedLiquidationIncentiveControllerFactory internal _factory;
 
     address internal user1 = makeAddr("User1");
     address internal user2 = makeAddr("User2");
@@ -49,12 +50,12 @@ contract SiloIncentivesControllerTest is Test {
         _rewardToken = address(new ERC20Mock());
         _notifier = address(new ERC20Mock());
 
-        SiloIncentivesControllerFactoryDeploy deployer = new SiloIncentivesControllerFactoryDeploy();
+        PermissionedLiquidationIncentiveControllerFactoryDeploy deployer = new PermissionedLiquidationIncentiveControllerFactoryDeploy();
         deployer.disableDeploymentsSync();
 
         _factory = deployer.run();
 
-        _controller = SiloIncentivesControllerCompatible(_factory.create(_owner, _notifier, _notifier, bytes32(0)));
+        _controller = SiloIncentivesControllerCompatible(_factory.create({_shareToken: IShareToken(_notifier), _liquidationEnabled: false}));
 
         assertTrue(
             _factory.isSiloIncentivesController(address(_controller)), "expected controller created in factory"
@@ -890,7 +891,7 @@ contract SiloIncentivesControllerTest is Test {
     function test_wrong_notifier() public {
         // vm.expectRevert(abi.encodeWithSelector(IDistributionManager.WrongDecimals.selector));
         vm.expectRevert(abi.encodeWithSelector(IDistributionManager.ZeroAddress.selector));
-        SiloIncentivesControllerCompatible(_factory.create(_owner, address(0), address(0), bytes32(0)));
+        SiloIncentivesControllerCompatible(_factory.create({_shareToken: IShareToken(address(0)), _liquidationEnabled: false}));
     }
 
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_setClaimer_success

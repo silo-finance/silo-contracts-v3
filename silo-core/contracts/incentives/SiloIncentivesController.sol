@@ -26,17 +26,13 @@ abstract contract SiloIncentivesController is BaseIncentivesController, IVersion
     using EnumerableSet for EnumerableSet.Bytes32Set;
     using SafeERC20 for IERC20;
 
-    address private immutable _IMMUTABLE_SHARE_TOKEN;
+    address private _shareTokenAddress;
 
-    /// @param _owner address of wallet that can manage the storage
-    /// @param _notifier address of the notifier
-    /// @param _shareTokenAddress is contract with IERC20 interface with users balances, based based on which
+    /// @param _erc20 is contract with IERC20 interface with users balances, based based on which
     /// rewards distribution is calculated
-    constructor(address _owner, address _notifier, address _shareTokenAddress)
-        BaseIncentivesController(_owner, _notifier)
-    {
-        require(_shareTokenAddress != address(0), EmptyShareToken());
-        _IMMUTABLE_SHARE_TOKEN = _shareTokenAddress;
+    function __SiloIncentivesController_init(address _erc20) internal onlyInitializing {
+        require(_erc20 != address(0), EmptyShareToken());
+        _shareTokenAddress = _erc20;
     }
 
     /// @inheritdoc IVersioned
@@ -46,7 +42,7 @@ abstract contract SiloIncentivesController is BaseIncentivesController, IVersion
 
     /// @inheritdoc ISiloIncentivesController
     function SHARE_TOKEN() public view virtual override returns (address) {
-        return _IMMUTABLE_SHARE_TOKEN;
+        return address(_shareToken());
     }
 
     /// @inheritdoc ISiloIncentivesController
@@ -171,7 +167,7 @@ abstract contract SiloIncentivesController is BaseIncentivesController, IVersion
         }
     }
 
-    function _shareToken() internal view override returns (IERC20 shareToken) {
-        shareToken = IERC20(SHARE_TOKEN());
+    function _shareToken() internal view virtual override returns (IERC20 shareToken) {
+        shareToken = IERC20(_shareTokenAddress);
     }
 }

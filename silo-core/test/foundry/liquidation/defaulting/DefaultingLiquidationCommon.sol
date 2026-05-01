@@ -13,10 +13,7 @@ import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IP
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
-import {
-    SiloIncentivesControllerCompatible
-} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
-
+import {PermissionedLiquidationIncentiveControllerFactory} from "silo-core/contracts/incentives/functional/PermissionedLiquidationIncentiveControllerFactory.sol";
 import {SiloConfigOverride, SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
 import {MintableToken} from "silo-core/test/foundry/_common/MintableToken.sol";
 import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
@@ -40,7 +37,6 @@ FOUNDRY_PROFILE=core_test forge test --ffi --mc DefaultingLiquidationBorrowable 
 */
 abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
     using SafeCast for int256;
-
     using SiloLensLib for ISilo;
 
     function setUp() public virtual {
@@ -74,6 +70,8 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         assertEq(debtSilo.asset(), debtAsset, "[crosscheck] asset must much silo asset");
 
         vm.label(address(this), "TESTER");
+        
+        sicFactory = new PermissionedLiquidationIncentiveControllerFactory();
 
         gauge = defaulting.validateControllerForCollateral(address(debtSilo));
     }
@@ -1725,8 +1723,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         _removeIncentiveController();
 
         (ISilo collateralSilo, ISilo debtSilo) = _getSilos();
-        ISiloIncentivesController gauge =
-            new SiloIncentivesControllerCompatible(address(this), address(defaulting), address(collateralSilo));
+        ISiloIncentivesController gauge = ISiloIncentivesController(sicFactory.create({_shareToken: IShareToken(address(collateralSilo)), _liquidationEnabled: false}));
 
         address owner = Ownable(address(defaulting)).owner();
 

@@ -13,7 +13,7 @@ import {IBackwardsCompatibleGaugeLike} from "./interfaces/IBackwardsCompatibleGa
  * 
  * @author Aave
  */
-contract SiloIncentivesControllerCompatible is IBackwardsCompatibleGaugeLike, SiloIncentivesController {
+abstract contract SiloIncentivesControllerCompatible is IBackwardsCompatibleGaugeLike, SiloIncentivesController {
     /// @notice Whether the gauge is killed
     /// @dev This flag is not used in the SiloIncentivesController,
     /// but it is used in the Gauge hook receiver (versions <= 3.7.0).
@@ -21,11 +21,6 @@ contract SiloIncentivesControllerCompatible is IBackwardsCompatibleGaugeLike, Si
 
     event GaugeKilled();
     event GaugeUnKilled();
-
-    constructor(address _owner, address _notifier, address _shareTokenAddress) 
-        SiloIncentivesController(_owner, _notifier, _shareTokenAddress) 
-    {
-    }
 
     function killGauge() external virtual onlyOwner {
         _isKilled = true;

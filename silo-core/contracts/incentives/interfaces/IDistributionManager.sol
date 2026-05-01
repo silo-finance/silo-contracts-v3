@@ -36,6 +36,7 @@ interface IDistributionManager {
     error InvalidIncentivesProgramName();
     error OnlyNotifierOrOwner();
     error ZeroAddress();
+    error OnlyOwner();
 
     error EmissionForTimeDeltaOverflow();
     error IndexOverflow();

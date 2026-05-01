@@ -10,7 +10,7 @@ import {IPartialLiquidation} from "../../interfaces/IPartialLiquidation.sol";
 import {IShareToken} from "../../interfaces/IShareToken.sol";
 import {IGaugeHookReceiver} from "../../interfaces/IGaugeHookReceiver.sol";
 import {ISiloIncentivesController} from "../../incentives/interfaces/ISiloIncentivesController.sol";
-import {IPermissionedLiquidationController} from "../../interfaces/IPermissionedLiquidationController.sol";
+import {IPermissionedLiquidationIncentiveController} from "../../interfaces/IPermissionedLiquidationIncentiveController.sol";
 
 import {ISilo} from "../../interfaces/ISilo.sol";
 import {ISiloConfig} from "../../interfaces/ISiloConfig.sol";
@@ -171,7 +171,7 @@ contract ManualLiquidationHelper is TokenRescuer {
         ISiloIncentivesController controller = IGaugeHookReceiver(_hookReceiver).configuredGauges(_shareToken);
         if (address(controller) == address(0)) return;
         
-        try IPermissionedLiquidationController(address(controller)).allowMeToLiquidate() {
+        try IPermissionedLiquidationIncentiveController(address(controller)).allowMeToLiquidate() {
             // allowed
         } catch {
             // not allwoed or not supported

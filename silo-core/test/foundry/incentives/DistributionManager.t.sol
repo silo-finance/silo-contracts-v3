@@ -6,7 +6,9 @@ import {Test} from "forge-std/Test.sol";
 import {DistributionManager} from "silo-core/contracts/incentives/base/DistributionManager.sol";
 
 contract DistributionManagerImpl is DistributionManager {
-    constructor(address _notifier) DistributionManager(msg.sender, _notifier) {}
+    constructor(address _notifier) {
+        __DistributionManager_init(_notifier);
+    }
 
     // make is public just for QA
     function shareToken() public view returns (address) {

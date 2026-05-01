@@ -15,16 +15,16 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {
-    IPermissionedLiquidationControllerFactory
-} from "silo-core/contracts/interfaces/IPermissionedLiquidationControllerFactory.sol";
+    IPermissionedLiquidationIncentiveControllerFactory
+} from "silo-core/contracts/interfaces/IPermissionedLiquidationIncentiveControllerFactory.sol";
 
 /*
     SILO=0xe394050D179b72197A458Fdfb962Ae69908Aa5A0 \
     FOUNDRY_PROFILE=core \
-        forge script silo-core/deploy/incentives-controller/PermissionedControllerDeploy.s.sol \
+        forge script silo-core/deploy/incentives-controller/PermissionedLiquidationIncentiveControllerDeploy.s.sol \
         --ffi --rpc-url $RPC_MAINNET --broadcast --verify
  */
-contract PermissionedControllerDeploy is CommonDeploy {
+contract PermissionedLiquidationIncentiveControllerDeploy is CommonDeploy {
     error FactoryNotFound();
 
     function run() public {
@@ -36,7 +36,7 @@ contract PermissionedControllerDeploy is CommonDeploy {
         address owner = Ownable(notifier).owner();
 
         address factory = SiloCoreDeployments.get(
-            SiloCoreContracts.PERMISSIONED_LIQUIDATION_CONTROLLER_FACTORY, ChainsLib.chainAlias()
+            SiloCoreContracts.PERMISSIONED_LIQUIDATION_INCENTIVE_CONTROLLER_FACTORY, ChainsLib.chainAlias()
         );
 
         require(factory != address(0), FactoryNotFound());
@@ -52,10 +52,10 @@ contract PermissionedControllerDeploy is CommonDeploy {
         vm.startBroadcast(deployerPrivateKey);
 
         address incentivesControllerC =
-            IPermissionedLiquidationControllerFactory(factory).create(IShareToken(collateralShareTokenAddress));
+            IPermissionedLiquidationIncentiveControllerFactory(factory).create(IShareToken(collateralShareTokenAddress));
         
         address incentivesControllerP =
-            IPermissionedLiquidationControllerFactory(factory).create(IShareToken(protectedShareTokenAddress));
+            IPermissionedLiquidationIncentiveControllerFactory(factory).create(IShareToken(protectedShareTokenAddress));
 
         vm.stopBroadcast();
 

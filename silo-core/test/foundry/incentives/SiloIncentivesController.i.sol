@@ -9,8 +9,10 @@ import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives
 import {DistributionTypes} from "silo-core/contracts/incentives/lib/DistributionTypes.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {IDistributionManager} from "silo-core/contracts/incentives/interfaces/IDistributionManager.sol";
+import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
+import {PermissionedLiquidationIncentiveControllerFactory} from "silo-core/contracts/incentives/functional/PermissionedLiquidationIncentiveControllerFactory.sol";
 
 import {SiloConfigOverride} from "../_common/fixtures/SiloFixture.sol";
 import {SiloFixture} from "../_common/fixtures/SiloFixture.sol";
@@ -61,6 +63,8 @@ contract HookContract {
 */
 contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
     using SafeCast for uint256;
+
+    PermissionedLiquidationIncentiveControllerFactory sicFactory;
     SiloIncentivesControllerCompatible internal _controller;
 
     address internal _notifier;
@@ -80,6 +84,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
     event ClaimerSet(address indexed user, address indexed claimer);
 
     function setUp() public {
+        sicFactory = new PermissionedLiquidationIncentiveControllerFactory();
         hook = new HookContract();
 
         token0 = new MintableToken(18);
@@ -107,7 +112,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
 
         __init(token0, token1, silo0, silo1);
 
-        _controller = new SiloIncentivesControllerCompatible(address(this), address(hook), address(silo0));
+        _controller = SiloIncentivesControllerCompatible(sicFactory.create({_shareToken: IShareToken(address(silo0)), _liquidationEnabled: false}));
         hook.setup(_controller, MintableToken(address(silo0)));
 
         silo0.updateHooks();

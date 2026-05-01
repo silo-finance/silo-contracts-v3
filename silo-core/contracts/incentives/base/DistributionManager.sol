@@ -7,19 +7,21 @@ pragma solidity 0.8.28;
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
+import {Initializable} from "openzeppelin5/proxy/utils/Initializable.sol";
 
-import {Ownable2Step, Ownable} from "openzeppelin5/access/Ownable2Step.sol";
+import {Ownable} from "openzeppelin5/access/Ownable2Step.sol";
 import {EnumerableSet} from "openzeppelin5/utils/structs/EnumerableSet.sol";
 
 import {ISiloIncentivesController} from "../interfaces/ISiloIncentivesController.sol";
 import {IDistributionManager} from "../interfaces/IDistributionManager.sol";
 import {TokenHelper} from "../../lib/TokenHelper.sol";
 import {AddressUtilsLib} from "../../lib/AddressUtilsLib.sol";
+
 /**
  * @title DistributionManager
  * @notice Accounting contract to manage multiple staking distributions
  */
-contract DistributionManager is IDistributionManager, Ownable2Step {
+contract DistributionManager is IDistributionManager, Initializable {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
     EnumerableSet.Bytes32Set internal _incentivesProgramIds;
@@ -29,27 +31,32 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
 
     /// @dev notifier is contract with IERC20 interface with users balances, based based on which
     /// rewards distribution is calculated
-    address private immutable _IMMUTABLE_NOTIFIER; // solhint-disable-line var-name-mixedcase
+    address internal _afterTransferNotifier;
 
     uint8 public constant PRECISION = 36;
     uint256 public constant TEN_POW_PRECISION = 10 ** PRECISION;
 
+    modifier onlyOwner() {
+        if (msg.sender != owner()) revert OnlyOwner();
+        _;
+    }
+
     modifier onlyNotifier() {
-        if (msg.sender != NOTIFIER()) revert OnlyNotifier();
+        if (msg.sender != _afterTransferNotifier) revert OnlyNotifier();
         _;
     }
 
     modifier onlyNotifierOrOwner() {
-        if (msg.sender != NOTIFIER() && msg.sender != owner()) revert OnlyNotifierOrOwner();
+        if (msg.sender != _afterTransferNotifier && msg.sender != owner()) revert OnlyNotifierOrOwner();
         _;
     }
 
     /// @param _notifier is contract with IERC20 interface with users balances, based based on which
     /// rewards distribution is calculated
-    constructor(address _owner, address _notifier) Ownable(_owner) {
+    function __DistributionManager_init(address _notifier) internal onlyInitializing {
         require(_notifier != address(0), ZeroAddress());
 
-        _IMMUTABLE_NOTIFIER = _notifier;
+        _afterTransferNotifier = _notifier;
     }
 
     /// @inheritdoc IDistributionManager
@@ -81,7 +88,7 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
     /// @dev notifier is contract with IERC20 interface with users balances, based based on which
     /// rewards distribution is calculated
     function NOTIFIER() public view virtual returns (address) {
-        return _IMMUTABLE_NOTIFIER;
+        return _afterTransferNotifier;
     }
 
     /// @inheritdoc IDistributionManager
@@ -145,6 +152,10 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
         }
 
         return string(TokenHelper.removeZeros(abi.encodePacked(_programId)));
+    }
+
+    function owner() public view virtual returns (address) {
+        return Ownable(_afterTransferNotifier).owner();
     }
 
     /**
@@ -349,7 +360,7 @@ contract DistributionManager is IDistributionManager, Ownable2Step {
     }
 
     function _shareToken() internal view virtual returns (IERC20 shareToken) {
-        shareToken = IERC20(NOTIFIER());
+        shareToken = IERC20(_afterTransferNotifier);
     }
 
     function _getScaledUserBalanceAndSupply(address _user)

@@ -13,17 +13,17 @@ import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfac
 import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives/SiloIncentivesControllerCompatible.sol";
 
 import {
-    SiloIncentivesControllerFactoryDeploy
-} from "silo-core/deploy/SiloIncentivesControllerFactoryDeploy.s.sol";
+    PermissionedLiquidationIncentiveControllerFactoryDeploy
+} from "silo-core/deploy/incentives-controller/PermissionedLiquidationIncentiveControllerFactoryDeploy.s.sol";
 import {
-    ISiloIncentivesControllerFactory
-} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
+    IPermissionedLiquidationIncentiveControllerFactory
+} from "silo-core/contracts/interfaces/IPermissionedLiquidationIncentiveControllerFactory.sol";
 
 /**
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc SiloIncentivesControllerGaugeLikeIntegrationTest
  */
 contract SiloIncentivesControllerGaugeLikeIntegrationTest is Test {
-    ISiloIncentivesControllerFactory internal _factory;
+    IPermissionedLiquidationIncentiveControllerFactory internal _factory;
     address internal _owner = makeAddr("Owner");
 
     error CantRemoveActiveGauge();
@@ -31,9 +31,9 @@ contract SiloIncentivesControllerGaugeLikeIntegrationTest is Test {
     function setUp() public {
         vm.createSelectFork(vm.envString("RPC_ARBITRUM"), 366902426);
 
-        SiloIncentivesControllerFactoryDeploy deploy = new SiloIncentivesControllerFactoryDeploy();
+        PermissionedLiquidationIncentiveControllerFactoryDeploy deploy = new PermissionedLiquidationIncentiveControllerFactoryDeploy();
         deploy.disableDeploymentsSync();
-        _factory = ISiloIncentivesControllerFactory(deploy.run());
+        _factory = IPermissionedLiquidationIncentiveControllerFactory(deploy.run());
     }
 
     /**
@@ -46,7 +46,7 @@ contract SiloIncentivesControllerGaugeLikeIntegrationTest is Test {
         IGaugeHookReceiver gaugeHookReceiver = IGaugeHookReceiver(IShareToken(address(silo0)).hookSetup().hookReceiver);
         (,, address debtShareToken) = siloConfig.getShareTokens(silo0);
 
-        address gaugeLikeController = _factory.create(_owner, address(gaugeHookReceiver), debtShareToken, bytes32(0));
+        address gaugeLikeController = _factory.create({_shareToken: IShareToken(debtShareToken), _liquidationEnabled: false});
 
         address hookOwner = Ownable(address(gaugeHookReceiver)).owner();
 

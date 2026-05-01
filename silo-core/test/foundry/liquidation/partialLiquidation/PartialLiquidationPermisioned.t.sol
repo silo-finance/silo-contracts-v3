@@ -25,20 +25,20 @@ import {MintableToken} from "../../_common/MintableToken.sol";
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ManualLiquidationHelper} from "silo-core/contracts/utils/liquidationHelper/ManualLiquidationHelper.sol";
 import {
-    PermissionedLiquidationControllerFactory
-} from "silo-core/contracts/incentives/functional/PermissionedLiquidationControllerFactory.sol";
+    PermissionedLiquidationIncentiveControllerFactory
+} from "silo-core/contracts/incentives/functional/PermissionedLiquidationIncentiveControllerFactory.sol";
 import {
-    IPermissionedLiquidationController
-} from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
+    IPermissionedLiquidationIncentiveController
+} from "silo-core/contracts/interfaces/IPermissionedLiquidationIncentiveController.sol";
 import {
-    PermissionedLiquidationController
-} from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
+    PermissionedLiquidationIncentiveController
+} from "silo-core/contracts/incentives/functional/PermissionedLiquidationIncentiveController.sol";
 
 import {ProxyAdmin} from "openzeppelin5/proxy/transparent/ProxyAdmin.sol";
 import {ITransparentUpgradeableProxy} from "openzeppelin5/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {TransparentProxy} from "silo-core/contracts/utils/TransparentProxy.sol";
 
-contract NewImplementation is PermissionedLiquidationController {
+contract NewImplementation is PermissionedLiquidationIncentiveController {
     function owner() public view override returns (address) {
         return msg.sender;
     }
@@ -58,7 +58,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
     bytes32 public constant ALLOWED_ROLE = keccak256("ALLOWED_ROLE");
 
-    PermissionedLiquidationControllerFactory factory;
+    PermissionedLiquidationIncentiveControllerFactory factory;
 
     uint256 constant DEPOSIT_AMOUNT = 1e6;
     uint256 constant MAX_AMOUNT = 1000e6;
@@ -73,13 +73,13 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     ISilo siloWeth;
     ISilo siloUsdc;
 
-    IPermissionedLiquidationController controllerC;
-    IPermissionedLiquidationController controllerP;
+    IPermissionedLiquidationIncentiveController controllerC;
+    IPermissionedLiquidationIncentiveController controllerP;
 
     ManualLiquidationHelper manualLiquidation;
 
     function setUp() public {
-        factory = new PermissionedLiquidationControllerFactory();
+        factory = new PermissionedLiquidationIncentiveControllerFactory();
         weth = new MintableToken(18);
         token0 = weth;
         usdc = new MintableToken(6);
@@ -112,12 +112,12 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     function test_permisioned_liquidation_enabled() public {
         _setPermissionedLiquidation();
 
-        vm.expectRevert(OnlyOwner.selector);
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, address(this)));
         controllerC.setEnabled(false);
 
         vm.startPrank(Ownable(address(controllerC)).owner());
 
-        vm.expectRevert(abi.encodeWithSelector(IPermissionedLiquidationController.EnabledAlreadySet.selector));
+        vm.expectRevert(abi.encodeWithSelector(IPermissionedLiquidationIncentiveController.EnabledAlreadySet.selector));
         controllerC.setEnabled(true);
 
         controllerC.setEnabled(false);
@@ -197,7 +197,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _setPermissionedLiquidation();
 
-        vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+        vm.expectRevert(IPermissionedLiquidationIncentiveController.LiquidationNotAllowed.selector);
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
 
         _grantAllowedRole();
@@ -213,7 +213,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _setPermissionedLiquidation();
 
-        vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+        vm.expectRevert(IPermissionedLiquidationIncentiveController.LiquidationNotAllowed.selector);
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
 
         _grantAllowedRole();
@@ -232,7 +232,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _setPermissionedLiquidation();
 
-        vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+        vm.expectRevert(IPermissionedLiquidationIncentiveController.LiquidationNotAllowed.selector);
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
 
         vm.prank(Ownable(address(controllerC)).owner());
@@ -252,7 +252,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         assertTrue(controllerC.enabled(), "active controller is enabled");
 
-        IPermissionedLiquidationController newImplementation = new NewImplementation();
+        IPermissionedLiquidationIncentiveController newImplementation = new NewImplementation();
         assertFalse(newImplementation.enabled(), "inactive controller is disabled");
 
         vm.startPrank(Ownable(address(controllerC)).owner());
@@ -267,7 +267,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         address afterUpgrade = address(hook.configuredGauges(shareToken));
         assertEq(beforeUpgrade, afterUpgrade, "configured gauge addressshould not change");
         assertTrue(
-            IPermissionedLiquidationController(afterUpgrade).enabled(),
+            IPermissionedLiquidationIncentiveController(afterUpgrade).enabled(),
             "after upgrade enabled flag should stay enabled, because storage is contant"
         );
 
@@ -299,8 +299,8 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         address collateralShareToken = silo0.config().getConfig(address(silo0)).collateralShareToken;
         address protectedShareToken = silo0.config().getConfig(address(silo0)).protectedShareToken;
 
-        controllerC = IPermissionedLiquidationController(factory.create(IShareToken(collateralShareToken)));
-        controllerP = IPermissionedLiquidationController(factory.create(IShareToken(protectedShareToken)));
+        controllerC = IPermissionedLiquidationIncentiveController(factory.create(IShareToken(collateralShareToken), true));
+        controllerP = IPermissionedLiquidationIncentiveController(factory.create(IShareToken(protectedShareToken), true));
 
         vm.prank(Ownable(address(hook)).owner());
         hook.setGauge(controllerC, IShareToken(collateralShareToken));

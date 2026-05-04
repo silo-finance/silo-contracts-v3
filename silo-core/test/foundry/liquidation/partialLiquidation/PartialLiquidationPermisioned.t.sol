@@ -100,14 +100,14 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         weth.setOnDemand(true);
         usdc.setOnDemand(true);
+
+        _fetchControllers();
     }
 
     /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_enabled
     */
     function test_permisioned_liquidation_enabled() public {
-        _setPermissionedLiquidation();
-
         vm.expectRevert(abi.encodeWithSelector(IPermissionedLiquidationController.OnlyOwner.selector));
         controllerC.setEnabled(false);
 
@@ -127,8 +127,6 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_grantAllowedRole
     */
     function test_permisioned_liquidation_grantAllowedRole() public {
-        _setPermissionedLiquidation();
-
         vm.expectRevert(
             abi.encodeWithSelector(
                 IAccessControl.AccessControlUnauthorizedAccount.selector, address(this), bytes32(0)
@@ -143,17 +141,13 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_vars
     */
-    function test_permisioned_liquidation_vars_collteral() public {
-        _setPermissionedLiquidation();
-
+    function test_permisioned_liquidation_vars_collteral() public view {
         address collateralShareToken = silo0.config().getConfig(address(silo0)).collateralShareToken;
 
         _permisioned_liquidation_vars(address(controllerC), IShareToken(collateralShareToken));
     }
 
-    function test_permisioned_liquidation_vars_protected() public {
-        _setPermissionedLiquidation();
-
+    function test_permisioned_liquidation_vars_protected() public view {
         address protectedShareToken = silo0.config().getConfig(address(silo0)).protectedShareToken;
 
         _permisioned_liquidation_vars(address(controllerP), IShareToken(protectedShareToken));
@@ -187,8 +181,6 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _printBorrowerLTV();
 
-        _setPermissionedLiquidation();
-
         vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
 
@@ -198,12 +190,13 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         _printBorrowerLTV();
     }
 
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_collteral
+    */
     function test_permisioned_liquidation_collteral() public {
         _createPositionToLiquidate(ISilo.CollateralType.Collateral);
 
         _printBorrowerLTV();
-
-        _setPermissionedLiquidation();
 
         vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
@@ -222,8 +215,6 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _printBorrowerLTV();
 
-        _setPermissionedLiquidation();
-
         vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
 
@@ -237,17 +228,29 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     }
 
     /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_proxy_owner
+    */
+    function test_permisioned_liquidation_proxy_owner() public view {
+        address proxyAdmin = TransparentProxy(payable(address(controllerC))).getAdmin();
+        assertEq(Ownable(address(proxyAdmin)).owner(), Ownable(address(partialLiquidation)).owner(), "proxy admin owner should be hook owner");
+    }
+    
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_contoller_owner
+    */
+    function test_permisioned_liquidation_contoller_owner() public view {
+        assertEq(controllerC.owner(), Ownable(address(partialLiquidation)).owner(), "controllerC owner should be hook owner");
+        assertEq(controllerP.owner(), Ownable(address(partialLiquidation)).owner(), "controllerP owner should be hook owner");
+    }
+
+    /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_upgrade
     */
     function test_permisioned_liquidation_upgrade() public {
-        _setPermissionedLiquidation();
-
         assertTrue(controllerC.permisionedData().enabled, "active controller is enabled");
 
         IPermissionedLiquidationController newImplementation = new NewImplementation();
         assertFalse(newImplementation.permisionedData().enabled, "inactive controller is disabled");
-
-        vm.startPrank(controllerC.owner());
 
         IGaugeHookReceiver hook = IGaugeHookReceiver(address(partialLiquidation));
         IShareToken shareToken = IShareToken(address(silo0));
@@ -288,19 +291,13 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         assertFalse(silo0.isSolvent(borrower), "Borrower is still solvent");
     }
 
-    function _setPermissionedLiquidation() internal {
+    function _fetchControllers() internal {
         IGaugeHookReceiver hook = IGaugeHookReceiver(IShareToken(address(silo0)).hookReceiver());
         address collateralShareToken = silo0.config().getConfig(address(silo0)).collateralShareToken;
         address protectedShareToken = silo0.config().getConfig(address(silo0)).protectedShareToken;
 
-        controllerC = IPermissionedLiquidationController(factory.create(IShareToken(collateralShareToken)));
-        controllerP = IPermissionedLiquidationController(factory.create(IShareToken(protectedShareToken)));
-
-        vm.prank(Ownable(address(hook)).owner());
-        hook.setGauge(controllerC, IShareToken(collateralShareToken));
-
-        vm.prank(Ownable(address(hook)).owner());
-        hook.setGauge(controllerP, IShareToken(protectedShareToken));
+        controllerC = IPermissionedLiquidationController(address(hook.configuredGauges(IShareToken(collateralShareToken))));
+        controllerP = IPermissionedLiquidationController(address(hook.configuredGauges(IShareToken(protectedShareToken))));
     }
 
     function _printBorrowerLTV() internal {
@@ -310,6 +307,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     function _upgrade(address _controllerProxy, address _newImplementation) internal {
         address proxyAdmin = TransparentProxy(payable(_controllerProxy)).getAdmin();
 
+        vm.prank(Ownable(address(proxyAdmin)).owner());
         ProxyAdmin(proxyAdmin)
             .upgradeAndCall(ITransparentUpgradeableProxy(payable(_controllerProxy)), _newImplementation, bytes(""));
     }

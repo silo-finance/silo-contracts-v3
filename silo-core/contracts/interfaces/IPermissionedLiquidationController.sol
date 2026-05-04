@@ -16,6 +16,9 @@ interface IPermissionedLiquidationController is ISiloIncentivesController, IAcce
         bool pauseTokenTransfer;
     }
 
+    event EnabledChanged(bool _enabled);
+    event PauseTokenTransferChanged(bool _pauseTokenTransfer);
+
     error LiquidationNotAllowed();
     error OnlyHookReceiver();
     error OnlyOwner();
@@ -24,9 +27,6 @@ interface IPermissionedLiquidationController is ISiloIncentivesController, IAcce
     error EnabledAlreadySet();
     error PauseTokenTransferAlreadySet();
     error PauseTokenTransferActive();
-
-    event EnabledChanged(bool _enabled);
-    event PauseTokenTransferChanged(bool _pauseTokenTransfer);
 
     function setEnabled(bool _enabled) external;
 

@@ -4,7 +4,7 @@ pragma solidity 0.8.28;
 import {Clones} from "openzeppelin5/proxy/Clones.sol";
 
 import {Create2Factory} from "common/utils/Create2Factory.sol";
-import {Ownable1and2Steps} from "common/access/Ownable1and2Steps.sol";
+import {Ownable1and2Steps, Ownable} from "common/access/Ownable1and2Steps.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
@@ -30,6 +30,7 @@ import {CloneDeterministic} from "silo-core/contracts/lib/CloneDeterministic.sol
 import {Views} from "silo-core/contracts/lib/Views.sol";
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
+import {TransparentProxy} from "silo-core/contracts/utils/TransparentProxy.sol";
 
 /// @notice Silo Deployer
 contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
@@ -46,6 +47,8 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
 
     /// @notice variable to store the final hook owner
     address internal transient _finalHookOwner;
+
+    bool internal transient _hookWithDefaultingLiquidation;
 
     constructor(
         IInterestRateModelV2Factory _irmConfigFactory,
@@ -102,6 +105,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
             _lt0: _siloInitData.lt0
         });
 
+        // we always create permissioned, because we want pausing
         _createPermissionedIncentivesControllers({
             _siloConfig: siloConfig,
             _hookReceiver: _siloInitData.hookReceiver,
@@ -109,7 +113,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
             _lt1: _siloInitData.lt1
         });
 
-        _setupOwnership(_siloInitData.hookReceiver);
+        Ownable1and2Steps(_siloInitData.hookReceiver).transferOwnership1Step(_finalHookOwner);
 
         emit SiloCreated(siloConfig);
     }
@@ -125,6 +129,8 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
     {
         if (!_isDefaultingHook(_hookReceiver)) return;
 
+        _hookWithDefaultingLiquidation = true;
+
         address debtSilo = _getDebtSilo(_siloConfig, _lt0);
 
         address incentivesController = SILO_INCENTIVES_CONTROLLER_FACTORY.create({
@@ -138,6 +144,9 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
             _gauge: ISiloIncentivesController(incentivesController), 
             _shareToken: IShareToken(debtSilo)
         });
+
+        // we have Whitelist interface for HookV2/V3
+        _transferDefaultAdminRole(_hookReceiver);
     }
     
     function _createPermissionedIncentivesControllers(
@@ -174,15 +183,19 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
             _gauge: ISiloIncentivesController(incentivesController), 
             _shareToken: IShareToken(_shareToken)
         });
+
+        // The controller is a proxy and owner is inherited from a hook, and hook has temporary owner set at the moment
+        // so we have to transfer ownership.
+        Ownable(TransparentProxy(payable(incentivesController)).getAdmin()).transferOwnership(_finalHookOwner);
+
+        // for permissioned controller we have whitelist for liquidators
+        _transferDefaultAdminRole(incentivesController);
     }
     
-    function _setupOwnership(address _hookReceiver)
-        internal
-    {
-        Ownable1and2Steps(_hookReceiver).transferOwnership1Step(_finalHookOwner);
-        bytes32 defaultAdminRole = Whitelist(_hookReceiver).DEFAULT_ADMIN_ROLE();
-        Whitelist(_hookReceiver).grantRole(defaultAdminRole, _finalHookOwner);
-        Whitelist(_hookReceiver).revokeRole(defaultAdminRole, address(this));
+    function _transferDefaultAdminRole(address _whitelist) internal {
+        bytes32 defaultAdminRole = bytes32(0);
+        Whitelist(_whitelist).grantRole(defaultAdminRole, _finalHookOwner);
+        Whitelist(_whitelist).revokeRole(defaultAdminRole, address(this));
     }
 
     function _isDefaultingHook(address _hook) internal view returns (bool isDefaulting) {

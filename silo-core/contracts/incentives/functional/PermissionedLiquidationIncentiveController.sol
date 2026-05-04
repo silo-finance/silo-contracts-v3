@@ -26,16 +26,9 @@ contract PermissionedLiquidationIncentiveController is
     SiloIncentivesControllerCompatible,
     Whitelist
 {
-    address public hookReceiver;
-
     PermisionedData internal _permisionedData;
 
     bool private transient _liquidationAllowed;
-
-    modifier onlyHookReceiver() {
-        require(msg.sender == hookReceiver, OnlyHookReceiver());
-        _;
-    }
 
     constructor() {
         _disableInitializers();
@@ -46,7 +39,6 @@ contract PermissionedLiquidationIncentiveController is
         address hook = _shareTokenAddress.hookReceiver();
 
         _permisionedData.anySilo = address(_shareTokenAddress.silo());
-        hookReceiver = hook;
 
         __DistributionManager_init(hook);
         __SiloIncentivesController_init(address(_shareTokenAddress));
@@ -110,7 +102,7 @@ contract PermissionedLiquidationIncentiveController is
         public
         virtual
         override(SiloIncentivesControllerCompatible, ISiloIncentivesController)
-        onlyHookReceiver
+        onlyNotifier
     {
         PermisionedData memory data = _permisionedData;
 
@@ -130,10 +122,5 @@ contract PermissionedLiquidationIncentiveController is
             _totalSupply: _totalSupply,
             _amount: _amount
         });
-    }
-
-    // solhint-disable-next-line func-name-mixedcase
-    function NOTIFIER() public view override(DistributionManager, IDistributionManager) returns (address) {
-        return hookReceiver;
     }
 }

@@ -59,7 +59,7 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_backwardsCompatibility_arbitrum_one -vv
 
     we go over all deployed silos and manage gauges + do silo moves to make sure nothing break 
-    goal si to verify is new SiloIncentivesControllerFactory is backwards compatible with old ones
+    goal is to verify if new SiloIncentivesControllerFactory is backwards compatible with old ones
     */
     function test_backwardsCompatibility_arbitrum_one() public {
         _backwardsCompatibility_forNetwork(vm.envString("RPC_ARBITRUM"), "arbitrum_one");

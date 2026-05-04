@@ -302,11 +302,14 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         controllerC = IPermissionedLiquidationIncentiveController(factory.create(IShareToken(collateralShareToken)));
         controllerP = IPermissionedLiquidationIncentiveController(factory.create(IShareToken(protectedShareToken)));
 
-        vm.prank(Ownable(address(hook)).owner());
-        hook.setGauge(controllerC, IShareToken(collateralShareToken));
+        address hookOwner = Ownable(address(hook)).owner();
 
-        vm.prank(Ownable(address(hook)).owner());
+        vm.startPrank(hookOwner);
+        hook.setGauge(controllerC, IShareToken(collateralShareToken));
         hook.setGauge(controllerP, IShareToken(protectedShareToken));
+        controllerC.setEnabled(true);
+        controllerP.setEnabled(true);
+        vm.stopPrank();
     }
 
     function _printBorrowerLTV() internal {

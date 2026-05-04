@@ -282,6 +282,19 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         return gauge;
     }
 
+    function _removePermissionsGaugeController() internal {
+        (ISilo collateralSilo,) = _getSilos();
+        (address collateralShareToken, address protectedShareToken, ) = siloConfig.getShareTokens(address(collateralSilo));
+
+        address owner = Ownable(address(defaulting)).owner();
+        vm.startPrank(owner);
+        IGaugeHookReceiver(address(defaulting)).removeGauge(IShareToken(collateralShareToken));
+        IGaugeHookReceiver(address(defaulting)).removeGauge(IShareToken(protectedShareToken));
+        vm.stopPrank();
+
+        console2.log("permissioned gauge controllers removed");
+    }
+    
     function _removeIncentiveController() internal {
         (, ISilo debtSilo) = _getSilos();
 

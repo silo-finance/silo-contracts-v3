@@ -18,10 +18,10 @@ import {TransparentProxy} from "silo-core/contracts/utils/TransparentProxy.sol";
     SILO=0xe394050D179b72197A458Fdfb962Ae69908Aa5A0 \
     IMPLEMENTATION=0x0000000000000000000000000000000000000001 \
     FOUNDRY_PROFILE=core \
-        forge script silo-core/deploy/incentives-controller/PermissionedControllerUpgrade.s.sol \
+        forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerFactoryUpgrade.s.sol \
         --ffi --rpc-url $RPC_MAINNET --broadcast --verify
  */
-contract PermissionedControllerUpgrade is CommonDeploy {
+contract PermissionedLiquidationControllerFactoryUpgrade is CommonDeploy {
     error InvalidImplementation();
     error ControllerNotFound();
 

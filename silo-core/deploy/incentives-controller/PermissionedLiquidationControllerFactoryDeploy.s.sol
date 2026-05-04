@@ -12,10 +12,10 @@ import {
 
 /*
     FOUNDRY_PROFILE=core \
-        forge script silo-core/deploy/incentives-controller/PermissionedControllerFactoryDeploy.s.sol \
+        forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerFactoryDeploy.s.sol \
         --ffi --rpc-url $RPC_MAINNET --broadcast --verify
  */
-contract PermissionedControllerFactoryDeploy is CommonDeploy {
+contract PermissionedLiquidationControllerFactoryDeploy is CommonDeploy {
     function run() public returns (IPermissionedLiquidationControllerFactory factory) {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
 

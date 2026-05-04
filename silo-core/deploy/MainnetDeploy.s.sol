@@ -25,6 +25,9 @@ import {SiloImplementationDeploy} from "silo-core/deploy/SiloImplementationDeplo
 import {
     LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy
 } from "silo-core/deploy/LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy.s.sol";
+import {
+    PermissionedLiquidationControllerFactoryDeploy
+} from "silo-core/deploy/incentives-controller/PermissionedLiquidationControllerFactoryDeploy.s.sol";
 
 /*
     FOUNDRY_PROFILE=core AGGREGATOR=1INCH \
@@ -66,13 +69,14 @@ contract MainnetDeploy is CommonDeploy {
         SiloDeployerDeploy siloDeployerDeploy = new SiloDeployerDeploy();
         LiquidationHelperDeploy liquidationHelperDeploy = new LiquidationHelperDeploy();
         SiloLensDeploy siloLensDeploy = new SiloLensDeploy();
-        TowerDeploy towerDeploy = new TowerDeploy();
         SiloRouterV2Deploy siloRouterV2Deploy = new SiloRouterV2Deploy();
-        ManualLiquidationHelperDeploy manualLiquidationHelperDeploy = new ManualLiquidationHelperDeploy();
         DKinkIRMFactoryDeploy dkinkIRMFactoryDeploy = new DKinkIRMFactoryDeploy();
 
         SiloIncentivesControllerFactoryDeploy siloIncentivesControllerFactoryDeploy =
             new SiloIncentivesControllerFactoryDeploy();
+
+        PermissionedLiquidationControllerFactoryDeploy permissionedLiquidationControllerFactoryDeploy =
+            new PermissionedLiquidationControllerFactoryDeploy();
 
         LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy leverageRouterDeploy =
             new LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy();
@@ -89,10 +93,16 @@ contract MainnetDeploy is CommonDeploy {
         siloLensDeploy.run();
         siloRouterV2Deploy.run();
         siloIncentivesControllerFactoryDeploy.run();
+        permissionedLiquidationControllerFactoryDeploy.run();
         leverageRouterDeploy.run();
 
-        manualLiquidationHelperDeploy.run(); // not for V3
-        towerDeploy.run();
+        {
+            ManualLiquidationHelperDeploy manualLiquidationHelperDeploy = new ManualLiquidationHelperDeploy();
+            manualLiquidationHelperDeploy.run(); // not for V3
+
+            TowerDeploy towerDeploy = new TowerDeploy();
+            towerDeploy.run();
+        }
 
         // execute deployer at the end, to make sure we est factories
         siloDeployerDeploy.run();

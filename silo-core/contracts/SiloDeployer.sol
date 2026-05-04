@@ -47,9 +47,6 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
     /// @notice variable to store the final hook owner
     address internal transient _finalHookOwner;
 
-    /// @notice TRUE is hook has defaulting liquidation
-    bool internal transient _gaugeRequired;
-
     constructor(
         IInterestRateModelV2Factory _irmConfigFactory,
         IDynamicKinkModelFactory _dynamicKinkModelFactory,
@@ -96,12 +93,10 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
             _creator: msg.sender
         });
 
-        _gaugeRequired = _isDefaultingHook(_siloInitData.hookReceiver);
-
         // initialize hook receiver only if it was cloned
         _initializeHookReceiver(_siloInitData, siloConfig, _clonableHookReceiver);
 
-        _createIncentivesController({
+        _createIncentivesControllerForDefaulting({
             _siloConfig: siloConfig,
             _hookReceiver: _siloInitData.hookReceiver,
             _lt0: _siloInitData.lt0
@@ -114,6 +109,8 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
             _lt1: _siloInitData.lt1
         });
 
+        _setupOwnership(_siloInitData.hookReceiver);
+
         emit SiloCreated(siloConfig);
     }
 
@@ -123,10 +120,10 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
     }
 
     /// @notice Create an incentives controller if the hook is defaulting
-    function _createIncentivesController(ISiloConfig _siloConfig, address _hookReceiver, uint256 _lt0)
+    function _createIncentivesControllerForDefaulting(ISiloConfig _siloConfig, address _hookReceiver, uint256 _lt0)
         internal
     {
-        if (!_gaugeRequired) return;
+        if (!_isDefaultingHook(_hookReceiver)) return;
 
         address debtSilo = _getDebtSilo(_siloConfig, _lt0);
 
@@ -137,7 +134,10 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
             _externalSalt: bytes32(0)
         });
 
-        _setGauge(_hookReceiver, incentivesController, debtSilo);
+        IGaugeHookReceiver(_hookReceiver).setGauge({
+            _gauge: ISiloIncentivesController(incentivesController), 
+            _shareToken: IShareToken(debtSilo)
+        });
     }
     
     function _createPermissionedIncentivesControllers(
@@ -169,18 +169,16 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         internal
     {
         address incentivesController = PERMISSIONED_LIQUIDATION_CONTROLLER_FACTORY.create(IShareToken(_shareToken));
-        _setGauge(_hookReceiver, incentivesController, _shareToken);
-    }
-    
-    
-    function _setGauge(address _hookReceiver, address _incentivesController, address _shareToken)
-        internal
-    {
+
         IGaugeHookReceiver(_hookReceiver).setGauge({
-            _gauge: ISiloIncentivesController(_incentivesController), 
+            _gauge: ISiloIncentivesController(incentivesController), 
             _shareToken: IShareToken(_shareToken)
         });
-
+    }
+    
+    function _setupOwnership(address _hookReceiver)
+        internal
+    {
         Ownable1and2Steps(_hookReceiver).transferOwnership1Step(_finalHookOwner);
         bytes32 defaultAdminRole = Whitelist(_hookReceiver).DEFAULT_ADMIN_ROLE();
         Whitelist(_hookReceiver).grantRole(defaultAdminRole, _finalHookOwner);
@@ -419,17 +417,16 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         ClonableHookReceiver calldata _clonableHookReceiver
     ) internal {
         if (_clonableHookReceiver.implementation != address(0)) {
-            if (_gaugeRequired) {
-                require(_clonableHookReceiver.initializationData.length == 32, InvalidHookInitData());
-                
-                (_finalHookOwner) = abi.decode(_clonableHookReceiver.initializationData, (address));
-            }
+            // init data must be address
+            require(_clonableHookReceiver.initializationData.length == 32, InvalidHookInitData());
+            
+            (_finalHookOwner) = abi.decode(_clonableHookReceiver.initializationData, (address));
 
             IHookReceiver(_siloInitData.hookReceiver)
                 .initialize({
                     _siloConfig: _siloConfig,
                     // override owner so we can set the incentives controller
-                    _data: _gaugeRequired ? abi.encode(address(this)) : _clonableHookReceiver.initializationData
+                    _data: abi.encode(address(this))
                 });
         }
     }

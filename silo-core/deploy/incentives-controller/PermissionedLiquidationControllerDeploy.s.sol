@@ -21,10 +21,10 @@ import {
 /*
     SILO=0xe394050D179b72197A458Fdfb962Ae69908Aa5A0 \
     FOUNDRY_PROFILE=core \
-        forge script silo-core/deploy/incentives-controller/PermissionedControllerDeploy.s.sol \
+        forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol \
         --ffi --rpc-url $RPC_MAINNET --broadcast --verify
  */
-contract PermissionedControllerDeploy is CommonDeploy {
+contract PermissionedLiquidationControllerDeploy is CommonDeploy {
     error FactoryNotFound();
 
     function run() public {

@@ -24,6 +24,9 @@ import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfac
 import {
     IPermissionedLiquidationControllerFactory
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationControllerFactory.sol";
+import {
+    IPermissionedLiquidationController
+} from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 
 import {SiloConfig} from "silo-core/contracts/SiloConfig.sol";
 import {CloneDeterministic} from "silo-core/contracts/lib/CloneDeterministic.sol";
@@ -178,6 +181,8 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         internal
     {
         address incentivesController = PERMISSIONED_LIQUIDATION_CONTROLLER_FACTORY.create(IShareToken(_shareToken));
+
+        if (_hookWithDefaultingLiquidation) IPermissionedLiquidationController(incentivesController).setEnabled(false);
 
         IGaugeHookReceiver(_hookReceiver).setGauge({
             _gauge: ISiloIncentivesController(incentivesController), 

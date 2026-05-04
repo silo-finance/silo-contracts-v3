@@ -17,6 +17,8 @@ import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 
 /// @dev this contract should be set as a gauge for collateral or protected share tokens.
 /// It will not work if it will be set for the shared debt token.
+/// When you set it for hook with defaulting liquidation, it's recommended to keep enable to false 
+/// and use defaulting whitelist rather than permission and liquidation controller.
 contract PermissionedLiquidationController is
     IPermissionedLiquidationController,
     BaseIncentivesControllerCompatible,
@@ -57,7 +59,7 @@ contract PermissionedLiquidationController is
 
         hookReceiver = hook;
         collateralShareToken = address(_collateralShareToken);
-        _permisionedData = PermisionedData({anySilo: collateralSilo, enabled: true, pauseTokenTransfer: false});
+        _permisionedData = PermisionedData({anySilo: collateralSilo, enabled: false, pauseTokenTransfer: false});
 
         __Whitelist_init(Ownable(hook).owner());
     }

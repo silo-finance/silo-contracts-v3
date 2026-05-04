@@ -51,8 +51,6 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
     /// @notice variable to store the final hook owner
     address internal transient _finalHookOwner;
 
-    bool internal transient _hookWithDefaultingLiquidation;
-
     constructor(
         IInterestRateModelV2Factory _irmConfigFactory,
         IDynamicKinkModelFactory _dynamicKinkModelFactory,
@@ -132,8 +130,6 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
     {
         if (!_isDefaultingHook(_hookReceiver)) return;
 
-        _hookWithDefaultingLiquidation = true;
-
         address debtSilo = _getDebtSilo(_siloConfig, _lt0);
 
         address incentivesController = SILO_INCENTIVES_CONTROLLER_FACTORY.create({
@@ -181,8 +177,6 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         internal
     {
         address incentivesController = PERMISSIONED_LIQUIDATION_CONTROLLER_FACTORY.create(IShareToken(_shareToken));
-
-        if (_hookWithDefaultingLiquidation) IPermissionedLiquidationController(incentivesController).setEnabled(false);
 
         IGaugeHookReceiver(_hookReceiver).setGauge({
             _gauge: ISiloIncentivesController(incentivesController), 

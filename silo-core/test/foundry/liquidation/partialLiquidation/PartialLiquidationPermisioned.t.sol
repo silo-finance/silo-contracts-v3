@@ -31,10 +31,12 @@ import {
 import {
     PermissionedLiquidationController
 } from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
+import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IPartialLiquidationByDefaulting.sol";
 
 import {ProxyAdmin} from "openzeppelin5/proxy/transparent/ProxyAdmin.sol";
 import {ITransparentUpgradeableProxy} from "openzeppelin5/proxy/transparent/TransparentUpgradeableProxy.sol";
 import {TransparentProxy} from "silo-core/contracts/utils/TransparentProxy.sol";
+import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 
 contract NewImplementation is PermissionedLiquidationController {
     function owner() public view override returns (address) {
@@ -73,6 +75,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     IPermissionedLiquidationController controllerP;
 
     ManualLiquidationHelper manualLiquidation;
+    IPartialLiquidationByDefaulting hookV2;
 
     function setUp() public {
         factory = new PermissionedLiquidationControllerFactory();
@@ -86,12 +89,14 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         overrides.token1 = address(usdc);
         vm.label(address(weth), "WETH");
         vm.label(address(usdc), "USDC");
+        overrides.configName = SiloConfigsNames.SILO_LOCAL_NO_ORACLE_DEFAULTING0;
 
         SiloFixture siloFixture = new SiloFixture();
 
         address hook;
         (, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
         partialLiquidation = IPartialLiquidation(hook);
+        hookV2 = IPartialLiquidationByDefaulting(hook);
 
         siloLens = new SiloLens();
         manualLiquidation = new ManualLiquidationHelper(makeAddr("WETH"), payable(address(this)));
@@ -102,6 +107,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         usdc.setOnDemand(true);
 
         _fetchControllers();
+        _enablePermissionsIfDisabled();
     }
 
     /*
@@ -174,9 +180,9 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_protected
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_protected_hookV1
     */
-    function test_permisioned_liquidation_protected() public {
+    function test_permisioned_liquidation_protected_hookV1() public {
         _createPositionToLiquidate(ISilo.CollateralType.Protected);
 
         _printBorrowerLTV();
@@ -189,11 +195,29 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _printBorrowerLTV();
     }
+    
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_protected_hookV2
+    */
+    function test_permisioned_liquidation_protected_hookV2() public {
+        _createPositionToLiquidate(ISilo.CollateralType.Protected);
+
+        _printBorrowerLTV();
+
+        vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+        hookV2.liquidationCallByDefaulting(borrower);
+
+        _grantAllowedRole(address(this));
+        controllerP.allowMeToLiquidate(); // it will work here only because foundy is one single tx
+        hookV2.liquidationCallByDefaulting(borrower);
+
+        _printBorrowerLTV();
+    }
 
     /*
-    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_collteral
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_collteral_hookV1
     */
-    function test_permisioned_liquidation_collteral() public {
+    function test_permisioned_liquidation_collteral_hookV1() public {
         _createPositionToLiquidate(ISilo.CollateralType.Collateral);
 
         _printBorrowerLTV();
@@ -206,11 +230,34 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _printBorrowerLTV();
     }
+    
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_collteral_hookV2
+    */
+    function test_permisioned_liquidation_collteral_hookV2() public {
+        _createPositionToLiquidate(ISilo.CollateralType.Collateral);
+
+        _printBorrowerLTV();
+
+        vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+        hookV2.liquidationCallByDefaulting(borrower);
+
+        _grantAllowedRole(address(this));
+        controllerP.allowMeToLiquidate(); // invalid controller
+
+        vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+        hookV2.liquidationCallByDefaulting(borrower);
+
+        controllerC.allowMeToLiquidate(); // it will work here only because foundy is one single tx
+        hookV2.liquidationCallByDefaulting(borrower);
+
+        _printBorrowerLTV();
+    }
 
     /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_disable
     */
-    function test_permisioned_liquidation_disable() public {
+    function test_permisioned_liquidation_disable_hookV1() public {
         _createPositionToLiquidate(ISilo.CollateralType.Collateral);
 
         _printBorrowerLTV();
@@ -223,6 +270,26 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         // when disabled, liquidation is allowed
         manualLiquidation.executeLiquidation(siloUsdc, borrower);
+
+        _printBorrowerLTV();
+    }
+    
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_disable_hookV2
+    */
+    function test_permisioned_liquidation_disable_hookV2() public {
+        _createPositionToLiquidate(ISilo.CollateralType.Collateral);
+
+        _printBorrowerLTV();
+
+        vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+        hookV2.liquidationCallByDefaulting(borrower);
+
+        vm.prank(controllerC.owner());
+        controllerC.setEnabled(false);
+
+        // when disabled, liquidation is allowed
+        hookV2.liquidationCallByDefaulting(borrower);
 
         _printBorrowerLTV();
     }
@@ -271,10 +338,23 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         assertEq(NewImplementation(afterUpgrade).abc(), "abc", "after upgrade we have new method abc");
     }
 
-    function _grantAllowedRole() internal {
+    function _grantAllowedRole(address _address) internal {
         vm.startPrank(IPermissionedLiquidationController(address(controllerC)).owner());
-        controllerC.grantRole(ALLOWED_ROLE, address(manualLiquidation));
-        controllerP.grantRole(ALLOWED_ROLE, address(manualLiquidation));
+        controllerC.grantRole(ALLOWED_ROLE, _address);
+        controllerP.grantRole(ALLOWED_ROLE, _address);
+        vm.stopPrank();
+    }
+
+    function _grantAllowedRole() internal {
+        _grantAllowedRole(address(manualLiquidation));
+    }
+
+    function _enablePermissionsIfDisabled() internal {
+        if (controllerC.permisionedData().enabled) return;
+
+        vm.startPrank(IPermissionedLiquidationController(address(controllerC)).owner());
+        controllerC.setEnabled(true);
+        controllerP.setEnabled(true);
         vm.stopPrank();
     }
 

@@ -14,9 +14,7 @@ import {IDynamicKinkModelFactory} from "silo-core/contracts/interfaces/IDynamicK
 import {IInterestRateModel} from "silo-core/contracts/interfaces/IInterestRateModel.sol";
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {ISiloDeployer} from "silo-core/contracts/interfaces/ISiloDeployer.sol";
-import {
-    ISiloIncentivesControllerFactory
-} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
+import {IPermissionedLiquidationIncentiveControllerFactory} from "silo-core/contracts/interfaces/IPermissionedLiquidationIncentiveControllerFactory.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IPartialLiquidationByDefaulting.sol";
@@ -34,7 +32,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
     IInterestRateModelV2Factory public immutable IRM_CONFIG_FACTORY;
     IDynamicKinkModelFactory public immutable DYNAMIC_KINK_MODEL_FACTORY;
     ISiloFactory public immutable SILO_FACTORY;
-    ISiloIncentivesControllerFactory public immutable SILO_INCENTIVES_CONTROLLER_FACTORY;
+    IPermissionedLiquidationIncentiveControllerFactory public immutable SILO_INCENTIVES_CONTROLLER_FACTORY;
     address public immutable SILO_IMPL;
     address public immutable SHARE_PROTECTED_COLLATERAL_TOKEN_IMPL;
     address public immutable SHARE_DEBT_TOKEN_IMPL;
@@ -50,7 +48,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         IInterestRateModelV2Factory _irmConfigFactory,
         IDynamicKinkModelFactory _dynamicKinkModelFactory,
         ISiloFactory _siloFactory,
-        ISiloIncentivesControllerFactory _siloIncentivesControllerFactory,
+        IPermissionedLiquidationIncentiveControllerFactory _siloIncentivesControllerFactory,
         address _siloImpl,
         address _shareProtectedCollateralTokenImpl,
         address _shareDebtTokenImpl
@@ -113,12 +111,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
 
         address debtSilo = _getDebtSilo(_siloConfig, _siloInitData);
 
-        address incentivesController = SILO_INCENTIVES_CONTROLLER_FACTORY.create({
-            _owner: _finalHookOwner,
-            _notifier: _siloInitData.hookReceiver,
-            _shareToken: debtSilo,
-            _externalSalt: bytes32(0)
-        });
+        address incentivesController = SILO_INCENTIVES_CONTROLLER_FACTORY.create(IShareToken(debtSilo));
 
         IGaugeHookReceiver(_siloInitData.hookReceiver).setGauge({
             _gauge: ISiloIncentivesController(incentivesController), 

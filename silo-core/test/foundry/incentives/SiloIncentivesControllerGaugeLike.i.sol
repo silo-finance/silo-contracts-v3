@@ -63,7 +63,7 @@ contract SiloIncentivesControllerGaugeLikeIntegrationTest is Test {
         vm.expectRevert(abi.encodeWithSelector(CantRemoveActiveGauge.selector));
         gaugeHookReceiver.removeGauge(IShareToken(debtShareToken));
 
-        vm.prank(_owner);
+        vm.prank(hookOwner);
         SiloIncentivesControllerCompatible(gaugeLikeController).killGauge();
 
         vm.prank(hookOwner);

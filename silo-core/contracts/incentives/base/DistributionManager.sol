@@ -53,6 +53,7 @@ contract DistributionManager is IDistributionManager, Initializable {
 
     /// @param _notifier is contract with IERC20 interface with users balances, based based on which
     /// rewards distribution is calculated
+    // solhint-disable-next-line func-name-mixedcase
     function __DistributionManager_init(address _notifier) internal onlyInitializing {
         require(_notifier != address(0), ZeroAddress());
 
@@ -87,7 +88,7 @@ contract DistributionManager is IDistributionManager, Initializable {
 
     /// @dev notifier is contract with IERC20 interface with users balances, based based on which
     /// rewards distribution is calculated
-    function NOTIFIER() public view virtual returns (address) {
+    function NOTIFIER() public view virtual returns (address) { // solhint-disable-line func-name-mixedcase
         return _afterTransferNotifier;
     }
 

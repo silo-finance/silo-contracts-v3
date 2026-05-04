@@ -6,6 +6,7 @@ import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {
     IPermissionedLiquidationIncentiveControllerFactory
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationIncentiveControllerFactory.sol";
+import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {
     PermissionedLiquidationIncentiveController
 } from "silo-core/contracts/incentives/functional/PermissionedLiquidationIncentiveController.sol";
@@ -15,7 +16,10 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
 /// @notice Minimal factory for upgradeable PermissionedLiquidationIncentiveController proxies.
-contract PermissionedLiquidationIncentiveControllerFactory is IPermissionedLiquidationIncentiveControllerFactory, IVersioned {
+contract PermissionedLiquidationIncentiveControllerFactory is
+    IPermissionedLiquidationIncentiveControllerFactory,
+    IVersioned
+{
     /// @dev Implementation used by all created proxies.
     address public immutable IMPLEMENTATION;
 
@@ -29,6 +33,7 @@ contract PermissionedLiquidationIncentiveControllerFactory is IPermissionedLiqui
     // TODO if we will only set this for silo sha token, then we don;t need dotifier to pass as input
     // do we need another way? eg notifier to be share token??
     function create(IShareToken _shareToken) external returns (address controller) {
+        require(address(_shareToken) != address(0), ISiloIncentivesController.EmptyShareToken());
         //TODO salt?
         address proxyAdminOwner = Ownable(_shareToken.hookReceiver()).owner();
         bytes memory initData = abi.encodeCall(PermissionedLiquidationIncentiveController.initialize, (_shareToken));
@@ -41,7 +46,7 @@ contract PermissionedLiquidationIncentiveControllerFactory is IPermissionedLiqui
     }
 
     /// @inheritdoc IVersioned
-    function VERSION() external pure override returns (string memory) {
+    function VERSION() external pure override returns (string memory) { // solhint-disable-line func-name-mixedcase
         return "PermissionedLiquidationIncentiveControllerFactory 4.12.0";
     }
 }

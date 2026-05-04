@@ -30,6 +30,7 @@ abstract contract SiloIncentivesController is BaseIncentivesController, IVersion
 
     /// @param _erc20 is contract with IERC20 interface with users balances, based based on which
     /// rewards distribution is calculated
+    // solhint-disable-next-line func-name-mixedcase
     function __SiloIncentivesController_init(address _erc20) internal onlyInitializing {
         require(_erc20 != address(0), EmptyShareToken());
         _shareTokenAddress = _erc20;
@@ -41,7 +42,7 @@ abstract contract SiloIncentivesController is BaseIncentivesController, IVersion
     }
 
     /// @inheritdoc ISiloIncentivesController
-    function SHARE_TOKEN() public view virtual override returns (address) {
+    function SHARE_TOKEN() public view virtual override returns (address) { // solhint-disable-line func-name-mixedcase
         return address(_shareToken());
     }
 

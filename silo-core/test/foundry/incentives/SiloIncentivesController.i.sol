@@ -112,7 +112,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
 
         __init(token0, token1, silo0, silo1);
 
-        _controller = SiloIncentivesControllerCompatible(sicFactory.create({_shareToken: IShareToken(address(silo0)), _liquidationEnabled: false}));
+        _controller = SiloIncentivesControllerCompatible(sicFactory.create(IShareToken(address(silo0))));
         hook.setup(_controller, MintableToken(address(silo0)));
 
         silo0.updateHooks();

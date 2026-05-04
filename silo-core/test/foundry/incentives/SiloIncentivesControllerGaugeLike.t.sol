@@ -44,7 +44,7 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
      FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_createGaugeLike
      */
     function test_createGaugeLike_success() public {
-        address gaugeLike = _factory.create({_shareToken: IShareToken(_shareToken), _liquidationEnabled: false});
+        address gaugeLike = _factory.create(IShareToken(_shareToken));
         assertTrue(_factory.isSiloIncentivesController(gaugeLike), "GaugeLike should be created in factory");
     }
 
@@ -53,14 +53,14 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
      */
     function test_createGaugeLike_zeroShares() public {
         vm.expectRevert(ISiloIncentivesController.EmptyShareToken.selector);
-        _factory.create({_shareToken: IShareToken(address(0)), _liquidationEnabled: false});
+        _factory.create(IShareToken(address(0)));
     }
 
     /**
      FOUNDRY_PROFILE=core_test forge test --ffi --mt test_afterTokenTransfer_onlyNotifier -vvv
      */
     function test_afterTokenTransfer_onlyNotifier() public {
-        address gaugeLike = _factory.create({_shareToken: IShareToken(_shareToken), _liquidationEnabled: false});
+        address gaugeLike = _factory.create(IShareToken(_shareToken));
 
         vm.expectRevert(abi.encodeWithSelector(IDistributionManager.OnlyNotifier.selector, address(this)));
         SiloIncentivesControllerCompatible(gaugeLike).afterTokenTransfer({
@@ -88,7 +88,7 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
      FOUNDRY_PROFILE=core_test forge test --ffi --mt test_killGauge_onlyOwner -vvv
      */
     function test_killGauge_onlyOwner() public {
-        address gaugeLike = _factory.create({_shareToken: IShareToken(_shareToken), _liquidationEnabled: false});
+        address gaugeLike = _factory.create(IShareToken(_shareToken));
 
         vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, address(this)));
         SiloIncentivesControllerCompatible(gaugeLike).killGauge();
@@ -98,7 +98,7 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
      FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_unKillGauge_onlyOwner
      */
     function test_unKillGauge_onlyOwner() public {
-        address gaugeLike = _factory.create({_shareToken: IShareToken(_shareToken), _liquidationEnabled: false});
+        address gaugeLike = _factory.create(IShareToken(_shareToken));
 
         vm.prank(_owner);
         SiloIncentivesControllerCompatible(gaugeLike).killGauge();
@@ -111,7 +111,7 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
      FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_killGauge_success
      */
     function test_killGauge_success() public {
-        address gaugeLike = _factory.create({_shareToken: IShareToken(_shareToken), _liquidationEnabled: false});
+        address gaugeLike = _factory.create(IShareToken(_shareToken));
 
         assertFalse(SiloIncentivesControllerCompatible(gaugeLike).is_killed(), "GaugeLike should not be killed");
 
@@ -128,7 +128,7 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
      FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_unKillGauge_success
      */
     function test_unKillGauge_success() public {
-        address gaugeLike = _factory.create({_shareToken: IShareToken(_shareToken), _liquidationEnabled: false});
+        address gaugeLike = _factory.create(IShareToken(_shareToken));
 
         vm.prank(_owner);
         SiloIncentivesControllerCompatible(gaugeLike).killGauge();
@@ -154,7 +154,7 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
         IGaugeHookReceiver gaugeHookReceiver = IGaugeHookReceiver(IShareToken(address(silo0)).hookSetup().hookReceiver);
         (,address shareCollateralToken,) = siloConfig.getShareTokens(silo0);
 
-        address gaugeLikeController = _factory.create({_shareToken: IShareToken(shareCollateralToken), _liquidationEnabled: false});
+        address gaugeLikeController = _factory.create(IShareToken(shareCollateralToken));
 
         address hookOwner = Ownable(address(gaugeHookReceiver)).owner();
 

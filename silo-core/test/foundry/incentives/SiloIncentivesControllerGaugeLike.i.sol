@@ -46,7 +46,7 @@ contract SiloIncentivesControllerGaugeLikeIntegrationTest is Test {
         IGaugeHookReceiver gaugeHookReceiver = IGaugeHookReceiver(IShareToken(address(silo0)).hookSetup().hookReceiver);
         (,, address debtShareToken) = siloConfig.getShareTokens(silo0);
 
-        address gaugeLikeController = _factory.create({_shareToken: IShareToken(debtShareToken), _liquidationEnabled: false});
+        address gaugeLikeController = _factory.create(IShareToken(debtShareToken));
 
         address hookOwner = Ownable(address(gaugeHookReceiver)).owner();
 

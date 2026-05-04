@@ -143,9 +143,9 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
         }
 
         ISiloIncentivesController controller0 =
-            ISiloIncentivesController(_factory.create({_shareToken: IShareToken(address(silo0)), _liquidationEnabled: false}));
+            ISiloIncentivesController(_factory.create(IShareToken(address(silo0))));
         ISiloIncentivesController controller1 =
-            ISiloIncentivesController(_factory.create({_shareToken: IShareToken(address(silo1)), _liquidationEnabled: false}));
+            ISiloIncentivesController(_factory.create(IShareToken(address(silo1))));
 
         // QA
 

@@ -28,10 +28,10 @@ contract PermissionedLiquidationIncentiveControllerFactory is IPermissionedLiqui
     /// @inheritdoc IPermissionedLiquidationIncentiveControllerFactory
     // TODO if we will only set this for silo sha token, then we don;t need dotifier to pass as input
     // do we need another way? eg notifier to be share token??
-    function create(IShareToken _shareToken, bool _liquidationEnabled) external returns (address controller) {
+    function create(IShareToken _shareToken) external returns (address controller) {
         //TODO salt?
         address proxyAdminOwner = Ownable(_shareToken.hookReceiver()).owner();
-        bytes memory initData = abi.encodeCall(PermissionedLiquidationIncentiveController.initialize, (_shareToken, _liquidationEnabled));
+        bytes memory initData = abi.encodeCall(PermissionedLiquidationIncentiveController.initialize, (_shareToken));
 
         controller = address(new TransparentProxy(IMPLEMENTATION, proxyAdminOwner, initData));
 

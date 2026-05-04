@@ -11,10 +11,8 @@ interface IPermissionedLiquidationIncentiveControllerFactory {
 
     /// @notice Creates a new upgradeable PermissionedLiquidationIncentiveController proxy.
     /// @param _shareToken silo share token address
-    /// @param _liquidationEnabled If true, the permissioned liquidation feature will be enabled,
-    /// it can be enabled only when the share token is collateral or protected.
     /// @return controller Address of the newly created proxy.
-    function create(IShareToken _shareToken, bool _liquidationEnabled) external returns (address controller);
+    function create(IShareToken _shareToken) external returns (address controller);
 
     /// @notice Checks if a given address is a SiloIncentivesControllerCompatible.
     /// @param _controller The address to check.

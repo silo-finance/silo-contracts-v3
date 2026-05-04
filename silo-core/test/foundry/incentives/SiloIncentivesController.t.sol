@@ -55,7 +55,7 @@ contract SiloIncentivesControllerTest is Test {
 
         _factory = deployer.run();
 
-        _controller = SiloIncentivesControllerCompatible(_factory.create({_shareToken: IShareToken(_notifier), _liquidationEnabled: false}));
+        _controller = SiloIncentivesControllerCompatible(_factory.create(IShareToken(_notifier)));
 
         assertTrue(
             _factory.isSiloIncentivesController(address(_controller)), "expected controller created in factory"
@@ -891,7 +891,7 @@ contract SiloIncentivesControllerTest is Test {
     function test_wrong_notifier() public {
         // vm.expectRevert(abi.encodeWithSelector(IDistributionManager.WrongDecimals.selector));
         vm.expectRevert(abi.encodeWithSelector(IDistributionManager.ZeroAddress.selector));
-        SiloIncentivesControllerCompatible(_factory.create({_shareToken: IShareToken(address(0)), _liquidationEnabled: false}));
+        SiloIncentivesControllerCompatible(_factory.create(IShareToken(address(0))));
     }
 
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_setClaimer_success

@@ -124,7 +124,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         vm.stopPrank();
 
-        assertFalse(controllerC.enabled());
+        assertFalse(controllerC.permisionedData().enabled);
     }
 
     /*
@@ -250,10 +250,10 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     function test_permisioned_liquidation_upgrade() public {
         _setPermissionedLiquidation();
 
-        assertTrue(controllerC.enabled(), "active controller is enabled");
+        assertTrue(controllerC.permisionedData().enabled, "active controller is enabled");
 
         IPermissionedLiquidationIncentiveController newImplementation = new NewImplementation();
-        assertFalse(newImplementation.enabled(), "inactive controller is disabled");
+        assertFalse(newImplementation.permisionedData().enabled, "inactive controller is disabled");
 
         vm.startPrank(Ownable(address(controllerC)).owner());
 
@@ -267,7 +267,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         address afterUpgrade = address(hook.configuredGauges(shareToken));
         assertEq(beforeUpgrade, afterUpgrade, "configured gauge addressshould not change");
         assertTrue(
-            IPermissionedLiquidationIncentiveController(afterUpgrade).enabled(),
+            IPermissionedLiquidationIncentiveController(afterUpgrade).permisionedData().enabled,
             "after upgrade enabled flag should stay enabled, because storage is contant"
         );
 
@@ -299,8 +299,8 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         address collateralShareToken = silo0.config().getConfig(address(silo0)).collateralShareToken;
         address protectedShareToken = silo0.config().getConfig(address(silo0)).protectedShareToken;
 
-        controllerC = IPermissionedLiquidationIncentiveController(factory.create(IShareToken(collateralShareToken), true));
-        controllerP = IPermissionedLiquidationIncentiveController(factory.create(IShareToken(protectedShareToken), true));
+        controllerC = IPermissionedLiquidationIncentiveController(factory.create(IShareToken(collateralShareToken)));
+        controllerP = IPermissionedLiquidationIncentiveController(factory.create(IShareToken(protectedShareToken)));
 
         vm.prank(Ownable(address(hook)).owner());
         hook.setGauge(controllerC, IShareToken(collateralShareToken));

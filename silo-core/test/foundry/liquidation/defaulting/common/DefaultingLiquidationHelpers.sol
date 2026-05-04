@@ -273,7 +273,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
 
     function _createIncentiveController() internal returns (ISiloIncentivesController newGauge) {
         (, ISilo debtSilo) = _getSilos();
-        gauge = ISiloIncentivesController(sicFactory.create({_shareToken: IShareToken(address(debtSilo)), _liquidationEnabled: false}));
+        gauge = ISiloIncentivesController(sicFactory.create(IShareToken(address(debtSilo))));
 
         address owner = Ownable(address(defaulting)).owner();
         vm.prank(owner);

@@ -65,7 +65,7 @@ contract DefaultingLiquidation_IncentiveControllerSetupTest is CloneHookV2 {
 
         _mockGetShareTokens();
 
-        gauge = ISiloIncentivesController(sicFactory.create({_shareToken: IShareToken(collateralShareToken), _liquidationEnabled: true}));
+        gauge = ISiloIncentivesController(sicFactory.create(IShareToken(collateralShareToken)));
 
         _setGauge(gauge, collateralShareToken);
 
@@ -81,7 +81,7 @@ contract DefaultingLiquidation_IncentiveControllerSetupTest is CloneHookV2 {
 
         _mockGetShareTokens();
 
-        gauge = ISiloIncentivesController(sicFactory.create({_shareToken: IShareToken(collateralShareToken), _liquidationEnabled: true}));
+        gauge = ISiloIncentivesController(sicFactory.create(IShareToken(collateralShareToken)));
         _setGauge(gauge, collateralShareToken);
 
         vm.expectRevert(IPartialLiquidationByDefaulting.NoControllerForCollateral.selector);

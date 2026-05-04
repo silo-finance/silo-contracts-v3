@@ -1723,7 +1723,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         _removeIncentiveController();
 
         (ISilo collateralSilo, ISilo debtSilo) = _getSilos();
-        ISiloIncentivesController gauge = ISiloIncentivesController(sicFactory.create({_shareToken: IShareToken(address(collateralSilo)), _liquidationEnabled: false}));
+        ISiloIncentivesController gauge = ISiloIncentivesController(sicFactory.create(IShareToken(address(collateralSilo))));
 
         address owner = Ownable(address(defaulting)).owner();
 

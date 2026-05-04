@@ -77,7 +77,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         (address protected,,) = _siloConfig.getShareTokens(address(silo0));
 
         _incentivesController =
-            ISiloIncentivesController(_factory.create({_shareToken: IShareToken(address(protected)), _liquidationEnabled: false}));
+            ISiloIncentivesController(_factory.create(IShareToken(address(protected))));
 
         IGaugeHookReceiver gaugeHookReceiver = IGaugeHookReceiver(address(_hookReceiver));
 

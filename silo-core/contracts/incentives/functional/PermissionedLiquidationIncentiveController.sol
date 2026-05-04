@@ -28,10 +28,7 @@ contract PermissionedLiquidationIncentiveController is
 {
     address public hookReceiver;
 
-    address public anySilo;
-
-    /// @inheritdoc IPermissionedLiquidationIncentiveController
-    bool public enabled;
+    PermisionedData internal _permisionedData;
 
     bool private transient _liquidationAllowed;
 
@@ -45,30 +42,56 @@ contract PermissionedLiquidationIncentiveController is
     }
 
     /// @param _shareTokenAddress collateral or protected share token address
-    /// @param _liquidationEnabled if true, the permissioned liquidation feature will be enabled
-    function initialize(IShareToken _shareTokenAddress, bool _liquidationEnabled) external initializer {
+    function initialize(IShareToken _shareTokenAddress) external initializer {
         address hook = _shareTokenAddress.hookReceiver();
 
-        anySilo = address(_shareTokenAddress.silo());
+        _permisionedData.anySilo = address(_shareTokenAddress.silo());
         hookReceiver = hook;
 
         __DistributionManager_init(hook);
         __SiloIncentivesController_init(address(_shareTokenAddress));
         __Whitelist_init(Ownable(hook).owner());
-
-        _setEnabled(_liquidationEnabled);
     }
 
     /// @inheritdoc IPermissionedLiquidationIncentiveController
     function setEnabled(bool _enabled) external virtual onlyOwner {
-        require(enabled != _enabled, EnabledAlreadySet());
+        require(_permisionedData.enabled != _enabled, EnabledAlreadySet());
 
-        _setEnabled(_enabled);
+        if (_enabled) {
+            address shareTokenAddress = address(_shareToken());
+
+            ISiloConfig siloConfig = IShareToken(shareTokenAddress).siloConfig();
+            address silo = address(IShareToken(shareTokenAddress).silo());
+
+            ISiloConfig.ConfigData memory cfg = siloConfig.getConfig(silo);
+            require(cfg.lt != 0, NotCollateralSilo());
+
+            require(
+                cfg.collateralShareToken == shareTokenAddress
+                    || cfg.protectedShareToken == shareTokenAddress,
+                NotCollateralShareToken()
+            );
+        }
+
+        _permisionedData.enabled = _enabled;
+        emit EnabledChanged(_enabled);
+    }
+    
+    /// @inheritdoc IPermissionedLiquidationIncentiveController
+    function setPause(bool _pauseTokenTransfer) external virtual onlyOwner {
+        require(_permisionedData.pauseTokenTransfer != _pauseTokenTransfer, PauseTokenTransferAlreadySet());
+
+        _permisionedData.pauseTokenTransfer = _pauseTokenTransfer;
+        emit PauseTokenTransferChanged(_pauseTokenTransfer);
     }
 
     /// @inheritdoc IPermissionedLiquidationIncentiveController
     function allowMeToLiquidate() external virtual onlyAllowed {
         _liquidationAllowed = true;
+    }
+
+    function permisionedData() external view override returns (PermisionedData memory data) {
+        data = _permisionedData;
     }
 
     // solhint-disable-next-line func-name-mixedcase
@@ -89,10 +112,14 @@ contract PermissionedLiquidationIncentiveController is
         override(SiloIncentivesControllerCompatible, ISiloIncentivesController)
         onlyHookReceiver
     {
-        if (enabled && !_liquidationAllowed) {
+        PermisionedData memory data = _permisionedData;
+
+        require(!data.pauseTokenTransfer, PauseTokenTransferActive());
+
+        if (data.enabled && !_liquidationAllowed) {
             // is this liquidation?
             // After transferring collateral, the user will always be insolvent in case of liquidation
-            require(ISilo(anySilo).isSolvent(_sender), LiquidationNotAllowed());
+            require(ISilo(data.anySilo).isSolvent(_sender), LiquidationNotAllowed());
         }
 
         super.afterTokenTransfer({
@@ -108,26 +135,5 @@ contract PermissionedLiquidationIncentiveController is
     // solhint-disable-next-line func-name-mixedcase
     function NOTIFIER() public view override(DistributionManager, IDistributionManager) returns (address) {
         return hookReceiver;
-    }
-
-    function _setEnabled(bool _enabled) internal virtual {
-        if (_enabled) {
-            address shareTokenAddress = address(_shareToken());
-
-            ISiloConfig siloConfig = IShareToken(shareTokenAddress).siloConfig();
-            address silo = address(IShareToken(shareTokenAddress).silo());
-
-            ISiloConfig.ConfigData memory cfg = siloConfig.getConfig(silo);
-            require(cfg.lt != 0, NotCollateralSilo());
-
-            require(
-                cfg.collateralShareToken == shareTokenAddress
-                    || cfg.protectedShareToken == shareTokenAddress,
-                NotCollateralShareToken()
-            );
-        }
-
-        enabled = _enabled;
-        emit EnabledChanged(_enabled);
     }
 }

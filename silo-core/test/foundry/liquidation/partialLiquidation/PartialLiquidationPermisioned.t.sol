@@ -120,7 +120,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         vm.stopPrank();
 
-        assertFalse(controllerC.enabled());
+        assertFalse(controllerC.permisionedData().enabled, "we set false above");
     }
 
     /*
@@ -242,10 +242,10 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     function test_permisioned_liquidation_upgrade() public {
         _setPermissionedLiquidation();
 
-        assertTrue(controllerC.enabled(), "active controller is enabled");
+        assertTrue(controllerC.permisionedData().enabled, "active controller is enabled");
 
         IPermissionedLiquidationController newImplementation = new NewImplementation();
-        assertFalse(newImplementation.enabled(), "inactive controller is disabled");
+        assertFalse(newImplementation.permisionedData().enabled, "inactive controller is disabled");
 
         vm.startPrank(controllerC.owner());
 
@@ -257,9 +257,11 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         _upgrade(address(controllerC), address(newImplementation));
 
         address afterUpgrade = address(hook.configuredGauges(shareToken));
+
         assertEq(beforeUpgrade, afterUpgrade, "configured gauge addressshould not change");
+        
         assertTrue(
-            IPermissionedLiquidationController(afterUpgrade).enabled(),
+            IPermissionedLiquidationController(afterUpgrade).permisionedData().enabled,
             "after upgrade enabled flag should stay enabled, because storage is contant"
         );
 

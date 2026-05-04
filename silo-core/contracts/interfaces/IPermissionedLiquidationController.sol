@@ -7,16 +7,30 @@ import {ISiloIncentivesController} from "../incentives/interfaces/ISiloIncentive
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
 interface IPermissionedLiquidationController is ISiloIncentivesController, IAccessControl, IVersioned {
+    struct PermisionedData {
+        /// @param anySilo one of market silo, set based on hook receiver.
+        address anySilo;
+        /// @param enabled if false, then permissions feature is disabled and liquidation can be done as usual
+        bool enabled;
+        /// @param pauseTokenTransfer if true, then token transfer will be paused and tx will be reverted
+        bool pauseTokenTransfer;
+    }
+
     error LiquidationNotAllowed();
     error OnlyHookReceiver();
     error OnlyOwner();
     error NotCollateralSilo();
     error NotCollateralShareToken();
     error EnabledAlreadySet();
+    error PauseTokenTransferAlreadySet();
+    error PauseTokenTransferActive();
 
     event EnabledChanged(bool _enabled);
+    event PauseTokenTransferChanged(bool _pauseTokenTransfer);
 
     function setEnabled(bool _enabled) external;
+
+    function setPause(bool _pauseTokenTransfer) external;
 
     /// @dev it will raise the flag that allows liquidation.
     /// @notice this function can be called by approved addresses,
@@ -25,10 +39,7 @@ interface IPermissionedLiquidationController is ISiloIncentivesController, IAcce
 
     function hookReceiver() external view returns (address);
 
-    /// @dev anySilo one of market silo, set based on hook receiver.
-    function anySilo() external view returns (address);
-
-    function enabled() external view returns (bool);
-
     function owner() external view returns (address);
+
+    function permisionedData() external view returns (PermisionedData memory);
 }

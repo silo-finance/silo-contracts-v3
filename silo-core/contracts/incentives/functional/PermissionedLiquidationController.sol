@@ -25,11 +25,9 @@ contract PermissionedLiquidationController is
 {
     address public hookReceiver;
 
-    address public anySilo;
-
     address public collateralShareToken;
 
-    bool public enabled;
+    PermisionedData internal _permisionedData;
 
     bool private transient _liquidationAllowed;
 
@@ -58,24 +56,36 @@ contract PermissionedLiquidationController is
         );
 
         hookReceiver = hook;
-        anySilo = collateralSilo;
         collateralShareToken = address(_collateralShareToken);
-        enabled = true;
+        _permisionedData = PermisionedData({anySilo: collateralSilo, enabled: true, pauseTokenTransfer: false});
 
         __Whitelist_init(Ownable(hook).owner());
     }
 
     /// @inheritdoc IPermissionedLiquidationController
     function setEnabled(bool _enabled) external onlyOwner {
-        require(enabled != _enabled, EnabledAlreadySet());
+        require(_permisionedData.enabled != _enabled, EnabledAlreadySet());
 
-        enabled = _enabled;
+        _permisionedData.enabled = _enabled;
         emit EnabledChanged(_enabled);
+    }
+
+    /// @inheritdoc IPermissionedLiquidationController
+    function setPause(bool _pauseTokenTransfer) external onlyOwner {
+        require(_permisionedData.pauseTokenTransfer != _pauseTokenTransfer, PauseTokenTransferAlreadySet());
+
+        _permisionedData.pauseTokenTransfer = _pauseTokenTransfer;
+        emit PauseTokenTransferChanged(_pauseTokenTransfer);
     }
 
     /// @inheritdoc IPermissionedLiquidationController
     function allowMeToLiquidate() external virtual onlyAllowed {
         _liquidationAllowed = true;
+    }
+
+    /// @inheritdoc IPermissionedLiquidationController
+    function permisionedData() external view returns (PermisionedData memory data) {
+        data = _permisionedData;
     }
 
     // solhint-disable-next-line func-name-mixedcase
@@ -109,14 +119,19 @@ contract PermissionedLiquidationController is
         override(BaseIncentivesControllerCompatible, ISiloIncentivesController)
         onlyHookReceiver
     {
-        if (!enabled) return;
+        PermisionedData memory data = _permisionedData;
+
+        if (!data.enabled) return;
+
+        require(!data.pauseTokenTransfer, PauseTokenTransferActive());
+
         if (_liquidationAllowed) return;
 
         // is this liquidation?
         // After transferring collateral, the user will always be insolvent.
-        bool isLiquidation = !ISilo(anySilo).isSolvent(_sender);
+        bool isLiquidation = !ISilo(data.anySilo).isSolvent(_sender);
 
-        if (isLiquidation) revert LiquidationNotAllowed();
+        require(!isLiquidation, LiquidationNotAllowed());
     }
 
     function owner() public view virtual returns (address) {

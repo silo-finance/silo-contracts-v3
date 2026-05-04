@@ -18,7 +18,7 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
     bool private constant _BAD_DEBT = false;
 
     /*
-    forge test -vv --ffi --mt test_maxLiquidation_noDebt
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxLiquidation_noDebt
     */
     function test_maxLiquidation_noDebt() public {
         _assertBorrowerIsSolvent();
@@ -38,7 +38,7 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
     }
 
     /*
-    forge test -vv --ffi --mt test_maxLiquidation_partial_tokens_fuzz
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_maxLiquidation_partial_tokens_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 10000
     function test_maxLiquidation_partial_tokens_fuzz(uint128 _collateral) public {

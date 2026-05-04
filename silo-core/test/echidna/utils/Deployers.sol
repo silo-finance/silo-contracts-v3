@@ -37,6 +37,12 @@ import {Views} from "silo-core/contracts/lib/Views.sol";
 import {DynamicKinkModelFactory} from "silo-core/contracts/interestRateModel/kink/DynamicKinkModelFactory.sol";
 import {IDynamicKinkModelFactory} from "silo-core/contracts/interfaces/IDynamicKinkModelFactory.sol";
 import {DynamicKinkModel} from "silo-core/contracts/interestRateModel/kink/DynamicKinkModel.sol";
+import {ISiloIncentivesControllerFactory} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesControllerFactory.sol";
+import {SiloIncentivesControllerFactory} from "silo-core/contracts/incentives/SiloIncentivesControllerFactory.sol";
+import {
+    IPermissionedLiquidationControllerFactory
+} from "silo-core/contracts/incentives/functional/PermissionedLiquidationControllerFactory.sol";
+import {PermissionedLiquidationControllerFactory} from "silo-core/contracts/incentives/functional/PermissionedLiquidationControllerFactory.sol";
 
 contract Deployers is VyperDeployer, Data {
     address timelockAdmin = address(0xb4b3);
@@ -155,13 +161,17 @@ contract Deployers is VyperDeployer, Data {
         address siloImpl = address(new Silo(siloFactory));
         address shareProtectedCollateralTokenImpl = address(new ShareProtectedCollateralToken());
         address shareDebtTokenImpl = address(new ShareDebtToken());
-
+        address siloIncentivesControllerFactory = address(new SiloIncentivesControllerFactory());
+        address permissionedLiquidationControllerFactory = address(new PermissionedLiquidationControllerFactory());
+        
         siloDeployer = ISiloDeployer(
             address(
                 new SiloDeployer(
                     interestRateModelV2ConfigFactory,
                     IDynamicKinkModelFactory(dkinkIRMConfigFactory),
                     siloFactory,
+                    ISiloIncentivesControllerFactory(siloIncentivesControllerFactory),
+                    IPermissionedLiquidationControllerFactory(siloIncentivesControllerFactory),
                     siloImpl,
                     shareProtectedCollateralTokenImpl,
                     shareDebtTokenImpl

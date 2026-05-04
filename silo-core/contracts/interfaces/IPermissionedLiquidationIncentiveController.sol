@@ -16,16 +16,15 @@ interface IPermissionedLiquidationIncentiveController is ISiloIncentivesControll
         bool pauseTokenTransfer;
     }
 
+    event EnabledChanged(bool _enabled);
+    event PauseTokenTransferChanged(bool _pauseTokenTransfer);
+
     error LiquidationNotAllowed();
-    error OnlyHookReceiver();
     error NotCollateralSilo();
     error NotCollateralShareToken();
     error EnabledAlreadySet();
     error PauseTokenTransferAlreadySet();
     error PauseTokenTransferActive();
-
-    event EnabledChanged(bool _enabled);
-    event PauseTokenTransferChanged(bool _pauseTokenTransfer);
 
     /// @dev it will enable or disable the liquidation feature, 
     /// it can only be done if the shared token is a collateral or protected token.
@@ -39,8 +38,6 @@ interface IPermissionedLiquidationIncentiveController is ISiloIncentivesControll
     /// @notice this function can be called by approved addresses,
     /// also, liquidation method in approved contract should be protected, otherwise, this flag can be abused.
     function allowMeToLiquidate() external;
-
-    function hookReceiver() external view returns (address);
 
     function permisionedData() external view returns (PermisionedData memory);
 }

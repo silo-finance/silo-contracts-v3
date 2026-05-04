@@ -24,9 +24,6 @@ import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfac
 import {
     IPermissionedLiquidationControllerFactory
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationControllerFactory.sol";
-import {
-    IPermissionedLiquidationController
-} from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 
 import {SiloConfig} from "silo-core/contracts/SiloConfig.sol";
 import {CloneDeterministic} from "silo-core/contracts/lib/CloneDeterministic.sol";

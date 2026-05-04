@@ -3,6 +3,7 @@ pragma solidity ^0.8.28;
 
 import {console2} from "forge-std/console2.sol";
 
+import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {StdCheats} from "forge-std/StdCheats.sol";
 import {CommonBase} from "forge-std/Base.sol";
 
@@ -14,6 +15,8 @@ import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
+import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
+import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 
 struct SiloConfigOverride {
     address token0;
@@ -185,6 +188,37 @@ contract SiloFixture is StdCheats, CommonBase {
         if (hookReceiver == address(0)) revert("hookReceiver address is empty");
 
         _labelSiloMarketContracts(siloConfig, createdSilo0, createdSilo1);
+
+        // we have permissioned liquidation controller set by default. For QA purposes, we have to remove it.
+        _removePermissionedLiquidationController(siloConfig, hookReceiver);
+    }
+
+    function _removePermissionedLiquidationController(ISiloConfig _siloConfig, address _hook) internal {
+        (address silo0, address silo1) = _siloConfig.getSilos();
+        (address collateralShareToken, address protectedShareToken, ) = _siloConfig.getShareTokens(silo0);
+
+        address owner = Ownable(_hook).owner();
+        vm.startPrank(owner);
+
+        if (address(IGaugeHookReceiver(_hook).configuredGauges(IShareToken(collateralShareToken))) != address(0)) {
+            IGaugeHookReceiver(_hook).removeGauge(IShareToken(collateralShareToken));
+        }
+
+        if (address(IGaugeHookReceiver(_hook).configuredGauges(IShareToken(protectedShareToken))) != address(0)) {
+            IGaugeHookReceiver(_hook).removeGauge(IShareToken(protectedShareToken));
+        }
+
+        (collateralShareToken, protectedShareToken, ) = _siloConfig.getShareTokens(silo1);
+        
+        if (address(IGaugeHookReceiver(_hook).configuredGauges(IShareToken(collateralShareToken))) != address(0)) {
+            IGaugeHookReceiver(_hook).removeGauge(IShareToken(collateralShareToken));
+        }
+        
+        if (address(IGaugeHookReceiver(_hook).configuredGauges(IShareToken(protectedShareToken))) != address(0)) {
+            IGaugeHookReceiver(_hook).removeGauge(IShareToken(protectedShareToken));
+        }
+
+        vm.stopPrank();
     }
 
     function _labelSiloMarketContracts(ISiloConfig _siloConfig, address _silo0, address _silo1) internal {

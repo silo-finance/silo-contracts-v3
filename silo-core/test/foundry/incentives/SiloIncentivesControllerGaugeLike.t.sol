@@ -38,6 +38,10 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
         PermissionedLiquidationIncentiveControllerFactoryDeploy deploy = new PermissionedLiquidationIncentiveControllerFactoryDeploy();
         deploy.disableDeploymentsSync();
         _factory = IPermissionedLiquidationIncentiveControllerFactory(deploy.run());
+
+        vm.mockCall(address(_shareToken), abi.encodeWithSelector(IShareToken.hookReceiver.selector), abi.encode(_notifier));
+        vm.mockCall(_notifier, abi.encodeWithSelector(Ownable.owner.selector), abi.encode(_owner));
+        vm.mockCall(address(_shareToken), abi.encodeWithSelector(IShareToken.silo.selector), abi.encode(makeAddr("Silo")));
     }
 
     /**
@@ -90,7 +94,7 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
     function test_killGauge_onlyOwner() public {
         address gaugeLike = _factory.create(IShareToken(_shareToken));
 
-        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, address(this)));
+        vm.expectRevert(IDistributionManager.OnlyOwner.selector);
         SiloIncentivesControllerCompatible(gaugeLike).killGauge();
     }
 
@@ -103,7 +107,10 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
         vm.prank(_owner);
         SiloIncentivesControllerCompatible(gaugeLike).killGauge();
 
-        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, address(this)));
+        vm.expectRevert(IDistributionManager.OnlyOwner.selector);
+        SiloIncentivesControllerCompatible(gaugeLike).unkillGauge();
+        
+        vm.prank(_owner);
         SiloIncentivesControllerCompatible(gaugeLike).unkillGauge();
     }
 

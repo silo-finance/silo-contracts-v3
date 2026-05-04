@@ -24,7 +24,6 @@ import {
  */
 contract SiloIncentivesControllerGaugeLikeIntegrationTest is Test {
     IPermissionedLiquidationIncentiveControllerFactory internal _factory;
-    address internal _owner = makeAddr("Owner");
 
     error CantRemoveActiveGauge();
 

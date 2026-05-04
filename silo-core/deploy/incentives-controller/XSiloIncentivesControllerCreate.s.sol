@@ -80,10 +80,7 @@ contract XSiloIncentivesControllerCreate is CommonDeploy {
 
         vm.startBroadcast(deployerPrivateKey);
 
-        incentivesController = IPermissionedLiquidationIncentiveControllerFactory(factory).create({
-            _shareToken: IShareToken(address(xSilo)),
-            _liquidationEnabled: false
-        });
+        incentivesController = IPermissionedLiquidationIncentiveControllerFactory(factory).create(IShareToken(address(xSilo)));
 
         vm.stopBroadcast();
 

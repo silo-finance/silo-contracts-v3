@@ -125,7 +125,7 @@ contract PermissionedLiquidationController is
 
         if (!data.enabled) return;
 
-        require(!data.pauseTokenTransfer, PauseTokenTransferActive());
+        if (data.pauseTokenTransfer) revert PauseTokenTransferActive();
 
         if (_liquidationAllowed) return;
 
@@ -133,7 +133,7 @@ contract PermissionedLiquidationController is
         // After transferring collateral, the user will always be insolvent.
         bool isLiquidation = !ISilo(data.anySilo).isSolvent(_sender);
 
-        require(!isLiquidation, LiquidationNotAllowed());
+        if (isLiquidation) revert LiquidationNotAllowed();
     }
 
     /// @dev to keep the interface backwards compatible, we need the owner method.

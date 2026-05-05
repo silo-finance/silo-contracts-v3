@@ -30,6 +30,7 @@ interface IPermissionedLiquidationController is ISiloIncentivesController, IAcce
 
     function setEnabled(bool _enabled) external;
 
+    /// @notice when _pauseTokenTransfer is TRUE, it will automatically set enabled to true
     function setPause(bool _pauseTokenTransfer) external;
 
     /// @dev it will raise the flag that allows liquidation.

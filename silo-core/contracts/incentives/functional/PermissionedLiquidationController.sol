@@ -77,6 +77,8 @@ contract PermissionedLiquidationController is
         require(_permisionedData.pauseTokenTransfer != _pauseTokenTransfer, PauseTokenTransferAlreadySet());
 
         _permisionedData.pauseTokenTransfer = _pauseTokenTransfer;
+        if (_pauseTokenTransfer) _permisionedData.enabled = true;
+        
         emit PauseTokenTransferChanged(_pauseTokenTransfer);
     }
 

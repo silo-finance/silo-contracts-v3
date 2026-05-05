@@ -8,9 +8,9 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
+import {Ownable1and2Steps} from "common/access/Ownable1and2Steps.sol";
 
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
-import {HookReceiverMock} from "silo-core/test/foundry/_mocks/HookReceiverMock.sol";
 
 import {MintableToken} from "../../_common/MintableToken.sol";
 import {SiloConfigOverride} from "../../_common/fixtures/SiloFixture.sol";
@@ -18,8 +18,31 @@ import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
 
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 
+contract HookReceiverBootstrapMock is Ownable1and2Steps {
+    constructor() Ownable1and2Steps(msg.sender) {}
+
+    function initialize(ISiloConfig, bytes calldata) external {
+        if (owner() == address(0)) _transferOwnership(msg.sender);
+    }
+
+    function hookReceiverConfig(address) external pure returns (uint24 hooksBefore, uint24 hooksAfter) {
+        return (0, 0);
+    }
+
+    function LIQUIDATION_LOGIC() external pure returns (address) {
+        return address(0);
+    }
+
+    function setGauge(address, address) external pure {}
+
+    function transferOwnership1Step(address newOwner) public override {
+        if (newOwner == address(0)) return;
+        _transferOwnership(newOwner);
+    }
+}
+
 /*
-    forge test -vv --ffi --mc WithdrawWhenNoDebtTest
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc WithdrawWhenNoDebtTest
 */
 contract WithdrawWhenNoDebtTest is SiloLittleHelper, Test {
     ISiloConfig siloConfig;
@@ -28,16 +51,13 @@ contract WithdrawWhenNoDebtTest is SiloLittleHelper, Test {
         token0 = new MintableToken(18);
         token1 = new MintableToken(18);
 
-        // Setting the hook receiver mock to force Actions lib _hookCallAfter fn execution
-        HookReceiverMock hookReceiverMock = new HookReceiverMock(address(0));
-        // Hook receiver config doesn't matter for this test
-        hookReceiverMock.hookReceiverConfigMock(0, 0);
+        HookReceiverBootstrapMock hookReceiverImplementation = new HookReceiverBootstrapMock();
 
         SiloConfigOverride memory overrides;
         overrides.token0 = address(token0);
         overrides.token1 = address(token1);
-        overrides.hookReceiver = hookReceiverMock.ADDRESS();
-        overrides.configName = SiloConfigsNames.SILO_LOCAL_DEPLOYER;
+        overrides.hookReceiverImplementation = address(hookReceiverImplementation);
+        overrides.configName = SiloConfigsNames.SILO_LOCAL_NO_ORACLE_SILO;
 
         SiloFixture siloFixture = new SiloFixture();
 

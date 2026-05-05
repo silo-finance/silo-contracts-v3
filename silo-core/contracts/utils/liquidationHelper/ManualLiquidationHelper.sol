@@ -17,10 +17,11 @@ import {ISiloConfig} from "../../interfaces/ISiloConfig.sol";
 import {IWrappedNativeToken} from "../../interfaces/IWrappedNativeToken.sol";
 
 import {TokenRescuer} from "../TokenRescuer.sol";
+import {Whitelist} from "../../hooks/_common/Whitelist.sol";
 
 /// @notice ManualLiquidationHelper is a utility contract that can be changed and replaced at any point.
 /// It is not considered a part of Silo protocol. Use at your own risk.
-contract ManualLiquidationHelper is TokenRescuer {
+contract ManualLiquidationHelper is TokenRescuer, Whitelist {
     using Address for address payable;
     using SafeERC20 for IERC20;
 
@@ -41,6 +42,8 @@ contract ManualLiquidationHelper is TokenRescuer {
     ) {
         NATIVE_TOKEN = _nativeToken;
         TOKENS_RECEIVER = _tokensReceiver;
+
+        __Whitelist_init(msg.sender);
     }
 
     receive() external payable {}
@@ -104,6 +107,7 @@ contract ManualLiquidationHelper is TokenRescuer {
     )
         internal
         virtual
+        onlyAllowedOrPublic
     {
         require(_maxDebtToCover != 0, MaxDebtToCoverZero());
 

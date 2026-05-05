@@ -34,11 +34,13 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test --ffi -vv --mt test_updateHooks_anyoneCanCall
+    FOUNDRY_PROFILE=core_test forge test --ffi -vv --mt test_updateHooks_anyoneCanCall
     */
     function test_updateHooks_anyoneCanCall() public {
         vm.expectEmit(true, true, true, true);
-        emit HooksUpdated(0, uint24(Hook.PROTECTED_TOKEN.addAction(Hook.COLLATERAL_TOKEN)));
+        emit HooksUpdated(
+            0, uint24(Hook.PROTECTED_TOKEN.addAction(Hook.COLLATERAL_TOKEN).addAction(Hook.SHARE_TOKEN_TRANSFER))
+        );
 
         silo1.updateHooks();
     }
@@ -51,7 +53,9 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
         silo0.updateHooks();
 
         vm.expectEmit(true, true, true, true);
-        emit HooksUpdated(0, uint24(Hook.PROTECTED_TOKEN.addAction(Hook.COLLATERAL_TOKEN)));
+        emit HooksUpdated(
+            0, uint24(Hook.PROTECTED_TOKEN.addAction(Hook.COLLATERAL_TOKEN).addAction(Hook.SHARE_TOKEN_TRANSFER))
+        );
 
         silo0.updateHooks();
 

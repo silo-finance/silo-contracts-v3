@@ -3,7 +3,6 @@ pragma solidity ^0.8.28;
 
 import {console2} from "forge-std/console2.sol";
 
-import {Ownable} from "openzeppelin5/access/Ownable.sol";
 import {StdCheats} from "forge-std/StdCheats.sol";
 import {CommonBase} from "forge-std/Base.sol";
 

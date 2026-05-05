@@ -86,7 +86,7 @@ contract FlatPriceOracleFactoryTest is Test {
         vm.mockCall(address(base), abi.encodeWithSelector(IERC20Metadata.symbol.selector), abi.encode("BASE"));
         vm.mockCall(address(quote), abi.encodeWithSelector(IERC20Metadata.symbol.selector), abi.encode("QUOTE"));
 
-        assertEq(Aggregator(address(oracle)).description(), "BASE/QUOTE");
+        assertEq(Aggregator(address(oracle)).description(), "BASE / QUOTE");
     }
 
     function test_FlatPriceOracle_wrongBase_reverts() public {

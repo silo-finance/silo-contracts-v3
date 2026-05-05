@@ -45,11 +45,12 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
         SiloConfigOverride memory overrides;
         overrides.token0 = address(token0);
         overrides.token1 = address(token1);
-        overrides.hookReceiver = address(this);
+        overrides.hookReceiverImplementation = address(this);
 
         SiloFixture siloFixture = new SiloFixture();
-        (siloConfig, silo0, silo1,,,) = siloFixture.deploy_local(overrides);
-        partialLiquidation = this;
+        address hook;
+        (siloConfig, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
+        partialLiquidation = PartialLiquidation(hook);
 
         _setAllHooks();
 
@@ -161,8 +162,13 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
     }
 
     function initialize(ISiloConfig _config, bytes calldata _ownerData) public override {
+        if (address(siloConfig) == address(0)) {
+            siloConfig = _config;
+        } else {
+            assertEq(address(siloConfig), address(_config), "SiloConfig addresses should match");
+        }
+
         _transferOwnership(abi.decode(_ownerData, (address)));
-        assertEq(address(siloConfig), address(_config), "SiloConfig addresses should match");
     }
 
     function beforeAction(address, uint256 _action, bytes calldata) external override {

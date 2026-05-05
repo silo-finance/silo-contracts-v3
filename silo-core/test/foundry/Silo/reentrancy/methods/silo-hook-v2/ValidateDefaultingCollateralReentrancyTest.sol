@@ -7,7 +7,7 @@ import {TestStateLib} from "../../TestState.sol";
 
 contract ValidateDefaultingCollateralReentrancyTest is ConstantReentrancyTest {
     function methodDescription() external pure override returns (string memory description) {
-        description = "validateDefaultingCollateral()";
+        description = "validateDefaultingCollateral(address)";
     }
 
     function _ensureItWillNotRevert() internal view override {

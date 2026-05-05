@@ -21,6 +21,19 @@ import {SiloConfigReentrancyTest} from "../methods/silo-hook-v1/SiloConfigReentr
 import {TransferOwnershipReentrancyTest} from "../methods/silo-hook-v1/TransferOwnershipReentrancyTest.sol";
 import {TransferOwnership1StepReentrancyTest} from "../methods/silo-hook-v1/TransferOwnership1StepReentrancyTest.sol";
 
+import {AllowedRoleReentrancyTest} from "../methods/silo-hook-v2/AllowedRoleReentrancyTest.sol";
+import {DefaultAdminRoleReentrancyTest} from "../methods/silo-hook-v2/DefaultAdminRoleReentrancyTest.sol";
+
+import {GetRoleMemberReentrancyTest} from "../methods/silo-hook-v2/GetRoleMemberReentrancyTest.sol";
+import {GetRoleMemberCountReentrancyTest} from "../methods/silo-hook-v2/GetRoleMemberCountReentrancyTest.sol";
+import {GetRoleMembersReentrancyTest} from "../methods/silo-hook-v2/GetRoleMembersReentrancyTest.sol";
+import {GetRoleAdminReentrancyTest} from "../methods/leverage/GetRoleAdminReentrancyTest.sol";
+import {GrantRoleReentrancyTest} from "../methods/leverage/GrantRoleReentrancyTest.sol";
+import {HasRoleReentrancyTest} from "../methods/leverage/HasRoleReentrancyTest.sol";
+import {RenounceRoleReentrancyTest} from "../methods/leverage/RenounceRoleReentrancyTest.sol";
+import {RevokeRoleReentrancyTest} from "../methods/leverage/RevokeRoleReentrancyTest.sol";
+import {SupportsInterfaceReentrancyTest} from "../methods/leverage/SupportsInterfaceReentrancyTest.sol";
+
 contract SiloHookV1MethodsRegistry is IMethodsRegistry {
     mapping(bytes4 methodSig => IMethodReentrancyTest) public methods;
     bytes4[] public supportedMethods;
@@ -42,6 +55,18 @@ contract SiloHookV1MethodsRegistry is IMethodsRegistry {
         _registerMethod(new SiloConfigReentrancyTest());
         _registerMethod(new TransferOwnershipReentrancyTest());
         _registerMethod(new TransferOwnership1StepReentrancyTest());
+
+        _registerMethod(new AllowedRoleReentrancyTest());
+        _registerMethod(new DefaultAdminRoleReentrancyTest());
+        _registerMethod(new GetRoleMemberReentrancyTest());
+        _registerMethod(new GetRoleMemberCountReentrancyTest());
+        _registerMethod(new GetRoleMembersReentrancyTest());
+        _registerMethod(new GetRoleAdminReentrancyTest());
+        _registerMethod(new GrantRoleReentrancyTest());
+        _registerMethod(new HasRoleReentrancyTest());
+        _registerMethod(new RenounceRoleReentrancyTest());
+        _registerMethod(new RevokeRoleReentrancyTest());
+        _registerMethod(new SupportsInterfaceReentrancyTest());
     }
 
     function supportedMethodsLength() external view returns (uint256) {

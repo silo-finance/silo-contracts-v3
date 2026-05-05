@@ -61,7 +61,7 @@ contract PermissionedLiquidationController is
         collateralShareToken = address(_collateralShareToken);
         _permisionedData = PermisionedData({anySilo: collateralSilo, enabled: false, pauseTokenTransfer: false});
 
-        __Whitelist_init(Ownable(hook).owner());
+        __Whitelist_init(owner());
     }
 
     /// @inheritdoc IPermissionedLiquidationController

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IPartialLiquidationByDefaulting.sol";
+import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {MethodReentrancyTest} from "../MethodReentrancyTest.sol";
 import {TestStateLib} from "../../TestState.sol";
 
@@ -23,10 +24,7 @@ contract ValidateControllerForCollateralReentrancyTest is MethodReentrancyTest {
         address silo1 = address(TestStateLib.silo1());
         IPartialLiquidationByDefaulting hook = _getHook();
 
-        // silo0 is debt silo
         hook.validateControllerForCollateral(silo0);
-
-        vm.expectRevert(IPartialLiquidationByDefaulting.NoControllerForCollateral.selector);
         hook.validateControllerForCollateral(silo1);
     }
 

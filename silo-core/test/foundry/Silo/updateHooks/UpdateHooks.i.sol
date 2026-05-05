@@ -13,6 +13,8 @@ import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
     forge test --ffi -vv --mc UpdateHooksTest
 */
 contract UpdateHooksTest is SiloLittleHelper, Test {
+    using Hook for uint256;
+
     ISiloConfig siloConfig;
 
     uint24 private _hooksBefore = 123;
@@ -36,7 +38,7 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
     */
     function test_updateHooks_anyoneCanCall() public {
         vm.expectEmit(true, true, true, true);
-        emit HooksUpdated(0, 0);
+        emit HooksUpdated(0, uint24(Hook.PROTECTED_TOKEN.addAction(Hook.COLLATERAL_TOKEN)));
 
         silo1.updateHooks();
     }
@@ -49,14 +51,14 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
         silo0.updateHooks();
 
         vm.expectEmit(true, true, true, true);
-        emit HooksUpdated(0, 0);
+        emit HooksUpdated(0, uint24(Hook.PROTECTED_TOKEN.addAction(Hook.COLLATERAL_TOKEN)));
 
         silo0.updateHooks();
 
         silo1.updateHooks();
 
         vm.expectEmit(true, true, true, true);
-        emit HooksUpdated(0, 0);
+        emit HooksUpdated(0, uint24(Hook.PROTECTED_TOKEN.addAction(Hook.COLLATERAL_TOKEN)));
 
         silo1.updateHooks();
     }

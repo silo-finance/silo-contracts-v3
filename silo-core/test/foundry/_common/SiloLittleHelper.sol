@@ -43,8 +43,7 @@ abstract contract SiloLittleHelper is CommonBase {
 
     // we have permissioned liquidation controller set by default. For QA purposes, we can remove it.
     function _removePermissionedLiquidationController(ISiloConfig _siloConfig) internal {
-        (address silo0, address silo1) = _siloConfig.getSilos();
-        (address collateralShareToken, address protectedShareToken, ) = _siloConfig.getShareTokens(silo0);
+        (address collateralShareToken, address protectedShareToken, ) = _siloConfig.getShareTokens(address(silo0));
 
         address hook = IShareToken(collateralShareToken).hookReceiver();
 
@@ -59,7 +58,7 @@ abstract contract SiloLittleHelper is CommonBase {
             IGaugeHookReceiver(hook).removeGauge(IShareToken(protectedShareToken));
         }
 
-        (collateralShareToken, protectedShareToken, ) = _siloConfig.getShareTokens(silo1);
+        (collateralShareToken, protectedShareToken, ) = _siloConfig.getShareTokens(address(silo1));
         
         if (address(IGaugeHookReceiver(hook).configuredGauges(IShareToken(collateralShareToken))) != address(0)) {
             IGaugeHookReceiver(hook).removeGauge(IShareToken(collateralShareToken));

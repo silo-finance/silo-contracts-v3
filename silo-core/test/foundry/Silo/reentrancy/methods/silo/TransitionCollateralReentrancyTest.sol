@@ -7,6 +7,9 @@ import {MethodReentrancyTest} from "../MethodReentrancyTest.sol";
 import {TestStateLib} from "../../TestState.sol";
 import {MaliciousToken} from "../../MaliciousToken.sol";
 
+/*
+FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mc TransitionCollateralReentrancyTest
+*/
 contract TransitionCollateralReentrancyTest is MethodReentrancyTest {
     function callMethod() external {
         MaliciousToken token0 = MaliciousToken(TestStateLib.token0());

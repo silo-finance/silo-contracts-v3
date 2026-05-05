@@ -9,9 +9,12 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IERC3156FlashBorrower} from "silo-core/contracts/interfaces/IERC3156FlashBorrower.sol";
 import {IERC20R} from "silo-core/contracts/interfaces/IERC20R.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
+import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
+import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
 import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
+import {Ownable1and2Steps} from "common/access/Ownable1and2Steps.sol";
 
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 import {MintableToken} from "../../_common/MintableToken.sol";
@@ -21,7 +24,7 @@ import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
 /*
 FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc HookCallsOutsideActionTest
 */
-contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower, SiloLittleHelper, Test {
+contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower, SiloLittleHelper, Ownable1and2Steps, Test {
     using Hook for uint256;
     using SiloLensLib for ISilo;
 
@@ -29,6 +32,8 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
 
     uint24 public configuredHooksBefore;
     uint24 public configuredHooksAfter;
+
+    constructor() Ownable1and2Steps(address(this)) {}
 
     function setUp() public {
         token0 = new MintableToken(6);
@@ -155,7 +160,8 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
         silo1.withdrawFees();
     }
 
-    function initialize(ISiloConfig _config, bytes calldata) public view override {
+    function initialize(ISiloConfig _config, bytes calldata _ownerData) public override {
+        _transferOwnership(abi.decode(_ownerData, (address)));
         assertEq(address(siloConfig), address(_config), "SiloConfig addresses should match");
     }
 
@@ -208,6 +214,20 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
     function hookReceiverConfig(address) external view override returns (uint24 hooksBefore, uint24 hooksAfter) {
         hooksBefore = configuredHooksBefore;
         hooksAfter = configuredHooksAfter;
+    }
+
+    // Deployer now configures gauges and transfers hook ownership even for custom hook receivers.
+    // This test receiver is intentionally lightweight, so these become no-op compatibility shims.
+    function setGauge(ISiloIncentivesController _gauge, IShareToken _shareToken) external pure {
+        // do nothing
+    }
+
+    function removeGauge(IShareToken _shareToken) external pure {
+        // do nothing
+    }
+
+    function configuredGauges(IShareToken _shareToken) external pure returns (ISiloIncentivesController) {
+        return ISiloIncentivesController(address(0));
     }
 
     function _setAllHooks() internal {

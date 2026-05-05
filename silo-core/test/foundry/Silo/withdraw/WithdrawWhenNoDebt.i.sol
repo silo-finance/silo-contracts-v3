@@ -8,38 +8,15 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
-import {Ownable1and2Steps} from "common/access/Ownable1and2Steps.sol";
 
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
+import {HookReceiverBootstrapMock} from "silo-core/test/foundry/_mocks/HookReceiverBootstrapMock.sol";
 
 import {MintableToken} from "../../_common/MintableToken.sol";
 import {SiloConfigOverride} from "../../_common/fixtures/SiloFixture.sol";
 import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
 
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
-
-contract HookReceiverBootstrapMock is Ownable1and2Steps {
-    constructor() Ownable1and2Steps(msg.sender) {}
-
-    function initialize(ISiloConfig, bytes calldata) external {
-        if (owner() == address(0)) _transferOwnership(msg.sender);
-    }
-
-    function hookReceiverConfig(address) external pure returns (uint24 hooksBefore, uint24 hooksAfter) {
-        return (0, 0);
-    }
-
-    function LIQUIDATION_LOGIC() external pure returns (address) {
-        return address(0);
-    }
-
-    function setGauge(address, address) external pure {}
-
-    function transferOwnership1Step(address newOwner) public override {
-        if (newOwner == address(0)) return;
-        _transferOwnership(newOwner);
-    }
-}
 
 /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc WithdrawWhenNoDebtTest

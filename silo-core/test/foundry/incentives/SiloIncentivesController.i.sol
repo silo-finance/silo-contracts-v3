@@ -9,8 +9,10 @@ import {SiloIncentivesControllerCompatible} from "silo-core/contracts/incentives
 import {DistributionTypes} from "silo-core/contracts/incentives/lib/DistributionTypes.sol";
 import {ISiloIncentivesController} from "silo-core/contracts/incentives/interfaces/ISiloIncentivesController.sol";
 import {IDistributionManager} from "silo-core/contracts/incentives/interfaces/IDistributionManager.sol";
+import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
+import {Ownable1and2Steps} from "common/access/Ownable1and2Steps.sol";
 
 import {SiloConfigOverride} from "../_common/fixtures/SiloFixture.sol";
 import {SiloFixture} from "../_common/fixtures/SiloFixture.sol";
@@ -18,13 +20,19 @@ import {SiloFixture} from "../_common/fixtures/SiloFixture.sol";
 import {MintableToken} from "../_common/MintableToken.sol";
 import {SiloLittleHelper} from "../_common/SiloLittleHelper.sol";
 
-contract HookContract {
+contract HookContract is Ownable1and2Steps {
     SiloIncentivesControllerCompatible controller;
     MintableToken notifierToken;
+
+    constructor() Ownable1and2Steps(msg.sender) {}
 
     function setup(SiloIncentivesControllerCompatible _controller, MintableToken _notifierToken) public {
         controller = _controller;
         notifierToken = _notifierToken;
+    }
+
+    function initialize(ISiloConfig, bytes calldata) external {
+        if (owner() == address(0)) _transferOwnership(msg.sender);
     }
 
     // notifier has to sum up total from all external contracts
@@ -42,6 +50,20 @@ contract HookContract {
         hooksAfter = uint24(Hook.SHARE_TOKEN_TRANSFER | Hook.COLLATERAL_TOKEN);
     }
 
+    // marker queried by SiloDeployer to check defaulting hook type
+    function LIQUIDATION_LOGIC() external pure returns (address) {
+        return address(0);
+    }
+
+    // called by SiloDeployer for permissioned incentives setup
+    function setGauge(address, address) external pure {}
+
+    // test hook is not ownership-focused; allow deployer to finish bootstrap
+    function transferOwnership1Step(address newOwner) public override {
+        if (newOwner == address(0)) return;
+        _transferOwnership(newOwner);
+    }
+
     function afterAction(address, /* _silo */ uint256, /* _action */ bytes calldata _inputAndOutput) external {
         Hook.AfterTokenTransfer memory input = Hook.afterTokenTransferDecode(_inputAndOutput);
 
@@ -57,7 +79,7 @@ contract HookContract {
 }
 
 /*
- FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc SiloIncentivesControllerTest
+ FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc SiloIncentivesControllerIntegrationTest
 */
 contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
     using SafeCast for uint256;
@@ -80,7 +102,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
     event ClaimerSet(address indexed user, address indexed claimer);
 
     function setUp() public {
-        hook = new HookContract();
+        HookContract hookImplementation = new HookContract();
 
         token0 = new MintableToken(18);
         token1 = new MintableToken(18);
@@ -101,9 +123,11 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         SiloConfigOverride memory overrides;
         overrides.token0 = address(token0);
         overrides.token1 = address(token1);
-        overrides.hookReceiver = address(hook);
+        overrides.hookReceiverImplementation = address(hookImplementation);
 
-        (, silo0, silo1,,,) = siloFixture.deploy_local(overrides);
+        address hookReceiver;
+        (, silo0, silo1,,, hookReceiver) = siloFixture.deploy_local(overrides);
+        hook = HookContract(hookReceiver);
 
         __init(token0, token1, silo0, silo1);
 

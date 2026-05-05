@@ -21,11 +21,10 @@ contract ManageableOracleFactory is Create2Factory, IManageableOracleFactory {
 
     /// @inheritdoc IManageableOracleFactory
     function create(ISiloOracle _oracle, address _owner, uint32 _timelock, bytes32 _externalSalt)
-        public
+        external
         returns (IManageableOracle manageableOracle)
     {
-        manageableOracle = _deployOracle(_externalSalt);
-        manageableOracle.initialize(_oracle, _owner, _timelock);
+        manageableOracle = _create(_oracle, _owner, _timelock, _externalSalt);
     }
 
     /// @inheritdoc IManageableOracleFactory
@@ -37,7 +36,7 @@ contract ManageableOracleFactory is Create2Factory, IManageableOracleFactory {
         bytes32 _externalSalt
     ) external returns (IManageableOracle manageableOracle) {
         address underlyingOracle = _deployUnderlyingOracle(_underlyingOracleFactory, _underlyingOracleInitData);
-        manageableOracle = create(ISiloOracle(underlyingOracle), _owner, _timelock, _externalSalt);
+        manageableOracle = _create(ISiloOracle(underlyingOracle), _owner, _timelock, _externalSalt);
     }
 
     /// @notice Predict the deterministic address of a ManageableOracle that would be created
@@ -66,6 +65,14 @@ contract ManageableOracleFactory is Create2Factory, IManageableOracleFactory {
         require(success && data.length == 32, FailedToCreateUnderlyingOracle());
 
         underlyingOracle = abi.decode(data, (address));
+    }
+
+    function _create(ISiloOracle _oracle, address _owner, uint32 _timelock, bytes32 _externalSalt)
+        internal
+        returns (IManageableOracle manageableOracle)
+    {
+        manageableOracle = _deployOracle(_externalSalt);
+        manageableOracle.initialize(_oracle, _owner, _timelock);
     }
 
     /// @dev Internal helper to create and register a ManageableOracle instance

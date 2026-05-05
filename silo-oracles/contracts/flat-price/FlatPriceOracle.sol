@@ -33,8 +33,21 @@ contract FlatPriceOracle is IFlatPriceOracle, ISiloOracle, Initializable, Aggreg
         quoteToken = _quoteTokenArg;
     }
 
+    function description() external view override returns (string memory) {
+        return string.concat(
+            TokenHelper.symbol(_baseToken),
+            " / ",
+            TokenHelper.symbol(quoteToken)
+        );
+    }
+
     function beforeQuote(address) external pure override {
         // nothing to execute
+    }
+
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure override returns (string memory v) {
+        v = "FlatPriceOracle 4.12.0";
     }
 
     function quote(uint256 _baseAmount, address _baseTokenArg)
@@ -49,20 +62,7 @@ contract FlatPriceOracle is IFlatPriceOracle, ISiloOracle, Initializable, Aggreg
         require(quoteAmount != 0, ZeroPrice());
     }
 
-    function description() external view override returns (string memory) {
-        return string.concat(
-            TokenHelper.symbol(_baseToken),
-            " / ",
-            TokenHelper.symbol(quoteToken)
-        );
-    }
-
     function baseToken() public view override returns (address token) {
         return _baseToken;
-    }
-
-    // solhint-disable-next-line func-name-mixedcase
-    function VERSION() external pure override returns (string memory v) {
-        v = "FlatPriceOracle 4.12.0";
     }
 }

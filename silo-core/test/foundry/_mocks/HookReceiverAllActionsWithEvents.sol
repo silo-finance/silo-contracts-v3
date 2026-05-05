@@ -1,16 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.28;
 
-import {console2} from "forge-std/console2.sol";
-
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
 import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
-import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
-import {GaugeHookReceiver} from "silo-core/contracts/hooks/gauge/GaugeHookReceiver.sol";
 import {Ownable1and2Steps} from "common/access/Ownable1and2Steps.sol";
 
 /// @dev Hook receiver for all actions with events to see decoded inputs

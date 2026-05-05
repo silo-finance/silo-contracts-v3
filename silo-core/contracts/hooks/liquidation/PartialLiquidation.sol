@@ -18,10 +18,11 @@ import {CallBeforeQuoteLib} from "silo-core/contracts/lib/CallBeforeQuoteLib.sol
 import {PartialLiquidationExecLib} from "silo-core/contracts/hooks/liquidation/lib/PartialLiquidationExecLib.sol";
 import {TransientReentrancy} from "silo-core/contracts/hooks/_common/TransientReentrancy.sol";
 import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiver.sol";
+import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 
 /// @title PartialLiquidation module for executing liquidations
 /// @dev if we need additional hook functionality, this contract should be included as parent
-abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, IPartialLiquidation {
+abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, IPartialLiquidation, Whitelist {
     using SafeERC20 for IERC20;
     using Hook for uint24;
     using CallBeforeQuoteLib for ISiloConfig.ConfigData;
@@ -45,6 +46,7 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
         external
         virtual
         nonReentrant
+        onlyAllowedOrPublic
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
     {
         emit LiquidationStart(LiquidationType.STANDARD);

@@ -22,13 +22,12 @@ import {
     CallBeforeQuoteLib
 } from "../liquidation/PartialLiquidation.sol";
 import {DefaultingSiloLogic} from "./DefaultingSiloLogic.sol";
-import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 
 // solhint-disable ordering
 
 /// @title PartialLiquidation module for executing liquidations
 /// @dev if we need additional hook functionality, this contract should be included as parent
-abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefaulting, PartialLiquidation, Whitelist {
+abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefaulting, PartialLiquidation {
     using CallBeforeQuoteLib for ISiloConfig.ConfigData;
 
     /// @inheritdoc IPartialLiquidationByDefaulting

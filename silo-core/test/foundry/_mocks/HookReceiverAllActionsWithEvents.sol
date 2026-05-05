@@ -183,6 +183,10 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation {
         _processActions(_silo, _action, _inputAndOutput, _IS_AFTER);
     }
 
+    function owner() external view returns (address) {
+        return msg.sender;
+    }
+
     function _processActions(address _silo, uint256 _action, bytes calldata _inputAndOutput, bool _isBefore)
         internal
     {

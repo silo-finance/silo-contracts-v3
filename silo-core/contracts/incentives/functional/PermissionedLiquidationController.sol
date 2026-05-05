@@ -136,6 +136,7 @@ contract PermissionedLiquidationController is
         require(!isLiquidation, LiquidationNotAllowed());
     }
 
+    /// @dev to keep the interface backwards compatible, we need the owner method.
     function owner() public view virtual returns (address) {
         return Ownable(hookReceiver).owner();
     }

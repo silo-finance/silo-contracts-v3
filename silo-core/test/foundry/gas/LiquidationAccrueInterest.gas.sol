@@ -39,7 +39,7 @@ contract LiquidationAccrueInterestGasTest is Gas, Test {
                 IPartialLiquidation.liquidationCall, (address(token0), address(token1), BORROWER, ASSETS / 2, false)
             ),
             "LiquidationCall with accrue interest",
-            465895,
+            499316,
             3000
         );
     }

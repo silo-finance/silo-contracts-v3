@@ -18,7 +18,9 @@ import {MintableToken} from "../../_common/MintableToken.sol";
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 import {HookReceiverAllActionsWithEvents as HookMock} from "../../_mocks/HookReceiverAllActionsWithEvents.sol";
 
-/// FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mc SiloHooksActionsTest
+/*
+FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc SiloHooksActionsTest
+*/
 contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
     using Hook for uint256;
     using ShareTokenDecimalsPowLib for uint256;
@@ -53,7 +55,9 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         return FLASHLOAN_CALLBACK;
     }
 
-    /// FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testDepositFnBeforeAfterHookActions
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testDepositFnBeforeAfterHookActions
+    */
     function testDepositFnBeforeAfterHookActions() public {
         uint256 beforeActions = Hook.depositAction(COLLATERAL);
         uint256 afterActions = Hook.depositAction(PROTECTED);

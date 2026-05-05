@@ -55,6 +55,8 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
         uint256 hookAfter = uint24(Hook.PROTECTED_TOKEN.addAction(Hook.COLLATERAL_TOKEN).addAction(Hook.SHARE_TOKEN_TRANSFER));
 
         vm.expectEmit(true, true, true, true);
+        // casting to 'uint24' is safe because hook is always uint24
+        // forge-lint: disable-next-line(unsafe-typecast)
         emit HooksUpdated(0, uint24(hookAfter));
 
         silo0.updateHooks();
@@ -62,6 +64,8 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
         silo1.updateHooks();
 
         vm.expectEmit(true, true, true, true);
+        // casting to 'uint24' is safe because hook is always uint24
+        // forge-lint: disable-next-line(unsafe-typecast)
         emit HooksUpdated(0, uint24(hookAfter));
 
         silo1.updateHooks();

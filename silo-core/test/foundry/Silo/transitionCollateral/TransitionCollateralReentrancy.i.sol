@@ -8,10 +8,12 @@ import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
+import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ICrossReentrancyGuard} from "silo-core/contracts/interfaces/ICrossReentrancyGuard.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
+import {HookReceiverBootstrapMock} from "silo-core/test/foundry/_mocks/HookReceiverBootstrapMock.sol";
 
 import {SiloConfigOverride} from "../../_common/fixtures/SiloFixture.sol";
 import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
@@ -21,7 +23,7 @@ import {MintableToken} from "../../_common/MintableToken.sol";
 /*
 FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mc TransitionCollateralReentrancyTest
 */
-contract TransitionCollateralReentrancyTest is SiloLittleHelper, Test, PartialLiquidation {
+contract TransitionCollateralReentrancyTest is SiloLittleHelper, Test, PartialLiquidation, HookReceiverBootstrapMock {
     using Hook for uint256;
     using SafeERC20 for IERC20;
 
@@ -35,16 +37,20 @@ contract TransitionCollateralReentrancyTest is SiloLittleHelper, Test, PartialLi
         token1 = new MintableToken(7);
         configOverride.token0 = address(token0);
         configOverride.token1 = address(token1);
-        configOverride.hookReceiver = address(this);
-        configOverride.configName = SiloConfigsNames.SILO_LOCAL_DEPLOYER;
+        configOverride.hookReceiverImplementation = address(this);
+        configOverride.configName = SiloConfigsNames.SILO_LOCAL_NO_ORACLE_SILO;
 
-        (siloConfig, silo0, silo1,,,) = siloFixture.deploy_local(configOverride);
-        partialLiquidation = this;
+        address hook;
+        (siloConfig, silo0, silo1,,, hook) = siloFixture.deploy_local(configOverride);
+        partialLiquidation = PartialLiquidation(hook);
 
         silo0.updateHooks();
     }
 
-    function initialize(ISiloConfig, bytes calldata) public override {}
+    function initialize(ISiloConfig _siloConfig, bytes calldata) public override(PartialLiquidation, IHookReceiver) {
+        if (owner() == address(0)) _transferOwnership(msg.sender);
+        siloConfig = _siloConfig;
+    }
 
     function hookReceiverConfig(address _silo)
         external

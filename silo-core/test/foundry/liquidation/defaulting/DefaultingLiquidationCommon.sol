@@ -78,7 +78,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         gauge = defaulting.validateControllerForCollateral(address(debtSilo));
 
         // We have permissions gauge controller set by default. For defaulting QA, we have to remove it.
-        _removePermissionsGaugeController();
+        _removePermissionedLiquidationController();
     }
 
     /*

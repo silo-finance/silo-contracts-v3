@@ -53,6 +53,8 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
         address deployer = vm.addr(deployerPrivateKey);
 
         _dao = deployer;
+
+        _removePermissionedLiquidationController(_siloConfig);
     }
 
     // FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt testReInitialization

@@ -11,6 +11,9 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
 import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ShareTokenLib} from "silo-core/contracts/lib/ShareTokenLib.sol";
+import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
+import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
+import {Ownable} from "openzeppelin5/access/Ownable.sol";
 
 import {MintableToken} from "./MintableToken.sol";
 import {SiloFixture, SiloConfigOverride} from "./fixtures/SiloFixture.sol";
@@ -36,6 +39,37 @@ abstract contract SiloLittleHelper is CommonBase {
         token1 = _token1;
         silo0 = _silo0;
         silo1 = _silo1;
+    }
+
+    // we have permissioned liquidation controller set by default. For QA purposes, we can remove it.
+    function _removePermissionedLiquidationController(ISiloConfig _siloConfig) internal {
+        (address silo0, address silo1) = _siloConfig.getSilos();
+        (address collateralShareToken, address protectedShareToken, ) = _siloConfig.getShareTokens(silo0);
+
+        address hook = IShareToken(collateralShareToken).hookReceiver();
+
+        address owner = Ownable(hook).owner();
+        vm.startPrank(owner);
+
+        if (address(IGaugeHookReceiver(hook).configuredGauges(IShareToken(collateralShareToken))) != address(0)) {
+            IGaugeHookReceiver(hook).removeGauge(IShareToken(collateralShareToken));
+        }
+
+        if (address(IGaugeHookReceiver(hook).configuredGauges(IShareToken(protectedShareToken))) != address(0)) {
+            IGaugeHookReceiver(hook).removeGauge(IShareToken(protectedShareToken));
+        }
+
+        (collateralShareToken, protectedShareToken, ) = _siloConfig.getShareTokens(silo1);
+        
+        if (address(IGaugeHookReceiver(hook).configuredGauges(IShareToken(collateralShareToken))) != address(0)) {
+            IGaugeHookReceiver(hook).removeGauge(IShareToken(collateralShareToken));
+        }
+        
+        if (address(IGaugeHookReceiver(hook).configuredGauges(IShareToken(protectedShareToken))) != address(0)) {
+            IGaugeHookReceiver(hook).removeGauge(IShareToken(protectedShareToken));
+        }
+
+        vm.stopPrank();
     }
 
     function _setUpLocalFixture() internal returns (ISiloConfig siloConfig) {

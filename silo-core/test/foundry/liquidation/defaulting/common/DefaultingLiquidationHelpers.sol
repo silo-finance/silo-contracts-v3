@@ -282,7 +282,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         return gauge;
     }
 
-    function _removePermissionsGaugeController() internal {
+    function _removePermissionedLiquidationController() internal {
         (ISilo collateralSilo,) = _getSilos();
         (address collateralShareToken, address protectedShareToken, ) = siloConfig.getShareTokens(address(collateralSilo));
 

@@ -61,7 +61,7 @@ contract PermissionedLiquidationController is
         collateralShareToken = address(_collateralShareToken);
         _permisionedData = PermisionedData({anySilo: collateralSilo, enabled: false, pauseTokenTransfer: false});
 
-        __Whitelist_init(owner());
+        __Whitelist_init(Ownable(hookReceiver).owner());
     }
 
     /// @inheritdoc IPermissionedLiquidationController
@@ -78,7 +78,7 @@ contract PermissionedLiquidationController is
 
         _permisionedData.pauseTokenTransfer = _pauseTokenTransfer;
         if (_pauseTokenTransfer) _permisionedData.enabled = true;
-        
+
         emit PauseTokenTransferChanged(_pauseTokenTransfer);
     }
 
@@ -140,7 +140,8 @@ contract PermissionedLiquidationController is
 
     /// @dev to keep the interface backwards compatible, we need the owner method.
     function owner() public view virtual returns (address) {
-        return Ownable(hookReceiver).owner();
+        uint256 count = getRoleMemberCount(DEFAULT_ADMIN_ROLE);
+        return count == 0 ? address(0) : getRoleMember(DEFAULT_ADMIN_ROLE, 0);
     }
 
     function _onlyOwner() internal view virtual override {

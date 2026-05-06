@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.12.0] - 2026-05-06
+### Added
+- flat price oracle deployment
+
 ## [4.11.1] - 2026-04-28
 ### Fixed
 - ensure ci is executed for MegaETH and Mantle

@@ -118,7 +118,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
 
     /// @inheritdoc IVersioned
     function VERSION() external pure returns (string memory version) {
-        return "SiloDeployer 4.12.0";
+        return "SiloDeployer 4.13.0";
     }
 
     /// @notice Create an incentives controller if the hook is defaulting

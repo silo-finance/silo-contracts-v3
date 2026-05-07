@@ -47,6 +47,8 @@ CHAIN_CONFIG: dict[str, tuple[str, str]] = {
     "sonic": ("Sonic", "https://sonicscan.org/address/"),
     "ink": ("Ink", "https://explorer.inkonchain.com/address/"),
     "xdc": ("XDC", "https://xdcscan.com/address/"),
+    "mantle": ("Mantle", "https://mantlescan.xyz/address/"),
+    "megaeth": ("MegaETH", "https://mega.etherscan.io/address/"),
 }
 
 SILO_MARKET_CRAFTER_BASE = "https://silo-finance.github.io/silo-market-crafter/wizard/?step=13&address="
@@ -64,6 +66,8 @@ CHAIN_IDS: dict[str, int] = {
     "sonic": 146,
     "ink": 57073,
     "xdc": 50,
+    "mantle": 5000,
+    "megaeth": 4326,
 }
 
 SILO_DEPLOYMENTS_JSON = "silo-core/deploy/silo/_siloDeployments.json"

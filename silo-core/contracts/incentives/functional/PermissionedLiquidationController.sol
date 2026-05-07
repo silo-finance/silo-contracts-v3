@@ -27,7 +27,7 @@ contract PermissionedLiquidationController is
 {
     address public hookReceiver;
 
-    address public collateralShareToken;
+    address public shareToken;
 
     PermisionedData internal _permisionedData;
 
@@ -42,24 +42,21 @@ contract PermissionedLiquidationController is
         _disableInitializers();
     }
 
-    /// @param _collateralShareToken collateral or protected share token address
-    function initialize(IShareToken _collateralShareToken) external initializer {
-        address hook = _collateralShareToken.hookReceiver();
-        ISiloConfig siloConfig = _collateralShareToken.siloConfig();
-        address collateralSilo = address(_collateralShareToken.silo());
+    /// @param _shareToken collateral or protected share token address
+    function initialize(IShareToken _shareToken) external initializer {
+        hookReceiver = _shareToken.hookReceiver();
+        shareToken = address(_shareToken);
 
-        ISiloConfig.ConfigData memory collateralConfig = siloConfig.getConfig(collateralSilo);
-        require(collateralConfig.lt != 0, NotCollateralSilo());
+        ISilo silo = _shareToken.silo();
 
-        require(
-            collateralConfig.collateralShareToken == address(_collateralShareToken)
-                || collateralConfig.protectedShareToken == address(_collateralShareToken),
-            NotCollateralShareToken()
-        );
+        ISiloConfig.ConfigData memory cfg = silo.config().getConfig(address(silo));
 
-        hookReceiver = hook;
-        collateralShareToken = address(_collateralShareToken);
-        _permisionedData = PermisionedData({anySilo: collateralSilo, enabled: false, pauseTokenTransfer: false});
+        _permisionedData = PermisionedData({
+            anySilo: address(silo), 
+            enabled: false, 
+            pauseTokenTransfer: false,
+            shateTokenIsDebtToken: cfg.debtShareToken == address(_shareToken)
+        });
 
         __Whitelist_init(Ownable(hookReceiver).owner());
     }
@@ -77,6 +74,7 @@ contract PermissionedLiquidationController is
         require(_permisionedData.pauseTokenTransfer != _pauseTokenTransfer, PauseTokenTransferAlreadySet());
 
         _permisionedData.pauseTokenTransfer = _pauseTokenTransfer;
+
         if (_pauseTokenTransfer) {
             _permisionedData.enabled = true;
             emit EnabledChanged(true);
@@ -97,12 +95,12 @@ contract PermissionedLiquidationController is
 
     // solhint-disable-next-line func-name-mixedcase
     function share_token() external view virtual returns (address) {
-        return collateralShareToken;
+        return shareToken;
     }
 
     // solhint-disable-next-line func-name-mixedcase
     function SHARE_TOKEN() external view returns (address) {
-        return collateralShareToken;
+        return shareToken;
     }
 
     function NOTIFIER() external view returns (address) { // solhint-disable-line func-name-mixedcase
@@ -110,7 +108,7 @@ contract PermissionedLiquidationController is
     }
 
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "PermissionedLiquidationController 4.12.0";
+        return "PermissionedLiquidationController 4.13.1";
     }
 
     function afterTokenTransfer(
@@ -133,6 +131,9 @@ contract PermissionedLiquidationController is
         if (data.pauseTokenTransfer) revert PauseTokenTransferActive();
 
         if (_liquidationAllowed) return;
+
+        // for debt token we can not revert, because it migth revert regular repay
+        if (data.shateTokenIsDebtToken) return;
 
         // is this liquidation?
         // After transferring collateral, the user will always be insolvent.

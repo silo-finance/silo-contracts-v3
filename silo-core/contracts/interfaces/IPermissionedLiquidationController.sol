@@ -14,6 +14,8 @@ interface IPermissionedLiquidationController is ISiloIncentivesController, IAcce
         bool enabled;
         /// @param pauseTokenTransfer if true, then token transfer will be paused and tx will be reverted
         bool pauseTokenTransfer;
+        /// @param shateTokenIsDebtToken if true, that means this controller is set for debt token.
+        bool shateTokenIsDebtToken;
     }
 
     event EnabledChanged(bool _enabled);
@@ -22,8 +24,6 @@ interface IPermissionedLiquidationController is ISiloIncentivesController, IAcce
     error LiquidationNotAllowed();
     error OnlyHookReceiver();
     error OnlyOwner();
-    error NotCollateralSilo();
-    error NotCollateralShareToken();
     error EnabledAlreadySet();
     error PauseTokenTransferAlreadySet();
     error PauseTokenTransferActive();

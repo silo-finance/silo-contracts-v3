@@ -30,7 +30,8 @@ contract TransitionCollateralTest is Gas, Test {
             address(silo0),
             abi.encodeCall(ISilo.transitionCollateral, (ASSETS, BORROWER, ISilo.CollateralType.Collateral)),
             "transitionCollateral (when debt)",
-            343742 // 74K for interest
+            343742, // 74K for interest
+            500
         );
     }
 }

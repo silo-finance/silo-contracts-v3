@@ -32,4 +32,6 @@ interface IHookReceiver {
 
     /// @notice return hooksBefore and hooksAfter configuration
     function hookReceiverConfig(address _silo) external view returns (uint24 hooksBefore, uint24 hooksAfter);
+
+    function siloConfig() external view returns (ISiloConfig siloConfig);
 }

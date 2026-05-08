@@ -28,7 +28,7 @@ contract ManualLiquidationHelperSTokensTest is ManualLiquidationHelperCommon {
     }
 
     function _executeLiquidation() internal override {
-        LIQUIDATION_HELPER.executeLiquidation(silo1, BORROWER, 2 ** 128, true, _tokenReceiver());
+        LIQUIDATION_HELPER.executeLiquidation(silo1, BORROWER, 2 ** 128, true);
     }
 
     /*

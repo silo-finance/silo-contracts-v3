@@ -10,12 +10,18 @@ import {ILiquidationHelper} from "../../interfaces/ILiquidationHelper.sol";
 
 import {ISilo} from "../../interfaces/ISilo.sol";
 import {IWrappedNativeToken} from "../../interfaces/IWrappedNativeToken.sol";
+import {IPartialLiquidation} from "../../interfaces/IPartialLiquidation.sol";
+import {ISiloConfig} from "../../interfaces/ISiloConfig.sol";
+import {IShareToken} from "../../interfaces/IShareToken.sol";
+import {IHookReceiver} from "../../interfaces/IHookReceiver.sol";
 
 import {DexSwap} from "./DexSwap.sol";
 import {TokenRescuer} from "../TokenRescuer.sol";
+import {IVersioned} from "../../interfaces/IVersioned.sol";
+import {AllowMeToLiquidate} from "./common/AllowMeToLiquidate.sol";
 
 /// @notice LiquidationHelper IS NOT PART OF THE PROTOCOL.
-contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap, TokenRescuer {
+contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap, TokenRescuer, AllowMeToLiquidate, IVersioned {
     using Address for address payable;
     using SafeERC20 for IERC20;
 
@@ -99,6 +105,8 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
 
         IERC20(_debtAsset).forceApprove(address(_liquidation.hook), _maxDebtToCover);
 
+        _turnOnLiquidation(_liquidation.hook, _liquidation.user);
+
         (
             _withdrawCollateral, _repayDebtAssets
         ) = _liquidation.hook.liquidationCall({
@@ -140,6 +148,10 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
         return _FLASHLOAN_CALLBACK;
     }
 
+    function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
+        return "LiquidationHelper 4.16.0";
+    }
+
     function _executeSwap(DexSwapInput[] memory _swapInputs) internal virtual {
         for (uint256 i; i < _swapInputs.length; i++) {
             fillQuote(_swapInputs[i].sellToken, _swapInputs[i].allowanceTarget, _swapInputs[i].swapCallData);
@@ -160,5 +172,12 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
     function _transferNative(uint256 _amount) internal virtual {
         IWrappedNativeToken(address(NATIVE_TOKEN)).withdraw(_amount);
         TOKENS_RECEIVER.sendValue(_amount);
+    }
+
+    function _turnOnLiquidation(IPartialLiquidation _hook, address _user) internal virtual {
+        (ISiloConfig.ConfigData memory collateralConfig,) = IHookReceiver(address(_hook)).siloConfig().getConfigsForSolvency(_user);
+
+        _allowMeToLiquidate(address(_hook), IShareToken(collateralConfig.collateralShareToken));
+        _allowMeToLiquidate(address(_hook), IShareToken(collateralConfig.protectedShareToken));
     }
 }

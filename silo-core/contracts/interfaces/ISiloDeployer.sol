@@ -71,20 +71,4 @@ interface ISiloDeployer {
     )
         external
         returns (ISiloConfig siloConfig);
-    
-    /// @notice Deploy silo (backwards compatible method)
-    /// @param _oracles Oracles to be create during the silo creation
-    /// @param _irmConfigData0 IRM config data for a silo `_TOKEN0`
-    /// @param _irmConfigData1 IRM config data for a silo `_TOKEN1`
-    /// @param _clonableHookReceiver Hook receiver implementation to clone (ignored if implementation has address(0))
-    /// @param _siloInitData Silo configuration for the silo creation
-    function deploy(
-        Oracles calldata _oracles,
-        bytes calldata _irmConfigData0,
-        bytes calldata _irmConfigData1,
-        ClonableHookReceiver calldata _clonableHookReceiver,
-        ISiloConfig.InitData memory _siloInitData
-    )
-        external
-        returns (ISiloConfig siloConfig);
 }

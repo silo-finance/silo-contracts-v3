@@ -34,7 +34,7 @@ import {TransparentProxy} from "silo-core/contracts/utils/TransparentProxy.sol";
 
 /// @notice Silo Deployer
 contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
-    bytes32 public constant ALLOWED_ROLE = keccak256("ALLOWED_ROLE");
+    bytes32 internal constant ALLOWED_ROLE = keccak256("ALLOWED_ROLE");
 
     // solhint-disable var-name-mixedcase
     IInterestRateModelV2Factory public immutable IRM_CONFIG_FACTORY;
@@ -49,7 +49,6 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
 
     /// @notice variable to store the final hook owner
     address internal transient _finalHookOwner;
-    bytes32 internal transient _allowedRole;
 
     constructor(
         IInterestRateModelV2Factory _irmConfigFactory,
@@ -77,30 +76,9 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         bytes calldata _irmConfigData0,
         bytes calldata _irmConfigData1,
         ClonableHookReceiver calldata _clonableHookReceiver,
-        ISiloConfig.InitData memory _siloInitData
-    ) external returns (ISiloConfig siloConfig) {
-        return deploy({
-            _oracles: _oracles, 
-            _irmConfigData0: _irmConfigData0, 
-            _irmConfigData1: _irmConfigData1, 
-            _clonableHookReceiver: _clonableHookReceiver, 
-            _siloInitData: _siloInitData, 
-            _marketOptions: MarketOptions({
-                addressesWithPausableRole: new address[](0),
-                permissionedLiquidators: new address[](0)
-            })
-        });
-    }
-
-    /// @inheritdoc ISiloDeployer
-    function deploy(
-        Oracles calldata _oracles,
-        bytes calldata _irmConfigData0,
-        bytes calldata _irmConfigData1,
-        ClonableHookReceiver calldata _clonableHookReceiver,
         ISiloConfig.InitData memory _siloInitData,
-        MarketOptions memory _marketOptions
-    ) public returns (ISiloConfig siloConfig) {
+        MarketOptions calldata _marketOptions
+    ) external returns (ISiloConfig siloConfig) {
         // setUp IRMs (create if needed) and update `_siloInitData`
         _setUpIRMs(_irmConfigData0, _irmConfigData1, _siloInitData);
         // create oracles and update `_siloInitData`
@@ -120,14 +98,17 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         });
 
         // initialize hook receiver only if it was cloned
-        _initializeHookReceiver(_siloInitData, siloConfig, _clonableHookReceiver);
+        bool isInitialized = _initializeHookReceiver(_siloInitData, siloConfig, _clonableHookReceiver);
 
-        _createIncentivesControllerForDefaulting({
-            _siloConfig: siloConfig,
-            _hookReceiver: _siloInitData.hookReceiver,
-            _lt0: _siloInitData.lt0,
-            _permissionedLiquidators: _marketOptions.permissionedLiquidators
-        });
+        if (isInitialized) {
+            // only when this is new hook
+            _createIncentivesControllerForDefaulting({
+                _siloConfig: siloConfig,
+                _hookReceiver: _siloInitData.hookReceiver,
+                _lt0: _siloInitData.lt0,
+                _permissionedLiquidators: _marketOptions.permissionedLiquidators
+            });
+        }
 
         if (_marketOptions.addressesWithPausableRole.length != 0) {
             _createPermissionedIncentivesControllers({
@@ -139,14 +120,17 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
             });
         }
 
-        Ownable1and2Steps(_siloInitData.hookReceiver).transferOwnership1Step(_finalHookOwner);
+        if (isInitialized) {
+            // only if this is new hook
+            Ownable1and2Steps(_siloInitData.hookReceiver).transferOwnership1Step(_finalHookOwner);
+        }
 
         emit SiloCreated(siloConfig);
     }
 
     /// @inheritdoc IVersioned
     function VERSION() external pure returns (string memory version) {
-        return "SiloDeployer 4.12.0";
+        return "SiloDeployer 4.16.0";
     }
 
     /// @notice Create an incentives controller if the hook is defaulting
@@ -154,7 +138,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         ISiloConfig _siloConfig, 
         address _hookReceiver, 
         uint256 _lt0,
-        address[] memory _permissionedLiquidators
+        address[] calldata _permissionedLiquidators
     )
         internal
     {
@@ -180,7 +164,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         _transferDefaultAdminRole(_hookReceiver);
     }
 
-    function _whitelistLiquidators(address _hookReceiver, address[] memory _addresses) internal {
+    function _whitelistLiquidators(address _hookReceiver, address[] calldata _addresses) internal {
         uint256 c = _addresses.length;
         if (c == 0) return;
 
@@ -194,31 +178,39 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         address _hookReceiver, 
         uint256 _lt0, 
         uint256 _lt1,
-        address[] memory _addressesWithPausableRole
+        address[] calldata _addressesWithPausableRole
     )
         internal
     {
         (address silo0, address silo1) = _siloConfig.getSilos();
 
         if (_lt0 != 0) {
-            (address protectedShareToken, address collateralShareToken,) = _siloConfig.getShareTokens(silo0);
-
-            _createPermissionedIncentivesController(_hookReceiver, collateralShareToken, _addressesWithPausableRole);
-            _createPermissionedIncentivesController(_hookReceiver, protectedShareToken, _addressesWithPausableRole);
+            _createPermissionedIncentivesControllerForSilo(_siloConfig, _hookReceiver, silo0, _addressesWithPausableRole);
         }
         
         if (_lt1 != 0) {
-            (address protectedShareToken, address collateralShareToken,) = _siloConfig.getShareTokens(silo1);
-
-            _createPermissionedIncentivesController(_hookReceiver, collateralShareToken, _addressesWithPausableRole);
-            _createPermissionedIncentivesController(_hookReceiver, protectedShareToken, _addressesWithPausableRole);
+            _createPermissionedIncentivesControllerForSilo(_siloConfig, _hookReceiver, silo1, _addressesWithPausableRole);
         }
+    }
+    
+    function _createPermissionedIncentivesControllerForSilo(
+        ISiloConfig _siloConfig, 
+        address _hookReceiver,
+        address _silo,
+        address[] calldata _addressesWithPausableRole
+    )
+        internal
+    {
+        (address protectedShareToken, address collateralShareToken,) = _siloConfig.getShareTokens(_silo);
+
+        _createPermissionedIncentivesController(_hookReceiver, collateralShareToken, _addressesWithPausableRole);
+        _createPermissionedIncentivesController(_hookReceiver, protectedShareToken, _addressesWithPausableRole);
     }
     
     function _createPermissionedIncentivesController(
         address _hookReceiver, 
         address _shareToken, 
-        address[] memory _addressesWithPausableRole
+        address[] calldata _addressesWithPausableRole
     )
         internal
     {
@@ -239,7 +231,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         _transferDefaultAdminRole(incentivesController);
     }
 
-    function _whitelistAddressesWithPausableRole(address _controller, address[] memory _addresses) internal {
+    function _whitelistAddressesWithPausableRole(address _controller, address[] calldata _addresses) internal {
         uint256 c = _addresses.length;
         if (c == 0) return;
 
@@ -420,7 +412,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
     /// @notice Create an oracle if it is not specified in the `_siloInitData` and has tx details for the creation
     /// @param _siloInitData Silo configuration for the silo creation
     /// @param _oracles Oracles creation details (factory and creation tx input)
-    function _createOracles(ISiloConfig.InitData memory _siloInitData, Oracles memory _oracles) internal {
+    function _createOracles(ISiloConfig.InitData memory _siloInitData, Oracles calldata _oracles) internal {
         if (_siloInitData.solvencyOracle0 == address(0)) {
             _siloInitData.solvencyOracle0 = _createOracle(_oracles.solvencyOracle0);
         }
@@ -484,7 +476,7 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
         ISiloConfig.InitData memory _siloInitData,
         ISiloConfig _siloConfig,
         ClonableHookReceiver calldata _clonableHookReceiver
-    ) internal {
+    ) internal returns (bool isInitialized) {
         if (_clonableHookReceiver.implementation != address(0)) {
             // init data must be address
             require(_clonableHookReceiver.initializationData.length == 32, InvalidHookInitData());
@@ -497,6 +489,8 @@ contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {
                     // override owner so we can set the incentives controller
                     _data: abi.encode(address(this))
                 });
+
+            isInitialized = true;
         }
     }
 

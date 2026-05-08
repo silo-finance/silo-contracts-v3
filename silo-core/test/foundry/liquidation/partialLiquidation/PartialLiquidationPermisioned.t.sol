@@ -106,7 +106,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         weth.setOnDemand(true);
         usdc.setOnDemand(true);
 
-        // _setupPermissionedControllers();
+        (controllerC, controllerP) = _setupPermissionedControllers(factory);
 
         _fetchControllers();
         _enablePermissionsIfDisabled();
@@ -414,19 +414,5 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         vm.prank(Ownable(address(proxyAdmin)).owner());
         ProxyAdmin(proxyAdmin)
             .upgradeAndCall(ITransparentUpgradeableProxy(payable(_controllerProxy)), _newImplementation, bytes(""));
-    }
-
-    function _setupPermissionedControllers() internal {
-        IGaugeHookReceiver hook = IGaugeHookReceiver(IShareToken(address(silo0)).hookReceiver());
-        address collateralShareToken = silo0.config().getConfig(address(silo0)).collateralShareToken;
-        address protectedShareToken = silo0.config().getConfig(address(silo0)).protectedShareToken;
-
-        controllerC = IPermissionedLiquidationController(factory.create(IShareToken(collateralShareToken)));
-        controllerP = IPermissionedLiquidationController(factory.create(IShareToken(protectedShareToken)));
-
-        vm.startPrank(Ownable(address(hook)).owner());
-        hook.setGauge(controllerC, IShareToken(collateralShareToken));
-        hook.setGauge(controllerP, IShareToken(protectedShareToken));
-        vm.stopPrank();
     }
 }

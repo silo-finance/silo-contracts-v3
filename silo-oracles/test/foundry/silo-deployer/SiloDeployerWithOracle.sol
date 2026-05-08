@@ -67,12 +67,15 @@ abstract contract SiloDeployerWithOracle is Test, DKinkIRMConfigDataReader {
             implementation: hookImpl, initializationData: abi.encode(address(this))
         });
 
+        ISiloDeployer.MarketOptions memory marketOptions;
+
         siloConfig = siloDeployer.deploy({
             _oracles: oracles,
             _irmConfigData0: irmConfigData0,
             _irmConfigData1: irmConfigData1,
             _clonableHookReceiver: hookReceiver,
-            _siloInitData: siloInitData
+            _siloInitData: siloInitData,
+            _marketOptions: marketOptions
         });
 
         (address silo0,) = siloConfig.getSilos();

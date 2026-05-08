@@ -19,6 +19,7 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {
     IPermissionedLiquidationController
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
+import {IPermissionedLiquidationControllerFactory} from "silo-core/contracts/interfaces/IPermissionedLiquidationControllerFactory.sol";
 
 import {MintableToken} from "./MintableToken.sol";
 import {SiloFixture, SiloConfigOverride} from "./fixtures/SiloFixture.sol";
@@ -92,6 +93,23 @@ abstract contract SiloLittleHelper is CommonBase {
             IPermissionedLiquidationController(gaugeP).allowMeToLiquidate();
             vm.stopPrank();
         }
+    }
+
+    function _setupPermissionedControllers(IPermissionedLiquidationControllerFactory _factory) 
+        internal 
+        returns (IPermissionedLiquidationController controllerC, IPermissionedLiquidationController controllerP) 
+    {
+        IGaugeHookReceiver hook = IGaugeHookReceiver(IShareToken(address(silo0)).hookReceiver());
+        address collateralShareToken = silo0.config().getConfig(address(silo0)).collateralShareToken;
+        address protectedShareToken = silo0.config().getConfig(address(silo0)).protectedShareToken;
+
+        controllerC = IPermissionedLiquidationController(_factory.create(IShareToken(collateralShareToken)));
+        controllerP = IPermissionedLiquidationController(_factory.create(IShareToken(protectedShareToken)));
+
+        vm.startPrank(Ownable(address(hook)).owner());
+        hook.setGauge(controllerC, IShareToken(collateralShareToken));
+        hook.setGauge(controllerP, IShareToken(protectedShareToken));
+        vm.stopPrank();
     }
 
     function _setPermissionedLiquidationState(ISiloConfig _siloConfig, bool _enabled) internal {

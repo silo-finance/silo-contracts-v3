@@ -29,7 +29,7 @@ contract GaugeHookReceiverReplaceTest is SiloLittleHelper, Test {
     */
     function test_skip_gauge_replacement() public {
         ISiloConfig siloConfig = ISiloConfig(0x062A36Bbe0306c2Fd7aecdf25843291fBAB96AD2);
-        (address silo0, address silo1) = siloConfig.getSilos();
+        (address silo0,) = siloConfig.getSilos();
 
         address hook = IShareToken(silo0).hookSetup().hookReceiver;
 

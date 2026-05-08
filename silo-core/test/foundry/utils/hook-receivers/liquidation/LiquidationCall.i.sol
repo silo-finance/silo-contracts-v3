@@ -7,6 +7,7 @@ import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
+import {IPermissionedLiquidationController} from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 import {IERC20R} from "silo-core/contracts/interfaces/IERC20R.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
@@ -18,7 +19,7 @@ import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
 import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 
 /*
-    forge test -vv --ffi --mc LiquidationCallTest
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc LiquidationCallTest
 */
 contract LiquidationCallTest is SiloLittleHelper, Test {
     using SiloLensLib for ISilo;
@@ -58,6 +59,8 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         assertEq(silo0Config.liquidationFee, 0.05e18, "liquidationFee0");
         assertEq(silo1Config.liquidationFee, 0.025e18, "liquidationFee1");
+
+        _setPermissionedLiquidationState(siloConfig, true);
     }
 
     /*
@@ -156,6 +159,8 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         assertGt(collateralToLiquidate, 0, "expect any collateral to liquidate");
         assertLt(collateralToLiquidate, debtToRepay, "price is 1:1 os the goal is to get 0 collateral and some debt");
 
+        _whitelistPermissionedLiquidation({_siloConfig: siloConfig, _whitelist: address(this), _allow: true});
+        
         partialLiquidation.liquidationCall(
             address(token0), address(token1), BORROWER, collateralToLiquidate, false /* receiveSToken */
         );
@@ -172,7 +177,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
     }
 
     /*
-    forge test -vv --ffi --mt test_liquidationCall_partial
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_liquidationCall_partial
     */
     function test_liquidationCall_partial() public {
         uint256 maxDebtToCover = 1e5;
@@ -252,6 +257,13 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
             vm.expectEmit(true, true, true, true);
             emit IPartialLiquidation.LiquidationStart(IPartialLiquidation.LiquidationType.STANDARD);
 
+            vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
+
+            partialLiquidation.liquidationCall(
+                address(token0), address(token1), BORROWER, maxDebtToCover, false /* receiveSToken */
+            );
+            
+            _whitelistPermissionedLiquidation({_siloConfig: siloConfig, _whitelist: address(this), _allow: true});
 
             (uint256 withdrawAssetsFromCollateral, uint256 repayDebtAssets) = partialLiquidation.liquidationCall(
                 address(token0), address(token1), BORROWER, maxDebtToCover, false /* receiveSToken */
@@ -416,6 +428,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         token1.mint(address(this), maxDebtToCover);
         token1.approve(address(partialLiquidation), maxDebtToCover);
 
+        _whitelistPermissionedLiquidation({_siloConfig: siloConfig, _whitelist: address(this), _allow: true});
         partialLiquidation.liquidationCall(address(token0), address(token1), BORROWER, maxDebtToCover, receiveSToken);
 
         assertTrue(silo0.isSolvent(BORROWER), "user is solvent after liquidation");
@@ -488,6 +501,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         vm.expectCall(address(token0), abi.encodeWithSelector(IERC20.transfer.selector, liquidator, 10e18));
 
+        _whitelistPermissionedLiquidation({_siloConfig: siloConfig, _whitelist: address(this), _allow: true});
         _liquidationCall_badDebt_full(receiveSToken);
 
         assertEq(
@@ -529,6 +543,8 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
                 IShareToken.forwardTransferFromNoChecks.selector, BORROWER, liquidator, collateralSharesToLiquidate
             )
         );
+
+        _whitelistPermissionedLiquidation({_siloConfig: siloConfig, _whitelist: address(this), _allow: true});
 
         _liquidationCall_badDebt_full(receiveSToken);
 

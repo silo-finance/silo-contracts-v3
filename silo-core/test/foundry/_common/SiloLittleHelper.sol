@@ -4,6 +4,9 @@ pragma solidity ^0.8.28;
 import {CommonBase} from "forge-std/Base.sol";
 import {console} from "forge-std/console.sol";
 
+import {Ownable} from "openzeppelin5/access/Ownable.sol";
+import {IAccessControl} from "openzeppelin5/access/IAccessControl.sol";
+
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {IPartialLiquidation} from "silo-core/contracts/interfaces/IPartialLiquidation.sol";
@@ -13,13 +16,17 @@ import {SiloLens} from "silo-core/contracts/SiloLens.sol";
 import {ShareTokenLib} from "silo-core/contracts/lib/ShareTokenLib.sol";
 import {IGaugeHookReceiver} from "silo-core/contracts/interfaces/IGaugeHookReceiver.sol";
 import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
-import {Ownable} from "openzeppelin5/access/Ownable.sol";
+import {
+    IPermissionedLiquidationController
+} from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 
 import {MintableToken} from "./MintableToken.sol";
 import {SiloFixture, SiloConfigOverride} from "./fixtures/SiloFixture.sol";
 import {SiloFixture} from "./fixtures/SiloFixture.sol";
 
 abstract contract SiloLittleHelper is CommonBase {
+    bytes32 private constant ALLOWED_ROLE = keccak256("ALLOWED_ROLE");
+
     SiloLens immutable SILO_LENS;
 
     MintableToken token0;
@@ -43,7 +50,7 @@ abstract contract SiloLittleHelper is CommonBase {
 
     // we have permissioned liquidation controller set by default. For QA purposes, we can remove it.
     function _removePermissionedLiquidationController(ISiloConfig _siloConfig) internal {
-        (address collateralShareToken, address protectedShareToken, ) = _siloConfig.getShareTokens(address(silo0));
+        (address collateralShareToken, address protectedShareToken,) = _siloConfig.getShareTokens(address(silo0));
 
         address hook = IShareToken(collateralShareToken).hookReceiver();
 
@@ -58,17 +65,56 @@ abstract contract SiloLittleHelper is CommonBase {
             IGaugeHookReceiver(hook).removeGauge(IShareToken(protectedShareToken));
         }
 
-        (collateralShareToken, protectedShareToken, ) = _siloConfig.getShareTokens(address(silo1));
-        
+        (collateralShareToken, protectedShareToken,) = _siloConfig.getShareTokens(address(silo1));
+
         if (address(IGaugeHookReceiver(hook).configuredGauges(IShareToken(collateralShareToken))) != address(0)) {
             IGaugeHookReceiver(hook).removeGauge(IShareToken(collateralShareToken));
         }
-        
+
         if (address(IGaugeHookReceiver(hook).configuredGauges(IShareToken(protectedShareToken))) != address(0)) {
             IGaugeHookReceiver(hook).removeGauge(IShareToken(protectedShareToken));
         }
 
         vm.stopPrank();
+    }
+
+    function _whitelistPermissionedLiquidation(ISiloConfig _siloConfig, address _whitelist, bool _allow) internal {
+        (address gaugeC, address gaugeP, address owner) = _fetchGaugesAndOwner(_siloConfig);
+
+        vm.startPrank(owner);
+        IAccessControl(gaugeC).grantRole(ALLOWED_ROLE, _whitelist);
+        IAccessControl(gaugeP).grantRole(ALLOWED_ROLE, _whitelist);
+        vm.stopPrank();
+
+        if (_allow) {
+            vm.startPrank(_whitelist);
+            IPermissionedLiquidationController(gaugeC).allowMeToLiquidate();
+            IPermissionedLiquidationController(gaugeP).allowMeToLiquidate();
+            vm.stopPrank();
+        }
+    }
+
+    function _setPermissionedLiquidationState(ISiloConfig _siloConfig, bool _enabled) internal {
+        (address gaugeC, address gaugeP, address owner) = _fetchGaugesAndOwner(_siloConfig);
+
+        vm.startPrank(owner);
+        IPermissionedLiquidationController(gaugeC).setEnabled(_enabled);
+        IPermissionedLiquidationController(gaugeP).setEnabled(_enabled);
+        vm.stopPrank();
+    }
+
+    function _fetchGaugesAndOwner(ISiloConfig _siloConfig)
+        internal
+        view
+        returns (address gaugeC, address gaugeP, address owner)
+    {
+        (address collateralShareToken, address protectedShareToken,) = _siloConfig.getShareTokens(address(silo0));
+        address hook = IShareToken(collateralShareToken).hookReceiver();
+
+        gaugeC = address(IGaugeHookReceiver(hook).configuredGauges(IShareToken(collateralShareToken)));
+        gaugeP = address(IGaugeHookReceiver(hook).configuredGauges(IShareToken(protectedShareToken)));
+
+        owner = Ownable(hook).owner();
     }
 
     function _setUpLocalFixture() internal returns (ISiloConfig siloConfig) {
@@ -133,11 +179,10 @@ abstract contract SiloLittleHelper is CommonBase {
         return _makeDeposit(silo0, token0, _assets, _depositor, ISilo.CollateralType.Collateral);
     }
 
-    function _depositForBorrow(
-        uint256 _assets,
-        address _depositor,
-        ISilo.CollateralType _collateralType
-    ) internal returns (uint256 shares) {
+    function _depositForBorrow(uint256 _assets, address _depositor, ISilo.CollateralType _collateralType)
+        internal
+        returns (uint256 shares)
+    {
         return _makeDeposit(silo1, token1, _assets, _depositor, _collateralType);
     }
 
@@ -145,10 +190,7 @@ abstract contract SiloLittleHelper is CommonBase {
         return _makeMint(_approve, silo0, token0, _shares, _depositor, ISilo.CollateralType.Collateral);
     }
 
-    function _mintForBorrow(uint256 _approve, uint256 _shares, address _depositor)
-        internal
-        returns (uint256 assets)
-    {
+    function _mintForBorrow(uint256 _approve, uint256 _shares, address _depositor) internal returns (uint256 assets) {
         return _makeMint(_approve, silo1, token1, _shares, _depositor, ISilo.CollateralType.Collateral);
     }
 
@@ -172,10 +214,7 @@ abstract contract SiloLittleHelper is CommonBase {
         shares = silo1.repay(_amount, _borrower);
     }
 
-    function _repayShares(uint256 _approval, uint256 _shares, address _borrower)
-        internal
-        returns (uint256 shares)
-    {
+    function _repayShares(uint256 _approval, uint256 _shares, address _borrower) internal returns (uint256 shares) {
         return _repayShares(_approval, _shares, _borrower, bytes(""));
     }
 

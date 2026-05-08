@@ -13,6 +13,7 @@ import {
     IPermissionedLiquidationControllerFactory
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationControllerFactory.sol";
 import {SiloDeployer} from "silo-core/contracts/SiloDeployer.sol";
+import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 
 contract SiloDeployerMock is SiloDeployer {
     constructor()
@@ -31,6 +32,9 @@ contract SiloDeployerMock is SiloDeployer {
     function isDefaultingHook(address _hook) external view returns (bool isDefaulting) {
         return _isDefaultingHook(_hook);
     }
+}
+
+contract WhitelistMock is Whitelist {
 }
 
 /*
@@ -53,5 +57,10 @@ contract SiloDeployerTest is Test {
 
     function test_siloDeployer_isDefaultingHook_neverRevert(address _hook) public view {
         siloDeployer.isDefaultingHook(_hook);
+    }
+
+    function test_siloDeployer_ALLOWED_ROLE() public {
+        WhitelistMock whitelist = new WhitelistMock();
+        assertEq(siloDeployer.ALLOWED_ROLE(), whitelist.ALLOWED_ROLE(), "depoyer role has to mach whitelist role");
     }
 }

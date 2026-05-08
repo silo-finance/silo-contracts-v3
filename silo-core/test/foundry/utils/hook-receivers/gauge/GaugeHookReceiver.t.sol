@@ -24,8 +24,6 @@ import {TransferOwnership} from "../../../_common/TransferOwnership.sol";
 
 // FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc GaugeHookReceiverTest
 contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
-    using Hook for uint256;
-    
     IGaugeHookReceiver internal _hookReceiver;
     ISiloConfig internal _siloConfig;
 
@@ -55,8 +53,6 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
         address deployer = vm.addr(deployerPrivateKey);
 
         _dao = deployer;
-
-        _removePermissionedLiquidationController(_siloConfig);
     }
 
     // FOUNDRY_PROFILE=core_test forge test --ffi -vvv --mt testReInitialization
@@ -157,8 +153,7 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
 
         (uint24 hooksBefore, uint24 hooksAfter) = _hookReceiver.hookReceiverConfig(silo0);
 
-        // The deployer is setting up a gauges for both tokens on deployment.
-        uint256 action = Hook.shareTokenTransfer(Hook.COLLATERAL_TOKEN).addAction(Hook.PROTECTED_TOKEN);
+        uint256 action = Hook.shareTokenTransfer(Hook.COLLATERAL_TOKEN);
 
         assertEq(uint256(hooksBefore), 0, "Hooks before should be 0");
         assertEq(uint256(hooksAfter), action, "Hooks after should match action");
@@ -166,7 +161,7 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
         IShareToken.HookSetup memory silo0Hooks = IShareToken(address(silo0)).hookSetup();
 
         assertEq(uint256(silo0Hooks.hooksBefore), 0, "[aster setup 0] hooks before should be 0");
-        assertEq(uint256(silo0Hooks.hooksAfter), action, "[after setup 0] hooks after should match action");
+        assertEq(uint256(silo0Hooks.hooksAfter), action, "[aster setup 0] hooks after should match action");
 
         IShareToken.HookSetup memory silo1Hooks = IShareToken(address(silo1)).hookSetup();
 
@@ -227,10 +222,10 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
         vm.prank(_dao);
         _hookReceiver.setGauge(ISiloIncentivesController(_gauge), IShareToken(debtShareToken));
 
-        uint256 action = Hook.shareTokenTransfer(Hook.DEBT_TOKEN).addAction(Hook.PROTECTED_TOKEN).addAction(Hook.COLLATERAL_TOKEN);
+        uint256 action = Hook.shareTokenTransfer(Hook.DEBT_TOKEN);
 
         (, uint24 hooksAfter) = _hookReceiver.hookReceiverConfig(silo0);
-        assertEq(uint256(hooksAfter), action, "set gause should set the correct hook");
+        assertEq(uint256(hooksAfter), action);
 
         bytes memory data = _getEncodedData();
 

@@ -8,13 +8,10 @@ import {IERC20} from "openzeppelin5/token/ERC20/ERC20.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IERC3156FlashBorrower} from "silo-core/contracts/interfaces/IERC3156FlashBorrower.sol";
 import {IERC20R} from "silo-core/contracts/interfaces/IERC20R.sol";
-import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {PartialLiquidation} from "silo-core/contracts/hooks/liquidation/PartialLiquidation.sol";
-import {BaseHookReceiver} from "silo-core/contracts/hooks/_common/BaseHookReceiver.sol";
 import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
-import {HookReceiverBootstrapMock} from "silo-core/test/foundry/_mocks/HookReceiverBootstrapMock.sol";
 
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 import {MintableToken} from "../../_common/MintableToken.sol";
@@ -24,13 +21,7 @@ import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
 /*
 FOUNDRY_PROFILE=core_test forge test -vv --ffi --mc HookCallsOutsideActionTest
 */
-contract HookCallsOutsideActionTest is
-    PartialLiquidation,
-    HookReceiverBootstrapMock,
-    IERC3156FlashBorrower,
-    SiloLittleHelper,
-    Test
-{
+contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower, SiloLittleHelper, Test {
     using Hook for uint256;
     using SiloLensLib for ISilo;
 
@@ -49,12 +40,11 @@ contract HookCallsOutsideActionTest is
         SiloConfigOverride memory overrides;
         overrides.token0 = address(token0);
         overrides.token1 = address(token1);
-        overrides.hookReceiverImplementation = address(this);
+        overrides.hookReceiver = address(this);
 
         SiloFixture siloFixture = new SiloFixture();
-        address hook;
-        (siloConfig, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
-        partialLiquidation = PartialLiquidation(hook);
+        (siloConfig, silo0, silo1,,,) = siloFixture.deploy_local(overrides);
+        partialLiquidation = this;
 
         _setAllHooks();
 
@@ -165,17 +155,8 @@ contract HookCallsOutsideActionTest is
         silo1.withdrawFees();
     }
 
-    function initialize(ISiloConfig _config, bytes calldata _ownerData)
-        public
-        override(HookReceiverBootstrapMock, IHookReceiver)
-    {
-        if (address(siloConfig) == address(0)) {
-            siloConfig = _config;
-        } else {
-            assertEq(address(siloConfig), address(_config), "SiloConfig addresses should match");
-        }
-
-        _transferOwnership(abi.decode(_ownerData, (address)));
+    function initialize(ISiloConfig _config, bytes calldata) public view override {
+        assertEq(address(siloConfig), address(_config), "SiloConfig addresses should match");
     }
 
     function beforeAction(address, uint256 _action, bytes calldata) external override {
@@ -224,12 +205,7 @@ contract HookCallsOutsideActionTest is
         return FLASHLOAN_CALLBACK;
     }
 
-    function hookReceiverConfig(address)
-        external
-        view
-        override(HookReceiverBootstrapMock, BaseHookReceiver)
-        returns (uint24 hooksBefore, uint24 hooksAfter)
-    {
+    function hookReceiverConfig(address) external view override returns (uint24 hooksBefore, uint24 hooksAfter) {
         hooksBefore = configuredHooksBefore;
         hooksAfter = configuredHooksAfter;
     }

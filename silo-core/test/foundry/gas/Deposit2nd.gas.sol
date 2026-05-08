@@ -8,7 +8,7 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {Gas} from "./Gas.sol";
 
 /*
-forge test -vv --ffi --mt test_gas_ | grep -i '\[GAS\]'
+FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_gas_ | grep -i '\[GAS\]'
 */
 contract Deposit2ndGasTest is Gas, Test {
     function setUp() public {
@@ -24,7 +24,7 @@ contract Deposit2ndGasTest is Gas, Test {
             address(silo0),
             abi.encodeCall(ISilo.deposit, (ASSETS, BORROWER, ISilo.CollateralType.Collateral)),
             "Deposit2nd (no interest)",
-            110230,
+            79356,
             1000
         );
     }

@@ -85,9 +85,6 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         _deployer = vm.addr(uint256(vm.envBytes32("PRIVATE_KEY")));
 
         vm.prank(_deployer);
-        gaugeHookReceiver.removeGauge(IShareToken(address(protected)));
-
-        vm.prank(_deployer);
         gaugeHookReceiver.setGauge(_incentivesController, IShareToken(address(protected)));
 
         PendleRewardsClaimerHarness claimer = new PendleRewardsClaimerHarness();
@@ -347,9 +344,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         );
     }
 
-    /*
-    AGGREGATOR=1INCH FOUNDRY_PROFILE=core_test forge test --ffi --mt test_hookConfigurationDuringInit -vv
-    */
+    // FOUNDRY_PROFILE=core_test forge test --ffi --mt test_hookConfigurationDuringInit -vv
     function test_hookConfigurationDuringInit() public view {
         (uint24 hooksBefore, uint24 hooksAfter) = _hookReceiver.hookReceiverConfig(address(silo0));
 
@@ -358,7 +353,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
 
         // After actions should include protected token transfers
         uint256 protectedTransferAction = Hook.shareTokenTransfer(Hook.PROTECTED_TOKEN);
-        assertEq(Hook.matchAction(hooksAfter, protectedTransferAction), true, "After actions should be configured");
+        assertTrue(Hook.matchAction(protectedTransferAction, hooksAfter), "After actions should be configured");
     }
 
     // FOUNDRY_PROFILE=core_test forge test --ffi --mt test_rewardToken_isSiloAsset -vv

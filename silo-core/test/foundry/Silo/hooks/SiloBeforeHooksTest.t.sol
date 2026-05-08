@@ -3,24 +3,23 @@ pragma solidity ^0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 
+import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {Hook} from "silo-core/contracts/lib/Hook.sol";
-import {HookReceiverBootstrapMock} from "silo-core/test/foundry/_mocks/HookReceiverBootstrapMock.sol";
 import {SiloFixture} from "../../_common/fixtures/SiloFixture.sol";
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 import {MintableToken} from "../../_common/MintableToken.sol";
 import {SiloConfigOverride} from "../../_common/fixtures/SiloFixture.sol";
 
-contract HookReceiver is HookReceiverBootstrapMock, Test {
+contract HookReceiver is IHookReceiver, Test {
     bool imIn;
 
     uint24 hooksBefore;
     uint24 hooksAfter;
-    ISiloConfig siloConfig;
+    ISiloConfig public siloConfig;
 
-    function initialize(ISiloConfig _siloConfig, bytes calldata) external override {
-        if (owner() == address(0)) _transferOwnership(msg.sender);
+    function initialize(ISiloConfig _siloConfig, bytes calldata) external {
         siloConfig = _siloConfig;
     }
 
@@ -53,7 +52,7 @@ contract HookReceiver is HookReceiverBootstrapMock, Test {
     }
 
     /// @notice return hooksBefore and hooksAfter configuration
-    function hookReceiverConfig(address) external view override returns (uint24, uint24) {
+    function hookReceiverConfig(address) external view returns (uint24, uint24) {
         return (hooksBefore, hooksAfter);
     }
 
@@ -79,7 +78,8 @@ contract SiloBeforeHooksTest is SiloLittleHelper, Test {
     }
 
     function setUp() public {
-        HookReceiver hookReceiverImplementation = new HookReceiver();
+        _hookReceiver = new HookReceiver();
+        _hookReceiverAddr = address(_hookReceiver);
 
         SiloFixture siloFixture = new SiloFixture();
         SiloConfigOverride memory configOverride;
@@ -91,14 +91,16 @@ contract SiloBeforeHooksTest is SiloLittleHelper, Test {
 
         configOverride.token0 = address(token0);
         configOverride.token1 = address(token1);
-        configOverride.hookReceiverImplementation = address(hookReceiverImplementation);
 
-        (_siloConfig, silo0, silo1,,, _hookReceiverAddr) = siloFixture.deploy_local(configOverride);
-        _hookReceiver = HookReceiver(payable(_hookReceiverAddr));
+        configOverride.hookReceiver = _hookReceiverAddr;
+
+        (_siloConfig, silo0, silo1,,,) = siloFixture.deploy_local(configOverride);
 
         _deposit(1e18, BORROWER);
         _depositForBorrow(1e18, BORROWER);
         _depositForBorrow(10, DEPOSITOR);
+
+        _hookReceiver.initialize(_siloConfig, "");
     }
 
     /*

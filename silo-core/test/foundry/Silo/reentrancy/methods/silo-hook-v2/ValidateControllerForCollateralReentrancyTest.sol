@@ -6,11 +6,11 @@ import {MethodReentrancyTest} from "../MethodReentrancyTest.sol";
 import {TestStateLib} from "../../TestState.sol";
 
 contract ValidateControllerForCollateralReentrancyTest is MethodReentrancyTest {
-    function callMethod() external view {
+    function callMethod() external {
         _ensureItWillNotRevert();
     }
 
-    function verifyReentrancy() external view {
+    function verifyReentrancy() external {
         _ensureItWillNotRevert();
     }
 
@@ -18,12 +18,15 @@ contract ValidateControllerForCollateralReentrancyTest is MethodReentrancyTest {
         description = "validateControllerForCollateral(address)";
     }
 
-    function _ensureItWillNotRevert() internal view {
+    function _ensureItWillNotRevert() internal {
         address silo0 = address(TestStateLib.silo0());
         address silo1 = address(TestStateLib.silo1());
         IPartialLiquidationByDefaulting hook = _getHook();
 
+        // silo0 is debt silo
         hook.validateControllerForCollateral(silo0);
+
+        vm.expectRevert(IPartialLiquidationByDefaulting.NoControllerForCollateral.selector);
         hook.validateControllerForCollateral(silo1);
     }
 

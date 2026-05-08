@@ -151,7 +151,6 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
      */
     function test_gaugeLikeIncentives_with_gaugeHookReceiver() public {
         ISiloConfig siloConfig = _setUpLocalFixture(SiloConfigsNames.SILO_LOCAL_GAUGE_HOOK_RECEIVER);
-        _removePermissionedLiquidationController(siloConfig);
         (address silo0,) = siloConfig.getSilos();
 
         IGaugeHookReceiver gaugeHookReceiver = IGaugeHookReceiver(IShareToken(address(silo0)).hookSetup().hookReceiver);

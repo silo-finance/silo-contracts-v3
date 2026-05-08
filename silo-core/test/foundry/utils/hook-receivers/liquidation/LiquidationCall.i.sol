@@ -15,6 +15,9 @@ import {IShareToken} from "silo-core/contracts/interfaces/IShareToken.sol";
 import {IInterestRateModel} from "silo-core/contracts/interfaces/IInterestRateModel.sol";
 import {SiloLensLib} from "silo-core/contracts/lib/SiloLensLib.sol";
 import {SiloMathLib} from "silo-core/contracts/lib/SiloMathLib.sol";
+import {
+    PermissionedLiquidationControllerFactory
+} from "silo-core/contracts/incentives/functional/PermissionedLiquidationControllerFactory.sol";
 
 import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 
@@ -60,6 +63,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         assertEq(silo0Config.liquidationFee, 0.05e18, "liquidationFee0");
         assertEq(silo1Config.liquidationFee, 0.025e18, "liquidationFee1");
 
+        _setupPermissionedControllers(new PermissionedLiquidationControllerFactory());
         _setPermissionedLiquidationState(siloConfig, true);
     }
 

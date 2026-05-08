@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
-import {HookReceiverBootstrapMock} from "silo-core/test/foundry/_mocks/HookReceiverBootstrapMock.sol";
+import {HookReceiverMock} from "silo-core/test/foundry/_mocks/HookReceiverMock.sol";
 import {SiloConfigsNames} from "silo-core/deploy/silo/SiloDeployments.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
@@ -20,28 +20,12 @@ import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
 /*
 FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mc SiloHooksTest
 */
-contract SiloHooksBootstrapMock is HookReceiverBootstrapMock {
-    uint24 internal _hooksBefore;
-    uint24 internal _hooksAfter;
-
-    function setHookReceiverConfig(uint24 hooksBefore, uint24 hooksAfter) external {
-        _hooksBefore = hooksBefore;
-        _hooksAfter = hooksAfter;
-    }
-
-    function hookReceiverConfig(address) external view override returns (uint24 hooksBefore, uint24 hooksAfter) {
-        return (_hooksBefore, _hooksAfter);
-    }
-
-    receive() external payable {}
-}
-
 contract SiloHooksTest is SiloLittleHelper, Test {
     uint24 constant HOOKS_BEFORE = 1;
     uint24 constant HOOKS_AFTER = 2;
 
     SiloFixture internal _siloFixture;
-    SiloHooksBootstrapMock internal _hookReceiverMock;
+    HookReceiverMock internal _hookReceiverMock;
     ISiloConfig internal _siloConfig;
 
     address internal _thridParty = makeAddr("ThirdParty");
@@ -54,19 +38,17 @@ contract SiloHooksTest is SiloLittleHelper, Test {
         _siloFixture = new SiloFixture();
         SiloConfigOverride memory configOverride;
 
-        SiloHooksBootstrapMock hookReceiverImplementation = new SiloHooksBootstrapMock();
-        hookReceiverImplementation.setHookReceiverConfig(HOOKS_BEFORE, HOOKS_AFTER);
+        _hookReceiverMock = new HookReceiverMock(address(0));
+        _hookReceiverMock.hookReceiverConfigMock(HOOKS_BEFORE, HOOKS_AFTER);
+
+        _hookReceiverAddr = _hookReceiverMock.ADDRESS();
 
         configOverride.token0 = makeAddr("token0");
         configOverride.token1 = makeAddr("token1");
-        configOverride.hookReceiverImplementation = address(hookReceiverImplementation);
-        configOverride.configName = SiloConfigsNames.SILO_LOCAL_NO_ORACLE_SILO;
+        configOverride.hookReceiver = _hookReceiverAddr;
+        configOverride.configName = SiloConfigsNames.SILO_LOCAL_DEPLOYER;
 
-        (_siloConfig, silo0, silo1,,, _hookReceiverAddr) = _siloFixture.deploy_local(configOverride);
-        _hookReceiverMock = SiloHooksBootstrapMock(payable(_hookReceiverAddr));
-        _hookReceiverMock.setHookReceiverConfig(HOOKS_BEFORE, HOOKS_AFTER);
-        silo0.updateHooks();
-        silo1.updateHooks();
+        (_siloConfig, silo0, silo1,,,) = _siloFixture.deploy_local(configOverride);
     }
 
     /*
@@ -89,7 +71,7 @@ contract SiloHooksTest is SiloLittleHelper, Test {
         uint24 newHooksBefore = 3;
         uint24 newHooksAfter = 4;
 
-        _hookReceiverMock.setHookReceiverConfig(newHooksBefore, newHooksAfter);
+        _hookReceiverMock.hookReceiverConfigMock(newHooksBefore, newHooksAfter);
 
         silo0.updateHooks();
 

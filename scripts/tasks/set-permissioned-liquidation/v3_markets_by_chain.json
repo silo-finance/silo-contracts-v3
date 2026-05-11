@@ -1,0 +1,264 @@
+{
+  "arbitrum_one": [
+    {
+      "address": "0xc88734b3D929bb9EAc81F9eada48D6D330a3F37F",
+      "id": 160,
+      "asset0": "rsETH",
+      "asset1": "WETH"
+    },
+    {
+      "address": "0xD76D4130f5E10409D2361Bf934cf4b4d6E3531DF",
+      "id": 162,
+      "asset0": "weETH",
+      "asset1": "WETH"
+    },
+    {
+      "address": "0xE14CC9C2b2429c85Ab11CaDd8c47a043d56CA149",
+      "id": 3000,
+      "asset0": "WETH",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0xde70f887048D51E3e5fd72660D39A3724f010782",
+      "id": 3001,
+      "asset0": "WETH",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0xB4b4d23F4D7FFd04deABfCdCf8fDdeD0Ed3ae1C8",
+      "id": 3002,
+      "asset0": "GM",
+      "asset1": "WETH"
+    },
+    {
+      "address": "0xD319a8fBD54B8647814Fb7c80bA5736079748e37",
+      "id": 3006,
+      "asset0": "GM",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x02DeF32bb597c258D0B9b9a8ead3413907Ee09C5",
+      "id": 3007,
+      "asset0": "GM",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x422a90f3AbC36DECd3b87942450fC3BF5FB117bf",
+      "id": 3008,
+      "asset0": "PGOLD",
+      "asset1": "USD₮0"
+    },
+    {
+      "address": "0x0AB92b55c5562B7C2C36f9176b194bA9939B2DF9",
+      "id": 3009,
+      "asset0": "PUSD",
+      "asset1": "USD₮0"
+    }
+  ],
+  "avalanche": [
+    {
+      "address": "0x33fAdB3dB0A1687Cdd4a55AB0afa94c8102856A1",
+      "id": 142,
+      "asset0": "savUSD",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0xcd0d510eec4792a944E8dbe5da54DDD6777f02Ca",
+      "id": 162,
+      "asset0": "sUSDp",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x9Ed051a10bfe1E7E7a2419115ff0C0E36FA367Ad",
+      "id": 3001,
+      "asset0": "GLV [WAVAX-USDC]",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x3920631278D91224FB0Ede71c0c1788f47cfE594",
+      "id": 3002,
+      "asset0": "stAVAX",
+      "asset1": "WAVAX"
+    }
+  ],
+  "bnb": [
+    {
+      "address": "0x438deB3a0e0c497a12f86008A31815B869363b3e",
+      "id": 3001,
+      "asset0": "savUSD",
+      "asset1": "U"
+    }
+  ],
+  "injective": [
+    {
+      "address": "0xe095FA150D05AF72F6941Ecb1310103741639D18",
+      "id": 3000,
+      "asset0": "WINJ",
+      "asset1": "USDT"
+    },
+    {
+      "address": "0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4",
+      "id": 3003,
+      "asset0": "yINJ",
+      "asset1": "WINJ"
+    }
+  ],
+  "mainnet": [
+    {
+      "address": "0x273C6757ccC156cf6886F46D6F620EB02A22B4bf",
+      "id": 3001,
+      "asset0": "RLP",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x74b21D458b9D5CF59f4b4E10A2E829C221670EE3",
+      "id": 3003,
+      "asset0": "savUSD",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x1857A92daA1C4d4C331F7e510182B53482798072",
+      "id": 3004,
+      "asset0": "PT-srNUSD-28MAY2026",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x4DE77A375473179e078B69fDa1A710fb1176E70f",
+      "id": 3005,
+      "asset0": "PT-jrNUSD-28MAY2026",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x104B1CfA0248Cc97811d37562E0044B39bB55217",
+      "id": 3008,
+      "asset0": "mHyperBTC",
+      "asset1": "WBTC"
+    },
+    {
+      "address": "0x18B178B50F1fFd3dC7855C893a4e1Ac618F9B76A",
+      "id": 3009,
+      "asset0": "PT-reUSDe-25JUN2026",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x493558E4201bDe0a4b2d4C1E0234a3d88D4CDAd8",
+      "id": 3011,
+      "asset0": "PT-savUSD-14MAY2026",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0xA64c7FE1FA7e5dA01d765b346126ff7c068EEa91",
+      "id": 3013,
+      "asset0": "PT-savETH-14MAY2026",
+      "asset1": "WETH"
+    },
+    {
+      "address": "0xE8b89384d636A37487070C9A6869C0960B13cF72",
+      "id": 3014,
+      "asset0": "syzUSD",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0xD17DF50549491712320D7874C3C9B9E4954aaf82",
+      "id": 3017,
+      "asset0": "PT-avUSD-14MAY2026",
+      "asset1": "avUSD"
+    },
+    {
+      "address": "0xc4a51929542E196F39cad90F24003F9bee9f920b",
+      "id": 3018,
+      "asset0": "PT-avUSD-14MAY2026",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x781cDF4235de2166d5C451280E617BC1142DfAe4",
+      "id": 3019,
+      "asset0": "savETH",
+      "asset1": "WETH"
+    },
+    {
+      "address": "0xb61AD7976c49F1Fd651d183491f5e2a28d7Ece17",
+      "id": 3022,
+      "asset0": "msY",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0xe02cCFAaC970365E47628770C6BC94Be46aC6323",
+      "id": 3025,
+      "asset0": "apyUSD",
+      "asset1": "apxUSD"
+    },
+    {
+      "address": "0xC329c205d350F1b17AaCd696072EbAe4a100EA73",
+      "id": 3026,
+      "asset0": "apyUSD",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x837679fbad7a9810D252d71800FE2f742FbeB37f",
+      "id": 3027,
+      "asset0": "apyUSD",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0xaE01a8BdA7799A7aE4D56CC255db56a7e7FaF7F8",
+      "id": 184,
+      "asset0": "hgETH",
+      "asset1": "WETH"
+    },
+    {
+      "address": "0xF8D32Da4Ad9378C3754CE846BE02654e52b2C09d",
+      "id": 185,
+      "asset0": "agETH",
+      "asset1": "WETH"
+    },
+    {
+      "address": "0xfAa8b214A896Dfd41FA0aaE07D55E6b15b59357a",
+      "id": 181,
+      "asset0": "siUSD",
+      "asset1": "USDC"
+    }
+  ],
+  "megaeth": [
+    {
+      "address": "0x21af0468A00d4cEd22B49b16575AbFd9D5B075F6",
+      "id": 3002,
+      "asset0": null,
+      "asset1": null
+    }
+  ],
+  "sonic": [
+    {
+      "address": "0x062A36Bbe0306c2Fd7aecdf25843291fBAB96AD2",
+      "id": 20,
+      "asset0": "wS",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x180A8fF4C343b6eEa2FF0Feb2dcC92a360bF7025",
+      "id": 3001,
+      "asset0": "wS",
+      "asset1": "USSD"
+    }
+  ],
+  "xdc": [
+    {
+      "address": "0x0d419DC8128D5738a62753DeB8eA3508AEd95253",
+      "id": 3002,
+      "asset0": "WXDC",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x519303893faD9dE0b5aF1bf20a35145F1f2690c4",
+      "id": 3003,
+      "asset0": "scrvUSD",
+      "asset1": "USDC"
+    },
+    {
+      "address": "0x6007eC05764e1Ecd2811D8a2C8F5f125f0b47F7d",
+      "id": 3004,
+      "asset0": "WXDC",
+      "asset1": "USDC"
+    }
+  ]
+}

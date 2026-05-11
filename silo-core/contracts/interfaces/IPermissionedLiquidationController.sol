@@ -12,14 +12,11 @@ interface IPermissionedLiquidationController is ISiloIncentivesController, IAcce
         address anySilo;
         /// @param enabled if false, then permissions feature is disabled and liquidation can be done as usual
         bool enabled;
-        /// @param pauseTokenTransfer if true, then token transfer will be paused and tx will be reverted
-        bool pauseTokenTransfer;
         /// @param shateTokenIsDebtToken if true, that means this controller is set for debt token.
         bool shateTokenIsDebtToken;
     }
 
     event EnabledChanged(bool _enabled);
-    event PauseTokenTransferChanged(bool _pauseTokenTransfer);
 
     error LiquidationNotAllowed();
     error OnlyHookReceiver();
@@ -29,9 +26,6 @@ interface IPermissionedLiquidationController is ISiloIncentivesController, IAcce
     error PauseTokenTransferActive();
 
     function setEnabled(bool _enabled) external;
-
-    /// @notice when _pauseTokenTransfer is TRUE, it will automatically set enabled to true
-    function setPause(bool _pauseTokenTransfer) external;
 
     /// @dev it will raise the flag that allows liquidation.
     /// @notice this function can be called by approved addresses,

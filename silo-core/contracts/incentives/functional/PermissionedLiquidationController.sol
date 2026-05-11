@@ -54,7 +54,6 @@ contract PermissionedLiquidationController is
         _permisionedData = PermisionedData({
             anySilo: address(silo), 
             enabled: false, 
-            pauseTokenTransfer: false,
             shateTokenIsDebtToken: cfg.debtShareToken == address(_shareToken)
         });
 
@@ -67,20 +66,6 @@ contract PermissionedLiquidationController is
 
         _permisionedData.enabled = _enabled;
         emit EnabledChanged(_enabled);
-    }
-
-    /// @inheritdoc IPermissionedLiquidationController
-    function setPause(bool _pauseTokenTransfer) external onlyOwner {
-        require(_permisionedData.pauseTokenTransfer != _pauseTokenTransfer, PauseTokenTransferAlreadySet());
-
-        _permisionedData.pauseTokenTransfer = _pauseTokenTransfer;
-
-        if (_pauseTokenTransfer) {
-            _permisionedData.enabled = true;
-            emit EnabledChanged(true);
-        }
-
-        emit PauseTokenTransferChanged(_pauseTokenTransfer);
     }
 
     /// @inheritdoc IPermissionedLiquidationController
@@ -127,8 +112,6 @@ contract PermissionedLiquidationController is
         PermisionedData memory data = _permisionedData;
 
         if (!data.enabled) return;
-
-        if (data.pauseTokenTransfer) revert PauseTokenTransferActive();
 
         if (_liquidationAllowed) return;
 

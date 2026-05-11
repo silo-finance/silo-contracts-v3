@@ -204,6 +204,33 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     }
 
     /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_transitionCollateral
+    */
+    function test_permisioned_liquidation_transitionCollateral() public {
+        _depositForBorrow(10e6, depositor);
+
+        _deposit(100e18, borrower);
+        _borrow(silo1.maxBorrow(borrower), borrower);
+
+        _withdraw(silo0.maxWithdraw(borrower), borrower);
+
+        _grantAllowedRole();
+
+        uint256 balance = silo0.balanceOf(borrower);
+        assertGt(balance, 0, "collateral");
+
+        vm.prank(borrower);
+        silo0.transitionCollateral(balance, borrower, ISilo.CollateralType.Collateral);
+
+        assertEq(silo0.balanceOf(borrower), 0, "transition did not worked");
+
+        // crosscheck, liquidation should work and transition should work
+        vm.warp(block.timestamp + 3 days);
+        assertFalse(silo0.isSolvent(borrower), "Borrower is still solvent");
+        manualLiquidation.executeLiquidation(siloUsdc, borrower);
+    }
+
+    /*
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_protected_hookV1
     */
     function test_permisioned_liquidation_protected_hookV1() public {

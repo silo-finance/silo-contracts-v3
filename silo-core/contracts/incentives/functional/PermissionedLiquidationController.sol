@@ -14,6 +14,7 @@ import {
     IPermissionedLiquidationController
 } from "silo-core/contracts/interfaces/IPermissionedLiquidationController.sol";
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
+import {ShareTokenLib} from "silo-core/contracts/lib/ShareTokenLib.sol";
 
 /// @dev this contract should be set as a gauge for collateral or protected share tokens.
 /// It will not work if it will be set for the shared debt token.
@@ -93,13 +94,13 @@ contract PermissionedLiquidationController is
     }
 
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "PermissionedLiquidationController 4.13.1";
+        return "PermissionedLiquidationController 4.16.0";
     }
 
     function afterTokenTransfer(
         address _sender,
         uint256 /*_senderBalance*/,
-        address /*_recipient*/,
+        address _recipient,
         uint256 /*_recipientBalance*/,
         uint256 /*_totalSupply*/,
         uint256 /*_amount*/
@@ -117,6 +118,10 @@ contract PermissionedLiquidationController is
 
         // for debt token we can not revert, because it migth revert regular repay
         if (data.shateTokenIsDebtToken) return;
+
+        // Mint/burn also invoke this hook; solvency can be wrong mid-operation (eg transitionCollateral after burn,
+        // before mint). Real liquidations move collateral via ERC20 transfer (forwardTransferFromNoChecks).
+        if (!ShareTokenLib.isTransfer(_sender, _recipient)) return;
 
         // is this liquidation?
         // After transferring collateral, the user will always be insolvent.

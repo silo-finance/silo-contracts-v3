@@ -167,18 +167,7 @@ def load_deploy_records(path: Path) -> dict[str, list[dict[str, Any]]]:
     for chain, records in by_chain.items():
         if not isinstance(chain, str) or not isinstance(records, list):
             continue
-        normalized: list[dict[str, Any]] = []
-        for rec in records:
-            if not isinstance(rec, dict):
-                continue
-            silo_cfg = rec.get("siloConfig")
-            entries = rec.get("entries")
-            if not isinstance(silo_cfg, str) or not isinstance(entries, list):
-                continue
-            if not is_address(silo_cfg):
-                continue
-            normalized.append(rec)
-        out[chain] = normalized
+        out[chain] = [rec for rec in records if isinstance(rec, dict)]
     return out
 
 
@@ -321,6 +310,7 @@ def main() -> int:
     hook_owner_by_chain = load_markets_hook_owners(Path(args.markets_json))
     deploy_records_by_chain = load_deploy_records(Path(args.deploy_json))
     chain_filter = {c.strip().lower() for c in args.chain} if args.chain else set()
+    validation_errors: list[str] = []
 
     generated = 0
     for chain, records in sorted(deploy_records_by_chain.items(), key=lambda x: x[0]):
@@ -329,24 +319,28 @@ def main() -> int:
 
         chain_id = CHAIN_IDS.get(chain)
         if chain_id is None:
-            print(f"[warn] {chain}: unknown chain id, skipping")
+            validation_errors.append(f"{chain}: unknown chain id")
             continue
 
         chain_hook_owner = hook_owner_by_chain.get(chain, {})
         if not chain_hook_owner:
-            print(f"[warn] {chain}: no hookOwner mapping in markets file, skipping")
+            validation_errors.append(f"{chain}: no hookOwner mapping in markets file")
             continue
 
         tx_entries_by_owner: dict[str, list[dict[str, str]]] = {}
         source_records_by_owner: dict[str, int] = {}
 
         for rec in records:
+            rec_id = rec.get("id")
+            rec_label = f"{chain} id={rec_id if isinstance(rec_id, int) else '-'}"
             entries = rec.get("entries")
             if not isinstance(entries, list):
+                validation_errors.append(f"{rec_label}: missing or invalid entries")
                 continue
 
             for entry in entries:
                 if not isinstance(entry, dict):
+                    validation_errors.append(f"{rec_label}: invalid entry object")
                     continue
                 hook = entry.get("hook")
                 gauge = entry.get("gauge")
@@ -354,12 +348,15 @@ def main() -> int:
                 share_token_kind = entry.get("shareTokenKind")
 
                 if not isinstance(hook, str) or not isinstance(gauge, str) or not isinstance(share_token, str):
+                    validation_errors.append(f"{rec_label}: missing hook/gauge/shareToken")
                     continue
                 if not is_address(hook) or not is_address(gauge) or not is_address(share_token):
+                    validation_errors.append(f"{rec_label}: invalid hook/gauge/shareToken address")
                     continue
 
                 owner = chain_hook_owner.get(hook.lower())
                 if not owner:
+                    validation_errors.append(f"{rec_label}: missing hookOwner for hook {hook.lower()}")
                     continue
 
                 tx_entries_by_owner.setdefault(owner, []).append(
@@ -373,7 +370,7 @@ def main() -> int:
                 source_records_by_owner[owner] = source_records_by_owner.get(owner, 0) + 1
 
         if not tx_entries_by_owner:
-            print(f"[info] {chain}: no entries to bundle")
+            validation_errors.append(f"{chain}: no valid entries to bundle")
             continue
 
         for owner, entries in sorted(tx_entries_by_owner.items(), key=lambda x: x[0]):
@@ -430,6 +427,13 @@ def main() -> int:
                     f"helpers={len(helper_addresses)} gauges={len(gauges_in_order)} tx={len(txs)} -> {out_path.name}"
                 )
                 generated += 1
+
+    if validation_errors:
+        print("[FAIL] Validation errors detected:")
+        for err in validation_errors:
+            print(f"  - {err}")
+        print("Generated files before failure:", generated)
+        return 1
 
     print(f"Generated files: {generated}")
     return 0

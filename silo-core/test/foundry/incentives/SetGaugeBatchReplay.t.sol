@@ -22,10 +22,10 @@ contract SetGaugeBatchReplayTest is Test {
     error BatchTxFailed(uint256 index, address target, bytes revertData);
 
     string internal constant DEFAULT_BATCH_PATH =
-        "scripts/tasks/set-permissioned-liquidation/out/Set Gauge for Current Markets - mainnet - Part 3.json";
+        "scripts/tasks/set-permissioned-liquidation/out/Set Gauge for Current Markets - mainnet - Part 8.json";
 
     function test_replayBatchTransactionsFromJson() external {
-        vm.createSelectFork(vm.envString("RPC_MAINNET"), 25081808);
+        vm.createSelectFork(vm.envString("RPC_MAINNET"), 25081922);
 
         string memory batchPath = vm.envOr("SET_GAUGE_BATCH_JSON", DEFAULT_BATCH_PATH);
         string memory json = vm.readFile(batchPath);

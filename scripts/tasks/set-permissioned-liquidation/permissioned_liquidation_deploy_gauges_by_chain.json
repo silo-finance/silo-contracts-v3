@@ -371,11 +371,24 @@
       {
         "siloConfig": "0xcd73f3f6dc33b46502cb9c53a67bdded0bbaefc4",
         "id": 3003,
-        "success": false,
-        "exitCode": 1,
-        "error": "non-fatal after deploy: - server returned an error response: error code -32000: broadcast error on transaction validation: tx C1437CC1DCA7EBB57B6A208EC7669CCF2F62A7C2A54C410E6BADACA35DC2DAE1 is invalid: c",
-        "command": "SILO_CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE --broadcast",
-        "entries": []
+        "success": true,
+        "exitCode": 0,
+        "error": "",
+        "command": "SILO_CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE --slow --broadcast",
+        "entries": [
+          {
+            "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
+            "gauge": "0x7e6bff579ac6e1915e1fa72bcb23bb3825d20eea",
+            "shareToken": "0x4aaadf5c3a4d839055531743121e1227153ff0fb",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
+            "gauge": "0xb25b61dbfe3a627df5985dcf0806df364c2038c3",
+            "shareToken": "0xd1feb9147dc461dd4f07f36189f79a808fb9b7ea",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       }
     ],
     "mainnet": [
@@ -840,20 +853,46 @@
       {
         "siloConfig": "0x21af0468a00d4ced22b49b16575abfd9d5b075f6",
         "id": 3002,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "non-fatal after deploy: - server returned an error response: error code -32000: replacement transaction underpriced",
         "command": "SILO_CONFIG=0x21af0468A00d4cEd22B49b16575AbFd9D5B075F6 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --gas-estimate-multiplier 5000 --broadcast",
-        "entries": []
+        "entries": [
+          {
+            "hook": "0x3217dcaf7fa00cf3f63961cda9486dd9afee954b",
+            "gauge": "0x571f49b6f37d7dd7d49fdf06df8ad0032eb6b630",
+            "shareToken": "0x74969c6fa0b0696e7027240d9fd8dec567a8914c",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0x3217dcaf7fa00cf3f63961cda9486dd9afee954b",
+            "gauge": "0xb9ce21630fc399667aa0242cf9fa28abd530cf4a",
+            "shareToken": "0xd65b5a8087fdcdf13f921ca4d9dd9a901818d0bf",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       },
       {
         "siloConfig": "0x0bec26a1ed6f935bade68c3ec70f55131428bc8c",
         "id": 3003,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "non-fatal after deploy: - server returned an error response: error code -32000: replacement transaction underpriced",
         "command": "SILO_CONFIG=0x0BEc26a1ed6f935BaDE68c3Ec70f55131428Bc8c DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --gas-estimate-multiplier 5000 --broadcast",
-        "entries": []
+        "entries": [
+          {
+            "hook": "0x3752b69f2494466c7ab7c2f63b6af883891f8c96",
+            "gauge": "0x571f49b6f37d7dd7d49fdf06df8ad0032eb6b630",
+            "shareToken": "0x8d5d78f36d323ffcb875df6e4e66f0b26a52b152",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0x3752b69f2494466c7ab7c2f63b6af883891f8c96",
+            "gauge": "0xb9ce21630fc399667aa0242cf9fa28abd530cf4a",
+            "shareToken": "0x6915a6a209f0c3c24db19fe7d6a9f49572fd4db0",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       }
     ],
     "sonic": [

@@ -38,6 +38,8 @@
     "SIC savUSD/U(3001) savUSD:Protected": "0x042690e55638Bd2C0F7d3480B85D92ED60248A6c"
   },
   "injective": {
+    "SIC /(3003) :Collateral": "0x7e6bFf579aC6E1915e1fA72BCB23bB3825d20eEa",
+    "SIC /(3003) :Protected": "0xb25b61DbFe3a627Df5985dCf0806DF364c2038c3"
   },
   "mainnet": {
     "SIC PT-avUSD-14MAY2026/USDC(3018) PT-avUSD-14MAY2026:Collateral": "0x54bdf568a352f576026139C3EFCBd3891Fd4e56f",

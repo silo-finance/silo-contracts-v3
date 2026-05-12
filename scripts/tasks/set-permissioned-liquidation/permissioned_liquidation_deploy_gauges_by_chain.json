@@ -936,14 +936,14 @@
         "entries": [
           {
             "hook": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
-            "gauge": "0x03058027fd20dbf4ebf04ecdd63683b32542cbf4",
+            "gauge": "0x0624696925c7fb998ba0a95a5bd5324075b76f66",
             "shareToken": "0x0e2ef70d9b204a9cd30508a4e399b61ffb821152",
             "shareTokenKind": "collateralShareToken",
             "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
-            "gauge": "0xef16752586932ef195d0e0921e352dae9b095a98",
+            "gauge": "0x6c2e7dc8135411ad4c724894c7d23d351511cd76",
             "shareToken": "0x944f64002ea851a9b7c34ad49df4d0084bf4afd4",
             "shareTokenKind": "protectedShareToken",
             "gaugeVersion": "PermissionedLiquidationController 4.17.0"

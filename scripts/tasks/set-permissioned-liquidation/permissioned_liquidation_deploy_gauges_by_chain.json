@@ -7,7 +7,7 @@
         "id": 160,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xc88734b3D929bb9EAc81F9eada48D6D330a3F37F DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify",
         "entries": [
           {
@@ -31,7 +31,7 @@
         "id": 162,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xD76D4130f5E10409D2361Bf934cf4b4d6E3531DF DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast",
         "entries": [
           {
@@ -55,7 +55,7 @@
         "id": 3000,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xE14CC9C2b2429c85Ab11CaDd8c47a043d56CA149 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast",
         "entries": [
           {
@@ -79,7 +79,7 @@
         "id": 3001,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xde70f887048D51E3e5fd72660D39A3724f010782 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast",
         "entries": [
           {
@@ -103,7 +103,7 @@
         "id": 3002,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xB4b4d23F4D7FFd04deABfCdCf8fDdeD0Ed3ae1C8 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast",
         "entries": [
           {
@@ -127,7 +127,7 @@
         "id": 3006,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xD319a8fBD54B8647814Fb7c80bA5736079748e37 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify",
         "entries": [
           {
@@ -151,7 +151,7 @@
         "id": 3007,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x02DeF32bb597c258D0B9b9a8ead3413907Ee09C5 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify",
         "entries": [
           {
@@ -175,7 +175,7 @@
         "id": 3008,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x422a90f3AbC36DECd3b87942450fC3BF5FB117bf DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast",
         "entries": [
           {
@@ -199,7 +199,7 @@
         "id": 3009,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x0AB92b55c5562B7C2C36f9176b194bA9939B2DF9 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify",
         "entries": [
           {
@@ -225,7 +225,7 @@
         "id": 142,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x33fAdB3dB0A1687Cdd4a55AB0afa94c8102856A1 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_AVALANCHE --broadcast --verify",
         "entries": [
           {
@@ -249,7 +249,7 @@
         "id": 162,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xcd0d510eec4792a944E8dbe5da54DDD6777f02Ca DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_AVALANCHE --broadcast --verify",
         "entries": [
           {
@@ -273,7 +273,7 @@
         "id": 3001,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x9Ed051a10bfe1E7E7a2419115ff0C0E36FA367Ad DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_AVALANCHE --broadcast --verify",
         "entries": [
           {
@@ -297,7 +297,7 @@
         "id": 3002,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x3920631278D91224FB0Ede71c0c1788f47cfE594 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_AVALANCHE --broadcast --verify",
         "entries": [
           {
@@ -323,7 +323,7 @@
         "id": 3001,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x438deB3a0e0c497a12f86008A31815B869363b3e DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_BNB --broadcast --verify",
         "entries": [
           {
@@ -349,7 +349,7 @@
         "id": 3000,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xe095FA150D05AF72F6941Ecb1310103741639D18 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE --broadcast",
         "entries": [
           {
@@ -373,7 +373,7 @@
         "id": 3003,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE --slow --broadcast",
         "entries": [
           {
@@ -399,7 +399,7 @@
         "id": 181,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xfAa8b214A896Dfd41FA0aaE07D55E6b15b59357a DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -423,7 +423,7 @@
         "id": 184,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xaE01a8BdA7799A7aE4D56CC255db56a7e7FaF7F8 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -447,7 +447,7 @@
         "id": 185,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xF8D32Da4Ad9378C3754CE846BE02654e52b2C09d DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -471,7 +471,7 @@
         "id": 3001,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x273C6757ccC156cf6886F46D6F620EB02A22B4bf DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -495,7 +495,7 @@
         "id": 3003,
         "success": true,
         "exitCode": 1,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "Error: Not all (3 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0x74b21D458b9D5CF59f4b4E10A2E829C221670EE3 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -519,7 +519,7 @@
         "id": 3004,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x1857A92daA1C4d4C331F7e510182B53482798072 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -543,7 +543,7 @@
         "id": 3005,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x4DE77A375473179e078B69fDa1A710fb1176E70f DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -567,7 +567,7 @@
         "id": 3008,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x104B1CfA0248Cc97811d37562E0044B39bB55217 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -591,7 +591,7 @@
         "id": 3009,
         "success": true,
         "exitCode": 1,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "Error: Not all (3 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0x18B178B50F1fFd3dC7855C893a4e1Ac618F9B76A DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -615,7 +615,7 @@
         "id": 3011,
         "success": true,
         "exitCode": 1,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "Error: Not all (3 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0x493558E4201bDe0a4b2d4C1E0234a3d88D4CDAd8 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -639,7 +639,7 @@
         "id": 3013,
         "success": true,
         "exitCode": 1,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "Error: Not all (3 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0xA64c7FE1FA7e5dA01d765b346126ff7c068EEa91 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -661,9 +661,9 @@
       {
         "siloConfig": "0xe8b89384d636a37487070c9a6869c0960b13cf72",
         "id": 3014,
-        "success": false,
+        "success": true,
         "exitCode": 1,
-        "error": "gauge_share_token_not_in_market",
+        "error": "Error: script failed: InvalidLastUpdateDetails(0x73797a5553445f46554e44414d454e54414c2f55534400000000000000000000, 1778501950000 [1.778e12], 1778501963 [1.778e9], 105441172 [1.054e",
         "command": "SILO_CONFIG=0xE8b89384d636A37487070C9A6869C0960B13cF72 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -687,7 +687,7 @@
         "id": 3017,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xD17DF50549491712320D7874C3C9B9E4954aaf82 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -711,7 +711,7 @@
         "id": 3018,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xc4a51929542E196F39cad90F24003F9bee9f920b DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -735,7 +735,7 @@
         "id": 3019,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x781cDF4235de2166d5C451280E617BC1142DfAe4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -757,9 +757,9 @@
       {
         "siloConfig": "0xb61ad7976c49f1fd651d183491f5e2a28d7ece17",
         "id": 3022,
-        "success": false,
+        "success": true,
         "exitCode": 1,
-        "error": "gauge_share_token_not_in_market",
+        "error": "Error: script failed: InvalidLastUpdateDetails(0x4d53595f46554e44414d454e54414c2f55534400000000000000000000000000, 1778545210000 [1.778e12], 1778545223 [1.778e9], 105083545 [1.05e8",
         "command": "SILO_CONFIG=0xb61AD7976c49F1Fd651d183491f5e2a28d7Ece17 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -781,21 +781,21 @@
       {
         "siloConfig": "0xe02ccfaac970365e47628770c6bc94be46ac6323",
         "id": 3025,
-        "success": false,
+        "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xe02cCFAaC970365E47628770C6BC94Be46aC6323 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
             "hook": "0x1f8a302becf834906b62001fd870d87ee5f0ff50",
-            "gauge": "0xf9eb6c6db632260e4b239fa69902291d22f96b19",
+            "gauge": "0xd819c72bf7ca274ed6ad61f1edc47b2ebf284635",
             "shareToken": "0xfa8f5f4925f52634c90f291124726255b0f01867",
             "shareTokenKind": "collateralShareToken",
             "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x1f8a302becf834906b62001fd870d87ee5f0ff50",
-            "gauge": "0x53efe7f2d3bf74ab5a4234ce2718e34a7e8261c8",
+            "gauge": "0x2772b68c92ce8abf7cb0e951c747ccb5c902dedf",
             "shareToken": "0x7feb11cccc4305f527e5aa274c2269f583e50f09",
             "shareTokenKind": "protectedShareToken",
             "gaugeVersion": "PermissionedLiquidationController 4.17.0"
@@ -807,7 +807,7 @@
         "id": 3026,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xC329c205d350F1b17AaCd696072EbAe4a100EA73 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -831,7 +831,7 @@
         "id": 3027,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x837679fbad7a9810D252d71800FE2f742FbeB37f DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
@@ -857,7 +857,7 @@
         "id": 3002,
         "success": true,
         "exitCode": 1,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "non-fatal after deploy: - server returned an error response: error code -32000: replacement transaction underpriced",
         "command": "SILO_CONFIG=0x21af0468A00d4cEd22B49b16575AbFd9D5B075F6 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH -g 5000 --broadcast",
         "entries": [
           {
@@ -881,7 +881,7 @@
         "id": 3003,
         "success": true,
         "exitCode": 1,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "non-fatal after deploy: - server returned an error response: error code -32000: replacement transaction underpriced",
         "command": "SILO_CONFIG=0x0BEc26a1ed6f935BaDE68c3Ec70f55131428Bc8c DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --gas-estimate-multiplier 10000 --broadcast",
         "entries": [
           {
@@ -907,7 +907,7 @@
         "id": 20,
         "success": true,
         "exitCode": 1,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "non-fatal after deploy: Error: script failed: Gauge already configured for collateral share token",
         "command": "SILO_CONFIG=0x062A36Bbe0306c2Fd7aecdf25843291fBAB96AD2 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_SONIC --broadcast --verify",
         "entries": [
           {
@@ -945,7 +945,7 @@
         "id": 3001,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0x180A8fF4C343b6eEa2FF0Feb2dcC92a360bF7025 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_SONIC --broadcast --verify",
         "entries": [
           {
@@ -971,7 +971,7 @@
         "id": 3002,
         "success": true,
         "exitCode": 1,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "non-fatal after deploy: Transaction dropped from the mempool: 0x82340399f3c0dda302d7000f3629e711bf2ae2b975c04955b8c2250630511664",
         "command": "SILO_CONFIG=0x0d419DC8128D5738a62753DeB8eA3508AEd95253 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_XDC --broadcast --verify",
         "entries": [
           {
@@ -995,7 +995,7 @@
         "id": 3003,
         "success": true,
         "exitCode": 1,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "non-fatal after deploy: Error: Not all (0 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0x519303893faD9dE0b5aF1bf20a35145F1f2690c4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_XDC --broadcast --verify",
         "entries": [
           {
@@ -1019,7 +1019,7 @@
         "id": 3004,
         "success": true,
         "exitCode": 1,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "non-fatal after deploy: Error: Not all (0 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0x6007eC05764e1Ecd2811D8a2C8F5f125f0b47F7d DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_XDC --broadcast --verify",
         "entries": [
           {

@@ -173,24 +173,11 @@
       {
         "siloConfig": "0x422a90f3abc36decd3b87942450fc3bf5fb117bf",
         "id": 3008,
-        "success": true,
+        "success": false,
         "exitCode": 0,
         "error": "",
         "command": "SILO_CONFIG=0x422a90f3AbC36DECd3b87942450fC3BF5FB117bf DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM",
-        "entries": [
-          {
-            "hook": "0x95626c763a2c9fdf3e8a4e6644f2b9bcdb67097a",
-            "gauge": "0xad3351ce084b8a6238fa7eb00a9d8d913f62362f",
-            "shareToken": "0xad56be3fe13dbddd4e04ea7ec26b97d128df3f6b",
-            "shareTokenKind": "collateralShareToken"
-          },
-          {
-            "hook": "0x95626c763a2c9fdf3e8a4e6644f2b9bcdb67097a",
-            "gauge": "0x62ae5a688a2406c4643329e20e1afa2d067dc39a",
-            "shareToken": "0xf5b8240b5d6a8456f3d2903cadf6478a74f9521a",
-            "shareTokenKind": "protectedShareToken"
-          }
-        ]
+        "entries": []
       },
       {
         "siloConfig": "0x0ab92b55c5562b7c2c36f9176b194ba9939b2df9",
@@ -345,46 +332,20 @@
       {
         "siloConfig": "0xe095fa150d05af72f6941ecb1310103741639d18",
         "id": 3000,
-        "success": true,
+        "success": false,
         "exitCode": 0,
         "error": "",
         "command": "SILO_CONFIG=0xe095FA150D05AF72F6941Ecb1310103741639D18 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE",
-        "entries": [
-          {
-            "hook": "0xca2c650574cca149b17735b6c85afda41e8f8ad3",
-            "gauge": "0x82de7746ed6c106e520b4745cb794bf2e42d1b9f",
-            "shareToken": "0xe5b6cefef63425e1e4e92262c34c6c4c220e640e",
-            "shareTokenKind": "collateralShareToken"
-          },
-          {
-            "hook": "0xca2c650574cca149b17735b6c85afda41e8f8ad3",
-            "gauge": "0xcb7fc1003a65c47edbed8c84d8f90813b053aadd",
-            "shareToken": "0x881cd13e6be8fb1680259a7a6f1eb35a991bfd0d",
-            "shareTokenKind": "protectedShareToken"
-          }
-        ]
+        "entries": []
       },
       {
         "siloConfig": "0xcd73f3f6dc33b46502cb9c53a67bdded0bbaefc4",
         "id": 3003,
-        "success": true,
+        "success": false,
         "exitCode": 0,
         "error": "",
         "command": "SILO_CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE",
-        "entries": [
-          {
-            "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
-            "gauge": "0x82de7746ed6c106e520b4745cb794bf2e42d1b9f",
-            "shareToken": "0x4aaadf5c3a4d839055531743121e1227153ff0fb",
-            "shareTokenKind": "collateralShareToken"
-          },
-          {
-            "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
-            "gauge": "0xcb7fc1003a65c47edbed8c84d8f90813b053aadd",
-            "shareToken": "0xd1feb9147dc461dd4f07f36189f79a808fb9b7ea",
-            "shareTokenKind": "protectedShareToken"
-          }
-        ]
+        "entries": []
       }
     ],
     "mainnet": [
@@ -850,18 +811,18 @@
         "siloConfig": "0x21af0468a00d4ced22b49b16575abfd9d5b075f6",
         "id": 3002,
         "success": false,
-        "exitCode": 1,
-        "error": "Transaction dropped from the mempool: 0xfe8fb1755f4413261047ae25e2c08d3a5604286fec015f341a3a1770a0aa3c94",
-        "command": "SILO_CONFIG=0x21af0468A00d4cEd22B49b16575AbFd9D5B075F6 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --broadcast # --verify skipped for this chain",
+        "exitCode": 0,
+        "error": "",
+        "command": "SILO_CONFIG=0x21af0468A00d4cEd22B49b16575AbFd9D5B075F6 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH",
         "entries": []
       },
       {
         "siloConfig": "0x0bec26a1ed6f935bade68c3ec70f55131428bc8c",
         "id": 3003,
         "success": false,
-        "exitCode": 1,
-        "error": "non-fatal after deploy: - server returned an error response: error code -32000: replacement transaction underpriced",
-        "command": "SILO_CONFIG=0x0BEc26a1ed6f935BaDE68c3Ec70f55131428Bc8c DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --broadcast # --verify skipped for this chain",
+        "exitCode": 0,
+        "error": "",
+        "command": "SILO_CONFIG=0x0BEc26a1ed6f935BaDE68c3Ec70f55131428Bc8c DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH",
         "entries": []
       }
     ],

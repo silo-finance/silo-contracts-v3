@@ -330,13 +330,12 @@ def load_progress_state(path: Path) -> dict[str, dict[str, dict[str, Any]]]:
             else:
                 entries = rec.get("entries") if isinstance(rec.get("entries"), list) else []
                 recorded_success = bool(rec.get("success"))
-                # If we already have extracted gauges, deployment itself is considered successful,
-                # even when the script returned non-zero (typically verifier/post-deploy step failure).
-                inferred_success = recorded_success or len(entries) > 0
                 normalized = {
                     "siloConfig": cfg_key,
                     "id": rec.get("id") if isinstance(rec.get("id"), int) else None,
-                    "success": inferred_success,
+                    # Respect explicit saved status. If user/test tooling marked success=false,
+                    # this entry must be retried and not auto-promoted to success.
+                    "success": recorded_success,
                     "exitCode": rec.get("exitCode") if isinstance(rec.get("exitCode"), int) else 0,
                     "error": rec.get("error") if isinstance(rec.get("error"), str) else "",
                     "command": rec.get("command") if isinstance(rec.get("command"), str) else "",
@@ -466,13 +465,16 @@ def main() -> int:
                 verify_enabled=args.verify and args.broadcast,
             )
             existing = progress_state.get(chain, {}).get(silo_config_lower)
+            existing_failed = bool(existing) and not bool(existing.get("success"))
             in_sic_registry = (
                 market_id is not None and market_id in existing_sic_ids_by_chain.get(chain, set())
             )
 
             if args.print_only:
                 commands_to_print.append(cmd_display)
-                if in_sic_registry:
+                if existing_failed:
+                    status = "RETRY_FAILED_CACHE"
+                elif in_sic_registry:
                     status = "ALREADY_IN_SIC_DEPLOYMENTS_JSON"
                 elif existing and bool(existing.get("success")):
                     status = "DONE_SUCCESS"
@@ -508,7 +510,13 @@ def main() -> int:
                 )
                 continue
 
-            if in_sic_registry:
+            # success=false should be treated as "no cache": rerun full flow.
+            # Also remove stale record so current attempt fully replaces it.
+            if existing_failed:
+                progress_state.setdefault(chain, {}).pop(silo_config_lower, None)
+                existing = None
+
+            if in_sic_registry and not existing_failed:
                 print()
                 print("=" * 96)
                 print(

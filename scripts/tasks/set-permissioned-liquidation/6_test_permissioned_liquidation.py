@@ -215,6 +215,7 @@ def run_step_1(deploy_gauges_path: Path) -> int:
 
     total = 0
     failed = 0
+    marked_false = 0
 
     print(f"[STEP 1] validating {deploy_gauges_path}")
 
@@ -232,6 +233,9 @@ def run_step_1(deploy_gauges_path: Path) -> int:
                 continue
 
             failed += 1
+            if rec.get("success") is not False:
+                rec["success"] = False
+                marked_false += 1
             reasons: list[str] = []
             if not success_ok:
                 reasons.append(f"success={rec.get('success')!r}")
@@ -247,6 +251,9 @@ def run_step_1(deploy_gauges_path: Path) -> int:
     print(f"Checked records: {total}")
     print(f"Passed: {passed}")
     print(f"Failed: {failed}")
+    if marked_false > 0:
+        save_json(deploy_gauges_path, raw)
+        print(f"Records marked success=false: {marked_false}")
 
     if failed == 0:
         print("[OK] Step 1 passed")
@@ -340,6 +347,23 @@ def run_step_2(deploy_gauges_path: Path, set_gauge_dir: Path) -> int:
 
     expected = gauges_expected_by_chain(by_chain)
     found, file_count = gauges_found_in_set_gauge_files(set_gauge_dir)
+    gauge_to_records_by_chain: dict[str, dict[str, list[dict[str, Any]]]] = {}
+    for chain, records in by_chain.items():
+        chain_map: dict[str, list[dict[str, Any]]] = {}
+        for rec in records:
+            entries_obj = rec.get("entries")
+            if not isinstance(entries_obj, list):
+                entries_obj = rec.get("gauges")
+            if not isinstance(entries_obj, list):
+                continue
+            for entry in entries_obj:
+                if not isinstance(entry, dict):
+                    continue
+                gauge = entry.get("gauge")
+                if not is_address(gauge):
+                    continue
+                chain_map.setdefault(normalize_address(gauge), []).append(rec)
+        gauge_to_records_by_chain[chain] = chain_map
 
     print(
         f"[STEP 2] checking gauge coverage in {set_gauge_dir} "
@@ -348,6 +372,7 @@ def run_step_2(deploy_gauges_path: Path, set_gauge_dir: Path) -> int:
 
     missing_total = 0
     expected_total = 0
+    marked_false = 0
     for chain in sorted(expected):
         expected_chain = expected[chain]
         found_chain = found.get(chain, set())
@@ -359,10 +384,17 @@ def run_step_2(deploy_gauges_path: Path, set_gauge_dir: Path) -> int:
         print(f"[FAIL] chain={chain} missing gauges: {len(missing)}")
         for gauge in missing:
             print(f"  - {gauge}")
+            for rec in gauge_to_records_by_chain.get(chain, {}).get(gauge, []):
+                if rec.get("success") is not False:
+                    rec["success"] = False
+                    marked_false += 1
 
     print()
     print(f"Expected gauge addresses: {expected_total}")
     print(f"Missing gauge addresses: {missing_total}")
+    if marked_false > 0:
+        save_json(deploy_gauges_path, raw)
+        print(f"Records marked success=false: {marked_false}")
     if missing_total == 0:
         print("[OK] Step 2 passed")
         return 0
@@ -485,6 +517,7 @@ def run_step_4_validate_gauge_version(
     checked = 0
     mismatches = 0
     missing = 0
+    marked_false = 0
 
     for chain in sorted(by_chain):
         for rec in by_chain[chain]:
@@ -504,12 +537,18 @@ def run_step_4_validate_gauge_version(
                 version = entry.get("gaugeVersion")
                 if not isinstance(version, str) or not version.strip():
                     missing += 1
+                    if rec.get("success") is not False:
+                        rec["success"] = False
+                        marked_false += 1
                     continue
 
                 checked += 1
                 version_norm = version.strip()
                 if version_norm != expected_version:
                     mismatches += 1
+                    if rec.get("success") is not False:
+                        rec["success"] = False
+                        marked_false += 1
                     print(
                         f"[FAIL] chain={chain} id={market_id} gauge={normalize_address(gauge)} "
                         f"gaugeVersion={version_norm!r}"
@@ -519,7 +558,10 @@ def run_step_4_validate_gauge_version(
     print(f"Gauge entries with gaugeVersion present: {checked}")
     print(f"Gauge entries with missing gaugeVersion: {missing}")
     print(f"Gauge version mismatches: {mismatches}")
-    if mismatches == 0:
+    if marked_false > 0:
+        save_json(deploy_gauges_path, raw)
+        print(f"Records marked success=false: {marked_false}")
+    if mismatches == 0 and missing == 0:
         print("[OK] Step 4 passed")
         return 0
 

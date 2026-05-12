@@ -28,7 +28,8 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SCRIPT_DIR = Path(__file__).resolve().parent
 ALLOWED_ROLE = "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac"
-MAX_TX_PER_FILE = 65
+MAX_TX_PER_FILE = 50
+SPLIT_TX_CHAINS = {"mainnet"}
 
 CHAIN_IDS: dict[str, int] = {
     "mainnet": 1,
@@ -387,7 +388,10 @@ def main() -> int:
                     group_txs.append(build_grant_role_tx(gauge, helper))
                 tx_groups.append(group_txs)
 
-            tx_parts = split_tx_groups_by_limit(tx_groups, MAX_TX_PER_FILE)
+            should_split = chain.lower() in SPLIT_TX_CHAINS
+            tx_parts = split_tx_groups_by_limit(tx_groups, MAX_TX_PER_FILE) if should_split else [
+                [tx for group in tx_groups for tx in group]
+            ]
 
             if len(tx_entries_by_owner) == 1:
                 base_filename = f"Set Gauge for Current Markets - {chain}"
@@ -403,7 +407,7 @@ def main() -> int:
                     source_count=source_records_by_owner.get(owner, 0),
                 )
 
-                if len(tx_parts) > 1:
+                if should_split and len(tx_parts) > 1:
                     filename = f"{base_filename} - Part {idx}.json"
                 else:
                     filename = f"{base_filename}.json"

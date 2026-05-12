@@ -28,6 +28,7 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SCRIPT_DIR = Path(__file__).resolve().parent
 ALLOWED_ROLE = "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac"
+MAX_TX_PER_FILE = 65
 
 CHAIN_IDS: dict[str, int] = {
     "mainnet": 1,
@@ -244,6 +245,30 @@ def collect_helpers_for_chain(chain: str) -> list[str]:
     return sorted(set(addresses), key=str.lower)
 
 
+def split_tx_groups_by_limit(tx_groups: list[list[dict[str, Any]]], max_tx: int) -> list[list[dict[str, Any]]]:
+    parts: list[list[dict[str, Any]]] = []
+    current: list[dict[str, Any]] = []
+
+    for group in tx_groups:
+        if not group:
+            continue
+        if current and (len(current) + len(group) > max_tx):
+            parts.append(current)
+            current = []
+
+        # Keep per-gauge operations together; if one gauge exceeds limit,
+        # we still keep it in one part rather than splitting the gauge group.
+        if not current and len(group) > max_tx:
+            parts.append(list(group))
+            continue
+
+        current.extend(group)
+
+    if current:
+        parts.append(current)
+    return parts
+
+
 def build_batch(
     *,
     chain: str,
@@ -350,36 +375,46 @@ def main() -> int:
                 entries_by_gauge.setdefault(e["gauge"], []).append(e)
             gauges_in_order = sorted(entries_by_gauge.keys(), key=str.lower)
 
-            txs: list[dict[str, Any]] = []
+            tx_groups: list[list[dict[str, Any]]] = []
             # For easier QA/review, group transactions per gauge:
             # setGauge -> setEnabled(true) -> grantRole helper(s)
             for gauge in gauges_in_order:
+                group_txs: list[dict[str, Any]] = []
                 for e in entries_by_gauge[gauge]:
-                    txs.append(build_tx(e))
-                txs.append(build_set_enabled_tx(gauge))
+                    group_txs.append(build_tx(e))
+                group_txs.append(build_set_enabled_tx(gauge))
                 for helper in helper_addresses:
-                    txs.append(build_grant_role_tx(gauge, helper))
+                    group_txs.append(build_grant_role_tx(gauge, helper))
+                tx_groups.append(group_txs)
 
-            batch = build_batch(
-                chain=chain,
-                chain_id=chain_id,
-                owner=owner,
-                transactions=txs,
-                source_count=source_records_by_owner.get(owner, 0),
-            )
+            tx_parts = split_tx_groups_by_limit(tx_groups, MAX_TX_PER_FILE)
 
             if len(tx_entries_by_owner) == 1:
-                filename = f"Set Gauge for Current Markets - {chain}.json"
+                base_filename = f"Set Gauge for Current Markets - {chain}"
             else:
-                filename = f"Set Gauge for Current Markets - {chain} - {short(owner)}.json"
+                base_filename = f"Set Gauge for Current Markets - {chain} - {short(owner)}"
 
-            out_path = output_dir / filename
-            out_path.write_text(json.dumps(batch, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-            print(
-                f"[ok] {chain} owner={owner} setGauge={len(unique_entries)} "
-                f"helpers={len(helper_addresses)} gauges={len(gauges_in_order)} tx={len(txs)} -> {out_path.name}"
-            )
-            generated += 1
+            for idx, txs in enumerate(tx_parts, start=1):
+                batch = build_batch(
+                    chain=chain,
+                    chain_id=chain_id,
+                    owner=owner,
+                    transactions=txs,
+                    source_count=source_records_by_owner.get(owner, 0),
+                )
+
+                if len(tx_parts) > 1:
+                    filename = f"{base_filename} - Part {idx}.json"
+                else:
+                    filename = f"{base_filename}.json"
+
+                out_path = output_dir / filename
+                out_path.write_text(json.dumps(batch, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+                print(
+                    f"[ok] {chain} owner={owner} part={idx}/{len(tx_parts)} setGauge={len(unique_entries)} "
+                    f"helpers={len(helper_addresses)} gauges={len(gauges_in_order)} tx={len(txs)} -> {out_path.name}"
+                )
+                generated += 1
 
     print(f"Generated files: {generated}")
     return 0

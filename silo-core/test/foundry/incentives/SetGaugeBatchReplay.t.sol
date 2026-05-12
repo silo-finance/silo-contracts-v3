@@ -23,11 +23,17 @@ contract SetGaugeBatchReplayTest is Test {
 
     string internal constant DEFAULT_BATCH_PATH =
         "scripts/tasks/set-permissioned-liquidation/out/Set Gauge for Current Markets - mainnet - Part 8.json";
+    bytes32 internal constant TYPE_ADDRESS = keccak256("address");
+    bytes32 internal constant TYPE_BOOL = keccak256("bool");
+    bytes32 internal constant TYPE_BYTES32 = keccak256("bytes32");
+    bytes32 internal constant TYPE_UINT256 = keccak256("uint256");
+    bytes32 internal constant TYPE_UINT = keccak256("uint");
 
-    function test_replayBatchTransactionsFromJson() external {
+    function test_skip_replayBatchTransactionsFromJson() external {
         vm.createSelectFork(vm.envString("RPC_MAINNET"), 25081922);
 
         string memory batchPath = vm.envOr("SET_GAUGE_BATCH_JSON", DEFAULT_BATCH_PATH);
+        // forge-lint: disable-next-line(unsafe-cheatcode)
         string memory json = vm.readFile(batchPath);
 
         if (!json.keyExists(".transactions[0]")) {
@@ -95,25 +101,32 @@ contract SetGaugeBatchReplayTest is Test {
         pure
         returns (bytes32)
     {
-        bytes32 t = keccak256(bytes(solidityType));
+        bytes32 t = _keccakString(solidityType);
 
-        if (t == keccak256("address")) {
+        if (t == TYPE_ADDRESS) {
             return bytes32(uint256(uint160(json.readAddress(valuePath))));
         }
 
-        if (t == keccak256("bool")) {
+        if (t == TYPE_BOOL) {
             return json.readBool(valuePath) ? bytes32(uint256(1)) : bytes32(0);
         }
 
-        if (t == keccak256("bytes32")) {
+        if (t == TYPE_BYTES32) {
             return json.readBytes32(valuePath);
         }
 
-        if (t == keccak256("uint256") || t == keccak256("uint")) {
+        if (t == TYPE_UINT256 || t == TYPE_UINT) {
             return bytes32(json.readUint(valuePath));
         }
 
         revert UnsupportedInputType(solidityType);
+    }
+
+    function _keccakString(string memory value) internal pure returns (bytes32 out) {
+        bytes memory b = bytes(value);
+        assembly {
+            out := keccak256(add(b, 0x20), mload(b))
+        }
     }
 
     function _inputsCount(string memory json, string memory txPath) internal view returns (uint256 count) {

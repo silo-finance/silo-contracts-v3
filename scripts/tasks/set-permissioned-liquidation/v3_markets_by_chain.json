@@ -4,55 +4,82 @@
       "address": "0xc88734b3D929bb9EAc81F9eada48D6D330a3F37F",
       "id": 160,
       "asset0": "rsETH",
-      "asset1": "WETH"
+      "asset1": "WETH",
+      "hook": "0x9d9fddc7cdce47d58b0b55f563d2d0a2971ee85f",
+      "hookOwner": "0x865a1da42d512d8854c7b0599c962f67f5a5a9d9",
+      "hookVersion": "legacy"
     },
     {
       "address": "0xD76D4130f5E10409D2361Bf934cf4b4d6E3531DF",
       "id": 162,
       "asset0": "weETH",
-      "asset1": "WETH"
+      "asset1": "WETH",
+      "hook": "0xac623a1d1ee7023e60288fd2c9ec3fb729f4ee8f",
+      "hookOwner": "0x865a1da42d512d8854c7b0599c962f67f5a5a9d9",
+      "hookVersion": "legacy"
     },
     {
       "address": "0xE14CC9C2b2429c85Ab11CaDd8c47a043d56CA149",
       "id": 3000,
       "asset0": "WETH",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0x97dc5ea7a2d98599534655535e101e2f35bbcd69",
+      "hookOwner": "0xaad2f138eb20fb60c34ac70624339ccbac2320fa",
+      "hookVersion": "SiloHookV2 4.0.0"
     },
     {
       "address": "0xde70f887048D51E3e5fd72660D39A3724f010782",
       "id": 3001,
       "asset0": "WETH",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0x2174557e5ed2e8256284a5df42a91b21db6313a9",
+      "hookOwner": "0xaad2f138eb20fb60c34ac70624339ccbac2320fa",
+      "hookVersion": "SiloHookV2 4.1.3"
     },
     {
       "address": "0xB4b4d23F4D7FFd04deABfCdCf8fDdeD0Ed3ae1C8",
       "id": 3002,
       "asset0": "GM",
-      "asset1": "WETH"
+      "asset1": "WETH",
+      "hook": "0xaf45c4f4b0239a20157eda4069c283cb8c7d6af2",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     },
     {
       "address": "0xD319a8fBD54B8647814Fb7c80bA5736079748e37",
       "id": 3006,
       "asset0": "GM",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0xf3c69312f020eaaa9e0a60295549820a77b5cab9",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     },
     {
       "address": "0x02DeF32bb597c258D0B9b9a8ead3413907Ee09C5",
       "id": 3007,
       "asset0": "GM",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0x15d3ebe0317cd2f0db0a6f4780c29c43c93a1003",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     },
     {
       "address": "0x422a90f3AbC36DECd3b87942450fC3BF5FB117bf",
       "id": 3008,
       "asset0": "PGOLD",
-      "asset1": "USD₮0"
+      "asset1": "USD₮0",
+      "hook": "0x95626c763a2c9fdf3e8a4e6644f2b9bcdb67097a",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     },
     {
       "address": "0x0AB92b55c5562B7C2C36f9176b194bA9939B2DF9",
       "id": 3009,
       "asset0": "PUSD",
-      "asset1": "USD₮0"
+      "asset1": "USD₮0",
+      "hook": "0x2c7d9b9823bbcc63e52de90db6f3fb10679789ae",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     }
   ],
   "avalanche": [
@@ -60,25 +87,37 @@
       "address": "0x33fAdB3dB0A1687Cdd4a55AB0afa94c8102856A1",
       "id": 142,
       "asset0": "savUSD",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0x809c5abc4db4258c077c7c65dac5beb994471703",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "legacy"
     },
     {
       "address": "0xcd0d510eec4792a944E8dbe5da54DDD6777f02Ca",
       "id": 162,
       "asset0": "sUSDp",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0x9b8b655efa702aa8bbff3482c4a47aed4438bba4",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "legacy"
     },
     {
       "address": "0x9Ed051a10bfe1E7E7a2419115ff0C0E36FA367Ad",
       "id": 3001,
       "asset0": "GLV [WAVAX-USDC]",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0xf410a51cb70313b397e65e7a6da5ea14ee08bdc1",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     },
     {
       "address": "0x3920631278D91224FB0Ede71c0c1788f47cfE594",
       "id": 3002,
       "asset0": "stAVAX",
-      "asset1": "WAVAX"
+      "asset1": "WAVAX",
+      "hook": "0x2108fcb5ae037143baef90f2f63c4c66ba9fb3b6",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     }
   ],
   "bnb": [
@@ -86,7 +125,10 @@
       "address": "0x438deB3a0e0c497a12f86008A31815B869363b3e",
       "id": 3001,
       "asset0": "savUSD",
-      "asset1": "U"
+      "asset1": "U",
+      "hook": "0x228e2d4b4367dedca3b210ccf01a1d33ee2c6916",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     }
   ],
   "injective": [
@@ -94,137 +136,212 @@
       "address": "0xe095FA150D05AF72F6941Ecb1310103741639D18",
       "id": 3000,
       "asset0": "WINJ",
-      "asset1": "USDT"
+      "asset1": "USDT",
+      "hook": "0xca2c650574cca149b17735b6c85afda41e8f8ad3",
+      "hookOwner": "0xaad2f138eb20fb60c34ac70624339ccbac2320fa",
+      "hookVersion": "SiloHookV2 4.0.0"
     },
     {
       "address": "0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4",
       "id": 3003,
       "asset0": "yINJ",
-      "asset1": "WINJ"
+      "asset1": "WINJ",
+      "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
+      "hookOwner": "0x4aad26aa8d831efa3b9cba1167fd8b0d53d9426e",
+      "hookVersion": "SiloHookV2 4.4.0"
     }
   ],
   "mainnet": [
     {
-      "address": "0x273C6757ccC156cf6886F46D6F620EB02A22B4bf",
-      "id": 3001,
-      "asset0": "RLP",
-      "asset1": "USDC"
-    },
-    {
-      "address": "0x74b21D458b9D5CF59f4b4E10A2E829C221670EE3",
-      "id": 3003,
-      "asset0": "savUSD",
-      "asset1": "USDC"
-    },
-    {
-      "address": "0x1857A92daA1C4d4C331F7e510182B53482798072",
-      "id": 3004,
-      "asset0": "PT-srNUSD-28MAY2026",
-      "asset1": "USDC"
-    },
-    {
-      "address": "0x4DE77A375473179e078B69fDa1A710fb1176E70f",
-      "id": 3005,
-      "asset0": "PT-jrNUSD-28MAY2026",
-      "asset1": "USDC"
-    },
-    {
-      "address": "0x104B1CfA0248Cc97811d37562E0044B39bB55217",
-      "id": 3008,
-      "asset0": "mHyperBTC",
-      "asset1": "WBTC"
-    },
-    {
-      "address": "0x18B178B50F1fFd3dC7855C893a4e1Ac618F9B76A",
-      "id": 3009,
-      "asset0": "PT-reUSDe-25JUN2026",
-      "asset1": "USDC"
-    },
-    {
-      "address": "0x493558E4201bDe0a4b2d4C1E0234a3d88D4CDAd8",
-      "id": 3011,
-      "asset0": "PT-savUSD-14MAY2026",
-      "asset1": "USDC"
-    },
-    {
-      "address": "0xA64c7FE1FA7e5dA01d765b346126ff7c068EEa91",
-      "id": 3013,
-      "asset0": "PT-savETH-14MAY2026",
-      "asset1": "WETH"
-    },
-    {
-      "address": "0xE8b89384d636A37487070C9A6869C0960B13cF72",
-      "id": 3014,
-      "asset0": "syzUSD",
-      "asset1": "USDC"
-    },
-    {
-      "address": "0xD17DF50549491712320D7874C3C9B9E4954aaf82",
-      "id": 3017,
-      "asset0": "PT-avUSD-14MAY2026",
-      "asset1": "avUSD"
-    },
-    {
-      "address": "0xc4a51929542E196F39cad90F24003F9bee9f920b",
-      "id": 3018,
-      "asset0": "PT-avUSD-14MAY2026",
-      "asset1": "USDC"
-    },
-    {
-      "address": "0x781cDF4235de2166d5C451280E617BC1142DfAe4",
-      "id": 3019,
-      "asset0": "savETH",
-      "asset1": "WETH"
-    },
-    {
-      "address": "0xb61AD7976c49F1Fd651d183491f5e2a28d7Ece17",
-      "id": 3022,
-      "asset0": "msY",
-      "asset1": "USDC"
-    },
-    {
-      "address": "0xe02cCFAaC970365E47628770C6BC94Be46aC6323",
-      "id": 3025,
-      "asset0": "apyUSD",
-      "asset1": "apxUSD"
-    },
-    {
-      "address": "0xC329c205d350F1b17AaCd696072EbAe4a100EA73",
-      "id": 3026,
-      "asset0": "apyUSD",
-      "asset1": "USDC"
-    },
-    {
-      "address": "0x837679fbad7a9810D252d71800FE2f742FbeB37f",
-      "id": 3027,
-      "asset0": "apyUSD",
-      "asset1": "USDC"
+      "address": "0xfAa8b214A896Dfd41FA0aaE07D55E6b15b59357a",
+      "id": 181,
+      "asset0": "siUSD",
+      "asset1": "USDC",
+      "hook": "0x33e7d0c3e302976c5177ed12b7cd9f66cc258002",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "legacy"
     },
     {
       "address": "0xaE01a8BdA7799A7aE4D56CC255db56a7e7FaF7F8",
       "id": 184,
       "asset0": "hgETH",
-      "asset1": "WETH"
+      "asset1": "WETH",
+      "hook": "0x1e339d7b0cfed65821e122e8e9b636de50e28ac4",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "legacy"
     },
     {
       "address": "0xF8D32Da4Ad9378C3754CE846BE02654e52b2C09d",
       "id": 185,
       "asset0": "agETH",
-      "asset1": "WETH"
+      "asset1": "WETH",
+      "hook": "0x1db8acfbbd40593f96b15f128e4d6c2ba12a2a80",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "legacy"
     },
     {
-      "address": "0xfAa8b214A896Dfd41FA0aaE07D55E6b15b59357a",
-      "id": 181,
-      "asset0": "siUSD",
-      "asset1": "USDC"
+      "address": "0x273C6757ccC156cf6886F46D6F620EB02A22B4bf",
+      "id": 3001,
+      "asset0": "RLP",
+      "asset1": "USDC",
+      "hook": "0xa05574ca92394094f57fd77f9fb754bbfe52a815",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0x74b21D458b9D5CF59f4b4E10A2E829C221670EE3",
+      "id": 3003,
+      "asset0": "savUSD",
+      "asset1": "USDC",
+      "hook": "0xeb0c0d0be8a823d8b374f46858cf34028a8e7a3f",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0x1857A92daA1C4d4C331F7e510182B53482798072",
+      "id": 3004,
+      "asset0": "PT-srNUSD-28MAY2026",
+      "asset1": "USDC",
+      "hook": "0x01cbe4a6bf0dbe0f4c66c5b2e87d7bcdcb6b32bb",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0x4DE77A375473179e078B69fDa1A710fb1176E70f",
+      "id": 3005,
+      "asset0": "PT-jrNUSD-28MAY2026",
+      "asset1": "USDC",
+      "hook": "0x08bd5ba7d14160f88ea1e684f2c815fcab96858c",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0x104B1CfA0248Cc97811d37562E0044B39bB55217",
+      "id": 3008,
+      "asset0": "mHyperBTC",
+      "asset1": "WBTC",
+      "hook": "0x102f9d13ad5bd69895a104638b24d6e7d4c175e4",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0x18B178B50F1fFd3dC7855C893a4e1Ac618F9B76A",
+      "id": 3009,
+      "asset0": "PT-reUSDe-25JUN2026",
+      "asset1": "USDC",
+      "hook": "0x274258eab9333971adbeffa61c1f5d2c8e56ce17",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0x493558E4201bDe0a4b2d4C1E0234a3d88D4CDAd8",
+      "id": 3011,
+      "asset0": "PT-savUSD-14MAY2026",
+      "asset1": "USDC",
+      "hook": "0x8cec1ff9f78683f1d20d323e1919881476d7d343",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0xA64c7FE1FA7e5dA01d765b346126ff7c068EEa91",
+      "id": 3013,
+      "asset0": "PT-savETH-14MAY2026",
+      "asset1": "WETH",
+      "hook": "0xddb4f286b6747bd13e72221db253fa9cb72aed45",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0xE8b89384d636A37487070C9A6869C0960B13cF72",
+      "id": 3014,
+      "asset0": "syzUSD",
+      "asset1": "USDC",
+      "hook": "0x7ac15eb0b6434b67943597977d7eba3837a52001",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0xD17DF50549491712320D7874C3C9B9E4954aaf82",
+      "id": 3017,
+      "asset0": "PT-avUSD-14MAY2026",
+      "asset1": "avUSD",
+      "hook": "0xfbd33de84444a35ce2c9f239571d52e9dc1a6b34",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0xc4a51929542E196F39cad90F24003F9bee9f920b",
+      "id": 3018,
+      "asset0": "PT-avUSD-14MAY2026",
+      "asset1": "USDC",
+      "hook": "0xb8a7674a28e1f9d6ce9e5c278b095a3d4e97a166",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0x781cDF4235de2166d5C451280E617BC1142DfAe4",
+      "id": 3019,
+      "asset0": "savETH",
+      "asset1": "WETH",
+      "hook": "0x8df201f7e04932fc3d27765716beaf517d201937",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0xb61AD7976c49F1Fd651d183491f5e2a28d7Ece17",
+      "id": 3022,
+      "asset0": "msY",
+      "asset1": "USDC",
+      "hook": "0xc963656c56804a01fdd44abedbc0725bc52b034a",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0xe02cCFAaC970365E47628770C6BC94Be46aC6323",
+      "id": 3025,
+      "asset0": "apyUSD",
+      "asset1": "apxUSD",
+      "hook": "0x1f8a302becf834906b62001fd870d87ee5f0ff50",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0xC329c205d350F1b17AaCd696072EbAe4a100EA73",
+      "id": 3026,
+      "asset0": "apyUSD",
+      "asset1": "USDC",
+      "hook": "0x611b4bf9f09d660cfcbe220b514692a9066c76dc",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0x837679fbad7a9810D252d71800FE2f742FbeB37f",
+      "id": 3027,
+      "asset0": "apyUSD",
+      "asset1": "USDC",
+      "hook": "0xf6be1c4a59859d3228da737239fed7bcb46cbe8f",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     }
   ],
   "megaeth": [
     {
       "address": "0x21af0468A00d4cEd22B49b16575AbFd9D5B075F6",
       "id": 3002,
-      "asset0": null,
-      "asset1": null
+      "asset0": "savUSD",
+      "asset1": "USDm",
+      "hook": "0x3217dcaf7fa00cf3f63961cda9486dd9afee954b",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
+    },
+    {
+      "address": "0x0BEc26a1ed6f935BaDE68c3Ec70f55131428Bc8c",
+      "id": 3003,
+      "asset0": "savUSD",
+      "asset1": "USDm",
+      "hook": "0x3752b69f2494466c7ab7c2f63b6af883891f8c96",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     }
   ],
   "sonic": [
@@ -232,13 +349,19 @@
       "address": "0x062A36Bbe0306c2Fd7aecdf25843291fBAB96AD2",
       "id": 20,
       "asset0": "wS",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0x6aafd9dd424541885fd79c06fda96929cfd512f9",
+      "hookOwner": "0x7461d8c0fdf376c847b651d882dea4c73fad2e4b",
+      "hookVersion": "legacy"
     },
     {
       "address": "0x180A8fF4C343b6eEa2FF0Feb2dcC92a360bF7025",
       "id": 3001,
       "asset0": "wS",
-      "asset1": "USSD"
+      "asset1": "USSD",
+      "hook": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     }
   ],
   "xdc": [
@@ -246,19 +369,28 @@
       "address": "0x0d419DC8128D5738a62753DeB8eA3508AEd95253",
       "id": 3002,
       "asset0": "WXDC",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0x9990c60cd7b613123f6b7f8854de57c359706abb",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     },
     {
       "address": "0x519303893faD9dE0b5aF1bf20a35145F1f2690c4",
       "id": 3003,
       "asset0": "scrvUSD",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0xa283a9dcbbc1f84b3a21763c7513187713fd3f23",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     },
     {
       "address": "0x6007eC05764e1Ecd2811D8a2C8F5f125f0b47F7d",
       "id": 3004,
       "asset0": "WXDC",
-      "asset1": "USDC"
+      "asset1": "USDC",
+      "hook": "0x1ec25a646b112fcf5f179db80be39bc772b94523",
+      "hookOwner": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+      "hookVersion": "SiloHookV2 4.4.0"
     }
   ]
 }

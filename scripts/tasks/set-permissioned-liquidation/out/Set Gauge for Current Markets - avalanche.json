@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "chainId": "43114",
-  "createdAt": 1778591650301,
+  "createdAt": 1778599885080,
   "meta": {
     "name": "Set Gauge for Current Markets - avalanche",
     "description": "SetGauge bundle for current markets on avalanche\nHook owner (Safe): 0xe8e8041cb5e3158a0829a19e014ca1cf91098554\nSource records: 8\nTransactions: 48",
@@ -34,89 +34,137 @@
         "type": "function"
       },
       "contractInputsValues": {
-        "_gauge": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
-        "_shareToken": "0x029f2cac3a328139e12731773a0c90d4d2dba220"
-      }
-    },
-    {
-      "to": "0x2108fcb5ae037143baef90f2f63c4c66ba9fb3b6",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "contract ISiloIncentivesController",
-            "name": "_gauge",
-            "type": "address"
-          },
-          {
-            "internalType": "contract IShareToken",
-            "name": "_shareToken",
-            "type": "address"
-          }
-        ],
-        "name": "setGauge",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
         "_gauge": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
         "_shareToken": "0xf9556b38343cac9b4410054b1d975d3ba68b9065"
       }
     },
     {
-      "to": "0x809c5abc4db4258c077c7c65dac5beb994471703",
+      "to": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
       "value": "0",
       "data": null,
       "contractMethod": {
         "inputs": [
           {
-            "internalType": "contract ISiloIncentivesController",
-            "name": "_gauge",
-            "type": "address"
-          },
-          {
-            "internalType": "contract IShareToken",
-            "name": "_shareToken",
-            "type": "address"
+            "internalType": "bool",
+            "name": "_enabled",
+            "type": "bool"
           }
         ],
-        "name": "setGauge",
+        "name": "setEnabled",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
       },
       "contractInputsValues": {
-        "_gauge": "0xfd97d34d6d5f47d9c5413ec766d8a6b143556d54",
-        "_shareToken": "0xdcffacbed111ba9d59b5e96a85934db91117bdd9"
+        "_enabled": "true"
       }
     },
     {
-      "to": "0x809c5abc4db4258c077c7c65dac5beb994471703",
+      "to": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
       "value": "0",
       "data": null,
       "contractMethod": {
         "inputs": [
           {
-            "internalType": "contract ISiloIncentivesController",
-            "name": "_gauge",
-            "type": "address"
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
           },
           {
-            "internalType": "contract IShareToken",
-            "name": "_shareToken",
+            "internalType": "address",
+            "name": "account",
             "type": "address"
           }
         ],
-        "name": "setGauge",
+        "name": "grantRole",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
       },
       "contractInputsValues": {
-        "_gauge": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
-        "_shareToken": "0xf27950c111aeefded6d8c53bd7452e1b3b96ac39"
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
+      }
+    },
+    {
+      "to": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
+      }
+    },
+    {
+      "to": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
+      }
+    },
+    {
+      "to": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
       }
     },
     {
@@ -147,6 +195,135 @@
       }
     },
     {
+      "to": "0x303417965b259833cd62d8b3311ada4f9338f954",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bool",
+            "name": "_enabled",
+            "type": "bool"
+          }
+        ],
+        "name": "setEnabled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_enabled": "true"
+      }
+    },
+    {
+      "to": "0x303417965b259833cd62d8b3311ada4f9338f954",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
+      }
+    },
+    {
+      "to": "0x303417965b259833cd62d8b3311ada4f9338f954",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
+      }
+    },
+    {
+      "to": "0x303417965b259833cd62d8b3311ada4f9338f954",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
+      }
+    },
+    {
+      "to": "0x303417965b259833cd62d8b3311ada4f9338f954",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
+      }
+    },
+    {
       "to": "0x9b8b655efa702aa8bbff3482c4a47aed4438bba4",
       "value": "0",
       "data": null,
@@ -171,6 +348,447 @@
       "contractInputsValues": {
         "_gauge": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
         "_shareToken": "0x8dd4e0ce7a11e5f1c606315815ffbbac4da83e58"
+      }
+    },
+    {
+      "to": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bool",
+            "name": "_enabled",
+            "type": "bool"
+          }
+        ],
+        "name": "setEnabled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_enabled": "true"
+      }
+    },
+    {
+      "to": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
+      }
+    },
+    {
+      "to": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
+      }
+    },
+    {
+      "to": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
+      }
+    },
+    {
+      "to": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
+      }
+    },
+    {
+      "to": "0x2108fcb5ae037143baef90f2f63c4c66ba9fb3b6",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "contract ISiloIncentivesController",
+            "name": "_gauge",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IShareToken",
+            "name": "_shareToken",
+            "type": "address"
+          }
+        ],
+        "name": "setGauge",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_gauge": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
+        "_shareToken": "0x029f2cac3a328139e12731773a0c90d4d2dba220"
+      }
+    },
+    {
+      "to": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bool",
+            "name": "_enabled",
+            "type": "bool"
+          }
+        ],
+        "name": "setEnabled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_enabled": "true"
+      }
+    },
+    {
+      "to": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
+      }
+    },
+    {
+      "to": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
+      }
+    },
+    {
+      "to": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
+      }
+    },
+    {
+      "to": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
+      }
+    },
+    {
+      "to": "0x809c5abc4db4258c077c7c65dac5beb994471703",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "contract ISiloIncentivesController",
+            "name": "_gauge",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IShareToken",
+            "name": "_shareToken",
+            "type": "address"
+          }
+        ],
+        "name": "setGauge",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_gauge": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
+        "_shareToken": "0xf27950c111aeefded6d8c53bd7452e1b3b96ac39"
+      }
+    },
+    {
+      "to": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bool",
+            "name": "_enabled",
+            "type": "bool"
+          }
+        ],
+        "name": "setEnabled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_enabled": "true"
+      }
+    },
+    {
+      "to": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
+      }
+    },
+    {
+      "to": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
+      }
+    },
+    {
+      "to": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
+      }
+    },
+    {
+      "to": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
       }
     },
     {
@@ -201,6 +819,135 @@
       }
     },
     {
+      "to": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bool",
+            "name": "_enabled",
+            "type": "bool"
+          }
+        ],
+        "name": "setEnabled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_enabled": "true"
+      }
+    },
+    {
+      "to": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
+      }
+    },
+    {
+      "to": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
+      }
+    },
+    {
+      "to": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
+      }
+    },
+    {
+      "to": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
+      }
+    },
+    {
       "to": "0xf410a51cb70313b397e65e7a6da5ea14ee08bdc1",
       "value": "0",
       "data": null,
@@ -228,651 +975,24 @@
       }
     },
     {
-      "to": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
+      "to": "0xd868b3e1d256be81cb125ac25d8230f8393d1068",
       "value": "0",
       "data": null,
       "contractMethod": {
         "inputs": [
           {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
+            "internalType": "bool",
+            "name": "_enabled",
+            "type": "bool"
           }
         ],
-        "name": "grantRole",
+        "name": "setEnabled",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
       },
       "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
-      }
-    },
-    {
-      "to": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
-      }
-    },
-    {
-      "to": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
-      }
-    },
-    {
-      "to": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
-      }
-    },
-    {
-      "to": "0x303417965b259833cd62d8b3311ada4f9338f954",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
-      }
-    },
-    {
-      "to": "0x303417965b259833cd62d8b3311ada4f9338f954",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
-      }
-    },
-    {
-      "to": "0x303417965b259833cd62d8b3311ada4f9338f954",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
-      }
-    },
-    {
-      "to": "0x303417965b259833cd62d8b3311ada4f9338f954",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
-      }
-    },
-    {
-      "to": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
-      }
-    },
-    {
-      "to": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
-      }
-    },
-    {
-      "to": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
-      }
-    },
-    {
-      "to": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
-      }
-    },
-    {
-      "to": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
-      }
-    },
-    {
-      "to": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
-      }
-    },
-    {
-      "to": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
-      }
-    },
-    {
-      "to": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
-      }
-    },
-    {
-      "to": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
-      }
-    },
-    {
-      "to": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
-      }
-    },
-    {
-      "to": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
-      }
-    },
-    {
-      "to": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
-      }
-    },
-    {
-      "to": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
-      }
-    },
-    {
-      "to": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xc759decfe9f6eed714d6ab6d15f0d00dbf213c39"
-      }
-    },
-    {
-      "to": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
-      }
-    },
-    {
-      "to": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "role",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
-        "name": "grantRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
-        "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
+        "_enabled": "true"
       }
     },
     {
@@ -984,6 +1104,54 @@
       }
     },
     {
+      "to": "0x809c5abc4db4258c077c7c65dac5beb994471703",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "contract ISiloIncentivesController",
+            "name": "_gauge",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IShareToken",
+            "name": "_shareToken",
+            "type": "address"
+          }
+        ],
+        "name": "setGauge",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_gauge": "0xfd97d34d6d5f47d9c5413ec766d8a6b143556d54",
+        "_shareToken": "0xdcffacbed111ba9d59b5e96a85934db91117bdd9"
+      }
+    },
+    {
+      "to": "0xfd97d34d6d5f47d9c5413ec766d8a6b143556d54",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bool",
+            "name": "_enabled",
+            "type": "bool"
+          }
+        ],
+        "name": "setEnabled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_enabled": "true"
+      }
+    },
+    {
       "to": "0xfd97d34d6d5f47d9c5413ec766d8a6b143556d54",
       "value": "0",
       "data": null,
@@ -1089,174 +1257,6 @@
       "contractInputsValues": {
         "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
         "account": "0xdb8838f8d035e5fa48b3481867424f5fc6231d87"
-      }
-    },
-    {
-      "to": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bool",
-            "name": "_enabled",
-            "type": "bool"
-          }
-        ],
-        "name": "setEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_enabled": "true"
-      }
-    },
-    {
-      "to": "0x303417965b259833cd62d8b3311ada4f9338f954",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bool",
-            "name": "_enabled",
-            "type": "bool"
-          }
-        ],
-        "name": "setEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_enabled": "true"
-      }
-    },
-    {
-      "to": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bool",
-            "name": "_enabled",
-            "type": "bool"
-          }
-        ],
-        "name": "setEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_enabled": "true"
-      }
-    },
-    {
-      "to": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bool",
-            "name": "_enabled",
-            "type": "bool"
-          }
-        ],
-        "name": "setEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_enabled": "true"
-      }
-    },
-    {
-      "to": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bool",
-            "name": "_enabled",
-            "type": "bool"
-          }
-        ],
-        "name": "setEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_enabled": "true"
-      }
-    },
-    {
-      "to": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bool",
-            "name": "_enabled",
-            "type": "bool"
-          }
-        ],
-        "name": "setEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_enabled": "true"
-      }
-    },
-    {
-      "to": "0xd868b3e1d256be81cb125ac25d8230f8393d1068",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bool",
-            "name": "_enabled",
-            "type": "bool"
-          }
-        ],
-        "name": "setEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_enabled": "true"
-      }
-    },
-    {
-      "to": "0xfd97d34d6d5f47d9c5413ec766d8a6b143556d54",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bool",
-            "name": "_enabled",
-            "type": "bool"
-          }
-        ],
-        "name": "setEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_enabled": "true"
       }
     }
   ]

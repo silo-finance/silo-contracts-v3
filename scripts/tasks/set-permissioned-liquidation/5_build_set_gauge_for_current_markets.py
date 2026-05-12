@@ -344,18 +344,21 @@ def main() -> int:
             # deduplicate by functional call identity
             unique_map = {(e["hook"], e["gauge"], e["shareToken"]): e for e in entries}
             unique_entries = sorted(unique_map.values(), key=lambda e: (e["hook"], e["shareToken"], e["gauge"]))
-            unique_gauges = sorted({e["gauge"] for e in unique_entries}, key=str.lower)
             helper_addresses = collect_helpers_for_chain(chain)
+            entries_by_gauge: dict[str, list[dict[str, str]]] = {}
+            for e in unique_entries:
+                entries_by_gauge.setdefault(e["gauge"], []).append(e)
+            gauges_in_order = sorted(entries_by_gauge.keys(), key=str.lower)
 
             txs: list[dict[str, Any]] = []
-            # 1) configure hook -> gauge mapping
-            txs.extend(build_tx(e) for e in unique_entries)
-            # 2) whitelist helper contracts on each gauge
-            for gauge in unique_gauges:
+            # For easier QA/review, group transactions per gauge:
+            # setGauge -> setEnabled(true) -> grantRole helper(s)
+            for gauge in gauges_in_order:
+                for e in entries_by_gauge[gauge]:
+                    txs.append(build_tx(e))
+                txs.append(build_set_enabled_tx(gauge))
                 for helper in helper_addresses:
                     txs.append(build_grant_role_tx(gauge, helper))
-            # 3) enable permissioned liquidation on each gauge
-            txs.extend(build_set_enabled_tx(gauge) for gauge in unique_gauges)
 
             batch = build_batch(
                 chain=chain,
@@ -374,7 +377,7 @@ def main() -> int:
             out_path.write_text(json.dumps(batch, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
             print(
                 f"[ok] {chain} owner={owner} setGauge={len(unique_entries)} "
-                f"helpers={len(helper_addresses)} gauges={len(unique_gauges)} tx={len(txs)} -> {out_path.name}"
+                f"helpers={len(helper_addresses)} gauges={len(gauges_in_order)} tx={len(txs)} -> {out_path.name}"
             )
             generated += 1
 

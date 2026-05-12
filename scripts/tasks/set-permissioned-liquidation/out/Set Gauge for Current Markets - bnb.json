@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "chainId": "56",
-  "createdAt": 1778591650303,
+  "createdAt": 1778599885081,
   "meta": {
     "name": "Set Gauge for Current Markets - bnb",
     "description": "SetGauge bundle for current markets on bnb\nHook owner (Safe): 0xe8e8041cb5e3158a0829a19e014ca1cf91098554\nSource records: 2\nTransactions: 8",
@@ -11,33 +11,6 @@
     "checksum": ""
   },
   "transactions": [
-    {
-      "to": "0x228e2d4b4367dedca3b210ccf01a1d33ee2c6916",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "contract ISiloIncentivesController",
-            "name": "_gauge",
-            "type": "address"
-          },
-          {
-            "internalType": "contract IShareToken",
-            "name": "_shareToken",
-            "type": "address"
-          }
-        ],
-        "name": "setGauge",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_gauge": "0x557b3d7c3f5f5e584b83550ae9561e10c77f5b76",
-        "_shareToken": "0x336b269f4fdd7af9f967e250003578263693aec0"
-      }
-    },
     {
       "to": "0x228e2d4b4367dedca3b210ccf01a1d33ee2c6916",
       "value": "0",
@@ -72,6 +45,27 @@
       "contractMethod": {
         "inputs": [
           {
+            "internalType": "bool",
+            "name": "_enabled",
+            "type": "bool"
+          }
+        ],
+        "name": "setEnabled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_enabled": "true"
+      }
+    },
+    {
+      "to": "0x042690e55638bd2c0f7d3480b85d92ed60248a6c",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
             "internalType": "bytes32",
             "name": "role",
             "type": "bytes32"
@@ -120,6 +114,54 @@
       }
     },
     {
+      "to": "0x228e2d4b4367dedca3b210ccf01a1d33ee2c6916",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "contract ISiloIncentivesController",
+            "name": "_gauge",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IShareToken",
+            "name": "_shareToken",
+            "type": "address"
+          }
+        ],
+        "name": "setGauge",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_gauge": "0x557b3d7c3f5f5e584b83550ae9561e10c77f5b76",
+        "_shareToken": "0x336b269f4fdd7af9f967e250003578263693aec0"
+      }
+    },
+    {
+      "to": "0x557b3d7c3f5f5e584b83550ae9561e10c77f5b76",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bool",
+            "name": "_enabled",
+            "type": "bool"
+          }
+        ],
+        "name": "setEnabled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "_enabled": "true"
+      }
+    },
+    {
       "to": "0x557b3d7c3f5f5e584b83550ae9561e10c77f5b76",
       "value": "0",
       "data": null,
@@ -171,48 +213,6 @@
       "contractInputsValues": {
         "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
         "account": "0xbf3c74f202fc4c2b39a48992901d4e5c3a023446"
-      }
-    },
-    {
-      "to": "0x042690e55638bd2c0f7d3480b85d92ed60248a6c",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bool",
-            "name": "_enabled",
-            "type": "bool"
-          }
-        ],
-        "name": "setEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_enabled": "true"
-      }
-    },
-    {
-      "to": "0x557b3d7c3f5f5e584b83550ae9561e10c77f5b76",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "bool",
-            "name": "_enabled",
-            "type": "bool"
-          }
-        ],
-        "name": "setEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_enabled": "true"
       }
     }
   ]

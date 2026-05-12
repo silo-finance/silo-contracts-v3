@@ -9,21 +9,51 @@ Step 1:
 Step 2:
 - verify all gauge addresses from deployment output are present
   in "Set Gauge for Current Markets" bundles
+
+Step 4:
+- if gaugeVersion exists, it must equal expected value
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
+import sys
 from pathlib import Path
 from typing import Any
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_SCRIPTS_DIR = REPO_ROOT / "scripts"
+if str(REPO_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(REPO_SCRIPTS_DIR))
+
+from rpc_multicall import multicall_eth_calls, rpc_preflight  # noqa: E402
+
 DEFAULT_DEPLOY_GAUGES_PATH = SCRIPT_DIR / "permissioned_liquidation_deploy_gauges_by_chain.json"
 DEFAULT_SET_GAUGE_DIR = SCRIPT_DIR / "out"
 SET_GAUGE_FILE_RE = re.compile(r"^Set Gauge for Current Markets - .*\.json$")
+VERSION_SELECTOR = "0xffa1ad74"
+DEFAULT_EXPECTED_GAUGE_VERSION = "PermissionedLiquidationController 4.17.0"
+
+CHAIN_RPC_ENV_CANDIDATES: dict[str, list[str]] = {
+    "arbitrum_one": ["RPC_ARBITRUM_ONE", "RPC_ARBITRUM"],
+    "avalanche": ["RPC_AVALANCHE"],
+    "base": ["RPC_BASE"],
+    "bnb": ["RPC_BNB"],
+    "injective": ["RPC_INJECTIVE"],
+    "ink": ["RPC_INK"],
+    "mainnet": ["RPC_MAINNET"],
+    "mantle": ["RPC_MANTLE"],
+    "megaeth": ["RPC_MEGAETH"],
+    "okx": ["RPC_OKX"],
+    "optimism": ["RPC_OPTIMISM"],
+    "sonic": ["RPC_SONIC"],
+    "xdc": ["RPC_XDC"],
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -45,6 +75,19 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_SET_GAUGE_DIR,
         help=f'Directory with "Set Gauge for Current Markets" JSON files (default: {DEFAULT_SET_GAUGE_DIR})',
     )
+    parser.add_argument(
+        "--skip-version-update",
+        action="store_true",
+        help="Skip step 3 (fetch gauge versions and update deploy JSON).",
+    )
+    parser.add_argument(
+        "--expected-gauge-version",
+        default=DEFAULT_EXPECTED_GAUGE_VERSION,
+        help=(
+            "Expected gaugeVersion value for validation step "
+            f"(default: {DEFAULT_EXPECTED_GAUGE_VERSION})"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -52,6 +95,10 @@ def load_json(path: Path) -> Any:
     if not path.exists():
         raise FileNotFoundError(f"File not found: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def save_json(path: Path, payload: Any) -> None:
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def extract_by_chain(raw: Any) -> dict[str, list[dict[str, Any]]]:
@@ -94,6 +141,69 @@ def normalize_address(value: str) -> str:
     if not is_address(value):
         raise ValueError(f"Invalid address: {value!r}")
     return value.strip().lower()
+
+
+def _strip_quotes(value: str) -> str:
+    value = value.strip()
+    if len(value) >= 2 and ((value[0] == value[-1] == '"') or (value[0] == value[-1] == "'")):
+        return value[1:-1]
+    return value
+
+
+def load_repo_env(override_existing: bool = False) -> Path | None:
+    candidates = [REPO_ROOT / "env", REPO_ROOT / ".env"]
+    env_path = next((p for p in candidates if p.exists() and p.is_file()), None)
+    if env_path is None:
+        return None
+
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("export "):
+            line = line[len("export ") :].strip()
+        if "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        if not key:
+            continue
+        value = _strip_quotes(value)
+        if override_existing or key not in os.environ:
+            os.environ[key] = value
+    return env_path
+
+
+def resolve_rpc_url(chain: str) -> tuple[str | None, str | None]:
+    for env_name in CHAIN_RPC_ENV_CANDIDATES.get(chain, []):
+        value = os.environ.get(env_name, "").strip()
+        if value:
+            return value, env_name
+    return None, None
+
+
+def decode_abi_string(hex_result: str | None) -> str | None:
+    if not isinstance(hex_result, str) or not hex_result:
+        return None
+    data = hex_result[2:] if hex_result.startswith("0x") else hex_result
+    if len(data) < 128:
+        return None
+    try:
+        offset = int(data[0:64], 16) * 2
+        if offset + 64 > len(data):
+            return None
+        length = int(data[offset : offset + 64], 16)
+        start = offset + 64
+        end = start + (length * 2)
+        if end > len(data):
+            return None
+        return bytes.fromhex(data[start:end]).decode("utf-8")
+    except (ValueError, UnicodeDecodeError):
+        return None
+
+
+def _chunks(items: list[str], size: int) -> list[list[str]]:
+    return [items[i : i + size] for i in range(0, len(items), size)]
 
 
 def run_step_1(deploy_gauges_path: Path) -> int:
@@ -261,12 +371,183 @@ def run_step_2(deploy_gauges_path: Path, set_gauge_dir: Path) -> int:
     return 1
 
 
+def run_step_3_update_gauge_versions(deploy_gauges_path: Path) -> int:
+    raw = load_json(deploy_gauges_path)
+    by_chain = extract_by_chain(raw)
+    if not by_chain:
+        print(f"[FAIL] could not read chain records from {deploy_gauges_path}")
+        return 1
+
+    print("[STEP 3] fetch gauge versions via multicall and update deploy JSON")
+    total_gauges = 0
+    already_with_version = 0
+    updated = 0
+    chain_failures = 0
+
+    for chain in sorted(by_chain):
+        records = by_chain[chain]
+        gauge_to_entries: dict[str, list[dict[str, Any]]] = {}
+        for rec in records:
+            entries_obj = rec.get("entries")
+            if not isinstance(entries_obj, list):
+                entries_obj = rec.get("gauges")
+            if not isinstance(entries_obj, list):
+                continue
+            for entry in entries_obj:
+                if not isinstance(entry, dict):
+                    continue
+                gauge = entry.get("gauge")
+                if not is_address(gauge):
+                    continue
+                total_gauges += 1
+                version = entry.get("gaugeVersion")
+                if isinstance(version, str) and version.strip():
+                    already_with_version += 1
+                    continue
+                gauge_n = normalize_address(gauge)
+                gauge_to_entries.setdefault(gauge_n, []).append(entry)
+
+        if not gauge_to_entries:
+            print(f"[info] {chain}: all gauges already have versions")
+            continue
+
+        rpc_url, rpc_env = resolve_rpc_url(chain)
+        if not rpc_url:
+            print(f"[FAIL] {chain}: missing RPC env (expected one of {CHAIN_RPC_ENV_CANDIDATES.get(chain, [])})")
+            chain_failures += 1
+            continue
+
+        preflight_err = rpc_preflight(rpc_url, timeout=20)
+        if preflight_err:
+            print(f"[FAIL] {chain}: RPC preflight failed ({preflight_err})")
+            chain_failures += 1
+            continue
+
+        gauges = sorted(gauge_to_entries.keys())
+        print(
+            f"[info] {chain}: fetching versions for {len(gauges)} gauges "
+            f"using {rpc_env}"
+        )
+
+        for gauges_chunk in _chunks(gauges, 200):
+            calls = [(gauge_addr, VERSION_SELECTOR) for gauge_addr in gauges_chunk]
+            results, global_err = multicall_eth_calls(chain, rpc_url, calls, timeout=120)
+            if global_err:
+                print(f"[FAIL] {chain}: multicall failed ({global_err})")
+                chain_failures += 1
+                # Preserve resumability of step 3: mark chunk gauges as legacy.
+                for gauge_addr in gauges_chunk:
+                    for entry in gauge_to_entries[gauge_addr]:
+                        entry["gaugeVersion"] = "legacy"
+                        updated += 1
+                continue
+
+            for gauge_addr, (hex_result, call_err) in zip(gauges_chunk, results):
+                if call_err:
+                    decoded_version = "legacy"
+                else:
+                    decoded = decode_abi_string(hex_result)
+                    decoded_version = decoded.strip() if isinstance(decoded, str) and decoded.strip() else "legacy"
+                for entry in gauge_to_entries[gauge_addr]:
+                    entry["gaugeVersion"] = decoded_version
+                    updated += 1
+
+    if updated > 0:
+        save_json(deploy_gauges_path, raw)
+        print(f"[OK] updated {updated} entries with gaugeVersion in {deploy_gauges_path}")
+    else:
+        print("[info] no gaugeVersion updates were necessary")
+
+    print()
+    print(f"Gauge entries scanned: {total_gauges}")
+    print(f"Already had gaugeVersion: {already_with_version}")
+    print(f"GaugeVersion updated now: {updated}")
+    print(f"Chains with RPC/multicall failures: {chain_failures}")
+
+    if chain_failures == 0:
+        print("[OK] Step 3 passed")
+        return 0
+
+    print("[FAIL] Step 3 completed with chain failures")
+    return 1
+
+
+def run_step_4_validate_gauge_version(
+    deploy_gauges_path: Path, *, expected_version: str
+) -> int:
+    raw = load_json(deploy_gauges_path)
+    by_chain = extract_by_chain(raw)
+    if not by_chain:
+        print(f"[FAIL] could not read chain records from {deploy_gauges_path}")
+        return 1
+
+    print(f"[STEP 4] validate gaugeVersion == {expected_version!r}")
+    checked = 0
+    mismatches = 0
+    missing = 0
+
+    for chain in sorted(by_chain):
+        for rec in by_chain[chain]:
+            market_id = rec.get("id")
+            entries_obj = rec.get("entries")
+            if not isinstance(entries_obj, list):
+                entries_obj = rec.get("gauges")
+            if not isinstance(entries_obj, list):
+                continue
+
+            for entry in entries_obj:
+                if not isinstance(entry, dict):
+                    continue
+                gauge = entry.get("gauge")
+                if not is_address(gauge):
+                    continue
+                version = entry.get("gaugeVersion")
+                if not isinstance(version, str) or not version.strip():
+                    missing += 1
+                    continue
+
+                checked += 1
+                version_norm = version.strip()
+                if version_norm != expected_version:
+                    mismatches += 1
+                    print(
+                        f"[FAIL] chain={chain} id={market_id} gauge={normalize_address(gauge)} "
+                        f"gaugeVersion={version_norm!r}"
+                    )
+
+    print()
+    print(f"Gauge entries with gaugeVersion present: {checked}")
+    print(f"Gauge entries with missing gaugeVersion: {missing}")
+    print(f"Gauge version mismatches: {mismatches}")
+    if mismatches == 0:
+        print("[OK] Step 4 passed")
+        return 0
+
+    print("[FAIL] Step 4 failed")
+    return 1
+
+
 def main() -> int:
     args = parse_args()
+    env_path = load_repo_env(override_existing=False)
+    if env_path:
+        print(f"[info] loaded env from {env_path}")
+
     step_1_rc = run_step_1(args.deploy_gauges_json)
     print()
     step_2_rc = run_step_2(args.deploy_gauges_json, args.set_gauge_dir)
-    return 0 if step_1_rc == 0 and step_2_rc == 0 else 1
+    print()
+    if args.skip_version_update:
+        print("[info] step 3 skipped (--skip-version-update)")
+        step_3_rc = 0
+    else:
+        step_3_rc = run_step_3_update_gauge_versions(args.deploy_gauges_json)
+    print()
+    step_4_rc = run_step_4_validate_gauge_version(
+        args.deploy_gauges_json,
+        expected_version=args.expected_gauge_version,
+    )
+    return 0 if step_1_rc == 0 and step_2_rc == 0 and step_3_rc == 0 and step_4_rc == 0 else 1
 
 
 if __name__ == "__main__":

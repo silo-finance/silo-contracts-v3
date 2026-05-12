@@ -14,13 +14,15 @@
             "hook": "0x9d9fddc7cdce47d58b0b55f563d2d0a2971ee85f",
             "gauge": "0x876da7407d304afc86c2f1666b7e4b8f1e35b5fc",
             "shareToken": "0x24a5eb888a805dd8cbe3b8ed3672dea338496b78",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x9d9fddc7cdce47d58b0b55f563d2d0a2971ee85f",
             "gauge": "0xe01e16a66c0b416474daf5e700a9f074be95c0da",
             "shareToken": "0x2003028e3b69b34035d6ee02d12cf360f8c30e6b",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -36,13 +38,15 @@
             "hook": "0xac623a1d1ee7023e60288fd2c9ec3fb729f4ee8f",
             "gauge": "0x1fbfcccbce8785887d2cac998b17e3ca4bb6b85f",
             "shareToken": "0x892826bde29d0bfaba00220f7d9fd42d02c36955",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xac623a1d1ee7023e60288fd2c9ec3fb729f4ee8f",
             "gauge": "0xe0fcc5c3456d617d9bd72854d8be3bab294b6e79",
             "shareToken": "0x5f364b24735e786ca1c6183545e7d5fe8dcdfbdf",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -58,13 +62,15 @@
             "hook": "0x97dc5ea7a2d98599534655535e101e2f35bbcd69",
             "gauge": "0x3a2c1d86c03772bb3483c51c8d3be52a64a5d54b",
             "shareToken": "0x84d1b853c1f34a01c6120013ac7ac704d5383a8d",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x97dc5ea7a2d98599534655535e101e2f35bbcd69",
             "gauge": "0x807184034e08876162d5150cf1307f8f3ae10e6b",
             "shareToken": "0x60fa6517c813087391e24c27c95bcab35fb7b883",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -80,13 +86,15 @@
             "hook": "0x2174557e5ed2e8256284a5df42a91b21db6313a9",
             "gauge": "0xc2b808942f5923ca18d97d821dd5b60983f9b101",
             "shareToken": "0x86a142a3e1dc26fa8f98d688397a4b25e9c12813",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x2174557e5ed2e8256284a5df42a91b21db6313a9",
             "gauge": "0x5699dadc58c7af86f0e753abf5c3b4559a998461",
             "shareToken": "0xaa60276ed588a25dc5994e239bb78486c3266623",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -102,13 +110,15 @@
             "hook": "0xaf45c4f4b0239a20157eda4069c283cb8c7d6af2",
             "gauge": "0x83d474acf8c4e7bfb0f59fd1f8be8af9f48fc7b5",
             "shareToken": "0x964ff17fba045fc59e691c36b36391a3aabfeafb",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xaf45c4f4b0239a20157eda4069c283cb8c7d6af2",
             "gauge": "0x641a06aff081ad056603799cec11d73903fedabd",
             "shareToken": "0x1095c1ede82a88a374fa38166b11612acab72a45",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -124,13 +134,15 @@
             "hook": "0xf3c69312f020eaaa9e0a60295549820a77b5cab9",
             "gauge": "0x4c5ed76bacb7e3098f5f5f56271b23b6e49b17e9",
             "shareToken": "0x80a2e9780134f63aa0d993f52cde969c0467e954",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xf3c69312f020eaaa9e0a60295549820a77b5cab9",
             "gauge": "0x7f13c8752612993543e46924a0d2dd58e36c1ded",
             "shareToken": "0x2c711f4ca0c1c9e11cf53beee79382aac93c5367",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -146,13 +158,15 @@
             "hook": "0x15d3ebe0317cd2f0db0a6f4780c29c43c93a1003",
             "gauge": "0xc7e555922cb585329793e32f1cc9ba6e78c081b5",
             "shareToken": "0x3c4c97b79c75dd7f7ebd7768501ee81d2ff78b7b",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x15d3ebe0317cd2f0db0a6f4780c29c43c93a1003",
             "gauge": "0x869de26e2aec58ed5b587bf5ad90624742869fe2",
             "shareToken": "0x9e91e3318c54e5e5e6f4352ba1dc1bd575d2d4f6",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -160,9 +174,9 @@
         "siloConfig": "0x422a90f3abc36decd3b87942450fc3bf5fb117bf",
         "id": 3008,
         "success": true,
-        "exitCode": 1,
-        "error": "Error: script failed: blacklist",
-        "command": "SILO_CONFIG=0x422a90f3AbC36DECd3b87942450fC3BF5FB117bf DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify",
+        "exitCode": 0,
+        "error": "",
+        "command": "SILO_CONFIG=0x422a90f3AbC36DECd3b87942450fC3BF5FB117bf DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM",
         "entries": [
           {
             "hook": "0x95626c763a2c9fdf3e8a4e6644f2b9bcdb67097a",
@@ -190,13 +204,15 @@
             "hook": "0x2c7d9b9823bbcc63e52de90db6f3fb10679789ae",
             "gauge": "0x1599b2e05cf37cbf005409da51437bc54da18ab1",
             "shareToken": "0x371b40c0840b749eef9585fd9785ac6fad1e233b",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x2c7d9b9823bbcc63e52de90db6f3fb10679789ae",
             "gauge": "0xbbeb28dd4b1db227f18bb928a03436720546d175",
             "shareToken": "0x52f5392909ba75de127ddfa23b7ef465bd42175f",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       }
@@ -214,13 +230,15 @@
             "hook": "0x809c5abc4db4258c077c7c65dac5beb994471703",
             "gauge": "0xfd97d34d6d5f47d9c5413ec766d8a6b143556d54",
             "shareToken": "0xdcffacbed111ba9d59b5e96a85934db91117bdd9",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x809c5abc4db4258c077c7c65dac5beb994471703",
             "gauge": "0x900c2b628bcd3dbdc3fcbcec1ea5701a00f03da4",
             "shareToken": "0xf27950c111aeefded6d8c53bd7452e1b3b96ac39",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -236,13 +254,15 @@
             "hook": "0x9b8b655efa702aa8bbff3482c4a47aed4438bba4",
             "gauge": "0x303417965b259833cd62d8b3311ada4f9338f954",
             "shareToken": "0x74e54cc5078e73b4042564c2f48e3687c469dacf",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x9b8b655efa702aa8bbff3482c4a47aed4438bba4",
             "gauge": "0x6bb667a893773d67092d0a92a329c5f9e5d19115",
             "shareToken": "0x8dd4e0ce7a11e5f1c606315815ffbbac4da83e58",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -258,13 +278,15 @@
             "hook": "0xf410a51cb70313b397e65e7a6da5ea14ee08bdc1",
             "gauge": "0xd868b3e1d256be81cb125ac25d8230f8393d1068",
             "shareToken": "0xcc8117e5a2ed78dfce7a6cadffe83ab0e0855b10",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xf410a51cb70313b397e65e7a6da5ea14ee08bdc1",
             "gauge": "0xb367d9f1baf726881f2f8b3f8639dc5dcc45fe5c",
             "shareToken": "0x866e8333b709a38b03accbdda6047adff4321213",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -280,13 +302,15 @@
             "hook": "0x2108fcb5ae037143baef90f2f63c4c66ba9fb3b6",
             "gauge": "0x2b10841872c4f66eead236252d89f727e7cfd9e7",
             "shareToken": "0xf9556b38343cac9b4410054b1d975d3ba68b9065",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x2108fcb5ae037143baef90f2f63c4c66ba9fb3b6",
             "gauge": "0x8850661a1fddcdc3cbf8bd13977d49e24e5ae4e7",
             "shareToken": "0x029f2cac3a328139e12731773a0c90d4d2dba220",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       }
@@ -304,13 +328,15 @@
             "hook": "0x228e2d4b4367dedca3b210ccf01a1d33ee2c6916",
             "gauge": "0x557b3d7c3f5f5e584b83550ae9561e10c77f5b76",
             "shareToken": "0x336b269f4fdd7af9f967e250003578263693aec0",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x228e2d4b4367dedca3b210ccf01a1d33ee2c6916",
             "gauge": "0x042690e55638bd2c0f7d3480b85d92ed60248a6c",
             "shareToken": "0xe347bd30a5ab5b1f65f715fa004ec1f7cc20c837",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       }
@@ -319,46 +345,20 @@
       {
         "siloConfig": "0xe095fa150d05af72f6941ecb1310103741639d18",
         "id": 3000,
-        "success": true,
+        "success": false,
         "exitCode": 1,
         "error": "Error: script failed: panic: arithmetic underflow or overflow (0x11)",
         "command": "SILO_CONFIG=0xe095FA150D05AF72F6941Ecb1310103741639D18 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE --broadcast # --verify skipped for this chain",
-        "entries": [
-          {
-            "hook": "0xca2c650574cca149b17735b6c85afda41e8f8ad3",
-            "gauge": "0x82de7746ed6c106e520b4745cb794bf2e42d1b9f",
-            "shareToken": "0xe5b6cefef63425e1e4e92262c34c6c4c220e640e",
-            "shareTokenKind": "collateralShareToken"
-          },
-          {
-            "hook": "0xca2c650574cca149b17735b6c85afda41e8f8ad3",
-            "gauge": "0xcb7fc1003a65c47edbed8c84d8f90813b053aadd",
-            "shareToken": "0x881cd13e6be8fb1680259a7a6f1eb35a991bfd0d",
-            "shareTokenKind": "protectedShareToken"
-          }
-        ]
+        "entries": []
       },
       {
         "siloConfig": "0xcd73f3f6dc33b46502cb9c53a67bdded0bbaefc4",
         "id": 3003,
-        "success": true,
+        "success": false,
         "exitCode": 1,
         "error": "Error: script failed: panic: arithmetic underflow or overflow (0x11)",
         "command": "SILO_CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE --broadcast # --verify skipped for this chain",
-        "entries": [
-          {
-            "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
-            "gauge": "0x82de7746ed6c106e520b4745cb794bf2e42d1b9f",
-            "shareToken": "0x4aaadf5c3a4d839055531743121e1227153ff0fb",
-            "shareTokenKind": "collateralShareToken"
-          },
-          {
-            "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
-            "gauge": "0xcb7fc1003a65c47edbed8c84d8f90813b053aadd",
-            "shareToken": "0xd1feb9147dc461dd4f07f36189f79a808fb9b7ea",
-            "shareTokenKind": "protectedShareToken"
-          }
-        ]
+        "entries": []
       }
     ],
     "mainnet": [
@@ -374,13 +374,15 @@
             "hook": "0x33e7d0c3e302976c5177ed12b7cd9f66cc258002",
             "gauge": "0x3dc742633c15282fb8e2399c5b253446a77c3f25",
             "shareToken": "0x07fbd3b04f5f9a310f89c8f28cd2a9ef8290f4aa",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x33e7d0c3e302976c5177ed12b7cd9f66cc258002",
             "gauge": "0x6455e0a6e29681da2e25a9e4f8fba247778c4cb3",
             "shareToken": "0xafa33d7cd3d6cf775a65b3f04154712caf11c05b",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -396,13 +398,15 @@
             "hook": "0x1e339d7b0cfed65821e122e8e9b636de50e28ac4",
             "gauge": "0x04b67c49e3769999214186f180029a52060e6183",
             "shareToken": "0x030b3e6a873c8a1ae9733b291301ab1d2fa0640e",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x1e339d7b0cfed65821e122e8e9b636de50e28ac4",
             "gauge": "0x10f343bb7e94f6365d6c4367b45fe2758a96ba19",
             "shareToken": "0x94b9687ce7c6364139b0c7b58686233f340aab3b",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -418,13 +422,15 @@
             "hook": "0x1db8acfbbd40593f96b15f128e4d6c2ba12a2a80",
             "gauge": "0x248df1f865013ed4ed99c56dd84fef571397ec06",
             "shareToken": "0xe394050d179b72197a458fdfb962ae69908aa5a0",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x1db8acfbbd40593f96b15f128e4d6c2ba12a2a80",
             "gauge": "0xf198036d21f68e8b346278ab59f519c351443cf4",
             "shareToken": "0x032503378cd6d523a53dae6738dc3b3431e06209",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -440,13 +446,15 @@
             "hook": "0xa05574ca92394094f57fd77f9fb754bbfe52a815",
             "gauge": "0x0a51b62dbaca69853eba8114892448ee1bd1537e",
             "shareToken": "0xfda109d1111514b44f0e6331a18e13d627d86a9c",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xa05574ca92394094f57fd77f9fb754bbfe52a815",
             "gauge": "0xbf51a315454dea605345c7788feb24196e8c9fb0",
             "shareToken": "0x9e2371b254d55a3ab8643b64c3102e5a39bc75d2",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -462,13 +470,15 @@
             "hook": "0xeb0c0d0be8a823d8b374f46858cf34028a8e7a3f",
             "gauge": "0xe5d767d92cc8d69e2ce4930b7a90a2236e908e92",
             "shareToken": "0xd796071dc7f9418c1004545bb830429a359c34eb",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xeb0c0d0be8a823d8b374f46858cf34028a8e7a3f",
             "gauge": "0x8bff4c374a3372c310fcbeccfbcbf109fc262d33",
             "shareToken": "0x13f887fb0e73cc11b838c6bbfbc61ea51d29485d",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -484,13 +494,15 @@
             "hook": "0x01cbe4a6bf0dbe0f4c66c5b2e87d7bcdcb6b32bb",
             "gauge": "0x510551c7e1bdce47e47a96c2aaa1a49a2e42058e",
             "shareToken": "0x278271d18c574edb1385dc43863d83a5149be183",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x01cbe4a6bf0dbe0f4c66c5b2e87d7bcdcb6b32bb",
             "gauge": "0xb3b27d3d3a1e0a3d3456fe4aae710c2d0462ba8a",
             "shareToken": "0x9734caa0a4fde12c4d841402057ed8569d713537",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -506,13 +518,15 @@
             "hook": "0x08bd5ba7d14160f88ea1e684f2c815fcab96858c",
             "gauge": "0xab5bb39f287395a342b56c49cfac0d527d48b75a",
             "shareToken": "0x22da8f77b724bfe36a2d2451f6bcd91bec7d2ed8",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x08bd5ba7d14160f88ea1e684f2c815fcab96858c",
             "gauge": "0x48cfd2f371adb053c394b375952665872a1adcc2",
             "shareToken": "0x41d340dcad8ebdfeaafc86859ae1b905ffcfddb6",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -528,13 +542,15 @@
             "hook": "0x102f9d13ad5bd69895a104638b24d6e7d4c175e4",
             "gauge": "0x08e3edd2183d49729b636d4eb78e85f932731e97",
             "shareToken": "0xf52fd292494aea70868b110ece337c404e0c28e6",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x102f9d13ad5bd69895a104638b24d6e7d4c175e4",
             "gauge": "0x124530f6498115101912b3ff81949b2d78aa2b08",
             "shareToken": "0x1fa2bf655277f86d11b265775bd4876e33603c07",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -550,13 +566,15 @@
             "hook": "0x274258eab9333971adbeffa61c1f5d2c8e56ce17",
             "gauge": "0x79c36732c981a9bdac577318cdd6aa7d259355f2",
             "shareToken": "0x3b04c3a17cefd2d4b6edf07c8b095b94dcc53d8e",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x274258eab9333971adbeffa61c1f5d2c8e56ce17",
             "gauge": "0x5e36dd00ae79b7c36866abfeae19e42760a677da",
             "shareToken": "0x9c164a8fe1900dfdb6f72ce88e91e4c76ea23bcb",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -572,13 +590,15 @@
             "hook": "0x8cec1ff9f78683f1d20d323e1919881476d7d343",
             "gauge": "0xade2c8846015c46d334f6ff014e7d2d787865cde",
             "shareToken": "0xd294a37a72bac84dfe3548c3e5cbd64e6db704f5",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x8cec1ff9f78683f1d20d323e1919881476d7d343",
             "gauge": "0x9f0d6ae6b0d55f944389eceabe90ee1d60fb77f2",
             "shareToken": "0x6557b391994b773ffe478dde28e8223e170ae1d0",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -594,13 +614,15 @@
             "hook": "0xddb4f286b6747bd13e72221db253fa9cb72aed45",
             "gauge": "0xb8a3a61b70b94a21ba1099df53367ce89ab7ed07",
             "shareToken": "0x57812a4ceaaaa9a6e0f5fe97b79160aa76c1899d",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xddb4f286b6747bd13e72221db253fa9cb72aed45",
             "gauge": "0x0bb8d6f759a1d24989d018bf7306b01b23e8f54e",
             "shareToken": "0xa6b1adaad0b504be1f1949da02412bb73c20dd0d",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -616,13 +638,15 @@
             "hook": "0x7ac15eb0b6434b67943597977d7eba3837a52001",
             "gauge": "0xa159a5d1f400affb254acc5170899dcda3bd80e3",
             "shareToken": "0x9fe889b75527d85e29dca1d527910961614e73c3",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x7ac15eb0b6434b67943597977d7eba3837a52001",
             "gauge": "0x8c37fe925cbc2bfe5604d65d55f89e762a0276df",
             "shareToken": "0x7b0bba2e11123d2fc65a456e5a7bc4a663a27ea6",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -638,13 +662,15 @@
             "hook": "0xfbd33de84444a35ce2c9f239571d52e9dc1a6b34",
             "gauge": "0xa159a5d1f400affb254acc5170899dcda3bd80e3",
             "shareToken": "0xb3baefaf242bb71dfaeac4896b3ad83d38c9702f",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xfbd33de84444a35ce2c9f239571d52e9dc1a6b34",
             "gauge": "0x8c37fe925cbc2bfe5604d65d55f89e762a0276df",
             "shareToken": "0xcfcfe2a1b62f6ccd058191ac1c85961466685105",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -660,13 +686,15 @@
             "hook": "0xb8a7674a28e1f9d6ce9e5c278b095a3d4e97a166",
             "gauge": "0x54bdf568a352f576026139c3efcbd3891fd4e56f",
             "shareToken": "0x096fa5740dbd3e73a6c8ff67c6c8f2e06d9904fd",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xb8a7674a28e1f9d6ce9e5c278b095a3d4e97a166",
             "gauge": "0xce37ab13c9837d1de8c0ed30a3e4f21b96ac635e",
             "shareToken": "0x522a7fc2bbf417e4a392446faacd51b7d5ea67bb",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -682,13 +710,15 @@
             "hook": "0x8df201f7e04932fc3d27765716beaf517d201937",
             "gauge": "0x7df5317cf2d5dc3ca13a7d2a60ff4841f0970ac4",
             "shareToken": "0x2fffd8ff0a3d94003ae0f43d1ddd3e2de2a5943b",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x8df201f7e04932fc3d27765716beaf517d201937",
             "gauge": "0x90c574068b05084e6ab455c0c57e13a54a9ccc4e",
             "shareToken": "0xce6462d47fb1b00a028a456837822446997a5ca7",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -704,13 +734,15 @@
             "hook": "0xc963656c56804a01fdd44abedbc0725bc52b034a",
             "gauge": "0xd819c72bf7ca274ed6ad61f1edc47b2ebf284635",
             "shareToken": "0xfc56fb7def13658abd854b279175d64e067a1597",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xc963656c56804a01fdd44abedbc0725bc52b034a",
             "gauge": "0x2772b68c92ce8abf7cb0e951c747ccb5c902dedf",
             "shareToken": "0xcae92adcfe4129b3dd57bfca124a4c9e095d768d",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -726,13 +758,15 @@
             "hook": "0x1f8a302becf834906b62001fd870d87ee5f0ff50",
             "gauge": "0xd819c72bf7ca274ed6ad61f1edc47b2ebf284635",
             "shareToken": "0xfa8f5f4925f52634c90f291124726255b0f01867",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x1f8a302becf834906b62001fd870d87ee5f0ff50",
             "gauge": "0x2772b68c92ce8abf7cb0e951c747ccb5c902dedf",
             "shareToken": "0x7feb11cccc4305f527e5aa274c2269f583e50f09",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -748,13 +782,15 @@
             "hook": "0x611b4bf9f09d660cfcbe220b514692a9066c76dc",
             "gauge": "0xa17f90ceeb515a32c3becbe915b677a713f7e01e",
             "shareToken": "0xfe35551ad812d4fd695a69a6c7a962dc130b7c70",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x611b4bf9f09d660cfcbe220b514692a9066c76dc",
             "gauge": "0xd8fc776fa8395128dc81b009313c728a6f03ca1b",
             "shareToken": "0xd701d0c0d798873db4ba046d941678aac7006f72",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -770,13 +806,15 @@
             "hook": "0xf6be1c4a59859d3228da737239fed7bcb46cbe8f",
             "gauge": "0xa977d3065875a4d1d78b25bd95a90a4fc61a7656",
             "shareToken": "0x809ad6314b9f45a7cf3aee6a9bfb75cd66624607",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xf6be1c4a59859d3228da737239fed7bcb46cbe8f",
             "gauge": "0x41b7602038c760b05a6ce4f21db68aa1491b63c8",
             "shareToken": "0x124362c1c2625ddbb110525b6328b8a4559f897c",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       }
@@ -785,46 +823,20 @@
       {
         "siloConfig": "0x21af0468a00d4ced22b49b16575abfd9d5b075f6",
         "id": 3002,
-        "success": true,
+        "success": false,
         "exitCode": 1,
         "error": "Transaction dropped from the mempool: 0xfe8fb1755f4413261047ae25e2c08d3a5604286fec015f341a3a1770a0aa3c94",
         "command": "SILO_CONFIG=0x21af0468A00d4cEd22B49b16575AbFd9D5B075F6 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --broadcast # --verify skipped for this chain",
-        "entries": [
-          {
-            "hook": "0x3217dcaf7fa00cf3f63961cda9486dd9afee954b",
-            "gauge": "0x571f49b6f37d7dd7d49fdf06df8ad0032eb6b630",
-            "shareToken": "0x74969c6fa0b0696e7027240d9fd8dec567a8914c",
-            "shareTokenKind": "collateralShareToken"
-          },
-          {
-            "hook": "0x3217dcaf7fa00cf3f63961cda9486dd9afee954b",
-            "gauge": "0xb9ce21630fc399667aa0242cf9fa28abd530cf4a",
-            "shareToken": "0xd65b5a8087fdcdf13f921ca4d9dd9a901818d0bf",
-            "shareTokenKind": "protectedShareToken"
-          }
-        ]
+        "entries": []
       },
       {
         "siloConfig": "0x0bec26a1ed6f935bade68c3ec70f55131428bc8c",
         "id": 3003,
-        "success": true,
+        "success": false,
         "exitCode": 1,
         "error": "non-fatal after deploy: - server returned an error response: error code -32000: replacement transaction underpriced",
         "command": "SILO_CONFIG=0x0BEc26a1ed6f935BaDE68c3Ec70f55131428Bc8c DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --broadcast # --verify skipped for this chain",
-        "entries": [
-          {
-            "hook": "0x3752b69f2494466c7ab7c2f63b6af883891f8c96",
-            "gauge": "0x571f49b6f37d7dd7d49fdf06df8ad0032eb6b630",
-            "shareToken": "0x8d5d78f36d323ffcb875df6e4e66f0b26a52b152",
-            "shareTokenKind": "collateralShareToken"
-          },
-          {
-            "hook": "0x3752b69f2494466c7ab7c2f63b6af883891f8c96",
-            "gauge": "0xb9ce21630fc399667aa0242cf9fa28abd530cf4a",
-            "shareToken": "0x6915a6a209f0c3c24db19fe7d6a9f49572fd4db0",
-            "shareTokenKind": "protectedShareToken"
-          }
-        ]
+        "entries": []
       }
     ],
     "sonic": [
@@ -840,13 +852,15 @@
             "hook": "0x6aafd9dd424541885fd79c06fda96929cfd512f9",
             "gauge": "0x03058027fd20dbf4ebf04ecdd63683b32542cbf4",
             "shareToken": "0xf55902de87bd80c6a35614b48d7f8b612a083c12",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x6aafd9dd424541885fd79c06fda96929cfd512f9",
             "gauge": "0xef16752586932ef195d0e0921e352dae9b095a98",
             "shareToken": "0xaecd6cbf567ae7de05f7e32eb051525e9fcd9bc6",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -862,13 +876,15 @@
             "hook": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
             "gauge": "0x03058027fd20dbf4ebf04ecdd63683b32542cbf4",
             "shareToken": "0x0e2ef70d9b204a9cd30508a4e399b61ffb821152",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
             "gauge": "0xef16752586932ef195d0e0921e352dae9b095a98",
             "shareToken": "0x944f64002ea851a9b7c34ad49df4d0084bf4afd4",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       }
@@ -886,13 +902,15 @@
             "hook": "0x9990c60cd7b613123f6b7f8854de57c359706abb",
             "gauge": "0x9914a1c828cbaf0b4f53d2e3b7785c19ad5d3999",
             "shareToken": "0x9ebc79a0d5c6a2cb8c294da02f6675cd3f42d677",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x9990c60cd7b613123f6b7f8854de57c359706abb",
             "gauge": "0xef4ffea2b0059794590b709f8f8ad0fe966d09b4",
             "shareToken": "0xfc4e94421714b0eaa911f44c614c6ef34340954e",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -908,13 +926,15 @@
             "hook": "0xa283a9dcbbc1f84b3a21763c7513187713fd3f23",
             "gauge": "0x77758b957edcb59d4e89605b1a2b78f8a00b5cab",
             "shareToken": "0x40a686bf959db56a127a3c6aa9aa4a97147ffc77",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xa283a9dcbbc1f84b3a21763c7513187713fd3f23",
             "gauge": "0xc9f556cb74fae1eaa2abb6173a9615a4683ecc9b",
             "shareToken": "0xefd6ff4de0a2e788fe03ff7c078cb936314d686b",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       },
@@ -930,13 +950,15 @@
             "hook": "0x1ec25a646b112fcf5f179db80be39bc772b94523",
             "gauge": "0xba08f8b6f0b1596d4cbc06eda4e15acf5dd44dc3",
             "shareToken": "0xd89bb9b2074d57cbcac9c7a35d0bfe76947acdd6",
-            "shareTokenKind": "collateralShareToken"
+            "shareTokenKind": "collateralShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x1ec25a646b112fcf5f179db80be39bc772b94523",
             "gauge": "0x3085af5e325d581c8229beb949e04952be8f2a1f",
             "shareToken": "0x415a3a1a4f2e3c37ab0dcaf7651739b450b61da8",
-            "shareTokenKind": "protectedShareToken"
+            "shareTokenKind": "protectedShareToken",
+            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           }
         ]
       }

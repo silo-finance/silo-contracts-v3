@@ -345,20 +345,46 @@
       {
         "siloConfig": "0xe095fa150d05af72f6941ecb1310103741639d18",
         "id": 3000,
-        "success": false,
-        "exitCode": 1,
-        "error": "Error: script failed: panic: arithmetic underflow or overflow (0x11)",
-        "command": "SILO_CONFIG=0xe095FA150D05AF72F6941Ecb1310103741639D18 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE --broadcast # --verify skipped for this chain",
-        "entries": []
+        "success": true,
+        "exitCode": 0,
+        "error": "",
+        "command": "SILO_CONFIG=0xe095FA150D05AF72F6941Ecb1310103741639D18 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE",
+        "entries": [
+          {
+            "hook": "0xca2c650574cca149b17735b6c85afda41e8f8ad3",
+            "gauge": "0x82de7746ed6c106e520b4745cb794bf2e42d1b9f",
+            "shareToken": "0xe5b6cefef63425e1e4e92262c34c6c4c220e640e",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0xca2c650574cca149b17735b6c85afda41e8f8ad3",
+            "gauge": "0xcb7fc1003a65c47edbed8c84d8f90813b053aadd",
+            "shareToken": "0x881cd13e6be8fb1680259a7a6f1eb35a991bfd0d",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       },
       {
         "siloConfig": "0xcd73f3f6dc33b46502cb9c53a67bdded0bbaefc4",
         "id": 3003,
-        "success": false,
-        "exitCode": 1,
-        "error": "Error: script failed: panic: arithmetic underflow or overflow (0x11)",
-        "command": "SILO_CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE --broadcast # --verify skipped for this chain",
-        "entries": []
+        "success": true,
+        "exitCode": 0,
+        "error": "",
+        "command": "SILO_CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE",
+        "entries": [
+          {
+            "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
+            "gauge": "0x82de7746ed6c106e520b4745cb794bf2e42d1b9f",
+            "shareToken": "0x4aaadf5c3a4d839055531743121e1227153ff0fb",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
+            "gauge": "0xcb7fc1003a65c47edbed8c84d8f90813b053aadd",
+            "shareToken": "0xd1feb9147dc461dd4f07f36189f79a808fb9b7ea",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       }
     ],
     "mainnet": [

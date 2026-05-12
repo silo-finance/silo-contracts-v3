@@ -277,11 +277,12 @@ def build_batch(
     owner: str,
     transactions: list[dict[str, Any]],
     source_count: int,
+    created_at: int | None = None,
 ) -> dict[str, Any]:
     return {
         "version": "1.0",
         "chainId": str(chain_id),
-        "createdAt": int(time.time() * 1000),
+        "createdAt": created_at if created_at is not None else int(time.time() * 1000),
         "meta": {
             "name": f"Set Gauge for Current Markets - {chain}",
             "description": (
@@ -297,6 +298,24 @@ def build_batch(
         },
         "transactions": transactions,
     }
+
+
+def load_existing_created_at_if_same_transactions(
+    out_path: Path, transactions: list[dict[str, Any]]
+) -> int | None:
+    if not out_path.exists():
+        return None
+    try:
+        existing = json.loads(out_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(existing, dict):
+        return None
+    existing_txs = existing.get("transactions")
+    existing_created_at = existing.get("createdAt")
+    if existing_txs == transactions and isinstance(existing_created_at, int):
+        return existing_created_at
+    return None
 
 
 def main() -> int:
@@ -399,20 +418,21 @@ def main() -> int:
                 base_filename = f"Set Gauge for Current Markets - {chain} - {short(owner)}"
 
             for idx, txs in enumerate(tx_parts, start=1):
-                batch = build_batch(
-                    chain=chain,
-                    chain_id=chain_id,
-                    owner=owner,
-                    transactions=txs,
-                    source_count=source_records_by_owner.get(owner, 0),
-                )
-
                 if should_split and len(tx_parts) > 1:
                     filename = f"{base_filename} - Part {idx}.json"
                 else:
                     filename = f"{base_filename}.json"
 
                 out_path = output_dir / filename
+                created_at = load_existing_created_at_if_same_transactions(out_path, txs)
+                batch = build_batch(
+                    chain=chain,
+                    chain_id=chain_id,
+                    owner=owner,
+                    transactions=txs,
+                    source_count=source_records_by_owner.get(owner, 0),
+                    created_at=created_at,
+                )
                 out_path.write_text(json.dumps(batch, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
                 print(
                     f"[ok] {chain} owner={owner} part={idx}/{len(tx_parts)} setGauge={len(unique_entries)} "

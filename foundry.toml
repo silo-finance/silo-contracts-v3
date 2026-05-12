@@ -98,6 +98,7 @@ fs_permissions = [
     { access = "read", path = "./silo-core/deploy/input/"},
     { access = "read", path = "./silo-core/deploy/silo/_siloDeployments.json"},
     { access = "read", path = "./silo-core/deploy/silo/_siloImplementations.json"},
+    { access = "read", path = "./scripts/tasks/"},
     { access = "read", path = "./silo-core/scripts/airdrop/output.json"}
 ]
 

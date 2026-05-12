@@ -23,8 +23,7 @@ DEFAULT_SIC_JSON = REPO_ROOT / "silo-core/deploy/incentives-controller/_siloInce
 
 ID_RE = re.compile(r"\((\d+)\)")
 KIND_RE = re.compile(r":\s*(Collateral|Protected|Debt)\s*$", re.IGNORECASE)
-SHARE_TOKEN_SELECTOR = "0x6f307dc3"  # SHARE_TOKEN()
-VERSION_SELECTOR = "0xffa1ad74"  # VERSION()
+SHARE_TOKEN_SELECTOR = "0x1d7e3556"  # SHARE_TOKEN()
 
 KIND_TO_SHARE_TOKEN_KIND = {
     "collateral": "collateralShareToken",
@@ -53,7 +52,7 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description=(
             "Synchronize success=false records with _siloIncentivesControllerDeployments.json "
-            "and refresh shareToken/gaugeVersion using multicall."
+            "and refresh shareToken using multicall."
         )
     )
     p.add_argument("--deploy-json", type=Path, default=DEFAULT_DEPLOY_JSON)
@@ -299,7 +298,6 @@ def main() -> int:
         calls: list[tuple[str, str]] = []
         for g in gauges:
             calls.append((g, SHARE_TOKEN_SELECTOR))
-            calls.append((g, VERSION_SELECTOR))
         results, err = multicall_eth_calls(chain, rpc_url, calls, timeout=120)
         if err:
             print(f"[warn] {chain}: multicall error ({err})")
@@ -307,13 +305,10 @@ def main() -> int:
             continue
         chain_meta: dict[str, dict[str, str]] = {}
         for idx, g in enumerate(gauges):
-            share_res, share_err = results[idx * 2]
-            ver_res, ver_err = results[idx * 2 + 1]
+            share_res, share_err = results[idx]
             share_token = decode_abi_address(share_res) if not share_err else None
-            version = decode_abi_string(ver_res) if not ver_err else None
             chain_meta[g] = {
                 "shareToken": share_token or "",
-                "gaugeVersion": (version.strip() if isinstance(version, str) and version.strip() else "legacy"),
             }
         gauge_meta[chain] = chain_meta
         print(f"[info] {chain}: resolved metadata for {len(chain_meta)} gauges via {rpc_env}")
@@ -322,6 +317,15 @@ def main() -> int:
     changed_entries = 0
     for chain, rec, market_id, expected, hook in planned:
         chain_meta = gauge_meta.get(chain, {})
+        existing_by_kind: dict[str, dict[str, Any]] = {}
+        existing_entries = rec.get("entries")
+        if isinstance(existing_entries, list):
+            for entry in existing_entries:
+                if not isinstance(entry, dict):
+                    continue
+                kind = entry.get("shareTokenKind")
+                if isinstance(kind, str):
+                    existing_by_kind[kind] = entry
         new_entries: list[dict[str, str]] = []
         for kind in ("collateral", "protected", "debt"):
             gauge_addr = expected.get(kind)
@@ -336,15 +340,17 @@ def main() -> int:
                 )
                 new_entries = []
                 break
-            new_entries.append(
-                {
-                    "hook": hook,
-                    "gauge": gauge_addr,
-                    "shareToken": normalize_address(share_token),
-                    "shareTokenKind": KIND_TO_SHARE_TOKEN_KIND[kind],
-                    "gaugeVersion": meta.get("gaugeVersion", "legacy"),
-                }
-            )
+            share_token_kind = KIND_TO_SHARE_TOKEN_KIND[kind]
+            entry_payload: dict[str, str] = {
+                "hook": hook,
+                "gauge": gauge_addr,
+                "shareToken": normalize_address(share_token),
+                "shareTokenKind": share_token_kind,
+            }
+            prev_version = existing_by_kind.get(share_token_kind, {}).get("gaugeVersion")
+            if isinstance(prev_version, str) and prev_version.strip():
+                entry_payload["gaugeVersion"] = prev_version
+            new_entries.append(entry_payload)
         if not new_entries:
             continue
         rec["entries"] = new_entries

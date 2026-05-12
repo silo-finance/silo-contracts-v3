@@ -518,6 +518,7 @@ def run_step_4_validate_gauge_version(
     mismatches = 0
     missing = 0
     marked_false = 0
+    marked_true = 0
 
     for chain in sorted(by_chain):
         for rec in by_chain[chain]:
@@ -528,6 +529,8 @@ def run_step_4_validate_gauge_version(
             if not isinstance(entries_obj, list):
                 continue
 
+            record_has_error = False
+            record_version_checks = 0
             for entry in entries_obj:
                 if not isinstance(entry, dict):
                     continue
@@ -537,15 +540,18 @@ def run_step_4_validate_gauge_version(
                 version = entry.get("gaugeVersion")
                 if not isinstance(version, str) or not version.strip():
                     missing += 1
+                    record_has_error = True
                     if rec.get("success") is not False:
                         rec["success"] = False
                         marked_false += 1
                     continue
 
                 checked += 1
+                record_version_checks += 1
                 version_norm = version.strip()
                 if version_norm != expected_version:
                     mismatches += 1
+                    record_has_error = True
                     if rec.get("success") is not False:
                         rec["success"] = False
                         marked_false += 1
@@ -554,13 +560,22 @@ def run_step_4_validate_gauge_version(
                         f"gaugeVersion={version_norm!r}"
                     )
 
+            # Recovery path: when all gauge versions for this record are valid,
+            # allow success to become true again.
+            if not record_has_error and record_version_checks > 0 and rec.get("success") is False:
+                rec["success"] = True
+                marked_true += 1
+
     print()
     print(f"Gauge entries with gaugeVersion present: {checked}")
     print(f"Gauge entries with missing gaugeVersion: {missing}")
     print(f"Gauge version mismatches: {mismatches}")
-    if marked_false > 0:
+    if marked_false > 0 or marked_true > 0:
         save_json(deploy_gauges_path, raw)
-        print(f"Records marked success=false: {marked_false}")
+        if marked_false > 0:
+            print(f"Records marked success=false: {marked_false}")
+        if marked_true > 0:
+            print(f"Records marked success=true: {marked_true}")
     if mismatches == 0 and missing == 0:
         print("[OK] Step 4 passed")
         return 0

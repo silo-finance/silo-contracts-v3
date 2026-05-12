@@ -103,11 +103,6 @@ def parse_args() -> argparse.Namespace:
         default=[],
         help="Optional chain filter (can be repeated).",
     )
-    parser.add_argument(
-        "--include-failed",
-        action="store_true",
-        help="Also include records with success=false from deploy-json.",
-    )
     return parser.parse_args()
 
 
@@ -346,10 +341,6 @@ def main() -> int:
         source_records_by_owner: dict[str, int] = {}
 
         for rec in records:
-            success = bool(rec.get("success", True))
-            if not success and not args.include_failed:
-                continue
-
             entries = rec.get("entries")
             if not isinstance(entries, list):
                 continue

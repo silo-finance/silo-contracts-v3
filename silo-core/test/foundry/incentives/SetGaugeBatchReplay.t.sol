@@ -22,10 +22,10 @@ contract SetGaugeBatchReplayTest is Test {
     error BatchTxFailed(uint256 index, address target, bytes revertData);
 
     string internal constant DEFAULT_BATCH_PATH =
-        "scripts/tasks/set-permissioned-liquidation/out/Set Gauge for Current Markets - sonic - 0x74612e4b.json";
+        "scripts/tasks/set-permissioned-liquidation/out/Set Gauge for Current Markets - mainnet - Part 3.json";
 
     function test_replayBatchTransactionsFromJson() external {
-        vm.createSelectFork(vm.envString("RPC_SONIC"), 70329223);
+        vm.createSelectFork(vm.envString("RPC_MAINNET"), 25081808);
 
         string memory batchPath = vm.envOr("SET_GAUGE_BATCH_JSON", DEFAULT_BATCH_PATH);
         string memory json = vm.readFile(batchPath);
@@ -92,7 +92,7 @@ contract SetGaugeBatchReplayTest is Test {
 
     function _encodeStaticWord(string memory json, string memory valuePath, string memory solidityType)
         internal
-        view
+        pure
         returns (bytes32)
     {
         bytes32 t = keccak256(bytes(solidityType));

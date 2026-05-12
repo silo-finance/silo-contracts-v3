@@ -12,6 +12,9 @@ Step 2:
 
 Step 4:
 - if gaugeVersion exists, it must equal expected value
+
+Step 5:
+- verify gauge SHARE_TOKEN() against market share tokens from SiloConfig
 """
 
 from __future__ import annotations
@@ -37,6 +40,9 @@ DEFAULT_DEPLOY_GAUGES_PATH = SCRIPT_DIR / "permissioned_liquidation_deploy_gauge
 DEFAULT_SET_GAUGE_DIR = SCRIPT_DIR / "out"
 SET_GAUGE_FILE_RE = re.compile(r"^Set Gauge for Current Markets - .*\.json$")
 VERSION_SELECTOR = "0xffa1ad74"
+GET_SILOS_SELECTOR = "0xaecc90cb"
+GET_SHARE_TOKENS_SELECTOR = "0x483b24f0"
+SHARE_TOKEN_SELECTOR = "0x1d7e3556"
 DEFAULT_EXPECTED_GAUGE_VERSION = "PermissionedLiquidationController 4.17.0"
 
 CHAIN_RPC_ENV_CANDIDATES: dict[str, list[str]] = {
@@ -200,6 +206,27 @@ def decode_abi_string(hex_result: str | None) -> str | None:
         return bytes.fromhex(data[start:end]).decode("utf-8")
     except (ValueError, UnicodeDecodeError):
         return None
+
+
+def decode_abi_addresses(hex_result: str | None, expected_count: int) -> list[str] | None:
+    if not isinstance(hex_result, str) or not hex_result:
+        return None
+    data = hex_result[2:] if hex_result.startswith("0x") else hex_result
+    if len(data) < expected_count * 64:
+        return None
+    out: list[str] = []
+    for i in range(expected_count):
+        chunk = data[i * 64 : (i + 1) * 64]
+        candidate = "0x" + chunk[-40:]
+        if not is_address(candidate):
+            return None
+        out.append(normalize_address(candidate))
+    return out
+
+
+def encode_address_arg(addr: str) -> str:
+    normalized = normalize_address(addr)[2:]
+    return "0" * 24 + normalized
 
 
 def _chunks(items: list[str], size: int) -> list[list[str]]:
@@ -584,6 +611,192 @@ def run_step_4_validate_gauge_version(
     return 1
 
 
+def run_step_5_validate_gauge_share_token(deploy_gauges_path: Path) -> int:
+    raw = load_json(deploy_gauges_path)
+    by_chain = extract_by_chain(raw)
+    if not by_chain:
+        print(f"[FAIL] could not read chain records from {deploy_gauges_path}")
+        return 1
+
+    print("[STEP 5] validate gauge SHARE_TOKEN against market share tokens")
+    total_entries_checked = 0
+    mismatches = 0
+    marked_false = 0
+    marked_true = 0
+    overwritten_error = 0
+    rpc_failures = 0
+
+    for chain in sorted(by_chain):
+        records = by_chain[chain]
+        rpc_url, rpc_env = resolve_rpc_url(chain)
+        if not rpc_url:
+            print(f"[FAIL] {chain}: missing RPC env")
+            rpc_failures += 1
+            continue
+        preflight_err = rpc_preflight(rpc_url, timeout=20)
+        if preflight_err:
+            print(f"[FAIL] {chain}: RPC preflight failed ({preflight_err})")
+            rpc_failures += 1
+            continue
+
+        cfgs = sorted(
+            {
+                normalize_address(rec["siloConfig"])
+                for rec in records
+                if isinstance(rec.get("siloConfig"), str) and is_address(rec["siloConfig"])
+            }
+        )
+
+        cfg_to_silos: dict[str, tuple[str, str]] = {}
+        if cfgs:
+            cfg_calls = [(cfg, GET_SILOS_SELECTOR) for cfg in cfgs]
+            cfg_results, cfg_err = multicall_eth_calls(chain, rpc_url, cfg_calls, timeout=120)
+            if cfg_err:
+                print(f"[FAIL] {chain}: multicall getSilos failed ({cfg_err})")
+                rpc_failures += 1
+            else:
+                for cfg, (res, err) in zip(cfgs, cfg_results):
+                    if err:
+                        continue
+                    decoded = decode_abi_addresses(res, 2)
+                    if decoded is None:
+                        continue
+                    cfg_to_silos[cfg] = (decoded[0], decoded[1])
+
+        cfg_silo_to_share_tokens: dict[tuple[str, str], tuple[str, str, str]] = {}
+        cfg_silo_pairs: list[tuple[str, str]] = []
+        for cfg, (silo0, silo1) in cfg_to_silos.items():
+            cfg_silo_pairs.append((cfg, silo0))
+            cfg_silo_pairs.append((cfg, silo1))
+        if cfg_silo_pairs:
+            silo_calls = [(cfg, GET_SHARE_TOKENS_SELECTOR + encode_address_arg(silo)) for cfg, silo in cfg_silo_pairs]
+            silo_results, silo_err = multicall_eth_calls(chain, rpc_url, silo_calls, timeout=120)
+            if silo_err:
+                print(f"[FAIL] {chain}: multicall getShareTokens failed ({silo_err})")
+                rpc_failures += 1
+            else:
+                for (cfg, silo), (res, err) in zip(cfg_silo_pairs, silo_results):
+                    if err:
+                        continue
+                    decoded = decode_abi_addresses(res, 3)
+                    if decoded is None:
+                        continue
+                    # (protected, collateral, debt)
+                    cfg_silo_to_share_tokens[(cfg, silo)] = (decoded[0], decoded[1], decoded[2])
+
+        gauges = sorted(
+            {
+                normalize_address(entry["gauge"])
+                for rec in records
+                for entry in (rec.get("entries") if isinstance(rec.get("entries"), list) else [])
+                if isinstance(entry, dict) and isinstance(entry.get("gauge"), str) and is_address(entry["gauge"])
+            }
+        )
+        gauge_to_share_token: dict[str, str] = {}
+        if gauges:
+            gauge_calls = [(g, SHARE_TOKEN_SELECTOR) for g in gauges]
+            gauge_results, gauge_err = multicall_eth_calls(chain, rpc_url, gauge_calls, timeout=120)
+            if gauge_err:
+                print(f"[FAIL] {chain}: multicall SHARE_TOKEN failed ({gauge_err})")
+                rpc_failures += 1
+            else:
+                for gauge, (res, err) in zip(gauges, gauge_results):
+                    if err:
+                        continue
+                    decoded = decode_abi_addresses(res, 1)
+                    if decoded is None:
+                        continue
+                    gauge_to_share_token[gauge] = decoded[0]
+
+        for rec in records:
+            cfg = rec.get("siloConfig")
+            if not isinstance(cfg, str) or not is_address(cfg):
+                continue
+            cfg_n = normalize_address(cfg)
+            silos_pair = cfg_to_silos.get(cfg_n)
+            if not silos_pair:
+                rec["success"] = False
+                rec["error"] = "cfg_silos_read_failed"
+                marked_false += 1
+                overwritten_error += 1
+                mismatches += 1
+                continue
+
+            share0 = cfg_silo_to_share_tokens.get((cfg_n, silos_pair[0]))
+            share1 = cfg_silo_to_share_tokens.get((cfg_n, silos_pair[1]))
+            if not share0 or not share1:
+                rec["success"] = False
+                rec["error"] = "cfg_share_tokens_read_failed"
+                marked_false += 1
+                overwritten_error += 1
+                mismatches += 1
+                continue
+
+            # interested in protected+collateral from both silos
+            allowed = {share0[0], share0[1], share1[0], share1[1]}
+            entries_obj = rec.get("entries")
+            if not isinstance(entries_obj, list):
+                continue
+
+            record_has_error = False
+            record_checked = False
+            for entry in entries_obj:
+                if not isinstance(entry, dict):
+                    continue
+                gauge = entry.get("gauge")
+                recorded_share = entry.get("shareToken")
+                if not isinstance(gauge, str) or not is_address(gauge):
+                    continue
+                if not isinstance(recorded_share, str) or not is_address(recorded_share):
+                    continue
+                record_checked = True
+                total_entries_checked += 1
+                gauge_n = normalize_address(gauge)
+                recorded_share_n = normalize_address(recorded_share)
+                gauge_share = gauge_to_share_token.get(gauge_n)
+                if not gauge_share:
+                    record_has_error = True
+                    rec["error"] = "gauge_share_token_read_failed"
+                    continue
+                if gauge_share not in allowed:
+                    record_has_error = True
+                    rec["error"] = "gauge_share_token_not_in_market"
+                    continue
+                if recorded_share_n != gauge_share:
+                    record_has_error = True
+                    rec["error"] = "json_share_token_mismatch"
+                    continue
+
+            if record_has_error:
+                if rec.get("success") is not False:
+                    marked_false += 1
+                rec["success"] = False
+                overwritten_error += 1
+                mismatches += 1
+            elif record_checked and rec.get("success") is False:
+                rec["success"] = True
+                marked_true += 1
+                # keep existing error message untouched; other checks may still use it
+
+    if marked_false > 0 or overwritten_error > 0 or marked_true > 0:
+        save_json(deploy_gauges_path, raw)
+
+    print()
+    print(f"Checked gauge entries: {total_entries_checked}")
+    print(f"Mismatched records: {mismatches}")
+    print(f"Records marked success=false: {marked_false}")
+    print(f"Records marked success=true: {marked_true}")
+    print(f"Errors overwritten: {overwritten_error}")
+    print(f"RPC failure chains: {rpc_failures}")
+
+    if mismatches == 0 and rpc_failures == 0:
+        print("[OK] Step 5 passed")
+        return 0
+
+    print("[FAIL] Step 5 failed")
+    return 1
+
+
 def main() -> int:
     args = parse_args()
     env_path = load_repo_env(override_existing=False)
@@ -604,7 +817,13 @@ def main() -> int:
         args.deploy_gauges_json,
         expected_version=args.expected_gauge_version,
     )
-    return 0 if step_1_rc == 0 and step_2_rc == 0 and step_3_rc == 0 and step_4_rc == 0 else 1
+    print()
+    step_5_rc = run_step_5_validate_gauge_share_token(args.deploy_gauges_json)
+    return (
+        0
+        if step_1_rc == 0 and step_2_rc == 0 and step_3_rc == 0 and step_4_rc == 0 and step_5_rc == 0
+        else 1
+    )
 
 
 if __name__ == "__main__":

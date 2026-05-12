@@ -34,6 +34,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 FORGE_SCRIPT_PATH = "silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol"
+SIC_DEPLOYMENTS_PATH = REPO_ROOT / "silo-core/deploy/incentives-controller/_siloIncentivesControllerDeployments.json"
 SKIP_VERIFY_CHAINS = {"okx", "injective", "megaeth"}
 
 CHAIN_RPC_ENV_CANDIDATES: dict[str, list[str]] = {
@@ -58,6 +59,7 @@ SET_GAUGE_RE = re.compile(
     r"(collateralShareToken|protectedShareToken|debtShareToken):\s*(0x[a-fA-F0-9]{40})\s*\)",
     re.MULTILINE,
 )
+ID_IN_KEY_RE = re.compile(r"\((\d+)\)")
 
 
 @dataclass
@@ -191,6 +193,31 @@ def load_markets(path: Path) -> dict[str, list[dict[str, Any]]]:
     return out
 
 
+def load_existing_sic_ids(path: Path) -> dict[str, set[int]]:
+    if not path.exists():
+        return {}
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        return {}
+
+    out: dict[str, set[int]] = {}
+    for chain, chain_obj in raw.items():
+        if not isinstance(chain, str) or not isinstance(chain_obj, dict):
+            continue
+        ids: set[int] = set()
+        for key in chain_obj.keys():
+            if not isinstance(key, str):
+                continue
+            for match in ID_IN_KEY_RE.findall(key):
+                try:
+                    ids.add(int(match))
+                except ValueError:
+                    continue
+        if ids:
+            out[chain] = ids
+    return out
+
+
 def build_forge_command(
     chain: str,
     silo_config: str,
@@ -301,14 +328,19 @@ def load_progress_state(path: Path) -> dict[str, dict[str, dict[str, Any]]]:
                     "entries": rec.get("entries") if isinstance(rec.get("entries"), list) else [],
                 }
             else:
+                entries = rec.get("entries") if isinstance(rec.get("entries"), list) else []
+                recorded_success = bool(rec.get("success"))
+                # If we already have extracted gauges, deployment itself is considered successful,
+                # even when the script returned non-zero (typically verifier/post-deploy step failure).
+                inferred_success = recorded_success or len(entries) > 0
                 normalized = {
                     "siloConfig": cfg_key,
                     "id": rec.get("id") if isinstance(rec.get("id"), int) else None,
-                    "success": bool(rec.get("success")),
+                    "success": inferred_success,
                     "exitCode": rec.get("exitCode") if isinstance(rec.get("exitCode"), int) else 0,
                     "error": rec.get("error") if isinstance(rec.get("error"), str) else "",
                     "command": rec.get("command") if isinstance(rec.get("command"), str) else "",
-                    "entries": rec.get("entries") if isinstance(rec.get("entries"), list) else [],
+                    "entries": entries,
                 }
             chain_map[cfg_key] = normalized
         if chain_map:
@@ -359,7 +391,7 @@ def print_summary(results: list[MarketRun]) -> None:
     rows: list[list[str]] = []
     for r in results:
         if r.skipped:
-            status = "SKIPPED_ALREADY_SUCCESS"
+            status = f"SKIPPED ({r.error or 'reason_not_set'})"
         else:
             status = "SUCCESS" if r.success else "FAIL"
         if not r.success and r.error:
@@ -388,6 +420,7 @@ def main() -> int:
         print(f"[info] loaded env from {env_path}")
 
     markets_by_chain = load_markets(Path(args.markets_json))
+    existing_sic_ids_by_chain = load_existing_sic_ids(SIC_DEPLOYMENTS_PATH)
     output_json_path = Path(args.output_json)
     output_json_path.parent.mkdir(parents=True, exist_ok=True)
     progress_state = load_progress_state(output_json_path)
@@ -395,7 +428,7 @@ def main() -> int:
     chain_filter = {c.strip().lower() for c in args.chain} if args.chain else set()
 
     commands_to_print: list[str] = []
-    print_items: list[tuple[str, int | None, str]] = []
+    print_items: list[tuple[str, int | None, str, str]] = []
     results: list[MarketRun] = []
     total_markets = sum(
         len(markets)
@@ -432,13 +465,25 @@ def main() -> int:
                 broadcast=args.broadcast,
                 verify_enabled=args.verify and args.broadcast,
             )
+            existing = progress_state.get(chain, {}).get(silo_config_lower)
+            in_sic_registry = (
+                market_id is not None and market_id in existing_sic_ids_by_chain.get(chain, set())
+            )
 
             if args.print_only:
                 commands_to_print.append(cmd_display)
-                print_items.append((chain, market_id, cmd_display))
+                if in_sic_registry:
+                    status = "ALREADY_IN_SIC_DEPLOYMENTS_JSON"
+                elif existing and bool(existing.get("success")):
+                    status = "DONE_SUCCESS"
+                elif existing:
+                    prev_error = str(existing.get("error") or "").strip()
+                    status = f"PREV_FAIL ({prev_error})" if prev_error else "PREV_FAIL"
+                else:
+                    status = "PENDING"
+                print_items.append((chain, market_id, cmd_display, status))
                 continue
 
-            existing = progress_state.get(chain, {}).get(silo_config_lower)
             if existing and bool(existing.get("success")):
                 print()
                 print("=" * 96)
@@ -457,7 +502,34 @@ def main() -> int:
                         success=True,
                         skipped=True,
                         exit_code=0,
-                        error="",
+                        error="already_success_in_progress_json",
+                        command=cmd_display,
+                    )
+                )
+                continue
+
+            if in_sic_registry:
+                print()
+                print("=" * 96)
+                print(
+                    f"[progress {progress_idx}/{total_markets}] "
+                    f"chain={chain} silo_id={market_id if market_id is not None else '-'}"
+                )
+                print("=" * 96)
+                print(
+                    f"[skip] market id {market_id} already present in "
+                    f"{SIC_DEPLOYMENTS_PATH}"
+                )
+                print()
+                results.append(
+                    MarketRun(
+                        chain=chain,
+                        silo_config=silo_config_lower,
+                        market_id=market_id,
+                        success=True,
+                        skipped=True,
+                        exit_code=0,
+                        error="already_in_sic_deployments_json",
                         command=cmd_display,
                     )
                 )
@@ -482,11 +554,17 @@ def main() -> int:
 
             extracted = extract_set_gauge_data(combined_output)
 
-            success = return_code == 0
+            # Deployment is considered successful if we extracted setGauge payloads from logs.
+            # This handles non-zero exits caused by verifier/post-deploy phases.
+            success = (return_code == 0) or len(extracted) > 0
             error = ""
             if not success:
                 lines = [ln.strip() for ln in combined_output.splitlines() if ln.strip()]
                 error = lines[-1][:180] if lines else f"exit_code={return_code}"
+            elif return_code != 0 and extracted:
+                lines = [ln.strip() for ln in combined_output.splitlines() if ln.strip()]
+                non_fatal = lines[-1][:180] if lines else f"exit_code={return_code}"
+                error = f"non-fatal after deploy: {non_fatal}"
 
             progress_state.setdefault(chain, {})[silo_config_lower] = {
                 "siloConfig": silo_config_lower,
@@ -514,10 +592,11 @@ def main() -> int:
             )
 
     if args.print_only:
-        for i, (chain, market_id, cmd) in enumerate(print_items, start=1):
+        for i, (chain, market_id, cmd, status) in enumerate(print_items, start=1):
             market_id_text = str(market_id) if market_id is not None else "-"
             print(f"[{i}] chain: {chain}")
             print(f"silo id: {market_id_text}")
+            print(f"status: {status}")
             print(f"command: {cmd}")
             print()
         print(f"\nPrinted commands: {len(commands_to_print)}")

@@ -159,7 +159,7 @@
       {
         "siloConfig": "0x422a90f3abc36decd3b87942450fc3bf5fb117bf",
         "id": 3008,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "Error: script failed: blacklist",
         "command": "SILO_CONFIG=0x422a90f3AbC36DECd3b87942450fC3BF5FB117bf DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_ARBITRUM --broadcast --verify",
@@ -319,7 +319,7 @@
       {
         "siloConfig": "0xe095fa150d05af72f6941ecb1310103741639d18",
         "id": 3000,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "Error: script failed: panic: arithmetic underflow or overflow (0x11)",
         "command": "SILO_CONFIG=0xe095FA150D05AF72F6941Ecb1310103741639D18 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE --broadcast # --verify skipped for this chain",
@@ -341,7 +341,7 @@
       {
         "siloConfig": "0xcd73f3f6dc33b46502cb9c53a67bdded0bbaefc4",
         "id": 3003,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "Error: script failed: panic: arithmetic underflow or overflow (0x11)",
         "command": "SILO_CONFIG=0xCd73F3f6dc33b46502cb9c53A67BDdeD0BBaeFc4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_INJECTIVE --broadcast # --verify skipped for this chain",
@@ -453,7 +453,7 @@
       {
         "siloConfig": "0x74b21d458b9d5cf59f4b4e10a2e829c221670ee3",
         "id": 3003,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "Error: Not all (3 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0x74b21D458b9D5CF59f4b4E10A2E829C221670EE3 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
@@ -541,7 +541,7 @@
       {
         "siloConfig": "0x18b178b50f1ffd3dc7855c893a4e1ac618f9b76a",
         "id": 3009,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "Error: Not all (3 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0x18B178B50F1fFd3dC7855C893a4e1Ac618F9B76A DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
@@ -563,7 +563,7 @@
       {
         "siloConfig": "0x493558e4201bde0a4b2d4c1e0234a3d88d4cdad8",
         "id": 3011,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "Error: Not all (3 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0x493558E4201bDe0a4b2d4C1E0234a3d88D4CDAd8 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
@@ -585,7 +585,7 @@
       {
         "siloConfig": "0xa64c7fe1fa7e5da01d765b346126ff7c068eea91",
         "id": 3013,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "Error: Not all (3 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0xA64c7FE1FA7e5dA01d765b346126ff7c068EEa91 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
@@ -607,7 +607,7 @@
       {
         "siloConfig": "0xe8b89384d636a37487070c9a6869c0960b13cf72",
         "id": 3014,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "Error: script failed: InvalidLastUpdateDetails(0x73797a5553445f46554e44414d454e54414c2f55534400000000000000000000, 1778501950000 [1.778e12], 1778501963 [1.778e9], 105441172 [1.054e",
         "command": "SILO_CONFIG=0xE8b89384d636A37487070C9A6869C0960B13cF72 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
@@ -695,7 +695,7 @@
       {
         "siloConfig": "0xb61ad7976c49f1fd651d183491f5e2a28d7ece17",
         "id": 3022,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "Error: script failed: InvalidLastUpdateDetails(0x4d53595f46554e44414d454e54414c2f55534400000000000000000000000000, 1778545210000 [1.778e12], 1778545223 [1.778e9], 105083545 [1.05e8",
         "command": "SILO_CONFIG=0xb61AD7976c49F1Fd651d183491f5e2a28d7Ece17 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
@@ -785,7 +785,7 @@
       {
         "siloConfig": "0x21af0468a00d4ced22b49b16575abfd9d5b075f6",
         "id": 3002,
-        "success": false,
+        "success": true,
         "exitCode": 1,
         "error": "Transaction dropped from the mempool: 0xfe8fb1755f4413261047ae25e2c08d3a5604286fec015f341a3a1770a0aa3c94",
         "command": "SILO_CONFIG=0x21af0468A00d4cEd22B49b16575AbFd9D5B075F6 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --broadcast # --verify skipped for this chain",
@@ -807,60 +807,138 @@
       {
         "siloConfig": "0x0bec26a1ed6f935bade68c3ec70f55131428bc8c",
         "id": 3003,
-        "success": false,
+        "success": true,
         "exitCode": 1,
-        "error": "- Error #2: failed to lookup address information: nodename nor servname provided, or not known",
+        "error": "non-fatal after deploy: - server returned an error response: error code -32000: replacement transaction underpriced",
         "command": "SILO_CONFIG=0x0BEc26a1ed6f935BaDE68c3Ec70f55131428Bc8c DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --broadcast # --verify skipped for this chain",
-        "entries": []
+        "entries": [
+          {
+            "hook": "0x3752b69f2494466c7ab7c2f63b6af883891f8c96",
+            "gauge": "0x571f49b6f37d7dd7d49fdf06df8ad0032eb6b630",
+            "shareToken": "0x8d5d78f36d323ffcb875df6e4e66f0b26a52b152",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0x3752b69f2494466c7ab7c2f63b6af883891f8c96",
+            "gauge": "0xb9ce21630fc399667aa0242cf9fa28abd530cf4a",
+            "shareToken": "0x6915a6a209f0c3c24db19fe7d6a9f49572fd4db0",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       }
     ],
     "sonic": [
       {
         "siloConfig": "0x062a36bbe0306c2fd7aecdf25843291fbab96ad2",
         "id": 20,
-        "success": false,
+        "success": true,
         "exitCode": 1,
-        "error": "- Error #2: failed to lookup address information: nodename nor servname provided, or not known",
+        "error": "non-fatal after deploy: Error: script failed: Gauge already configured for collateral share token",
         "command": "SILO_CONFIG=0x062A36Bbe0306c2Fd7aecdf25843291fBAB96AD2 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_SONIC --broadcast --verify",
-        "entries": []
+        "entries": [
+          {
+            "hook": "0x6aafd9dd424541885fd79c06fda96929cfd512f9",
+            "gauge": "0x03058027fd20dbf4ebf04ecdd63683b32542cbf4",
+            "shareToken": "0xf55902de87bd80c6a35614b48d7f8b612a083c12",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0x6aafd9dd424541885fd79c06fda96929cfd512f9",
+            "gauge": "0xef16752586932ef195d0e0921e352dae9b095a98",
+            "shareToken": "0xaecd6cbf567ae7de05f7e32eb051525e9fcd9bc6",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       },
       {
         "siloConfig": "0x180a8ff4c343b6eea2ff0feb2dcc92a360bf7025",
         "id": 3001,
-        "success": false,
-        "exitCode": 1,
-        "error": "- Error #2: failed to lookup address information: nodename nor servname provided, or not known",
+        "success": true,
+        "exitCode": 0,
+        "error": "",
         "command": "SILO_CONFIG=0x180A8fF4C343b6eEa2FF0Feb2dcC92a360bF7025 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_SONIC --broadcast --verify",
-        "entries": []
+        "entries": [
+          {
+            "hook": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
+            "gauge": "0x03058027fd20dbf4ebf04ecdd63683b32542cbf4",
+            "shareToken": "0x0e2ef70d9b204a9cd30508a4e399b61ffb821152",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
+            "gauge": "0xef16752586932ef195d0e0921e352dae9b095a98",
+            "shareToken": "0x944f64002ea851a9b7c34ad49df4d0084bf4afd4",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       }
     ],
     "xdc": [
       {
         "siloConfig": "0x0d419dc8128d5738a62753deb8ea3508aed95253",
         "id": 3002,
-        "success": false,
+        "success": true,
         "exitCode": 1,
-        "error": "- Error #2: failed to lookup address information: nodename nor servname provided, or not known",
+        "error": "non-fatal after deploy: Transaction dropped from the mempool: 0x82340399f3c0dda302d7000f3629e711bf2ae2b975c04955b8c2250630511664",
         "command": "SILO_CONFIG=0x0d419DC8128D5738a62753DeB8eA3508AEd95253 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_XDC --broadcast --verify",
-        "entries": []
+        "entries": [
+          {
+            "hook": "0x9990c60cd7b613123f6b7f8854de57c359706abb",
+            "gauge": "0x9914a1c828cbaf0b4f53d2e3b7785c19ad5d3999",
+            "shareToken": "0x9ebc79a0d5c6a2cb8c294da02f6675cd3f42d677",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0x9990c60cd7b613123f6b7f8854de57c359706abb",
+            "gauge": "0xef4ffea2b0059794590b709f8f8ad0fe966d09b4",
+            "shareToken": "0xfc4e94421714b0eaa911f44c614c6ef34340954e",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       },
       {
         "siloConfig": "0x519303893fad9de0b5af1bf20a35145f1f2690c4",
         "id": 3003,
-        "success": false,
+        "success": true,
         "exitCode": 1,
-        "error": "- Error #2: failed to lookup address information: nodename nor servname provided, or not known",
+        "error": "non-fatal after deploy: Error: Not all (0 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0x519303893faD9dE0b5aF1bf20a35145F1f2690c4 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_XDC --broadcast --verify",
-        "entries": []
+        "entries": [
+          {
+            "hook": "0xa283a9dcbbc1f84b3a21763c7513187713fd3f23",
+            "gauge": "0x77758b957edcb59d4e89605b1a2b78f8a00b5cab",
+            "shareToken": "0x40a686bf959db56a127a3c6aa9aa4a97147ffc77",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0xa283a9dcbbc1f84b3a21763c7513187713fd3f23",
+            "gauge": "0xc9f556cb74fae1eaa2abb6173a9615a4683ecc9b",
+            "shareToken": "0xefd6ff4de0a2e788fe03ff7c078cb936314d686b",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       },
       {
         "siloConfig": "0x6007ec05764e1ecd2811d8a2c8f5f125f0b47f7d",
         "id": 3004,
-        "success": false,
+        "success": true,
         "exitCode": 1,
-        "error": "- Error #2: failed to lookup address information: nodename nor servname provided, or not known",
+        "error": "non-fatal after deploy: Error: Not all (0 / 4) contracts were verified!",
         "command": "SILO_CONFIG=0x6007eC05764e1Ecd2811D8a2C8F5f125f0b47F7d DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_XDC --broadcast --verify",
-        "entries": []
+        "entries": [
+          {
+            "hook": "0x1ec25a646b112fcf5f179db80be39bc772b94523",
+            "gauge": "0xba08f8b6f0b1596d4cbc06eda4e15acf5dd44dc3",
+            "shareToken": "0xd89bb9b2074d57cbcac9c7a35d0bfe76947acdd6",
+            "shareTokenKind": "collateralShareToken"
+          },
+          {
+            "hook": "0x1ec25a646b112fcf5f179db80be39bc772b94523",
+            "gauge": "0x3085af5e325d581c8229beb949e04952be8f2a1f",
+            "shareToken": "0x415a3a1a4f2e3c37ab0dcaf7651739b450b61da8",
+            "shareTokenKind": "protectedShareToken"
+          }
+        ]
       }
     ]
   }

@@ -28,7 +28,7 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SCRIPT_DIR = Path(__file__).resolve().parent
 ALLOWED_ROLE = "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac"
-MAX_TX_PER_FILE = 40
+MAX_TX_PER_FILE = 30
 SPLIT_TX_CHAINS = {"mainnet"}
 
 CHAIN_IDS: dict[str, int] = {

@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "chainId": "1776",
+  "createdAt": 1778574029287,
+  "meta": {
+    "name": "White List for Current Markets - injective",
+    "description": "Whitelist for current markets on injective\nHook owner (Safe): 0xaad2f138eb20fb60c34ac70624339ccbac2320fa\nHooks in batch: 1\nWhitelisted addresses per hook: 1\nTotal transactions: 1\n\nAddresses:\n- 0x1157de9f428231dda3c3ab282f02259178fbf779",
+    "txBuilderVersion": "1.17.0",
+    "createdFromSafeAddress": "0xaad2f138eb20fb60c34ac70624339ccbac2320fa",
+    "createdFromOwnerAddress": "",
+    "checksum": ""
+  },
+  "transactions": [
+    {
+      "to": "0xca2c650574cca149b17735b6c85afda41e8f8ad3",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x1157de9f428231dda3c3ab282f02259178fbf779"
+      }
+    }
+  ]
+}

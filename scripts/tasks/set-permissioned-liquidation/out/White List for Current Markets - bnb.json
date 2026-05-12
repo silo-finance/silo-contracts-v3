@@ -1,0 +1,69 @@
+{
+  "version": "1.0",
+  "chainId": "56",
+  "createdAt": 1778574029286,
+  "meta": {
+    "name": "White List for Current Markets - bnb",
+    "description": "Whitelist for current markets on bnb\nHook owner (Safe): 0xe8e8041cb5e3158a0829a19e014ca1cf91098554\nHooks in batch: 1\nWhitelisted addresses per hook: 2\nTotal transactions: 2\n\nAddresses:\n- 0x38d712f9e105cdbe9367be9d8061d63bcba7a725\n- 0xbf3c74f202fc4c2b39a48992901d4e5c3a023446",
+    "txBuilderVersion": "1.17.0",
+    "createdFromSafeAddress": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+    "createdFromOwnerAddress": "",
+    "checksum": ""
+  },
+  "transactions": [
+    {
+      "to": "0x228e2d4b4367dedca3b210ccf01a1d33ee2c6916",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x38d712f9e105cdbe9367be9d8061d63bcba7a725"
+      }
+    },
+    {
+      "to": "0x228e2d4b4367dedca3b210ccf01a1d33ee2c6916",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xbf3c74f202fc4c2b39a48992901d4e5c3a023446"
+      }
+    }
+  ]
+}

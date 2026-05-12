@@ -1,0 +1,69 @@
+{
+  "version": "1.0",
+  "chainId": "4326",
+  "createdAt": 1778574029291,
+  "meta": {
+    "name": "White List for Current Markets - megaeth",
+    "description": "Whitelist for current markets on megaeth\nHook owner (Safe): 0xe8e8041cb5e3158a0829a19e014ca1cf91098554\nHooks in batch: 2\nWhitelisted addresses per hook: 1\nTotal transactions: 2\n\nAddresses:\n- 0x7f4910c6b94c2d485fa01542551f41fd16bc067d",
+    "txBuilderVersion": "1.17.0",
+    "createdFromSafeAddress": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+    "createdFromOwnerAddress": "",
+    "checksum": ""
+  },
+  "transactions": [
+    {
+      "to": "0x3217dcaf7fa00cf3f63961cda9486dd9afee954b",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x7f4910c6b94c2d485fa01542551f41fd16bc067d"
+      }
+    },
+    {
+      "to": "0x3752b69f2494466c7ab7c2f63b6af883891f8c96",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x7f4910c6b94c2d485fa01542551f41fd16bc067d"
+      }
+    }
+  ]
+}

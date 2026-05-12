@@ -1,0 +1,123 @@
+{
+  "version": "1.0",
+  "chainId": "146",
+  "createdAt": 1778574029292,
+  "meta": {
+    "name": "White List for Current Markets - sonic",
+    "description": "Whitelist for current markets on sonic\nHook owner (Safe): 0xe8e8041cb5e3158a0829a19e014ca1cf91098554\nHooks in batch: 1\nWhitelisted addresses per hook: 4\nTotal transactions: 4\n\nAddresses:\n- 0x0094c5d6b460a2efff23420db097921bcc2b2a2c\n- 0x08a52ec31e0e981bbd64082224185e420d3f9849\n- 0xb49329bf1d95d51681f4e4f644eb37f58e398abd\n- 0xccd487e01e9df6932f656b53668f58005f604417",
+    "txBuilderVersion": "1.17.0",
+    "createdFromSafeAddress": "0xe8e8041cb5e3158a0829a19e014ca1cf91098554",
+    "createdFromOwnerAddress": "",
+    "checksum": ""
+  },
+  "transactions": [
+    {
+      "to": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x0094c5d6b460a2efff23420db097921bcc2b2a2c"
+      }
+    },
+    {
+      "to": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0x08a52ec31e0e981bbd64082224185e420d3f9849"
+      }
+    },
+    {
+      "to": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xb49329bf1d95d51681f4e4f644eb37f58e398abd"
+      }
+    },
+    {
+      "to": "0xebb2677d5a5ff045b7e34f514cc2f353932833a3",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "role",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "account",
+            "type": "address"
+          }
+        ],
+        "name": "grantRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      "contractInputsValues": {
+        "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
+        "account": "0xccd487e01e9df6932f656b53668f58005f604417"
+      }
+    }
+  ]
+}

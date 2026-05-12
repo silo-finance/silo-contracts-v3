@@ -36,6 +36,12 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 FORGE_SCRIPT_PATH = "silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol"
 SIC_DEPLOYMENTS_PATH = REPO_ROOT / "silo-core/deploy/incentives-controller/_siloIncentivesControllerDeployments.json"
 SKIP_VERIFY_CHAINS = {"okx", "injective", "megaeth"}
+CHAIN_GAS_ESTIMATE_MULTIPLIER: dict[str, int] = {
+    "megaeth": 5000,
+}
+CHAIN_USE_SLOW_FLAG: set[str] = {
+    "injective",
+}
 
 CHAIN_RPC_ENV_CANDIDATES: dict[str, list[str]] = {
     "arbitrum_one": ["RPC_ARBITRUM_ONE", "RPC_ARBITRUM"],
@@ -234,6 +240,11 @@ def build_forge_command(
         "--rpc-url",
         rpc_url,
     ]
+    gas_multiplier = CHAIN_GAS_ESTIMATE_MULTIPLIER.get(chain.lower())
+    if gas_multiplier is not None:
+        cmd.extend(["--gas-estimate-multiplier", str(gas_multiplier)])
+    if chain.lower() in CHAIN_USE_SLOW_FLAG:
+        cmd.append("--slow")
     if broadcast:
         cmd.append("--broadcast")
     if verify and chain.lower() not in SKIP_VERIFY_CHAINS:
@@ -262,6 +273,11 @@ def command_to_display(
         "--rpc-url",
         f"${rpc_env}",
     ]
+    gas_multiplier = CHAIN_GAS_ESTIMATE_MULTIPLIER.get(chain_l)
+    if gas_multiplier is not None:
+        cmd_parts.extend(["--gas-estimate-multiplier", str(gas_multiplier)])
+    if chain_l in CHAIN_USE_SLOW_FLAG:
+        cmd_parts.append("--slow")
     if broadcast:
         cmd_parts.append("--broadcast")
     if verify_enabled and chain_l not in SKIP_VERIFY_CHAINS:

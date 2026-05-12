@@ -66,6 +66,7 @@ class MarketRun:
     silo_config: str
     market_id: int | None
     success: bool
+    skipped: bool
     exit_code: int
     error: str
     command: str
@@ -261,11 +262,106 @@ def extract_set_gauge_data(output: str) -> list[dict[str, str]]:
     return list(unique.values())
 
 
+def load_progress_state(path: Path) -> dict[str, dict[str, dict[str, Any]]]:
+    if not path.exists():
+        return {}
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        return {}
+
+    by_chain_raw: Any
+    if "byChain" in raw and isinstance(raw.get("byChain"), dict):
+        by_chain_raw = raw["byChain"]
+    else:
+        # backward compatibility: old format was {chain: [{siloConfig, entries}, ...]}
+        by_chain_raw = raw
+
+    out: dict[str, dict[str, dict[str, Any]]] = {}
+    for chain, records in by_chain_raw.items():
+        if not isinstance(chain, str) or not isinstance(records, list):
+            continue
+        chain_map: dict[str, dict[str, Any]] = {}
+        for rec in records:
+            if not isinstance(rec, dict):
+                continue
+            silo_cfg = rec.get("siloConfig")
+            if not isinstance(silo_cfg, str):
+                continue
+            cfg_key = silo_cfg.lower()
+
+            if "success" not in rec:
+                # old record without status means previous successful extraction
+                normalized = {
+                    "siloConfig": cfg_key,
+                    "id": rec.get("id") if isinstance(rec.get("id"), int) else None,
+                    "success": True,
+                    "exitCode": 0,
+                    "error": "",
+                    "command": "",
+                    "entries": rec.get("entries") if isinstance(rec.get("entries"), list) else [],
+                }
+            else:
+                normalized = {
+                    "siloConfig": cfg_key,
+                    "id": rec.get("id") if isinstance(rec.get("id"), int) else None,
+                    "success": bool(rec.get("success")),
+                    "exitCode": rec.get("exitCode") if isinstance(rec.get("exitCode"), int) else 0,
+                    "error": rec.get("error") if isinstance(rec.get("error"), str) else "",
+                    "command": rec.get("command") if isinstance(rec.get("command"), str) else "",
+                    "entries": rec.get("entries") if isinstance(rec.get("entries"), list) else [],
+                }
+            chain_map[cfg_key] = normalized
+        if chain_map:
+            out[chain] = chain_map
+    return out
+
+
+def save_progress_state(path: Path, state: dict[str, dict[str, dict[str, Any]]]) -> None:
+    by_chain: dict[str, list[dict[str, Any]]] = {}
+    for chain, records_by_cfg in sorted(state.items(), key=lambda x: x[0]):
+        records = list(records_by_cfg.values())
+        records.sort(key=lambda r: ((r.get("id") is None), r.get("id") or 0, r["siloConfig"]))
+        by_chain[chain] = records
+
+    payload = {
+        "formatVersion": 1,
+        "byChain": by_chain,
+    }
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def run_with_live_output(cmd: list[str], *, env: dict[str, str], cwd: Path) -> tuple[int, str]:
+    """
+    Run command, stream output live to console, and return full captured output.
+    """
+    proc = subprocess.Popen(
+        cmd,
+        cwd=str(cwd),
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+    )
+
+    output_lines: list[str] = []
+    assert proc.stdout is not None
+    for line in proc.stdout:
+        print(line, end="")
+        output_lines.append(line)
+
+    return_code = proc.wait()
+    return return_code, "".join(output_lines)
+
+
 def print_summary(results: list[MarketRun]) -> None:
     headers = ["chain", "id", "siloConfig", "status"]
     rows: list[list[str]] = []
     for r in results:
-        status = "SUCCESS" if r.success else "FAIL"
+        if r.skipped:
+            status = "SKIPPED_ALREADY_SUCCESS"
+        else:
+            status = "SUCCESS" if r.success else "FAIL"
         if not r.success and r.error:
             status = f"{status}: {r.error}"
         rows.append([r.chain, str(r.market_id) if r.market_id is not None else "-", r.silo_config, status])
@@ -294,13 +390,19 @@ def main() -> int:
     markets_by_chain = load_markets(Path(args.markets_json))
     output_json_path = Path(args.output_json)
     output_json_path.parent.mkdir(parents=True, exist_ok=True)
+    progress_state = load_progress_state(output_json_path)
 
     chain_filter = {c.strip().lower() for c in args.chain} if args.chain else set()
 
     commands_to_print: list[str] = []
     print_items: list[tuple[str, int | None, str]] = []
     results: list[MarketRun] = []
-    gauges_by_chain: dict[str, list[dict[str, Any]]] = {}
+    total_markets = sum(
+        len(markets)
+        for chain, markets in markets_by_chain.items()
+        if not chain_filter or chain.lower() in chain_filter
+    )
+    progress_idx = 0
 
     for chain, markets in sorted(markets_by_chain.items(), key=lambda x: x[0]):
         if chain_filter and chain.lower() not in chain_filter:
@@ -312,7 +414,9 @@ def main() -> int:
             continue
 
         for market in markets:
+            progress_idx += 1
             silo_config = market["address"]
+            silo_config_lower = silo_config.lower()
             market_id = market.get("id") if isinstance(market.get("id"), int) else None
             cmd = build_forge_command(
                 chain=chain,
@@ -334,48 +438,76 @@ def main() -> int:
                 print_items.append((chain, market_id, cmd_display))
                 continue
 
+            existing = progress_state.get(chain, {}).get(silo_config_lower)
+            if existing and bool(existing.get("success")):
+                print()
+                print("=" * 96)
+                print(
+                    f"[progress {progress_idx}/{total_markets}] "
+                    f"chain={chain} silo_id={market_id if market_id is not None else '-'}"
+                )
+                print("=" * 96)
+                print(f"[skip] already successful in progress file for config {silo_config_lower}")
+                print()
+                results.append(
+                    MarketRun(
+                        chain=chain,
+                        silo_config=silo_config_lower,
+                        market_id=market_id,
+                        success=True,
+                        skipped=True,
+                        exit_code=0,
+                        error="",
+                        command=cmd_display,
+                    )
+                )
+                continue
+
             env = os.environ.copy()
             env["SILO_CONFIG"] = silo_config
             env["DEBT"] = "false"
             env["FOUNDRY_PROFILE"] = "core"
 
+            print()
+            print("=" * 96)
             print(
-                f"[run] chain={chain} id={market_id} config={silo_config} "
-                f"rpc_env={rpc_env} broadcast={args.broadcast}"
+                f"[progress {progress_idx}/{total_markets}] "
+                f"chain={chain} silo_id={market_id if market_id is not None else '-'}"
             )
+            print("=" * 96)
+            print(f"[run] {cmd_display}")
+            print()
 
-            proc = subprocess.run(
-                cmd,
-                cwd=str(REPO_ROOT),
-                env=env,
-                text=True,
-                capture_output=True,
-            )
-            combined_output = f"{proc.stdout}\n{proc.stderr}"
+            return_code, combined_output = run_with_live_output(cmd, env=env, cwd=REPO_ROOT)
 
             extracted = extract_set_gauge_data(combined_output)
-            if extracted:
-                gauges_by_chain.setdefault(chain, []).append(
-                    {
-                        "siloConfig": silo_config.lower(),
-                        "id": market_id,
-                        "entries": extracted,
-                    }
-                )
 
-            success = proc.returncode == 0
+            success = return_code == 0
             error = ""
             if not success:
                 lines = [ln.strip() for ln in combined_output.splitlines() if ln.strip()]
-                error = lines[-1][:180] if lines else f"exit_code={proc.returncode}"
+                error = lines[-1][:180] if lines else f"exit_code={return_code}"
+
+            progress_state.setdefault(chain, {})[silo_config_lower] = {
+                "siloConfig": silo_config_lower,
+                "id": market_id,
+                "success": success,
+                "exitCode": return_code,
+                "error": error,
+                "command": cmd_display,
+                "entries": extracted,
+            }
+            # Persist after each command so reruns can resume immediately.
+            save_progress_state(output_json_path, progress_state)
 
             results.append(
                 MarketRun(
                     chain=chain,
-                    silo_config=silo_config.lower(),
+                    silo_config=silo_config_lower,
                     market_id=market_id,
                     success=success,
-                    exit_code=proc.returncode,
+                    skipped=False,
+                    exit_code=return_code,
                     error=error,
                     command=cmd_display,
                 )
@@ -391,16 +523,17 @@ def main() -> int:
         print(f"\nPrinted commands: {len(commands_to_print)}")
         return 0
 
-    output_json_path.write_text(
-        json.dumps(gauges_by_chain, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
+    save_progress_state(output_json_path, progress_state)
     print(f"\n[info] wrote extracted gauges JSON: {output_json_path}")
 
     print_summary(results)
     success_count = sum(1 for r in results if r.success)
     fail_count = len(results) - success_count
-    print(f"\nTotal: {len(results)}, success: {success_count}, fail: {fail_count}")
+    skipped_count = sum(1 for r in results if r.skipped)
+    print(
+        f"\nTotal: {len(results)}, success: {success_count}, fail: {fail_count}, "
+        f"skipped(already_success): {skipped_count}"
+    )
     return 0 if fail_count == 0 else 1
 
 

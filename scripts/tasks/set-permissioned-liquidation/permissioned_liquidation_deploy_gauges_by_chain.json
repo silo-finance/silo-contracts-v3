@@ -687,19 +687,19 @@
         "id": 3017,
         "success": true,
         "exitCode": 0,
-        "error": "cfg_share_tokens_read_failed",
+        "error": "",
         "command": "SILO_CONFIG=0xD17DF50549491712320D7874C3C9B9E4954aaf82 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
             "hook": "0xfbd33de84444a35ce2c9f239571d52e9dc1a6b34",
-            "gauge": "0xa159a5d1f400affb254acc5170899dcda3bd80e3",
+            "gauge": "0x280a1d4fb8cbe79393003a120b4d2a599cd4d5b6",
             "shareToken": "0xb3baefaf242bb71dfaeac4896b3ad83d38c9702f",
             "shareTokenKind": "collateralShareToken",
             "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0xfbd33de84444a35ce2c9f239571d52e9dc1a6b34",
-            "gauge": "0x8c37fe925cbc2bfe5604d65d55f89e762a0276df",
+            "gauge": "0x9ef5bd19a25cf8275c30f4b44fcd53bdd2fa774e",
             "shareToken": "0xcfcfe2a1b62f6ccd058191ac1c85961466685105",
             "shareTokenKind": "protectedShareToken",
             "gaugeVersion": "PermissionedLiquidationController 4.17.0"

@@ -1,37 +1,16 @@
 {
   "version": "1.0",
   "chainId": "146",
-  "createdAt": 1778618753214,
+  "createdAt": 1778620539821,
   "meta": {
     "name": "Set Gauge for Current Markets - sonic",
-    "description": "SetGauge bundle for current markets on sonic\nHook owner (Safe): 0x7461d8c0fdf376c847b651d882dea4c73fad2e4b\nSource records: 4\nTransactions: 28",
+    "description": "SetGauge bundle for current markets on sonic\nHook owner (Safe): 0x7461d8c0fdf376c847b651d882dea4c73fad2e4b\nSource records: 4\nTransactions: 24",
     "txBuilderVersion": "1.17.0",
     "createdFromSafeAddress": "0x7461d8c0fdf376c847b651d882dea4c73fad2e4b",
     "createdFromOwnerAddress": "",
     "checksum": ""
   },
   "transactions": [
-    {
-      "to": "0x6aafd9dd424541885fd79c06fda96929cfd512f9",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "contract IShareToken",
-            "name": "_shareToken",
-            "type": "address"
-          }
-        ],
-        "name": "removeGauge",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_shareToken": "0x322e1d5384aa4ed66aeca770b95686271de61dc3"
-      }
-    },
     {
       "to": "0x6aafd9dd424541885fd79c06fda96929cfd512f9",
       "value": "0",
@@ -186,27 +165,6 @@
       "contractInputsValues": {
         "role": "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac",
         "account": "0xccd487e01e9df6932f656b53668f58005f604417"
-      }
-    },
-    {
-      "to": "0x6aafd9dd424541885fd79c06fda96929cfd512f9",
-      "value": "0",
-      "data": null,
-      "contractMethod": {
-        "inputs": [
-          {
-            "internalType": "contract IShareToken",
-            "name": "_shareToken",
-            "type": "address"
-          }
-        ],
-        "name": "removeGauge",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      "contractInputsValues": {
-        "_shareToken": "0xf55902de87bd80c6a35614b48d7f8b612a083c12"
       }
     },
     {

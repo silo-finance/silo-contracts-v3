@@ -661,21 +661,21 @@
       {
         "siloConfig": "0xe8b89384d636a37487070c9a6869c0960b13cf72",
         "id": 3014,
-        "success": false,
+        "success": true,
         "exitCode": 1,
-        "error": "gauge_share_token_not_in_market",
+        "error": "",
         "command": "SILO_CONFIG=0xE8b89384d636A37487070C9A6869C0960B13cF72 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MAINNET --broadcast --verify",
         "entries": [
           {
             "hook": "0x7ac15eb0b6434b67943597977d7eba3837a52001",
-            "gauge": "0xa159a5d1f400affb254acc5170899dcda3bd80e3",
+            "gauge": "0x02f02a21644c2c912b85bdb2ca5d5973515bc3bd",
             "shareToken": "0x9fe889b75527d85e29dca1d527910961614e73c3",
             "shareTokenKind": "collateralShareToken",
             "gaugeVersion": "PermissionedLiquidationController 4.17.0"
           },
           {
             "hook": "0x7ac15eb0b6434b67943597977d7eba3837a52001",
-            "gauge": "0x8c37fe925cbc2bfe5604d65d55f89e762a0276df",
+            "gauge": "0x1a7697e21df6de84a8bf097813950ac7a8b0c78a",
             "shareToken": "0x7b0bba2e11123d2fc65a456e5a7bc4a663a27ea6",
             "shareTokenKind": "protectedShareToken",
             "gaugeVersion": "PermissionedLiquidationController 4.17.0"

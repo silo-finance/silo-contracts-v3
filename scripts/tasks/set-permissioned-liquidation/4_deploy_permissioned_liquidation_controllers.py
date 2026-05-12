@@ -1,0 +1,408 @@
+#!/usr/bin/env python3
+"""
+Run PermissionedLiquidationController deploy script for all markets from JSON.
+
+Features:
+- executes per-market forge script call with chain-specific RPC
+- optional broadcast and verify flags
+- verify is always skipped for: okx, injective, megaeth
+- one failed market does not stop next markets
+- prints end summary table in console
+- extracts Hook/Gauge/ShareToken lines from forge output
+- writes extracted setGauge data grouped by blockchain to JSON
+- print-only mode to output ready commands without executing
+
+
+python3 scripts/tasks/set-permissioned-liquidation/4_deploy_permissioned_liquidation_controllers.py --print
+
+python3 scripts/tasks/set-permissioned-liquidation/4_deploy_permissioned_liquidation_controllers.py --broadcast
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+FORGE_SCRIPT_PATH = "silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol"
+SKIP_VERIFY_CHAINS = {"okx", "injective", "megaeth"}
+
+CHAIN_RPC_ENV_CANDIDATES: dict[str, list[str]] = {
+    "arbitrum_one": ["RPC_ARBITRUM_ONE", "RPC_ARBITRUM"],
+    "avalanche": ["RPC_AVALANCHE"],
+    "base": ["RPC_BASE"],
+    "bnb": ["RPC_BNB"],
+    "injective": ["RPC_INJECTIVE"],
+    "ink": ["RPC_INK"],
+    "mainnet": ["RPC_MAINNET"],
+    "mantle": ["RPC_MANTLE"],
+    "megaeth": ["RPC_MEGAETH"],
+    "okx": ["RPC_OKX"],
+    "optimism": ["RPC_OPTIMISM"],
+    "sonic": ["RPC_SONIC"],
+    "xdc": ["RPC_XDC"],
+}
+
+SET_GAUGE_RE = re.compile(
+    r"Hook\((0x[a-fA-F0-9]{40})\)\.setGauge\(\s*"
+    r"gauge:\s*(0x[a-fA-F0-9]{40})\s*,\s*"
+    r"(collateralShareToken|protectedShareToken|debtShareToken):\s*(0x[a-fA-F0-9]{40})\s*\)",
+    re.MULTILINE,
+)
+
+
+@dataclass
+class MarketRun:
+    chain: str
+    silo_config: str
+    market_id: int | None
+    success: bool
+    exit_code: int
+    error: str
+    command: str
+
+
+def _strip_quotes(value: str) -> str:
+    value = value.strip()
+    if len(value) >= 2 and ((value[0] == value[-1] == '"') or (value[0] == value[-1] == "'")):
+        return value[1:-1]
+    return value
+
+
+def load_repo_env(override_existing: bool = False) -> Path | None:
+    candidates = [REPO_ROOT / "env", REPO_ROOT / ".env"]
+    env_path = next((p for p in candidates if p.exists() and p.is_file()), None)
+    if env_path is None:
+        return None
+
+    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("export "):
+            line = line[len("export ") :].strip()
+        if "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        if not key:
+            continue
+        value = _strip_quotes(value)
+        if override_existing or key not in os.environ:
+            os.environ[key] = value
+    return env_path
+
+
+def is_address(value: str) -> bool:
+    value = value.strip()
+    if not value.startswith("0x") or len(value) != 42:
+        return False
+    try:
+        int(value[2:], 16)
+    except ValueError:
+        return False
+    return True
+
+
+def normalize_address(value: str) -> str:
+    value = value.strip()
+    if not is_address(value):
+        raise ValueError(f"Invalid address: {value}")
+    return value
+
+
+def resolve_rpc_url(chain: str) -> tuple[str | None, str | None]:
+    for env_name in CHAIN_RPC_ENV_CANDIDATES.get(chain, []):
+        value = os.environ.get(env_name, "").strip()
+        if value:
+            return value, env_name
+    return None, None
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Deploy permissioned liquidation controllers for current markets.")
+    parser.add_argument(
+        "--markets-json",
+        default=str(SCRIPT_DIR / "v3_markets_by_chain.json"),
+        help="Input markets JSON file.",
+    )
+    parser.add_argument(
+        "--output-json",
+        default=str(SCRIPT_DIR / "permissioned_liquidation_deploy_gauges_by_chain.json"),
+        help="Output JSON with extracted hook/gauge/shareToken data.",
+    )
+    parser.add_argument(
+        "--broadcast",
+        action="store_true",
+        help="Add --broadcast to forge script command.",
+    )
+    parser.add_argument(
+        "--verify",
+        action="store_true",
+        help="Add --verify to forge command where allowed (skipped for okx/injective/megaeth).",
+    )
+    parser.add_argument(
+        "--print",
+        dest="print_only",
+        action="store_true",
+        help="Print ready commands only; do not execute.",
+    )
+    parser.add_argument(
+        "--chain",
+        action="append",
+        default=[],
+        help="Optional chain filter (can be repeated).",
+    )
+    return parser.parse_args()
+
+
+def load_markets(path: Path) -> dict[str, list[dict[str, Any]]]:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("Markets JSON root must be an object.")
+
+    out: dict[str, list[dict[str, Any]]] = {}
+    for chain, markets in data.items():
+        if not isinstance(chain, str) or not isinstance(markets, list):
+            continue
+        normalized: list[dict[str, Any]] = []
+        for market in markets:
+            if not isinstance(market, dict):
+                continue
+            addr = market.get("address")
+            if not isinstance(addr, str):
+                continue
+            try:
+                market["address"] = normalize_address(addr)
+            except ValueError:
+                continue
+            normalized.append(market)
+        out[chain] = normalized
+    return out
+
+
+def build_forge_command(
+    chain: str,
+    silo_config: str,
+    rpc_url: str,
+    *,
+    broadcast: bool,
+    verify: bool,
+) -> list[str]:
+    cmd = [
+        "forge",
+        "script",
+        FORGE_SCRIPT_PATH,
+        "--ffi",
+        "--rpc-url",
+        rpc_url,
+    ]
+    if broadcast:
+        cmd.append("--broadcast")
+    if verify and chain.lower() not in SKIP_VERIFY_CHAINS:
+        cmd.append("--verify")
+    return cmd
+
+
+def command_to_display(
+    *,
+    silo_config: str,
+    chain: str,
+    rpc_env: str,
+    broadcast: bool,
+    verify_enabled: bool,
+) -> str:
+    chain_l = chain.lower()
+    verify_note = ""
+    if verify_enabled and chain_l in SKIP_VERIFY_CHAINS:
+        verify_note = " # --verify skipped for this chain"
+
+    cmd_parts = [
+        "forge",
+        "script",
+        FORGE_SCRIPT_PATH,
+        "--ffi",
+        "--rpc-url",
+        f"${rpc_env}",
+    ]
+    if broadcast:
+        cmd_parts.append("--broadcast")
+    if verify_enabled and chain_l not in SKIP_VERIFY_CHAINS:
+        cmd_parts.append("--verify")
+
+    return (
+        f"SILO_CONFIG={silo_config} DEBT=false FOUNDRY_PROFILE=core "
+        + " ".join(cmd_parts)
+        + verify_note
+    )
+
+
+def extract_set_gauge_data(output: str) -> list[dict[str, str]]:
+    entries: list[dict[str, str]] = []
+    for hook, gauge, token_kind, share_token in SET_GAUGE_RE.findall(output):
+        entries.append(
+            {
+                "hook": hook.lower(),
+                "gauge": gauge.lower(),
+                "shareToken": share_token.lower(),
+                "shareTokenKind": token_kind,
+            }
+        )
+    unique = {(e["hook"], e["gauge"], e["shareToken"], e["shareTokenKind"]): e for e in entries}
+    return list(unique.values())
+
+
+def print_summary(results: list[MarketRun]) -> None:
+    headers = ["chain", "id", "siloConfig", "status"]
+    rows: list[list[str]] = []
+    for r in results:
+        status = "SUCCESS" if r.success else "FAIL"
+        if not r.success and r.error:
+            status = f"{status}: {r.error}"
+        rows.append([r.chain, str(r.market_id) if r.market_id is not None else "-", r.silo_config, status])
+
+    widths = [len(h) for h in headers]
+    for row in rows:
+        for i, cell in enumerate(row):
+            widths[i] = max(widths[i], len(cell))
+
+    def fmt(row: list[str]) -> str:
+        return " | ".join(cell.ljust(widths[i]) for i, cell in enumerate(row))
+
+    print("\nSummary:")
+    print(fmt(headers))
+    print("-+-".join("-" * w for w in widths))
+    for row in rows:
+        print(fmt(row))
+
+
+def main() -> int:
+    args = parse_args()
+    env_path = load_repo_env(override_existing=False)
+    if env_path:
+        print(f"[info] loaded env from {env_path}")
+
+    markets_by_chain = load_markets(Path(args.markets_json))
+    output_json_path = Path(args.output_json)
+    output_json_path.parent.mkdir(parents=True, exist_ok=True)
+
+    chain_filter = {c.strip().lower() for c in args.chain} if args.chain else set()
+
+    commands_to_print: list[str] = []
+    print_items: list[tuple[str, int | None, str]] = []
+    results: list[MarketRun] = []
+    gauges_by_chain: dict[str, list[dict[str, Any]]] = {}
+
+    for chain, markets in sorted(markets_by_chain.items(), key=lambda x: x[0]):
+        if chain_filter and chain.lower() not in chain_filter:
+            continue
+
+        rpc_url, rpc_env = resolve_rpc_url(chain)
+        if not rpc_url:
+            print(f"[warn] {chain}: missing RPC env, skipping chain")
+            continue
+
+        for market in markets:
+            silo_config = market["address"]
+            market_id = market.get("id") if isinstance(market.get("id"), int) else None
+            cmd = build_forge_command(
+                chain=chain,
+                silo_config=silo_config,
+                rpc_url=rpc_url,
+                broadcast=args.broadcast,
+                verify=args.verify and args.broadcast,
+            )
+            cmd_display = command_to_display(
+                silo_config=silo_config,
+                chain=chain,
+                rpc_env=rpc_env,
+                broadcast=args.broadcast,
+                verify_enabled=args.verify and args.broadcast,
+            )
+
+            if args.print_only:
+                commands_to_print.append(cmd_display)
+                print_items.append((chain, market_id, cmd_display))
+                continue
+
+            env = os.environ.copy()
+            env["SILO_CONFIG"] = silo_config
+            env["DEBT"] = "false"
+            env["FOUNDRY_PROFILE"] = "core"
+
+            print(
+                f"[run] chain={chain} id={market_id} config={silo_config} "
+                f"rpc_env={rpc_env} broadcast={args.broadcast}"
+            )
+
+            proc = subprocess.run(
+                cmd,
+                cwd=str(REPO_ROOT),
+                env=env,
+                text=True,
+                capture_output=True,
+            )
+            combined_output = f"{proc.stdout}\n{proc.stderr}"
+
+            extracted = extract_set_gauge_data(combined_output)
+            if extracted:
+                gauges_by_chain.setdefault(chain, []).append(
+                    {
+                        "siloConfig": silo_config.lower(),
+                        "id": market_id,
+                        "entries": extracted,
+                    }
+                )
+
+            success = proc.returncode == 0
+            error = ""
+            if not success:
+                lines = [ln.strip() for ln in combined_output.splitlines() if ln.strip()]
+                error = lines[-1][:180] if lines else f"exit_code={proc.returncode}"
+
+            results.append(
+                MarketRun(
+                    chain=chain,
+                    silo_config=silo_config.lower(),
+                    market_id=market_id,
+                    success=success,
+                    exit_code=proc.returncode,
+                    error=error,
+                    command=cmd_display,
+                )
+            )
+
+    if args.print_only:
+        for i, (chain, market_id, cmd) in enumerate(print_items, start=1):
+            market_id_text = str(market_id) if market_id is not None else "-"
+            print(f"[{i}] chain: {chain}")
+            print(f"silo id: {market_id_text}")
+            print(f"command: {cmd}")
+            print()
+        print(f"\nPrinted commands: {len(commands_to_print)}")
+        return 0
+
+    output_json_path.write_text(
+        json.dumps(gauges_by_chain, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    print(f"\n[info] wrote extracted gauges JSON: {output_json_path}")
+
+    print_summary(results)
+    success_count = sum(1 for r in results if r.success)
+    fail_count = len(results) - success_count
+    print(f"\nTotal: {len(results)}, success: {success_count}, fail: {fail_count}")
+    return 0 if fail_count == 0 else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

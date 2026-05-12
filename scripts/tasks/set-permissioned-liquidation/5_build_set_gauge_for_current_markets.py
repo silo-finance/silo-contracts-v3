@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-Build Safe Transaction Builder bundles for Hook.setGauge calls
+Build Safe Transaction Builder bundles for:
+- Hook.setGauge(gauge, shareToken)
+- PermissionedLiquidationController.grantRole(ALLOWED_ROLE, helper)
+- PermissionedLiquidationController.setEnabled(true)
+
 using output from step 4 deployment script.
 
 Input #1 (required):
@@ -21,7 +25,9 @@ import time
 from pathlib import Path
 from typing import Any
 
+REPO_ROOT = Path(__file__).resolve().parents[3]
 SCRIPT_DIR = Path(__file__).resolve().parent
+ALLOWED_ROLE = "0xd5dc6b389d0dd5687ab5bd9338f760ebeaff2d2852a93a9a9ebaebbfefc763ac"
 
 CHAIN_IDS: dict[str, int] = {
     "mainnet": 1,
@@ -45,6 +51,27 @@ SET_GAUGE_ABI: dict[str, Any] = {
         {"internalType": "contract IShareToken", "name": "_shareToken", "type": "address"},
     ],
     "name": "setGauge",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function",
+}
+
+GRANT_ROLE_ABI: dict[str, Any] = {
+    "inputs": [
+        {"internalType": "bytes32", "name": "role", "type": "bytes32"},
+        {"internalType": "address", "name": "account", "type": "address"},
+    ],
+    "name": "grantRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function",
+}
+
+SET_ENABLED_ABI: dict[str, Any] = {
+    "inputs": [
+        {"internalType": "bool", "name": "_enabled", "type": "bool"},
+    ],
+    "name": "setEnabled",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function",
@@ -171,6 +198,52 @@ def build_tx(entry: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def build_grant_role_tx(gauge: str, account: str) -> dict[str, Any]:
+    return {
+        "to": gauge,
+        "value": "0",
+        "data": None,
+        "contractMethod": GRANT_ROLE_ABI,
+        "contractInputsValues": {
+            "role": ALLOWED_ROLE,
+            "account": account,
+        },
+    }
+
+
+def build_set_enabled_tx(gauge: str) -> dict[str, Any]:
+    return {
+        "to": gauge,
+        "value": "0",
+        "data": None,
+        "contractMethod": SET_ENABLED_ABI,
+        "contractInputsValues": {
+            "_enabled": "true",
+        },
+    }
+
+
+def collect_helpers_for_chain(chain: str) -> list[str]:
+    deployments_dir = REPO_ROOT / "silo-core" / "deployments" / chain
+    if not deployments_dir.exists():
+        return []
+
+    addresses: list[str] = []
+    for jf in sorted(deployments_dir.glob("*.json")):
+        stem = jf.stem.lower()
+        if ("liquidationhelper" not in stem) and ("manualliquidationhelper" not in stem):
+            continue
+        try:
+            data = json.loads(jf.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        addr = data.get("address")
+        if isinstance(addr, str) and is_address(addr):
+            addresses.append(addr.lower())
+
+    return sorted(set(addresses), key=str.lower)
+
+
 def build_batch(
     *,
     chain: str,
@@ -271,7 +344,18 @@ def main() -> int:
             # deduplicate by functional call identity
             unique_map = {(e["hook"], e["gauge"], e["shareToken"]): e for e in entries}
             unique_entries = sorted(unique_map.values(), key=lambda e: (e["hook"], e["shareToken"], e["gauge"]))
-            txs = [build_tx(e) for e in unique_entries]
+            unique_gauges = sorted({e["gauge"] for e in unique_entries}, key=str.lower)
+            helper_addresses = collect_helpers_for_chain(chain)
+
+            txs: list[dict[str, Any]] = []
+            # 1) configure hook -> gauge mapping
+            txs.extend(build_tx(e) for e in unique_entries)
+            # 2) whitelist helper contracts on each gauge
+            for gauge in unique_gauges:
+                for helper in helper_addresses:
+                    txs.append(build_grant_role_tx(gauge, helper))
+            # 3) enable permissioned liquidation on each gauge
+            txs.extend(build_set_enabled_tx(gauge) for gauge in unique_gauges)
 
             batch = build_batch(
                 chain=chain,
@@ -288,7 +372,10 @@ def main() -> int:
 
             out_path = output_dir / filename
             out_path.write_text(json.dumps(batch, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-            print(f"[ok] {chain} owner={owner} tx={len(txs)} -> {out_path.name}")
+            print(
+                f"[ok] {chain} owner={owner} setGauge={len(unique_entries)} "
+                f"helpers={len(helper_addresses)} gauges={len(unique_gauges)} tx={len(txs)} -> {out_path.name}"
+            )
             generated += 1
 
     print(f"Generated files: {generated}")

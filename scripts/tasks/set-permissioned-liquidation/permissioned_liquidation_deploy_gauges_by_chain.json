@@ -180,17 +180,15 @@
         "entries": [
           {
             "hook": "0x95626c763a2c9fdf3e8a4e6644f2b9bcdb67097a",
-            "gauge": "0x1c0fca4fffaf7931003420c446ac62cc28cf9f77",
+            "gauge": "0x02d6d1d6c534a8031ef442d20e3c9ccd0e47b8a5",
             "shareToken": "0xad56be3fe13dbddd4e04ea7ec26b97d128df3f6b",
-            "shareTokenKind": "collateralShareToken",
-            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
+            "shareTokenKind": "collateralShareToken"
           },
           {
             "hook": "0x95626c763a2c9fdf3e8a4e6644f2b9bcdb67097a",
-            "gauge": "0x739f0ade7479027f28e818e4f1773568f17193f1",
+            "gauge": "0x97c881098038bb7876f9bfe8ab2d7560e6df86da",
             "shareToken": "0xf5b8240b5d6a8456f3d2903cadf6478a74f9521a",
-            "shareTokenKind": "protectedShareToken",
-            "gaugeVersion": "PermissionedLiquidationController 4.17.0"
+            "shareTokenKind": "protectedShareToken"
           }
         ]
       },
@@ -378,13 +376,13 @@
         "entries": [
           {
             "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
-            "gauge": "0x7e6bff579ac6e1915e1fa72bcb23bb3825d20eea",
+            "gauge": "0xf38232c38e18e96af2eaf574fd7054bb098c0fb6",
             "shareToken": "0x4aaadf5c3a4d839055531743121e1227153ff0fb",
             "shareTokenKind": "collateralShareToken"
           },
           {
             "hook": "0x7c828776a3d61f55e4fcf34e806b5e1cfc7172ab",
-            "gauge": "0xb25b61dbfe3a627df5985dcf0806df364c2038c3",
+            "gauge": "0xde3258fe657bd2bf5c4ece822293c10c443c7c8c",
             "shareToken": "0xd1feb9147dc461dd4f07f36189f79a808fb9b7ea",
             "shareTokenKind": "protectedShareToken"
           }
@@ -856,7 +854,7 @@
         "success": true,
         "exitCode": 1,
         "error": "non-fatal after deploy: - server returned an error response: error code -32000: replacement transaction underpriced",
-        "command": "SILO_CONFIG=0x21af0468A00d4cEd22B49b16575AbFd9D5B075F6 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --gas-estimate-multiplier 5000 --broadcast",
+        "command": "SILO_CONFIG=0x21af0468A00d4cEd22B49b16575AbFd9D5B075F6 DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --gas-estimate-multiplier 10000 --broadcast",
         "entries": [
           {
             "hook": "0x3217dcaf7fa00cf3f63961cda9486dd9afee954b",
@@ -878,7 +876,7 @@
         "success": true,
         "exitCode": 1,
         "error": "non-fatal after deploy: - server returned an error response: error code -32000: replacement transaction underpriced",
-        "command": "SILO_CONFIG=0x0BEc26a1ed6f935BaDE68c3Ec70f55131428Bc8c DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --gas-estimate-multiplier 5000 --broadcast",
+        "command": "SILO_CONFIG=0x0BEc26a1ed6f935BaDE68c3Ec70f55131428Bc8c DEBT=false FOUNDRY_PROFILE=core forge script silo-core/deploy/incentives-controller/PermissionedLiquidationControllerDeploy.s.sol --ffi --rpc-url $RPC_MEGAETH --gas-estimate-multiplier 10000 --broadcast",
         "entries": [
           {
             "hook": "0x3752b69f2494466c7ab7c2f63b6af883891f8c96",

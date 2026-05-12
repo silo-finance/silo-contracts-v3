@@ -37,7 +37,7 @@ FORGE_SCRIPT_PATH = "silo-core/deploy/incentives-controller/PermissionedLiquidat
 SIC_DEPLOYMENTS_PATH = REPO_ROOT / "silo-core/deploy/incentives-controller/_siloIncentivesControllerDeployments.json"
 SKIP_VERIFY_CHAINS = {"okx", "injective", "megaeth"}
 CHAIN_GAS_ESTIMATE_MULTIPLIER: dict[str, int] = {
-    "megaeth": 5000,
+    "megaeth": 10000,
 }
 CHAIN_USE_SLOW_FLAG: set[str] = {
     "injective",

@@ -36,8 +36,6 @@ interface ISiloDeployer {
     }
 
     struct MarketOptions {
-        /// @param addressesWithPausableRole list of addresses that are allowed to pause token transfers via gauge
-        address[] addressesWithPausableRole;
         /// @param permissionedLiquidators list of addresses that are allowed to perform liquidations
         address[] permissionedLiquidators;
     }

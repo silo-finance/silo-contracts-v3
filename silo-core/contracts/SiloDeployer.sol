@@ -4,7 +4,7 @@ pragma solidity 0.8.28;
 import {Clones} from "openzeppelin5/proxy/Clones.sol";
 
 import {Create2Factory} from "common/utils/Create2Factory.sol";
-import {Ownable1and2Steps, Ownable} from "common/access/Ownable1and2Steps.sol";
+import {Ownable1and2Steps} from "common/access/Ownable1and2Steps.sol";
 
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
@@ -30,7 +30,6 @@ import {CloneDeterministic} from "silo-core/contracts/lib/CloneDeterministic.sol
 import {Views} from "silo-core/contracts/lib/Views.sol";
 import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
-import {TransparentProxy} from "silo-core/contracts/utils/TransparentProxy.sol";
 
 /// @notice Silo Deployer
 contract SiloDeployer is Create2Factory, ISiloDeployer, IVersioned {

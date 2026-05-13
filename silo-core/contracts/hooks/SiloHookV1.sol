@@ -19,6 +19,7 @@ contract SiloHookV1 is GaugeHookReceiver, PartialLiquidation {
 
         BaseHookReceiver.__BaseHookReceiver_init(_config);
         GaugeHookReceiver.__GaugeHookReceiver_init(owner);
+        PartialLiquidation.__PartialLiquidation_init(owner);
     }
 
     /// @inheritdoc IHookReceiver

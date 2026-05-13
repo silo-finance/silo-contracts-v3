@@ -47,7 +47,7 @@ abstract contract PartialLiquidationByDefaulting is IPartialLiquidationByDefault
         virtual
         onlyInitializing
     {
-        __Whitelist_init(_owner);
+        __PartialLiquidation_init(_owner);
 
         validateDefaultingCollateral();
     }

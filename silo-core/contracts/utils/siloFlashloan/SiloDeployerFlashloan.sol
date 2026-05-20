@@ -64,7 +64,7 @@ contract SiloDeployerFlashloan is Create2Factory, ISiloDeployer, IVersioned {
         _cloneHookReceiver(_siloInitData, _clonableHookReceiver.implementation);
         // deploy `SiloConfig` (with predicted addresses)
         siloConfig = _deploySiloConfig(_siloInitData);
-        
+
         // create silo
         SILO_FACTORY.createSilo({
             _siloConfig: siloConfig,
@@ -249,10 +249,7 @@ contract SiloDeployerFlashloan is Create2Factory, ISiloDeployer, IVersioned {
 
     /// @notice Clone hook receiver if it is provided
     /// @param _siloInitData Silo configuration for the silo creation
-    function _cloneHookReceiver(ISiloConfig.InitData memory _siloInitData, address)
-        internal
-        pure
-    {
+    function _cloneHookReceiver(ISiloConfig.InitData memory _siloInitData, address) internal pure {
         require(_siloInitData.hookReceiver != address(0), HookReceiverMisconfigured());
     }
 

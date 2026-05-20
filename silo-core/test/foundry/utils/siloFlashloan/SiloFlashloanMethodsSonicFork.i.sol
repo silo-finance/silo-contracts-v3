@@ -69,7 +69,8 @@ contract SiloFlashloanMethodsSonicForkTest is Test {
 
         AddrLib.init();
 
-        IPoolAddressesProvider provider = IPoolAddressesProvider(AddrLib.getAddress(AddrKey.AAVE_POOL_ADDRESSES_PROVIDER));
+        IPoolAddressesProvider provider =
+            IPoolAddressesProvider(AddrLib.getAddress(AddrKey.AAVE_POOL_ADDRESSES_PROVIDER));
         _pool = IPool(provider.getPool());
 
         _siloFactory = ISiloFactory(
@@ -105,18 +106,21 @@ contract SiloFlashloanMethodsSonicForkTest is Test {
 
         ISiloConfig.InitData memory initData = _prepareInitDataFromLatestMarket();
 
-        ISiloConfig deployedConfig = ISiloDeployer(address(_siloDeployerFlashloan)).deploy({
-            _oracles: _emptyOracles(),
-            _irmConfigData0: "",
-            _irmConfigData1: "",
-            _clonableHookReceiver: ISiloDeployer.ClonableHookReceiver({implementation: address(0), initializationData: ""}),
-            _siloInitData: initData,
-            _marketOptions: ISiloDeployer.MarketOptions({permissionedLiquidators: new address[](0)})
-        });
+        ISiloConfig deployedConfig = ISiloDeployer(address(_siloDeployerFlashloan))
+            .deploy({
+                _oracles: _emptyOracles(),
+                _irmConfigData0: "",
+                _irmConfigData1: "",
+                _clonableHookReceiver: ISiloDeployer.ClonableHookReceiver({
+                    implementation: address(0), initializationData: ""
+                }),
+                _siloInitData: initData,
+                _marketOptions: ISiloDeployer.MarketOptions({permissionedLiquidators: new address[](0)})
+            });
 
         (, address silo1) = deployedConfig.getSilos();
         _flashloanSilo = ISilo(silo1);
- 
+
         _asset = silo20.asset();
     }
 

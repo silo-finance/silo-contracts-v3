@@ -18,7 +18,6 @@ import {IERC3156FlashBorrower} from "silo-core/contracts/interfaces/IERC3156Flas
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
 import {ShareTokenLib} from "silo-core/contracts/lib/ShareTokenLib.sol";
 
-
 // Keep ERC4626 ordering
 // solhint-disable ordering
 
@@ -30,7 +29,6 @@ contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
     using SafeERC20 for IERC20;
 
     bytes32 internal constant _FLASHLOAN_CALLBACK = keccak256("ERC3156FlashBorrower.onFlashLoan");
-
 
     IPoolAddressesProvider public immutable _AAVE_POOL_ADDRESSES_PROVIDER;
 
@@ -54,8 +52,8 @@ contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
     /// @inheritdoc ISilo
     function callOnBehalfOfSilo(address, uint256, CallType, bytes calldata)
         external
-        virtual
         payable
+        virtual
         override
         returns (bool, bytes memory)
     {
@@ -90,7 +88,7 @@ contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
     /// @inheritdoc ISilo
     function borrowShares(uint256, address, address) external virtual override returns (uint256) {
         revert NotSupported();
-    }   
+    }
 
     /// @inheritdoc ISilo
     function maxBorrowSameAsset(address) external pure virtual override returns (uint256) {
@@ -116,14 +114,13 @@ contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
         revert NotSupported();
     }
 
+    function ADDRESSES_PROVIDER() external view returns (IPoolAddressesProvider) {
+        return _AAVE_POOL_ADDRESSES_PROVIDER;
+    }
 
-  function ADDRESSES_PROVIDER() external view returns (IPoolAddressesProvider) {
-    return _AAVE_POOL_ADDRESSES_PROVIDER;
-  }
-
-  function POOL() external view returns (IPool) {
-    return IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
-  }
+    function POOL() external view returns (IPool) {
+        return IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
+    }
 
     /// @inheritdoc IERC3156FlashLender
     function maxFlashLoan(address _token) external view virtual override returns (uint256 maxLoan) {

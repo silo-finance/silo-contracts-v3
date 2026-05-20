@@ -152,7 +152,7 @@ contract NewMarketTest is InjectiveWorkaround {
                 collateralToken: TOKEN0,
                 debtSilo: SILO1,
                 debtToken: TOKEN1,
-                warpTimeBeforeRepay: 10 days
+                warpTimeBeforeRepay: 10 hours
             })
         );
     }
@@ -174,7 +174,7 @@ contract NewMarketTest is InjectiveWorkaround {
                 collateralToken: TOKEN1,
                 debtSilo: SILO0,
                 debtToken: TOKEN0,
-                warpTimeBeforeRepay: 10 days
+                warpTimeBeforeRepay: 10 hours
             })
         );
     }
@@ -195,7 +195,8 @@ contract NewMarketTest is InjectiveWorkaround {
         // 1. Deposit
         _siloDeposit(_scenario.collateralSilo, borrower, collateralAmount);
         _siloDeposit(_scenario.debtSilo, makeAddr("stranger"), 1000 * 10 ** debtDecimals);
-        console2.log("\t- deposited collateral");
+        console2.log("\t- deposited collateral: ", collateralAmount);
+        console2.log("\t- deposited for borrow: ", 1000 * 10 ** debtDecimals);
 
         if (_scenario.warpTimeBeforeRepay > 0) {
             console2.log("\t- warping...");
@@ -217,7 +218,7 @@ contract NewMarketTest is InjectiveWorkaround {
                 _mockRedstoneAggretatorWithLastValue(oracle, aggregatorLastPrice);
                 maxBorrow = _scenario.debtSilo.maxBorrow(borrower);
             } else {
-                RevertLib.revertBytes(returnData, "max borrow failed");
+                RevertLib.revertBytes(returnData, "max borrow reverted");
             }
         }
 
@@ -232,7 +233,7 @@ contract NewMarketTest is InjectiveWorkaround {
 
             uint256 nonZeroAmount = _findNonZeroQuote(_scenario.debtSilo);
 
-            console2.log("\t- check with amount", nonZeroAmount);
+            console2.log("\t- checking with amount for which quote is not zero", nonZeroAmount);
 
             // in some extream case we can get ZeroQuote, but we can debug this case if needed
             vm.expectRevert(ISilo.AboveMaxLtv.selector);
@@ -266,7 +267,7 @@ contract NewMarketTest is InjectiveWorkaround {
             assertGt(maxRepayBefore, 0, "maxRepayBefore should be greater than 0");
 
             vm.warp(block.timestamp + _scenario.warpTimeBeforeRepay);
-            console2.log("\t- warp %s days to get interest", _scenario.warpTimeBeforeRepay / 1 days);
+            console2.log("\t- warp %s hours to get interest", _scenario.warpTimeBeforeRepay / 1 hours);
 
             assertLt(maxRepayBefore, _scenario.debtSilo.maxRepay(borrower), "we have to generate interest");
         }

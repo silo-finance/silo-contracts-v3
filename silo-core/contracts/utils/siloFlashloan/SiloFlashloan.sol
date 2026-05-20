@@ -7,6 +7,7 @@ import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
 import {IPool} from "aave-v3-origin/interfaces/IPool.sol";
 import {IPoolAddressesProvider} from "aave-v3-origin/interfaces/IPoolAddressesProvider.sol";
+import {IFlashLoanSimpleReceiver} from "aave-v3-origin/misc/flashloan/interfaces/IFlashLoanSimpleReceiver.sol";
 
 import {Silo} from "silo-core/contracts/Silo.sol";
 import {ISilo, IERC3156FlashLender} from "silo-core/contracts/interfaces/ISilo.sol";
@@ -24,13 +25,13 @@ import {ShareTokenLib} from "silo-core/contracts/lib/ShareTokenLib.sol";
 /// @notice Silo is a ERC4626-compatible vault that allows users to deposit collateral and borrow debt. This contract
 /// is deployed twice for each asset for two-asset lending markets.
 /// Version: 2.0.0
-contract SiloFlashloan is Silo {
+contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
     using SafeERC20 for IERC20;
 
     bytes32 internal constant _FLASHLOAN_CALLBACK = keccak256("ERC3156FlashBorrower.onFlashLoan");
 
 
-    IPoolAddressesProvider public immutable AAVE_POOL_ADDRESSES_PROVIDER;
+    IPoolAddressesProvider public immutable _AAVE_POOL_ADDRESSES_PROVIDER;
 
     error NotSupported();
     error InvalidProvider();
@@ -40,7 +41,7 @@ contract SiloFlashloan is Silo {
         require(address(_poolAddressesProvider) != address(0), EmptyAdressProvider());
         require(_poolAddressesProvider.getPool() != address(0), InvalidProvider());
 
-        AAVE_POOL_ADDRESSES_PROVIDER = _poolAddressesProvider;
+        _AAVE_POOL_ADDRESSES_PROVIDER = _poolAddressesProvider;
     }
 
     /// @inheritdoc IVersioned
@@ -114,9 +115,18 @@ contract SiloFlashloan is Silo {
         revert NotSupported();
     }
 
+
+  function ADDRESSES_PROVIDER() external view returns (IPoolAddressesProvider) {
+    return _AAVE_POOL_ADDRESSES_PROVIDER;
+  }
+
+  function POOL() external view returns (IPool) {
+    return IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
+  }
+
     /// @inheritdoc IERC3156FlashLender
     function maxFlashLoan(address _token) external view virtual override returns (uint256 maxLoan) {
-        IPool pool = IPool(AAVE_POOL_ADDRESSES_PROVIDER.getPool());
+        IPool pool = IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
 
         try pool.getReserveAToken(_token) returns (address aToken) {
             if (aToken == address(0)) return 0;
@@ -130,7 +140,7 @@ contract SiloFlashloan is Silo {
     function flashFee(address _token, uint256 _amount) external view virtual override returns (uint256 fee) {
         require(_token == ShareTokenLib.siloConfig().getAssetForSilo(address(this)), UnsupportedFlashloanToken());
 
-        fee = IPool(AAVE_POOL_ADDRESSES_PROVIDER.getPool()).FLASHLOAN_PREMIUM_TOTAL() * _amount / 10000;
+        fee = IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool()).FLASHLOAN_PREMIUM_TOTAL() * _amount / 10000;
     }
 
     /// @inheritdoc IERC3156FlashLender
@@ -142,7 +152,7 @@ contract SiloFlashloan is Silo {
     {
         bytes memory params = abi.encode(msg.sender, _receiver, _token, _data);
 
-        IPool(AAVE_POOL_ADDRESSES_PROVIDER.getPool()).flashLoanSimple({
+        IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool()).flashLoanSimple({
             receiverAddress: address(this),
             asset: _token,
             amount: _amount,
@@ -165,7 +175,7 @@ contract SiloFlashloan is Silo {
         virtual
         returns (bool)
     {
-        address pool = AAVE_POOL_ADDRESSES_PROVIDER.getPool();
+        address pool = _AAVE_POOL_ADDRESSES_PROVIDER.getPool();
         require(msg.sender == pool, FlashloanFailed());
 
         (

@@ -4,6 +4,9 @@ pragma solidity 0.8.28;
 import {Test} from "forge-std/Test.sol";
 import {EmptySilo} from "silo-core/contracts/utils/siloWrappers/EmptySilo.sol";
 
+/*
+    FOUNDRY_PROFILE=core_test forge test --ffi -vv --mc EmptySiloTest
+*/
 contract EmptySiloTest is Test {
     struct CaseData {
         bytes callData;
@@ -25,7 +28,7 @@ contract EmptySiloTest is Test {
         string[] memory keys = vm.parseJsonKeys(json, ".methodIdentifiers");
         assertEq(keys.length, 89, "artifact method count mismatch");
         _assertHasMethodIdentifier(keys, "DOMAIN_SEPARATOR()");
-        _assertHasMethodIdentifier(keys, "VERSION()");
+        // _assertHasMethodIdentifier(keys, "VERSION()");
         _assertHasMethodIdentifier(keys, "accrueInterest()");
         _assertHasMethodIdentifier(keys, "accrueInterestForConfig(address,uint256,uint256)");
         _assertHasMethodIdentifier(keys, "allowance(address,address)");

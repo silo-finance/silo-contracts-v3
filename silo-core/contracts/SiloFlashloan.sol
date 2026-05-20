@@ -3,9 +3,10 @@
 pragma solidity 0.8.28;
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
+import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 
-import {IFlashLoanSimpleReceiver} from "aave-v3-origin/misc/flashloan/interfaces/IFlashLoanSimpleReceiver.sol";
 import {IPool} from "aave-v3-origin/interfaces/IPool.sol";
+import {IPoolAddressesProvider} from "aave-v3-origin/interfaces/IPoolAddressesProvider.sol";
 
 import {ISilo, IERC3156FlashLender} from "./interfaces/ISilo.sol";
 import {IVersioned} from "./interfaces/IVersioned.sol";
@@ -22,12 +23,18 @@ import {ISiloFactory} from "./interfaces/ISiloFactory.sol";
 /// is deployed twice for each asset for two-asset lending markets.
 /// Version: 2.0.0
 contract SiloFlashloan is Silo {
-    IPool public immutable POOL;
+    using SafeERC20 for IERC20;
+
+    bytes32 internal constant _FLASHLOAN_CALLBACK = keccak256("ERC3156FlashBorrower.onFlashLoan");
+
+    IPoolAddressesProvider public immutable POOL_ADDRESSES_PROVIDER;
     error NotSupported();
 
-    constructor(ISiloFactory _siloFactory) Silo(_siloFactory) {
-        // POOL = IPool(IPoolAddressesProvider(ADDRESSES_PROVIDER).getPool());
-        POOL = IPool(0x5362dBb1e601abF3a4c14c22ffEdA64042E5eAA3); // sonic
+    constructor(ISiloFactory _siloFactory, IPoolAddressesProvider _poolAddressesProvider) Silo(_siloFactory) {
+        require(address(POOL_ADDRESSES_PROVIDER) != address(0), AddressZero());
+        require(_poolAddressesProvider.getPool() != address(0), InvalidProvider());
+
+        POOL_ADDRESSES_PROVIDER = _poolAddressesProvider;
     }
 
     /// @inheritdoc IVersioned
@@ -113,12 +120,19 @@ contract SiloFlashloan is Silo {
 
     /// @inheritdoc IERC3156FlashLender
     function maxFlashLoan(address _token) external view virtual override returns (uint256 maxLoan) {
-        maxLoan = Views.maxFlashLoan(_token);
+        IPool pool = IPool(POOL_ADDRESSES_PROVIDER.getPool());
+
+        try pool.getReserveAToken(_token) returns (address aToken) {
+            if (aToken == address(0)) return 0;
+            maxLoan = IERC20(_token).balanceOf(aToken);
+        } catch {
+            maxLoan = 0;
+        }
     }
 
     /// @inheritdoc IERC3156FlashLender
     function flashFee(address _token, uint256 _amount) external view virtual override returns (uint256 fee) {
-        fee = POOL.FLASHLOAN_PREMIUM_TOTAL() * _amount / 10000;
+        fee = IPool(POOL_ADDRESSES_PROVIDER.getPool()).FLASHLOAN_PREMIUM_TOTAL() * _amount / 10000;
     }
 
     /// @inheritdoc IERC3156FlashLender
@@ -127,7 +141,52 @@ contract SiloFlashloan is Silo {
         virtual
         returns (bool success)
     {
-        success = Actions.flashLoan(_receiver, _token, _amount, _data);
+        bytes memory params = abi.encode(msg.sender, _receiver, _token, _data);
+
+        IPool(POOL_ADDRESSES_PROVIDER.getPool()).flashLoanSimple({
+            receiverAddress: address(this),
+            asset: _token,
+            amount: _amount,
+            params: params,
+            referralCode: 0
+        });
+
+        success = true;
         if (success) emit FlashLoan(_amount);
+    }
+
+    function executeOperation(address _asset, uint256 _amount, uint256 _premium, address _initiator, bytes calldata _params)
+        external
+        returns (bool)
+    {
+        address pool = POOL_ADDRESSES_PROVIDER.getPool();
+        require(msg.sender == pool, FlashloanFailed());
+
+        (
+            address flashLoanInitiator,
+            IERC3156FlashBorrower receiver,
+            address token,
+            bytes memory data
+        ) = abi.decode(_params, (address, IERC3156FlashBorrower, address, bytes));
+
+        require(_asset == token, UnsupportedFlashloanToken());
+
+        IERC20(token).safeTransfer({to: address(receiver), value: amount});
+
+        require(
+            receiver.onFlashLoan({
+                _initiator: flashLoanInitiator,
+                _token: token,
+                _amount: _amount,
+                _fee: _premium,
+                _data: data
+            }) == _FLASHLOAN_CALLBACK,
+            FlashloanFailed()
+        );
+
+        IERC20(token).safeTransferFrom({from: address(receiver), to: address(this), value: amount + premium});
+        IERC20(token).forceApprove({spender: pool, value: amount + premium});
+
+        return true;
     }
 }

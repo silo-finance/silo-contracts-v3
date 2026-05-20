@@ -7,6 +7,8 @@ import {SiloStorageLib} from "silo-core/contracts/lib/SiloStorageLib.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 
 import {InterestRateModelMock} from "../../_mocks/InterestRateModelMock.sol";
+import {RevertingIRM} from "../../_mocks/RevertingIRM.sol";
+import {IInterestRateModel} from "silo-core/contracts/interfaces/IInterestRateModel.sol";
 
 // forge test -vv --mc AccrueInterestForAssetTest
 contract AccrueInterestForAssetTest is Test {
@@ -110,6 +112,34 @@ contract AccrueInterestForAssetTest is Test {
             accruedInterest * (daoFee + deployerFee) / DECIMAL_POINTS,
             "daoAndDeployerRevenue"
         );
+    }
+
+
+    /*
+    forge test -vv --mt test_accrueInterestForAsset_whenIrmReverts_timestampUnchanged
+    */
+    function test_accrueInterestForAsset_whenIrmReverts_timestampUnchanged() public {
+        uint64 oldTimestamp = 111;
+        uint64 currentTimestamp = 222;
+        vm.warp(currentTimestamp);
+
+        RevertingIRM irm = new RevertingIRM(RevertingIRM.RevertReasons.StandardRevert);
+
+        ISilo.SiloStorage storage $ = _$();
+
+        $.totalAssets[ISilo.AssetType.Collateral] = 1e18;
+        $.totalAssets[ISilo.AssetType.Debt] = 0.5e18;
+        $.interestRateTimestamp = oldTimestamp;
+
+        vm.expectEmit();
+        emit IInterestRateModel.InterestRateModelError();
+
+        uint256 accruedInterest = SiloLendingLib.accrueInterestForAsset(address(irm), 0, 0);
+
+        assertEq(accruedInterest, 0, "no interest when IRM fails");
+        assertEq($.interestRateTimestamp, oldTimestamp, "timestamp must not advance on IRM failure");
+        assertEq($.totalAssets[ISilo.AssetType.Collateral], 1e18, "collateral unchanged");
+        assertEq($.totalAssets[ISilo.AssetType.Debt], 0.5e18, "debt unchanged");
     }
 
     function _$() internal pure returns (ISilo.SiloStorage storage $) {

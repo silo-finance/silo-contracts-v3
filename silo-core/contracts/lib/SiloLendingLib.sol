@@ -122,12 +122,16 @@ library SiloLendingLib {
         uint256 totalCollateralAssets = $.totalAssets[ISilo.AssetType.Collateral];
         uint256 totalDebtAssets = $.totalAssets[ISilo.AssetType.Debt];
 
-        uint256 rcomp = getCompoundInterestRate({
+        (uint256 rcomp, bool irmSucceeded) = getCompoundInterestRate({
             _interestRateModel: _interestRateModel,
             _totalCollateralAssets: totalCollateralAssets,
             _totalDebtAssets: totalDebtAssets,
             _lastTimestamp: lastTimestamp
         });
+
+        if (!irmSucceeded) {
+            return 0;
+        }
 
         if (rcomp == 0) {
             $.interestRateTimestamp = uint64(block.timestamp);
@@ -430,7 +434,7 @@ library SiloLendingLib {
         uint256 _totalCollateralAssets,
         uint256 _totalDebtAssets,
         uint64 _lastTimestamp
-    ) internal returns (uint256 rcomp) {
+    ) internal returns (uint256 rcomp, bool irmSucceeded) {
         try
             IInterestRateModel(_interestRateModel).getCompoundInterestRateAndUpdate(
                 _totalCollateralAssets,
@@ -439,10 +443,11 @@ library SiloLendingLib {
             )
             returns (uint256 interestRate)
         {
-            rcomp = interestRate;
+            return (interestRate, true);
         } catch {
             // do not lock silo on interest calculation
             emit IInterestRateModel.InterestRateModelError();
+            return (0, false);
         }
     }
 

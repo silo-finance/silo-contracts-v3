@@ -3,6 +3,7 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 
+import {console2} from "forge-std/console2.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
 import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
@@ -28,17 +29,22 @@ contract FlashLoanReceiverMock is IERC3156FlashBorrower {
     uint256 public callbackCount;
     address public lastInitiator;
     address public lastToken;
-    uint256 public lastAmount;
+    uint256 public lastInputAmount;
+    uint256 public lastBalanceOf;
     uint256 public lastFee;
 
     function onFlashLoan(address _initiator, address _token, uint256 _amount, uint256 _fee, bytes calldata)
         external
         returns (bytes32)
     {
+        console2.log("[onFlashLoan]", _token, _amount, _fee);
+        console2.log("[onFlashLoan] balance of", IERC20(_token).balanceOf(address(this)));
+
         callbackCount++;
         lastInitiator = _initiator;
         lastToken = _token;
-        lastAmount = IERC20(_token).balanceOf(address(this));
+        lastInputAmount = _amount;
+        lastBalanceOf = IERC20(_token).balanceOf(address(this));
         lastFee = _fee;
 
         IERC20(_token).approve({spender: msg.sender, value: _amount + _fee});
@@ -158,7 +164,8 @@ contract SiloFlashloanMethodsSonicForkTest is Test {
         assertEq(receiver.callbackCount(), 1, "onFlashLoan should be called once");
         assertEq(receiver.lastInitiator(), address(this), "receiver should get test as initiator");
         assertEq(receiver.lastToken(), _asset, "receiver should get market asset");
-        assertEq(receiver.lastAmount(), amount, "receiver should get borrowed amount");
+        assertEq(receiver.lastInputAmount(), amount, "receiver should get borrowed amount");
+        assertEq(receiver.lastBalanceOf(), amount + fee, "balance of should be full amount + fee");
         assertEq(receiver.lastFee(), fee, "receiver should get computed fee");
     }
 

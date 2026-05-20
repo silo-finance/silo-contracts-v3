@@ -4,6 +4,7 @@ pragma solidity 0.8.28;
 
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
+import {Math} from "openzeppelin5/utils/math/Math.sol";
 
 import {IPool} from "aave-v3-origin/interfaces/IPool.sol";
 import {IPoolAddressesProvider} from "aave-v3-origin/interfaces/IPoolAddressesProvider.sol";
@@ -140,7 +141,12 @@ contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
     function flashFee(address _token, uint256 _amount) external view virtual override returns (uint256 fee) {
         require(_token == ShareTokenLib.siloConfig().getAssetForSilo(address(this)), UnsupportedFlashloanToken());
 
-        fee = IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool()).FLASHLOAN_PREMIUM_TOTAL() * _amount / 10000;
+        fee = Math.mulDiv({
+            x: IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool()).FLASHLOAN_PREMIUM_TOTAL(),
+            y: _amount,
+            denominator: 10000,
+            rounding: Math.Rounding.Ceil
+        });
     }
 
     /// @inheritdoc IERC3156FlashLender

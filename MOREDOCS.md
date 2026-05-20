@@ -42,6 +42,7 @@ git submodule add --name chainlink-ccip https://github.com/smartcontractkit/ccip
 git submodule add --name openzeppelin5 https://github.com/OpenZeppelin/openzeppelin-contracts@5.0.2 gitmodules/openzeppelin-contracts-5
 git submodule add --name openzeppelin-contracts-upgradeable-5 https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable gitmodules/openzeppelin-contracts-upgradeable-5
 git submodule add --name morpho-blue https://github.com/morpho-org/morpho-blue/ gitmodules/morpho-blue
+git submodule add --name aave-v3-origin https://github.com/aave-dao/aave-v3-origin gitmodules/aave-v3-origin
 
 git submodule update --init --recursive
 git submodule

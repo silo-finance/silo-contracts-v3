@@ -6,6 +6,8 @@ import {Test} from "forge-std/Test.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 
 import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
+import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
+import {AddrKey} from "common/addresses/AddrKey.sol";
 
 import {SiloCoreContracts, SiloCoreDeployments} from "silo-core/common/SiloCoreContracts.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
@@ -36,7 +38,7 @@ contract FlashLoanReceiverMock is IERC3156FlashBorrower {
         callbackCount++;
         lastInitiator = _initiator;
         lastToken = _token;
-        lastAmount = _amount;
+        lastAmount = IERC20(_token).balanceOf(address(this));
         lastFee = _fee;
 
         IERC20(_token).approve({spender: msg.sender, value: _amount + _fee});
@@ -54,22 +56,30 @@ contract SiloFlashloanMethodsSonicForkTest is Test {
     ISilo internal _flashloanSilo;
     address internal _asset;
     IPool internal _pool;
+    ISilo silo20 = ISilo(0x322e1d5384aa4ED66AeCa770B95686271de61dc3);
 
     function setUp() public {
         vm.createSelectFork(vm.envString("RPC_SONIC"), 71073457);
 
+        AddrLib.init();
+
+        IPoolAddressesProvider provider = IPoolAddressesProvider(AddrLib.getAddress(AddrKey.AAVE_POOL_ADDRESSES_PROVIDER));
+        _pool = IPool(provider.getPool());
+
         _siloFactory = ISiloFactory(
-            SiloCoreDeployments.get({ _contract: SiloCoreContracts.SILO_FACTORY, _network: ChainsLib.SONIC_ALIAS })
+            SiloCoreDeployments.get({ 
+                _contract: SiloCoreContracts.SILO_FACTORY, 
+                _network: ChainsLib.SONIC_ALIAS 
+            })
         );
 
         address dkinkFactory = SiloCoreDeployments.get({
             _contract: SiloCoreContracts.DYNAMIC_KINK_MODEL_FACTORY,
             _network: ChainsLib.SONIC_ALIAS
         });
-        address siloImpl = SiloCoreDeployments.get({
-            _contract: SiloCoreContracts.SILO_FLASHLOAN,
-            _network: ChainsLib.SONIC_ALIAS
-        });
+
+        SiloFlashloan siloImpl = new SiloFlashloan(ISiloFactory(address(1)), provider);
+
         address shareProtectedCollateralTokenImpl = SiloCoreDeployments.get({
             _contract: SiloCoreContracts.SHARE_PROTECTED_COLLATERAL_TOKEN,
             _network: ChainsLib.SONIC_ALIAS
@@ -82,7 +92,7 @@ contract SiloFlashloanMethodsSonicForkTest is Test {
         _siloDeployerFlashloan = new SiloDeployerFlashloan({
             _dynamicKinkModelFactory: IDynamicKinkModelFactory(dkinkFactory),
             _siloFactory: _siloFactory,
-            _siloImpl: siloImpl,
+            _siloImpl: address(siloImpl),
             _shareProtectedCollateralTokenImpl: shareProtectedCollateralTokenImpl,
             _shareDebtTokenImpl: shareDebtTokenImpl
         });
@@ -98,34 +108,27 @@ contract SiloFlashloanMethodsSonicForkTest is Test {
             _marketOptions: ISiloDeployer.MarketOptions({permissionedLiquidators: new address[](0)})
         });
 
-        (address silo0, address silo1) = deployedConfig.getSilos();
-        ISilo candidate0 = ISilo(silo0);
-        ISilo candidate1 = ISilo(silo1);
-
-        uint256 maxLoan0 = candidate0.maxFlashLoan(candidate0.asset());
-        uint256 maxLoan1 = candidate1.maxFlashLoan(candidate1.asset());
-
-        if (maxLoan0 != 0) {
-            _flashloanSilo = candidate0;
-            _asset = candidate0.asset();
-        } else {
-            require(maxLoan1 != 0, "no Aave-backed asset in deployed market");
-            _flashloanSilo = candidate1;
-            _asset = candidate1.asset();
-        }
-
-        IPoolAddressesProvider provider = SiloFlashloan(payable(address(_flashloanSilo))).AAVE_POOL_ADDRESSES_PROVIDER();
-        _pool = IPool(provider.getPool());
+        (, address silo1) = deployedConfig.getSilos();
+        _flashloanSilo = ISilo(silo1);
+ 
+        _asset = silo20.asset();
     }
 
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_maxFlashLoan
+    */
     function test_maxFlashLoan() public view {
         uint256 maxLoan = _flashloanSilo.maxFlashLoan(_asset);
         address aToken = _pool.getReserveAToken(_asset);
         uint256 expected = IERC20(_asset).balanceOf(aToken);
 
         assertEq(maxLoan, expected, "maxFlashLoan should equal Aave reserve liquidity");
+        assertEq(maxLoan, 1_356_675.402753e6, "max flashloan");
     }
 
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_flashFee
+    */
     function test_flashFee() public view {
         uint256 amount = _normalizedAmount();
         uint256 fee = _flashloanSilo.flashFee(_asset, amount);
@@ -134,6 +137,9 @@ contract SiloFlashloanMethodsSonicForkTest is Test {
         assertEq(fee, expected, "flashFee should match Aave premium");
     }
 
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_flashLoan
+    */
     function test_flashLoan() public {
         FlashLoanReceiverMock receiver = new FlashLoanReceiverMock();
 
@@ -157,8 +163,7 @@ contract SiloFlashloanMethodsSonicForkTest is Test {
     }
 
     function _prepareInitDataFromLatestMarket() internal view returns (ISiloConfig.InitData memory initData) {
-        uint256 lastSiloId = _siloFactory.getNextSiloId() - 1;
-        ISiloConfig seedConfig = ISiloConfig(_siloFactory.idToSiloConfig(lastSiloId));
+        ISiloConfig seedConfig = ISiloConfig(silo20.config());
 
         (address seedSilo0, address seedSilo1) = seedConfig.getSilos();
         ISiloConfig.ConfigData memory cfg0 = seedConfig.getConfig(seedSilo0);

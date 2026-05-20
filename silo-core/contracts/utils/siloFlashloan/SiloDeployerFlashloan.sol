@@ -44,8 +44,18 @@ contract SiloDeployerFlashloan is Create2Factory, ISiloDeployer, IVersioned {
         bytes calldata _irmConfigData1,
         ClonableHookReceiver calldata _clonableHookReceiver,
         ISiloConfig.InitData memory _siloInitData,
-        MarketOptions calldata _marketOptions
+        MarketOptions calldata /* _marketOptions */
     ) external returns (ISiloConfig siloConfig) {
+        return deploy(_oracles, _irmConfigData0, _irmConfigData1, _clonableHookReceiver, _siloInitData);
+    }
+
+    function deploy(
+        Oracles calldata _oracles,
+        bytes calldata _irmConfigData0,
+        bytes calldata _irmConfigData1,
+        ClonableHookReceiver calldata _clonableHookReceiver,
+        ISiloConfig.InitData memory _siloInitData
+    ) public returns (ISiloConfig siloConfig) {
         // setUp IRMs (create if needed) and update `_siloInitData`
         _setUpIRMs(_irmConfigData0, _irmConfigData1, _siloInitData);
         // create oracles and update `_siloInitData`
@@ -239,9 +249,9 @@ contract SiloDeployerFlashloan is Create2Factory, ISiloDeployer, IVersioned {
 
     /// @notice Clone hook receiver if it is provided
     /// @param _siloInitData Silo configuration for the silo creation
-    /// @param _hookReceiverImplementation Hook receiver implementation to clone
-    function _cloneHookReceiver(ISiloConfig.InitData memory _siloInitData, address _hookReceiverImplementation)
+    function _cloneHookReceiver(ISiloConfig.InitData memory _siloInitData, address)
         internal
+        pure
     {
         require(_siloInitData.hookReceiver != address(0), HookReceiverMisconfigured());
     }

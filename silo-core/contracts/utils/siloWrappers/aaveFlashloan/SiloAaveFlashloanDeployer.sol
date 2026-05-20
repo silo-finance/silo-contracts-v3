@@ -14,7 +14,7 @@ import {Views} from "silo-core/contracts/lib/Views.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
 /// @notice Silo Deployer
-contract SiloDeployerFlashloan is Create2Factory, ISiloDeployer, IVersioned {
+contract SiloAaveFlashloanDeployer is Create2Factory, ISiloDeployer, IVersioned {
     // solhint-disable var-name-mixedcase
     IDynamicKinkModelFactory public immutable DYNAMIC_KINK_MODEL_FACTORY;
     ISiloFactory public immutable SILO_FACTORY;

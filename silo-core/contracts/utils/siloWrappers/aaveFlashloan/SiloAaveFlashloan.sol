@@ -17,18 +17,19 @@ import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {IERC3156FlashBorrower} from "silo-core/contracts/interfaces/IERC3156FlashBorrower.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
 import {ShareTokenLib} from "silo-core/contracts/lib/ShareTokenLib.sol";
-import {EmptySilo} from "./EmptySilo.sol";
+import {EmptySilo} from "../EmptySilo.sol";
 
 // Keep ERC4626 ordering
 // solhint-disable ordering
 
 /// @title Silo wrapper for AAVE flashloan
-contract SiloWrapperAaveFlashloan is EmptySilo, IFlashLoanSimpleReceiver {
+contract SiloAaveFlashloan is EmptySilo, IFlashLoanSimpleReceiver {
     using SafeERC20 for IERC20;
 
     bytes32 internal constant _FLASHLOAN_CALLBACK = keccak256("ERC3156FlashBorrower.onFlashLoan");
 
     IPoolAddressesProvider public immutable _AAVE_POOL_ADDRESSES_PROVIDER;
+    ISiloFactory internal immutable _factory;
 
     error InvalidProvider();
     error EmptyAdressProvider();
@@ -42,12 +43,16 @@ contract SiloWrapperAaveFlashloan is EmptySilo, IFlashLoanSimpleReceiver {
         require(_poolAddressesProvider.getPool() != address(0), InvalidProvider());
 
         _AAVE_POOL_ADDRESSES_PROVIDER = _poolAddressesProvider;
-        factory = _siloFactory;
+        _factory = _siloFactory;
     }
 
     // solhint-disable-next-line func-name-mixedcase
     function VERSION() external pure virtual override returns (string memory) {
         return "SiloWrapperAaveFlashloan 4.20.0";
+    }
+
+    function factory() external view virtual override returns (ISiloFactory) {
+        return _factory;
     }
 
     function ADDRESSES_PROVIDER() external view returns (IPoolAddressesProvider) {

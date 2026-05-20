@@ -11,14 +11,16 @@ contract EmptySilo {
 
     function DOMAIN_SEPARATOR() external virtual pure returns (bytes32) {}
 
-    function VERSION() external virtual pure virtual returns (string memory) {}
+    function VERSION() external virtual pure returns (string memory) {
+        return "EmptySilo 4.20.0";
+    }
 
     function accrueInterest() external virtual pure returns (uint256) {
-        revert NotSupported();
+        // should never revert
     }
 
     function accrueInterestForConfig(address, uint256, uint256) external virtual pure {
-        revert NotSupported();
+        // should never revert
     }
 
     function allowance(address, address) external virtual pure returns (uint256) {}
@@ -85,9 +87,9 @@ contract EmptySilo {
         returns (bytes1, string memory, string memory, uint256, address, bytes32, uint256[] memory)
     {}
 
-    function factory() external virtual view virtual returns (ISiloFactory) {}
+    function factory() external virtual view returns (ISiloFactory) {}
 
-    function flashFee(address, uint256) external virtual view virtual returns (uint256) {}
+    function flashFee(address, uint256) external virtual view returns (uint256) {}
 
     function flashLoan(IERC3156FlashBorrower, address, uint256, bytes calldata) external virtual returns (bool) {
         revert NotSupported();
@@ -131,7 +133,7 @@ contract EmptySilo {
 
     function maxDeposit(address) external virtual pure returns (uint256) {}
 
-    function maxFlashLoan(address) external virtual view virtual returns (uint256) {}
+    function maxFlashLoan(address) external virtual view returns (uint256) {}
 
     function maxMint(address) external virtual pure returns (uint256) {}
 

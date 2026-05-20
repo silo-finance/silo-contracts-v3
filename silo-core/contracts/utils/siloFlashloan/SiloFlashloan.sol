@@ -21,10 +21,7 @@ import {ShareTokenLib} from "silo-core/contracts/lib/ShareTokenLib.sol";
 // Keep ERC4626 ordering
 // solhint-disable ordering
 
-/// @title Silo vault with lending and borrowing functionality
-/// @notice Silo is a ERC4626-compatible vault that allows users to deposit collateral and borrow debt. This contract
-/// is deployed twice for each asset for two-asset lending markets.
-/// Version: 2.0.0
+/// @title Silo wrapper for AAVE flashloan
 contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
     using SafeERC20 for IERC20;
 
@@ -46,7 +43,7 @@ contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
     /// @inheritdoc IVersioned
     // solhint-disable-next-line func-name-mixedcase
     function VERSION() external pure virtual override returns (string memory) {
-        return "Silo 4.20.0";
+        return "SiloFlashloan 4.20.0";
     }
 
     /// @inheritdoc ISilo

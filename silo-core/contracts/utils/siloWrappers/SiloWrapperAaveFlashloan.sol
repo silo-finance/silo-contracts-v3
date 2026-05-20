@@ -17,98 +17,37 @@ import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {IERC3156FlashBorrower} from "silo-core/contracts/interfaces/IERC3156FlashBorrower.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
 import {ShareTokenLib} from "silo-core/contracts/lib/ShareTokenLib.sol";
+import {EmptySilo} from "./EmptySilo.sol";
 
 // Keep ERC4626 ordering
 // solhint-disable ordering
 
 /// @title Silo wrapper for AAVE flashloan
-contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
+contract SiloWrapperAaveFlashloan is EmptySilo, IFlashLoanSimpleReceiver {
     using SafeERC20 for IERC20;
 
     bytes32 internal constant _FLASHLOAN_CALLBACK = keccak256("ERC3156FlashBorrower.onFlashLoan");
 
     IPoolAddressesProvider public immutable _AAVE_POOL_ADDRESSES_PROVIDER;
 
-    error NotSupported();
     error InvalidProvider();
     error EmptyAdressProvider();
+    error UnsupportedFlashloanToken();
+    error FlashloanFailed();
 
-    constructor(ISiloFactory _siloFactory, IPoolAddressesProvider _poolAddressesProvider) Silo(_siloFactory) {
+    event FlashLoan(uint256 amount);
+
+    constructor(ISiloFactory _siloFactory, IPoolAddressesProvider _poolAddressesProvider) {
         require(address(_poolAddressesProvider) != address(0), EmptyAdressProvider());
         require(_poolAddressesProvider.getPool() != address(0), InvalidProvider());
 
         _AAVE_POOL_ADDRESSES_PROVIDER = _poolAddressesProvider;
+        factory = _siloFactory;
     }
 
-    /// @inheritdoc IVersioned
     // solhint-disable-next-line func-name-mixedcase
     function VERSION() external pure virtual override returns (string memory) {
-        return "SiloFlashloan 4.20.0";
-    }
-
-    /// @inheritdoc ISilo
-    function callOnBehalfOfSilo(address, uint256, CallType, bytes calldata)
-        external
-        payable
-        virtual
-        override
-        returns (bool, bytes memory)
-    {
-        revert NotSupported();
-    }
-
-    /// @inheritdoc ISilo
-    function maxBorrow(address) external view virtual override returns (uint256 maxAssets) {
-        maxAssets = 0;
-    }
-
-    /// @inheritdoc ISilo
-    function previewBorrow(uint256) external view virtual override returns (uint256 shares) {
-        shares = 0;
-    }
-
-    /// @inheritdoc ISilo
-    function borrow(uint256, address, address) external virtual override returns (uint256) {
-        revert NotSupported();
-    }
-
-    /// @inheritdoc ISilo
-    function maxBorrowShares(address) external view virtual override returns (uint256 maxShares) {
-        maxShares = 0;
-    }
-
-    /// @inheritdoc ISilo
-    function previewBorrowShares(uint256) external view virtual override returns (uint256 assets) {
-        assets = 0;
-    }
-
-    /// @inheritdoc ISilo
-    function borrowShares(uint256, address, address) external virtual override returns (uint256) {
-        revert NotSupported();
-    }
-
-    /// @inheritdoc ISilo
-    function maxBorrowSameAsset(address) external pure virtual override returns (uint256) {
-        return 0;
-    }
-
-    /// @inheritdoc ISilo
-    function borrowSameAsset(uint256, address, address) external virtual override returns (uint256) {
-        revert Deprecated();
-    }
-
-    /// @inheritdoc ISilo
-    function transitionCollateral(
-        uint256 /* _shares */,
-        address /* _owner */,
-        CollateralType /* _transitionFrom */
-    )
-        external
-        virtual
-        override
-        returns (uint256)
-    {
-        revert NotSupported();
+        return "SiloWrapperAaveFlashloan 4.20.0";
     }
 
     function ADDRESSES_PROVIDER() external view returns (IPoolAddressesProvider) {
@@ -119,7 +58,6 @@ contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
         return IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
     }
 
-    /// @inheritdoc IERC3156FlashLender
     function maxFlashLoan(address _token) external view virtual override returns (uint256 maxLoan) {
         IPool pool = IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
 
@@ -131,7 +69,6 @@ contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
         }
     }
 
-    /// @inheritdoc IERC3156FlashLender
     function flashFee(address _token, uint256 _amount) external view virtual override returns (uint256 fee) {
         require(_token == ShareTokenLib.siloConfig().getAssetForSilo(address(this)), UnsupportedFlashloanToken());
 
@@ -143,7 +80,6 @@ contract SiloFlashloan is Silo, IFlashLoanSimpleReceiver {
         });
     }
 
-    /// @inheritdoc IERC3156FlashLender
     function flashLoan(IERC3156FlashBorrower _receiver, address _token, uint256 _amount, bytes calldata _data)
         external
         virtual

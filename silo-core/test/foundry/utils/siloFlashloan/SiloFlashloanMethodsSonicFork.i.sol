@@ -16,8 +16,8 @@ import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
 import {ISiloDeployer} from "silo-core/contracts/interfaces/ISiloDeployer.sol";
 import {IERC3156FlashBorrower} from "silo-core/contracts/interfaces/IERC3156FlashBorrower.sol";
-import {SiloDeployerFlashloan} from "silo-core/contracts/utils/siloFlashloan/SiloDeployerFlashloan.sol";
-import {SiloFlashloan} from "silo-core/contracts/utils/siloFlashloan/SiloFlashloan.sol";
+import {SiloDeployerFlashloan} from "silo-core/contracts/utils/siloWrappers/SiloDeployerFlashloan.sol";
+import {SiloWrapperAaveFlashloan} from "silo-core/contracts/utils/siloWrappers/SiloWrapperAaveFlashloan.sol";
 import {IDynamicKinkModelFactory} from "silo-core/contracts/interfaces/IDynamicKinkModelFactory.sol";
 
 import {IPoolAddressesProvider} from "aave-v3-origin/interfaces/IPoolAddressesProvider.sol";
@@ -85,7 +85,7 @@ contract SiloFlashloanMethodsSonicForkTest is Test {
             _network: ChainsLib.SONIC_ALIAS
         });
 
-        SiloFlashloan siloImpl = new SiloFlashloan(ISiloFactory(address(1)), provider);
+        SiloWrapperAaveFlashloan siloImpl = new SiloWrapperAaveFlashloan(ISiloFactory(address(1)), provider);
 
         address shareProtectedCollateralTokenImpl = SiloCoreDeployments.get({
             _contract: SiloCoreContracts.SHARE_PROTECTED_COLLATERAL_TOKEN,

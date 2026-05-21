@@ -15,7 +15,7 @@ import {AddrKey} from "common/addresses/AddrKey.sol";
 
 /*
     FOUNDRY_PROFILE=core forge clean
-    FOUNDRY_PROFILE=core forge build --force 
+    FOUNDRY_PROFILE=core forge build --force
 
     XDC chain deployment use --legacy flag
 
@@ -44,13 +44,17 @@ contract AaveFlashloanDeploy is CommonDeploy {
         console2.log("[AaveFlashloanDeploy] chainAlias", chainAlias);
 
         address aavePoolAddressesProvider = AddrLib.getAddress(chainAlias, AddrKey.AAVE_POOL_ADDRESSES_PROVIDER);
-        require(aavePoolAddressesProvider != address(0), string.concat(AddrKey.AAVE_POOL_ADDRESSES_PROVIDER, " not deployed"));
+        require(
+            aavePoolAddressesProvider != address(0),
+            string.concat(AddrKey.AAVE_POOL_ADDRESSES_PROVIDER, " not deployed")
+        );
+        
         console2.log("aavePoolAddressesProvider", aavePoolAddressesProvider);
 
         vm.startBroadcast(deployerPrivateKey);
         aaveFlashloan = new AaveFlashloan(IPoolAddressesProvider(aavePoolAddressesProvider));
         vm.stopBroadcast();
-        
+
         console2.log("New AaveFlashloan deployed", address(aaveFlashloan));
 
         _registerDeployment(address(aaveFlashloan), SiloCoreContracts.AAVE_FLASHLOAN);

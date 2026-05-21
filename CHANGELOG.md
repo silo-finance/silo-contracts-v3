@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.20.1] - 2026-05-21
+### Added
+- RescueTokens + MaxWithdraw utility contracts (#1922)
+
+### Updated
+- wrapper for aave flashloan with rescue tokens
+
 ## [4.20.0] - 2026-05-21
 ### Added
 - wrapper for aave flashloan (#1917)

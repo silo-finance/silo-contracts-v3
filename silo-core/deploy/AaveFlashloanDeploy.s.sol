@@ -22,19 +22,6 @@ import {AddrKey} from "common/addresses/AddrKey.sol";
     FOUNDRY_PROFILE=core \
         forge script silo-core/deploy/AaveFlashloanDeploy.s.sol \
         --ffi --rpc-url $RPC_SONIC --broadcast --verify --legacy
-
-
-    FOUNDRY_PROFILE=core \
-        forge script silo-core/deploy/AaveFlashloanDeploy.s.sol \
-        --verifier-url $VERIFIER_URL_ETHERSCAN_V2 \
-        --verifier etherscan \
-        --chain 50 \
-        --ffi --rpc-url $RPC_XDC \
-        --etherscan-api-key $ETHERSCAN_API_KEY \
-        --verify \
-        --private-key $PRIVATE_KEY \
-        --legacy \
-        --resume
 */
 contract AaveFlashloanDeploy is CommonDeploy {
     function run() public returns (AaveFlashloan aaveFlashloan) {
@@ -48,7 +35,7 @@ contract AaveFlashloanDeploy is CommonDeploy {
             aavePoolAddressesProvider != address(0),
             string.concat(AddrKey.AAVE_POOL_ADDRESSES_PROVIDER, " not deployed")
         );
-        
+
         console2.log("aavePoolAddressesProvider", aavePoolAddressesProvider);
 
         vm.startBroadcast(deployerPrivateKey);

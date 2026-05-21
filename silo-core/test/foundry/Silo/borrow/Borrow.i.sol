@@ -12,6 +12,7 @@ import {ShareTokenDecimalsPowLib} from "../../_common/ShareTokenDecimalsPowLib.s
 import {RevertingIRM} from "silo-core/test/foundry/_mocks/RevertingIRM.sol";
 
 import {SiloLittleHelper} from "../../_common/SiloLittleHelper.sol";
+import {MaxWithdraw} from "silo-core/contracts/utils/liquidationHelper/MaxWithdraw.sol";
 
 /*
     forge test -vv --ffi --mc BorrowIntegrationTest
@@ -49,6 +50,41 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         vm.warp(block.timestamp + 7);
 
         silo1.borrow(silo1.maxBorrow(borrower), borrower, borrower);
+    }
+    
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_MaxWithdraw_contracts
+    */
+    function test_MaxWithdraw_contracts() public {
+        token0.setOnDemand(true);
+        token1.setOnDemand(true);
+
+        address borrower = address(this);
+
+        silo0.mint(11638058238813243150339, borrower);
+        silo1.deposit(1e18, address(1));
+        silo1.borrow(8256930, borrower, borrower);
+
+        MaxWithdraw maxWithdraw = new MaxWithdraw();
+
+        token0.setOnDemand(false);
+        token1.setOnDemand(false);
+
+        vm.startPrank(borrower);
+
+        vm.expectRevert();
+        maxWithdraw.doMaxWithdraw(silo0);
+
+        emit log_named_decimal_uint("LTV", SILO_LENS.getLtv(silo0, borrower), 16);
+
+        silo0.approve(address(maxWithdraw), type(uint256).max);
+        maxWithdraw.doMaxWithdraw(silo0);
+
+        emit log_named_decimal_uint("LTV", SILO_LENS.getLtv(silo0, borrower), 16);
+
+        vm.warp(block.timestamp + 100 seconds);
+
+        emit log_named_decimal_uint("LTV", SILO_LENS.getLtv(silo0, borrower), 16);
     }
 
     /*

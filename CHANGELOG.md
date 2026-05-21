@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.20.0] - 2026-05-21
+### Added
+- wrapper for aave flashloan (#1917)
+ 
 ## [4.19.0] - 2026-05-13
 ### Added
 - redeploy Hooks

@@ -16,3 +16,4 @@ uniswap/=gitmodules/uniswap/
 @uniswap/v3-core/=gitmodules/uniswap/v3-core/
 pyth-sdk-solidity/=gitmodules/pyth-sdk-solidity/target_chains/ethereum/sdk/solidity/
 a16z-erc4626-tests/=gitmodules/a16z-erc4626-tests/
+aave-v3-origin/=gitmodules/aave-v3-origin/src/contracts

@@ -40,3 +40,6 @@
 [submodule "a16z-erc4626-tests"]
 	path = gitmodules/a16z-erc4626-tests
 	url = https://github.com/a16z/erc4626-tests
+[submodule "aave-v3-origin"]
+	path = gitmodules/aave-v3-origin
+	url = https://github.com/aave-dao/aave-v3-origin

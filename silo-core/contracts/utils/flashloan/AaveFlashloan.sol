@@ -14,9 +14,10 @@ import {IERC3156FlashLender} from "silo-core/contracts/interfaces/IERC3156FlashL
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {IERC3156FlashBorrower} from "silo-core/contracts/interfaces/IERC3156FlashBorrower.sol";
+import {RescueTokens} from "../RescueTokens.sol";
 
 /// @title wrapper for AAVE flashloan with IERC3156FlashLender interface
-contract AaveFlashloan is IERC3156FlashLender, IFlashLoanSimpleReceiver, IVersioned {
+contract AaveFlashloan is IERC3156FlashLender, IFlashLoanSimpleReceiver, IVersioned, RescueTokens {
     using SafeERC20 for IERC20;
 
     bytes32 internal constant _FLASHLOAN_CALLBACK = keccak256("ERC3156FlashBorrower.onFlashLoan");
@@ -51,7 +52,7 @@ contract AaveFlashloan is IERC3156FlashLender, IFlashLoanSimpleReceiver, IVersio
             });
 
         success = true;
-        if (success) emit ISilo.FlashLoan(_amount);
+        emit ISilo.FlashLoan(_amount);
     }
 
     function executeOperation(
@@ -130,6 +131,6 @@ contract AaveFlashloan is IERC3156FlashLender, IFlashLoanSimpleReceiver, IVersio
     /// @inheritdoc IVersioned
     // solhint-disable-next-line func-name-mixedcase
     function VERSION() external pure virtual returns (string memory) {
-        return "AaveFlashloan 4.20.0";
+        return "AaveFlashloan 4.20.1";
     }
 }

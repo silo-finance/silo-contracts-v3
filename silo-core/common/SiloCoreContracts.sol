@@ -16,7 +16,6 @@ library SiloCoreContracts {
     string public constant SILO_HOOK_V2 = "SiloHookV2.sol";
     string public constant SILO_HOOK_V3 = "SiloHookV3.sol";
     string public constant SILO_DEPLOYER = "SiloDeployer.sol";
-    string public constant SILO_DEPLOYER_FLASHLOAN = "SiloDeployerFlashloan.sol";
     string public constant SILO = "Silo.sol";
     string public constant AAVE_FLASHLOAN = "AaveFlashloan.sol";
     string public constant PARTIAL_LIQUIDATION = "PartialLiquidation.sol";

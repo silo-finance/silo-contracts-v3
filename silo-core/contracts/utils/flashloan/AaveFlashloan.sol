@@ -21,7 +21,7 @@ contract AaveFlashloan is IERC3156FlashLender, IFlashLoanSimpleReceiver, IVersio
 
     bytes32 internal constant _FLASHLOAN_CALLBACK = keccak256("ERC3156FlashBorrower.onFlashLoan");
 
-    IPoolAddressesProvider public immutable _AAVE_POOL_ADDRESSES_PROVIDER;
+    IPoolAddressesProvider internal immutable _AAVE_POOL_ADDRESSES_PROVIDER;
 
     error InvalidProvider();
     error EmptyAdressProvider();
@@ -31,47 +31,6 @@ contract AaveFlashloan is IERC3156FlashLender, IFlashLoanSimpleReceiver, IVersio
         require(_poolAddressesProvider.getPool() != address(0), InvalidProvider());
 
         _AAVE_POOL_ADDRESSES_PROVIDER = _poolAddressesProvider;
-    }
-
-    /// @inheritdoc IVersioned
-    // solhint-disable-next-line func-name-mixedcase
-    function VERSION() external pure virtual returns (string memory) {
-        return "SiloFlashloan 4.20.0";
-    }
-
-    function ADDRESSES_PROVIDER() external view returns (IPoolAddressesProvider) {
-        return _AAVE_POOL_ADDRESSES_PROVIDER;
-    }
-
-    function POOL() external view returns (IPool) {
-        return IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
-    }
-
-    /// @inheritdoc IERC3156FlashLender
-    function maxFlashLoan(address _token) external view virtual override returns (uint256 maxLoan) {
-        IPool pool = IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
-
-        try pool.getReserveAToken(_token) returns (address aToken) {
-            if (aToken == address(0)) return 0;
-
-            maxLoan = IERC20(_token).balanceOf(aToken);
-        } catch {
-            maxLoan = 0;
-        }
-    }
-
-    /// @inheritdoc IERC3156FlashLender
-    function flashFee(address _token, uint256 _amount) external view virtual returns (uint256 fee) {
-        IPool pool = IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
-        address aToken = pool.getReserveAToken(_token);
-        require(aToken != address(0), ISilo.UnsupportedFlashloanToken());
-
-        fee = Math.mulDiv({
-            x: pool.FLASHLOAN_PREMIUM_TOTAL(), 
-            y: _amount, 
-            denominator: 10000, 
-            rounding: Math.Rounding.Ceil
-        });
     }
 
     /// @inheritdoc IERC3156FlashLender
@@ -129,5 +88,48 @@ contract AaveFlashloan is IERC3156FlashLender, IFlashLoanSimpleReceiver, IVersio
         IERC20(token).forceApprove({spender: pool, value: _amount + _premium});
 
         return true;
+    }
+
+    // solhint-disable-next-line func-name-mixedcase    
+    function ADDRESSES_PROVIDER() external view returns (IPoolAddressesProvider) {
+        return _AAVE_POOL_ADDRESSES_PROVIDER;
+    }
+
+    // solhint-disable-next-line func-name-mixedcase    
+    function POOL() external view returns (IPool) {
+        return IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
+    }
+
+    /// @inheritdoc IERC3156FlashLender
+    function maxFlashLoan(address _token) external view virtual override returns (uint256 maxLoan) {
+        IPool pool = IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
+
+        try pool.getReserveAToken(_token) returns (address aToken) {
+            if (aToken == address(0)) return 0;
+
+            maxLoan = IERC20(_token).balanceOf(aToken);
+        } catch {
+            maxLoan = 0;
+        }
+    }
+
+    /// @inheritdoc IERC3156FlashLender
+    function flashFee(address _token, uint256 _amount) external view virtual returns (uint256 fee) {
+        IPool pool = IPool(_AAVE_POOL_ADDRESSES_PROVIDER.getPool());
+        address aToken = pool.getReserveAToken(_token);
+        require(aToken != address(0), ISilo.UnsupportedFlashloanToken());
+
+        fee = Math.mulDiv({
+            x: pool.FLASHLOAN_PREMIUM_TOTAL(), 
+            y: _amount, 
+            denominator: 10000, 
+            rounding: Math.Rounding.Ceil
+        });
+    }
+
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure virtual returns (string memory) {
+        return "AaveFlashloan 4.20.0";
     }
 }

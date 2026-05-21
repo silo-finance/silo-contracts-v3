@@ -3,6 +3,7 @@ pragma solidity >=0.6.2 <0.9.0;
 
 library AddrKey {
     string constant public AAVE_POOL_ADDRESSES_PROVIDER = "AAVE_POOL_ADDRESSES_PROVIDER";
+    string constant public AAVE_FLASHLOAN = "AAVE_FLASHLOAN";
     string constant public BALANCER_VAULT = "BALANCER_VAULT";
     string constant public CHAINLINK_CCIP_ROUTER = "CHAINLINK_CCIP_ROUTER";
     string constant public CHAINLINK_USDPlus_USD_aggregator = "CHAINLINK_USDPlus_USD_aggregator";

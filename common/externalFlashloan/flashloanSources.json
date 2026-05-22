@@ -2,6 +2,36 @@
     "sonic": {
         "0x29219dd400f2Bf60E5a23d13Be72B486D4038894": [
             "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
+        ],
+        "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38": [
+            "0xca1658fe7c04e7cf739c3072a1f60948506efd83"
+        ]
+    },
+    "mainnet": {
+        "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": [
+            "0xa34b4145c6a5b144193ba7870b6e685bcf3846cd"
+        ],
+        "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": [
+            "0xa34b4145c6a5b144193ba7870b6e685bcf3846cd"
+        ]
+    },
+    "avalanche": {
+        "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E": [
+            "0xe588ea58802968abefade5b948d650aaa778e5e5"
+        ],
+        "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7": [
+            "0xe588ea58802968abefade5b948d650aaa778e5e5"
+        ],
+        "0x152b9d0fdc40c096757f570a51e494bd4b943e50": [
+            "0xe588ea58802968abefade5b948d650aaa778e5e5"
+        ]
+    },
+    "arbitrum-one": {
+        "0x82af49447d8a07e3bd95bd0d56f35241523fbab1": [
+            "0xe5233e8325a14e4b93c471c5568c9a5c5d216204"
+        ],
+        "0x5979d7b546e38e414f7e9822514be443a4800529": [
+            "0xe5233e8325a14e4b93c471c5568c9a5c5d216204"
         ]
     }
 }

@@ -6,30 +6,39 @@ import {PausableUpgradeable} from "openzeppelin5-upgradeable/utils/PausableUpgra
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {OracleNormalization} from "silo-oracles/contracts/lib/OracleNormalization.sol";
-import {ChainlinkV3Oracle} from "silo-oracles/contracts/chainlinkV3/ChainlinkV3Oracle.sol";
-import {ChainlinkV3OracleConfig} from "silo-oracles/contracts/chainlinkV3/ChainlinkV3OracleConfig.sol";
-import {IChainlinkV3Oracle} from "silo-oracles/contracts/interfaces/IChainlinkV3Oracle.sol";
 import {IDualOracle} from "silo-oracles/contracts/interfaces/IDualOracle.sol";
 import {DualOracleConfig} from "silo-oracles/contracts/dualOracle/DualOracleConfig.sol";
 
 // solhint-disable ordering
 
 /// @title DualOracle
-/// @notice Extends ChainlinkV3Oracle with two governance-controlled safety mechanisms:
-///         pause mode and a bounded manual price override.
 ///
 /// Priority (highest → lowest):
 ///   1. Paused          → all quote() / latestRoundData() calls revert
 ///   2. Override active → returns admin-set manual price (normalized to 18 dp via same path as CL)
 ///   3. Normal          → delegates entirely to ChainlinkV3Oracle.quote()
-///
-/// Timelocked:  enabling override   (proposeOverride → wait → acceptOverride)
-/// Immediate:   pause / unpause, disableOverride, setManualPrice
-contract DualOracle is IDualOracle, ChainlinkV3Oracle, Ownable2StepUpgradeable, PausableUpgradeable {
-    /// @inheritdoc IDualOracle
+contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, PausableUpgradeable {
+
+    uint256 public constant MIN_TIMELOCK = 1 days;
+
+    uint256 public constant MAX_TIMELOCK = 14 days;
+
+    ISiloOracle public oracle;
+
+    address public quoteToken;
+
+    uint256 public timelock;
+
+    address public override baseToken;
+
+    uint256 public baseTokenDecimals;
+
+    uint256 public lowerBound;
+
+    uint256 public upperBound;
+
     uint256 public manualPrice;
 
-    /// @inheritdoc IDualOracle
     uint64 public overrideValidAt;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -37,14 +46,37 @@ contract DualOracle is IDualOracle, ChainlinkV3Oracle, Ownable2StepUpgradeable, 
         _disableInitializers();
     }
 
-    /// @notice Initialise the cloned oracle with its config.
-    ///         Validation of config is performed by DualOracleFactory — use the factory, not this directly.
-    ///         Overrides ChainlinkV3Oracle.initialize to also wire up Ownable from DualOracleConfig.
-    function initialize(ChainlinkV3OracleConfig _configAddress, address _owner) external virtual override initializer {
-        ChainlinkV3Oracle.initialize(_configAddress);
+    function initialize(
+        ISiloOracle _oracle,
+        address _owner,
+        uint32 _timelock,
+        uint256 _lowerBound,
+        uint256 _upperBound
+    ) external initializer {
+        require(address(_oracle) != address(0), ZeroOracle());
+        require(_owner != address(0), ZeroOwner());
+        require(_timelock >= MIN_TIMELOCK && _timelock <= MAX_TIMELOCK, InvalidTimelock());
+        require(_lowerBound > 0, LowerBoundMustBeGreaterThanZero());
+        require(_lowerBound < _upperBound, InvalidBounds());
 
         __Ownable_init(_owner);
         __Pausable_init();
+
+        oracle = _oracle;
+        timelock = _timelock;
+        baseToken = Aggregator(address(_oracle)).baseToken();
+        baseTokenDecimals = TokenHelper.assertAndGetDecimals(baseToken);
+        quoteToken = _oracle.quoteToken();
+        lowerBound = _lowerBound;
+        upperBound = _upperBound;
+
+        require(baseTokenDecimals != 0, BaseTokenDecimalsMustBeGreaterThanZero());
+        require(_oracle.quote(10 ** baseTokenDecimals, baseToken) > 0, OracleQuoteFailed());
+    }
+
+    function isOverrideActive() public view returns (bool) {
+        uint64 validAt = overrideValidAt;
+        return validAt != 0 && block.timestamp >= validAt;
     }
 
     /// @inheritdoc PausableUpgradeable
@@ -71,6 +103,7 @@ contract DualOracle is IDualOracle, ChainlinkV3Oracle, Ownable2StepUpgradeable, 
         } else {
             // allow updating manual price immediately without a new timelock
             DualOracleConfig dualConfig = DualOracleConfig(address(oracleConfig));
+            // TODO: make sure that getLowerBound > quote / 10^3 && getUpperBound < quote * 10^3
             require(_price >= dualConfig.getLowerBound(), PriceBelowLowerBound());
             require(_price <= dualConfig.getUpperBound(), PriceAboveUpperBound());
 
@@ -86,11 +119,6 @@ contract DualOracle is IDualOracle, ChainlinkV3Oracle, Ownable2StepUpgradeable, 
         }
     }
 
-    function isOverrideActive() public view returns (bool) {
-        uint64 validAt = overrideValidAt;
-        return validAt != 0 && block.timestamp >= validAt;
-    }
-
     /// @dev Priority: paused > override > ChainlinkV3Oracle.quote()
     ///      When override is active the manual price is run through the same
     ///      OracleNormalization path as a live Chainlink answer, keeping behaviour consistent.
@@ -103,7 +131,7 @@ contract DualOracle is IDualOracle, ChainlinkV3Oracle, Ownable2StepUpgradeable, 
         returns (uint256 quoteAmount)
     {
         if (isOverrideActive()) return manualPrice;
-        else return ChainlinkV3Oracle.quote(_baseAmount, _baseToken);
+        else return oracle.quote(_baseAmount, _baseToken);
     }
 
     /// @inheritdoc ChainlinkV3Oracle

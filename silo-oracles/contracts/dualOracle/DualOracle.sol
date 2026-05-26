@@ -1,44 +1,67 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.28;
 
-import {Ownable2StepUpgradeable, OwnableUpgradeable} from "openzeppelin5-upgradeable/access/Ownable2StepUpgradeable.sol";
+import {Ownable2StepUpgradeable} from "openzeppelin5-upgradeable/access/Ownable2StepUpgradeable.sol";
 import {PausableUpgradeable} from "openzeppelin5-upgradeable/utils/PausableUpgradeable.sol";
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
-import {OracleNormalization} from "silo-oracles/contracts/lib/OracleNormalization.sol";
 import {IDualOracle} from "silo-oracles/contracts/interfaces/IDualOracle.sol";
-import {DualOracleConfig} from "silo-oracles/contracts/dualOracle/DualOracleConfig.sol";
+import {Aggregator} from "../_common/Aggregator.sol";
+import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 
 // solhint-disable ordering
 
 /// @title DualOracle
+/// @notice Wraps any ISiloOracle primary source and adds two governance-controlled
+///         safety mechanisms: pause mode and a bounded manual price override.
 ///
-/// Priority (highest → lowest):
-///   1. Paused          → all quote() / latestRoundData() calls revert
-///   2. Override active → returns admin-set manual price (normalized to 18 dp via same path as CL)
-///   3. Normal          → delegates entirely to ChainlinkV3Oracle.quote()
+///         Price resolution priority (highest → lowest):
+///           1. Paused          → all quote() calls revert (OZ EnforcedPause)
+///           2. Override active → returns the admin-set manual price
+///           3. Normal          → delegates to the primary oracle
+///
+///         Override activation is timelock-guarded: calling setManualPrice() with a non-zero
+///         value starts the countdown. Once elapsed, isOverrideActive() returns true and
+///         quote() serves the manual price. Setting price to zero disables override immediately.
+///         Pause / unpause are always immediate and have highest priority.
+///
+/// @dev Deployed as a minimal proxy clone via DualOracleFactory.
+///      Do not call initialize() directly — use the factory.
 contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, PausableUpgradeable {
 
+    /// @notice Minimum allowed timelock duration for override activation
     uint256 public constant MIN_TIMELOCK = 1 days;
 
+    /// @notice Maximum allowed timelock duration for override activation
     uint256 public constant MAX_TIMELOCK = 14 days;
 
+    /// @notice The immutable primary price source wrapped by this oracle
     ISiloOracle public oracle;
 
+    /// @notice The token in which prices are denominated (forwarded from primary oracle)
     address public quoteToken;
 
+    /// @notice Timelock duration in seconds required between setManualPrice and override becoming active
     uint256 public timelock;
 
+    /// @notice The token being priced (forwarded from primary oracle)
     address public override baseToken;
 
+    /// @notice Native decimals of the base token
     uint256 public baseTokenDecimals;
 
+    /// @notice Minimum manual price accepted by setManualPrice (inclusive, 18-decimal quote units)
     uint256 public lowerBound;
 
+    /// @notice Maximum manual price accepted by setManualPrice (inclusive, 18-decimal quote units)
     uint256 public upperBound;
 
+    /// @notice The stored manual price in 18-decimal quote units per base unit.
+    ///         Zero when override is not in use.
     uint256 public manualPrice;
 
+    /// @notice Unix timestamp at which the pending/active override becomes (or became) valid.
+    ///         Zero means no override is pending or active.
     uint64 public overrideValidAt;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -46,6 +69,13 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         _disableInitializers();
     }
 
+    /// @notice Initializes the cloned oracle instance.
+    ///         Do not call this directly — use DualOracleFactory.
+    /// @param _oracle     Primary price source; must be a valid ISiloOracle
+    /// @param _owner      Address that will control pause and override
+    /// @param _timelock   Override-activation timelock in seconds; must be in [MIN_TIMELOCK, MAX_TIMELOCK]
+    /// @param _lowerBound Minimum accepted manual price (inclusive, 18-decimal quote units); must be > 0
+    /// @param _upperBound Maximum accepted manual price (inclusive, 18-decimal quote units); must be > lowerBound
     function initialize(
         ISiloOracle _oracle,
         address _owner,
@@ -74,17 +104,25 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         require(_oracle.quote(10 ** baseTokenDecimals, baseToken) > 0, OracleQuoteFailed());
     }
 
+    /// @notice Returns true when manualPrice is non-zero and the activation timelock has elapsed.
+    ///         This is the condition under which quote() returns the manual price instead of
+    ///         delegating to the primary oracle.
     function isOverrideActive() public view returns (bool) {
         uint64 validAt = overrideValidAt;
         return validAt != 0 && block.timestamp >= validAt;
     }
 
-    /// @inheritdoc PausableUpgradeable
+    /// @notice Immediately pauses the oracle. All quote() calls revert while paused.
+    ///         Pause has highest priority and supersedes override mode.
+    ///         Only callable by the owner.
+    /// @dev Delegates to OZ _pause(); emits Paused(msg.sender).
     function pause() external onlyOwner {
         _pause();
     }
 
-    /// @inheritdoc PausableUpgradeable
+    /// @notice Removes the pause, resuming normal price responses.
+    ///         Only callable by the owner.
+    /// @dev Delegates to OZ _unpause(); emits Unpaused(msg.sender).
     function unpause() external onlyOwner {
         _unpause();
     }
@@ -101,32 +139,30 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
             overrideValidAt = 0;
             emit OverrideDisabled();
         } else {
-            // allow updating manual price immediately without a new timelock
-            DualOracleConfig dualConfig = DualOracleConfig(address(oracleConfig));
-            // TODO: make sure that getLowerBound > quote / 10^3 && getUpperBound < quote * 10^3
-            require(_price >= dualConfig.getLowerBound(), PriceBelowLowerBound());
-            require(_price <= dualConfig.getUpperBound(), PriceAboveUpperBound());
+            require(_price >= lowerBound, PriceBelowLowerBound());
+            require(_price <= upperBound, PriceAboveUpperBound());
 
             manualPrice = _price;
             emit ManualPriceSet(_price);
 
             // when override is not active, require a new activation with the updated price
             if (!isOverrideActive()) {
-                uint64 validAt = uint64(block.timestamp + DualOracleConfig(address(oracleConfig)).getTimelock());
+                uint64 validAt = uint64(block.timestamp + timelock);
                 overrideValidAt = validAt;
                 emit OverrideEnabled(validAt);
             }
         }
     }
 
-    /// @dev Priority: paused > override > ChainlinkV3Oracle.quote()
-    ///      When override is active the manual price is run through the same
-    ///      OracleNormalization path as a live Chainlink answer, keeping behaviour consistent.
+    /// @notice Returns the price of _baseAmount of _baseToken denominated in quoteToken.
+    ///         Reverts when paused (OZ EnforcedPause).
+    ///         Returns manualPrice when override is active, otherwise delegates to the primary oracle.
+    /// @inheritdoc ISiloOracle
     function quote(uint256 _baseAmount, address _baseToken)
         public
         view
         virtual
-        override(ChainlinkV3Oracle, ISiloOracle)
+        override(Aggregator, ISiloOracle)
         whenNotPaused
         returns (uint256 quoteAmount)
     {
@@ -134,7 +170,7 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         else return oracle.quote(_baseAmount, _baseToken);
     }
 
-    /// @inheritdoc ChainlinkV3Oracle
+    /// @inheritdoc IVersioned
     // solhint-disable-next-line func-name-mixedcase
     function VERSION() external pure virtual override returns (string memory version) {
         version = "DualOracle 1.0.0";

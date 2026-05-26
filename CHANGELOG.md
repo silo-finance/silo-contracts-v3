@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.22.0] - 2026-05-26
+### Added
+- new DKinkIRMConfig: static-2.8-3
+
 ## [4.21.0] - 2026-05-22
 ### Updated
 - wrapper for aave flashloan for all supported blockchain

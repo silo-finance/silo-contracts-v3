@@ -118,7 +118,9 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
 
             (silo0, silo1) = config.getSilos();
         } catch {
-            (silo0, silo1) = OldFactory(_factory).idToSilos(_siloId);
+            address[2] memory silos = OldFactory(address(_factory)).idToSilos(_siloId);
+            silo0 = silos[0];
+            silo1 = silos[1];
         }
     }
 

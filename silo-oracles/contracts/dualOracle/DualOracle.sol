@@ -8,6 +8,7 @@ import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IDualOracle} from "silo-oracles/contracts/interfaces/IDualOracle.sol";
 import {Aggregator} from "../_common/Aggregator.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
+import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
 // solhint-disable ordering
 
@@ -44,12 +45,6 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     /// @notice Timelock duration in seconds required between setManualPrice and override becoming active
     uint256 public timelock;
 
-    /// @notice The token being priced (forwarded from primary oracle)
-    address public override baseToken;
-
-    /// @notice Native decimals of the base token
-    uint256 public baseTokenDecimals;
-
     /// @notice Minimum manual price accepted by setManualPrice (inclusive, 18-decimal quote units)
     uint256 public lowerBound;
 
@@ -63,6 +58,12 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     /// @notice Unix timestamp at which the pending/active override becomes (or became) valid.
     ///         Zero means no override is pending or active.
     uint64 public overrideValidAt;
+
+    /// @notice Native decimals of the base token
+    uint256 public baseTokenDecimals;
+
+    /// @dev Storage for the base token address; exposed via baseToken()
+    address internal _baseTokenInternal;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -94,14 +95,25 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
 
         oracle = _oracle;
         timelock = _timelock;
-        baseToken = Aggregator(address(_oracle)).baseToken();
-        baseTokenDecimals = TokenHelper.assertAndGetDecimals(baseToken);
+        _baseTokenInternal = Aggregator(address(_oracle)).baseToken();
+        baseTokenDecimals = TokenHelper.assertAndGetDecimals(_baseTokenInternal);
         quoteToken = _oracle.quoteToken();
         lowerBound = _lowerBound;
         upperBound = _upperBound;
 
         require(baseTokenDecimals != 0, BaseTokenDecimalsMustBeGreaterThanZero());
-        require(_oracle.quote(10 ** baseTokenDecimals, baseToken) > 0, OracleQuoteFailed());
+        require(_oracle.quote(10 ** baseTokenDecimals, _baseTokenInternal) > 0, OracleQuoteFailed());
+    }
+
+    /// @inheritdoc IDualOracle
+    function baseToken() public view override(Aggregator, IDualOracle) returns (address) {
+        return _baseTokenInternal;
+    }
+
+    /// @notice Forwards beforeQuote to the primary oracle.
+    /// @inheritdoc ISiloOracle
+    function beforeQuote(address _baseToken) external virtual override {
+        oracle.beforeQuote(_baseToken);
     }
 
     /// @notice Returns true when manualPrice is non-zero and the activation timelock has elapsed.

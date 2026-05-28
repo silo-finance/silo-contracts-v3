@@ -4,7 +4,7 @@ List address history for a JSON deployment artifact across git commits.
 
 Example:
   python3 silo-core/scripts/withdrawFees/address_history_from_git.py \
-    --file silo-core/deployments/arbitrum_one/SiloFactory.sol.json \
+    --file silo-core/deployments/base/SiloFactory.sol.json \
     --branch develop
 """
 

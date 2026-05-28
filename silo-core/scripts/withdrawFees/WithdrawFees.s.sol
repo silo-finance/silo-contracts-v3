@@ -20,9 +20,9 @@ import {Rounding} from "silo-core/contracts/lib/Rounding.sol";
 import {PriceFormatter} from "silo-core/deploy/lib/PriceFormatter.sol";
 
 
-interface OldFactory {
-    function idToSilos(uint256 _id) external view returns (address[2] memory silos);
-}
+// interface OldFactory {
+//     function idToSilos(uint256 _id) external view returns (address[2] memory silos);
+// }
 
 /*
 you can run it via:
@@ -112,19 +112,18 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         vm.stopBroadcast();
     }
 
-    function _getSilos(ISiloFactory _factory, uint256 _siloId) internal returns (address silo0, address silo1) {
-        try ISiloConfig(_factory.idToSiloConfig(_siloId)) returns (ISiloConfig config) {
-            if (address(config) == address(0)) return (address(0), address(0));
+    function _getSilos(ISiloFactory _factory, uint256 _siloId) internal view returns (address silo0, address silo1) {
+        try _factory.idToSiloConfig(_siloId) returns (address config) {
+            if (config == address(0)) return (address(0), address(0));
 
-            (silo0, silo1) = config.getSilos();
+            (silo0, silo1) = ISiloConfig(config).getSilos();
         } catch {
-            address[2] memory silos = OldFactory(address(_factory)).idToSilos(_siloId);
-            silo0 = silos[0];
-            silo1 = silos[1];
+            // might be OldFactory, skipping
+            console2.log("Skipping factory: ", address(_factory), " because it might be OldFactory");
         }
     }
 
-    function _siloExistsForId(ISiloFactory _factory, uint256 _siloId) internal returns (bool exists) {
+    function _siloExistsForId(ISiloFactory _factory, uint256 _siloId) internal view returns (bool exists) {
         (address silo0,) = _getSilos(_factory, _siloId);
         return silo0 != address(0);
     }
@@ -196,7 +195,6 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
 
     function _resolveStartingSiloId(ISiloFactory _factory, uint256 _nextSiloId)
         internal
-        view
         returns (bool hasSilos, uint256 startingSiloId)
     {
         if (_nextSiloId <= 1) return (false, 0);
@@ -206,10 +204,11 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         if (_siloExistsForId(_factory, 100)) return (true, 100);
         if (_siloExistsForId(_factory, 101)) return (true, 100);
         if (_siloExistsForId(_factory, 3000)) return (true, 3000);
-        if (_siloExistsForId(_factory, 3001)) return (true, 3000);
+        if (_siloExistsForId(_factory, 3001)) return (true, 3001);
 
         if (_nextSiloId == 100) return (false, 100); //empty
         if (_nextSiloId == 3000) return (false, 3000); //empty
+        if (_nextSiloId == 3001) return (false, 3001); //empty
 
 
         revert("Starting Silo id is not 1, 100, 101, 3000 or 3001");

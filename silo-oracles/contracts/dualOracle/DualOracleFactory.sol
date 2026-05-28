@@ -45,6 +45,18 @@ contract DualOracleFactory is Create2Factory, IDualOracleFactory {
     }
 
     /// @inheritdoc IDualOracleFactory
+    function predictAddress(address _deployer, bytes32 _externalSalt)
+        external
+        view
+        returns (address predictedAddress)
+    {
+        require(_deployer != address(0), DeployerCannotBeZero());
+
+        bytes32 salt = _createSalt(_deployer, _externalSalt);
+        predictedAddress = Clones.predictDeterministicAddress(address(ORACLE_IMPLEMENTATION), salt);
+    }
+
+    /// @inheritdoc IDualOracleFactory
     function create(
         ISiloOracle _oracle,
         address _owner,
@@ -55,18 +67,6 @@ contract DualOracleFactory is Create2Factory, IDualOracleFactory {
     ) public returns (IDualOracle dualOracle) {
         dualOracle = _deployOracle(_externalSalt);
         DualOracle(address(dualOracle)).initialize(_oracle, _owner, _timelock, _lowerBound, _upperBound);
-    }
-
-    /// @inheritdoc IDualOracleFactory
-    function predictAddress(address _deployer, bytes32 _externalSalt)
-        external
-        view
-        returns (address predictedAddress)
-    {
-        require(_deployer != address(0), DeployerCannotBeZero());
-
-        bytes32 salt = _createSalt(_deployer, _externalSalt);
-        predictedAddress = Clones.predictDeterministicAddress(address(ORACLE_IMPLEMENTATION), salt);
     }
 
     /// @dev Calls the underlying oracle factory with arbitrary calldata and decodes the returned address.

@@ -53,6 +53,20 @@ interface IDualOracle is ISiloOracle, IVersioned {
     ///         Only callable by the owner.
     function unpause() external;
 
+    /// @notice Sets the manual price and manages override activation.
+    ///
+    ///         Behaviour by price value:
+    ///         - _price == 0  → clears manualPrice, disables override immediately (emits OverrideDisabled)
+    ///         - _price != 0  → validates bounds, stores price (emits ManualPriceSet);
+    ///                          if override not yet active, starts the timelock (emits OverrideEnabled)
+    ///
+    ///         Price updates do NOT restart the timelock once the override is active.
+    ///         Only callable by the owner.
+    ///
+    /// @param _price Manual price in 18-decimal quote units per base unit.
+    ///               Must satisfy lowerBound <= _price <= upperBound (or be zero to disable).
+    function setManualPrice(uint256 _price) external;
+
     /// @notice Minimum allowed timelock duration for override activation
     // solhint-disable-next-line func-name-mixedcase
     function MIN_TIMELOCK() external view returns (uint256);
@@ -93,18 +107,4 @@ interface IDualOracle is ISiloOracle, IVersioned {
     /// @notice Returns true when manualPrice is non-zero and the activation timelock has elapsed.
     ///         This is the condition under which quote() returns the manual price.
     function isOverrideActive() external view returns (bool);
-
-    /// @notice Sets the manual price and manages override activation.
-    ///
-    ///         Behaviour by price value:
-    ///         - _price == 0  → clears manualPrice, disables override immediately (emits OverrideDisabled)
-    ///         - _price != 0  → validates bounds, stores price (emits ManualPriceSet);
-    ///                          if override not yet active, starts the timelock (emits OverrideEnabled)
-    ///
-    ///         Price updates do NOT restart the timelock once the override is active.
-    ///         Only callable by the owner.
-    ///
-    /// @param _price Manual price in 18-decimal quote units per base unit.
-    ///               Must satisfy lowerBound <= _price <= upperBound (or be zero to disable).
-    function setManualPrice(uint256 _price) external;
 }

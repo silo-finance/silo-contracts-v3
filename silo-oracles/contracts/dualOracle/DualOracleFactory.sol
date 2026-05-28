@@ -32,19 +32,6 @@ contract DualOracleFactory is Create2Factory, IDualOracleFactory {
 
     /// @inheritdoc IDualOracleFactory
     function create(
-        ISiloOracle _oracle,
-        address _owner,
-        uint32 _timelock,
-        uint256 _lowerBound,
-        uint256 _upperBound,
-        bytes32 _externalSalt
-    ) public returns (IDualOracle dualOracle) {
-        dualOracle = _deployOracle(_externalSalt);
-        DualOracle(address(dualOracle)).initialize(_oracle, _owner, _timelock, _lowerBound, _upperBound);
-    }
-
-    /// @inheritdoc IDualOracleFactory
-    function create(
         address _underlyingOracleFactory,
         bytes calldata _underlyingOracleInitData,
         address _owner,
@@ -55,6 +42,19 @@ contract DualOracleFactory is Create2Factory, IDualOracleFactory {
     ) external returns (IDualOracle dualOracle) {
         address underlyingOracle = _deployUnderlyingOracle(_underlyingOracleFactory, _underlyingOracleInitData);
         dualOracle = create(ISiloOracle(underlyingOracle), _owner, _timelock, _lowerBound, _upperBound, _externalSalt);
+    }
+
+    /// @inheritdoc IDualOracleFactory
+    function create(
+        ISiloOracle _oracle,
+        address _owner,
+        uint32 _timelock,
+        uint256 _lowerBound,
+        uint256 _upperBound,
+        bytes32 _externalSalt
+    ) public returns (IDualOracle dualOracle) {
+        dualOracle = _deployOracle(_externalSalt);
+        DualOracle(address(dualOracle)).initialize(_oracle, _owner, _timelock, _lowerBound, _upperBound);
     }
 
     /// @inheritdoc IDualOracleFactory

@@ -43,6 +43,16 @@ interface IDualOracle is ISiloOracle, IVersioned {
     /// @notice Submitted price is above the immutable upper bound
     error PriceAboveUpperBound();
 
+    /// @notice Immediately pauses the oracle.
+    ///         While paused, all quote() calls revert via OZ EnforcedPause.
+    ///         Pause has highest priority and supersedes override mode.
+    ///         Only callable by the owner.
+    function pause() external;
+
+    /// @notice Removes the pause, resuming normal price responses.
+    ///         Only callable by the owner.
+    function unpause() external;
+
     /// @notice Minimum allowed timelock duration for override activation
     // solhint-disable-next-line func-name-mixedcase
     function MIN_TIMELOCK() external view returns (uint256);
@@ -83,16 +93,6 @@ interface IDualOracle is ISiloOracle, IVersioned {
     /// @notice Returns true when manualPrice is non-zero and the activation timelock has elapsed.
     ///         This is the condition under which quote() returns the manual price.
     function isOverrideActive() external view returns (bool);
-
-    /// @notice Immediately pauses the oracle.
-    ///         While paused, all quote() calls revert via OZ EnforcedPause.
-    ///         Pause has highest priority and supersedes override mode.
-    ///         Only callable by the owner.
-    function pause() external;
-
-    /// @notice Removes the pause, resuming normal price responses.
-    ///         Only callable by the owner.
-    function unpause() external;
 
     /// @notice Sets the manual price and manages override activation.
     ///

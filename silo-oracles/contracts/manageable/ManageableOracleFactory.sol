@@ -29,7 +29,7 @@ contract ManageableOracleFactory is Create2Factory, IManageableOracleFactory {
     }
 
     /// @inheritdoc IManageableOracleFactory
-    function create(
+    function create( // solhint-disable-line ordering
         address _underlyingOracleFactory,
         bytes calldata _underlyingOracleInitData,
         address _owner,

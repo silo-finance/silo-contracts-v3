@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.28;
 
-// solhint-disable no-console
-import {console2} from "forge-std/console2.sol";
 import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 
 import {CommonDeploy} from "./_CommonDeploy.sol";

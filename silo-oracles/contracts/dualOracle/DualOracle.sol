@@ -149,7 +149,7 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
             emit ManualPriceSet(0);
 
             overrideValidAt = 0;
-            emit OverrideDisabled();
+            emit OverrideValidAtSet(0);
         } else {
             require(_price >= lowerBound, PriceBelowLowerBound());
             require(_price <= upperBound, PriceAboveUpperBound());
@@ -161,7 +161,7 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
             if (!isOverrideActive()) {
                 uint64 validAt = uint64(block.timestamp + timelock);
                 overrideValidAt = validAt;
-                emit OverrideEnabled(validAt);
+                emit OverrideValidAtSet(validAt);
             }
         }
     }

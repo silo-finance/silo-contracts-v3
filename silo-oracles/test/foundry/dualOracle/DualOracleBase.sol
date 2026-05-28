@@ -266,7 +266,7 @@ abstract contract DualOracleBase is Test {
         uint64 expectedValidAt = uint64(setTime + TIMELOCK);
 
         vm.expectEmit(true, false, false, true, address(oracle));
-        emit IDualOracle.OverrideEnabled(expectedValidAt);
+        emit IDualOracle.OverrideValidAtSet(expectedValidAt);
 
         vm.prank(owner);
         oracle.setManualPrice(1e18);
@@ -327,7 +327,7 @@ abstract contract DualOracleBase is Test {
         oracle.setManualPrice(1.1e18);
 
         Vm.Log[] memory logs = vm.getRecordedLogs();
-        bytes32 overrideEnabledTopic = IDualOracle.OverrideEnabled.selector;
+        bytes32 overrideEnabledTopic = IDualOracle.OverrideValidAtSet.selector;
         for (uint256 i = 0; i < logs.length; i++) {
             assertTrue(logs[i].topics[0] != overrideEnabledTopic, "OverrideEnabled must not be emitted when already active");
         }
@@ -345,7 +345,7 @@ abstract contract DualOracleBase is Test {
         emit IDualOracle.ManualPriceSet(0);
 
         vm.expectEmit(false, false, false, false, address(oracle));
-        emit IDualOracle.OverrideDisabled();
+        emit IDualOracle.OverrideValidAtSet(0);
 
         vm.prank(owner);
         oracle.setManualPrice(0);

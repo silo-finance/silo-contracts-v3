@@ -18,21 +18,13 @@ import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 ///
 ///         Pause / unpause events and the `paused()` view are inherited from OZ PausableUpgradeable.
 interface IDualOracle is ISiloOracle, IVersioned {
-    // ─── Events ──────────────────────────────────────────────────────────────
-
     /// @notice Emitted when a manual price is set and the override timelock starts.
-    ///         If the override was already active, only ManualPriceSet is emitted.
     /// @param validAt Timestamp from which the override becomes active
-    event OverrideEnabled(uint64 validAt);
-
-    /// @notice Emitted when the manual price is set to zero, disabling override mode
-    event OverrideDisabled();
+    event OverrideValidAtSet(uint64 validAt);
 
     /// @notice Emitted whenever the manual price is written
     /// @param price The new manual price (18-decimal quote units per base unit)
     event ManualPriceSet(uint256 price);
-
-    // ─── Errors ──────────────────────────────────────────────────────────────
 
     error ZeroOracle();
     error ZeroOwner();
@@ -51,8 +43,6 @@ interface IDualOracle is ISiloOracle, IVersioned {
     /// @notice Submitted price is above the immutable upper bound
     error PriceAboveUpperBound();
 
-    // ─── Constants ────────────────────────────────────────────────────────────
-
     /// @notice Minimum allowed timelock duration for override activation
     // solhint-disable-next-line func-name-mixedcase
     function MIN_TIMELOCK() external view returns (uint256);
@@ -60,8 +50,6 @@ interface IDualOracle is ISiloOracle, IVersioned {
     /// @notice Maximum allowed timelock duration for override activation
     // solhint-disable-next-line func-name-mixedcase
     function MAX_TIMELOCK() external view returns (uint256);
-
-    // ─── Immutable-like config (set once at initialize) ───────────────────────
 
     /// @notice The immutable primary price source wrapped by this oracle
     function oracle() external view returns (ISiloOracle);
@@ -84,8 +72,6 @@ interface IDualOracle is ISiloOracle, IVersioned {
     /// @notice Maximum manual price accepted by setManualPrice (inclusive, 18-decimal quote units)
     function upperBound() external view returns (uint256);
 
-    // ─── Mutable state ────────────────────────────────────────────────────────
-
     /// @notice The stored manual price in 18-decimal quote units per base unit.
     ///         Zero when override is not in use.
     function manualPrice() external view returns (uint256);
@@ -94,13 +80,9 @@ interface IDualOracle is ISiloOracle, IVersioned {
     ///         Zero means no override is pending or active.
     function overrideValidAt() external view returns (uint64);
 
-    // ─── View helpers ─────────────────────────────────────────────────────────
-
     /// @notice Returns true when manualPrice is non-zero and the activation timelock has elapsed.
     ///         This is the condition under which quote() returns the manual price.
     function isOverrideActive() external view returns (bool);
-
-    // ─── Admin: pause (immediate) ─────────────────────────────────────────────
 
     /// @notice Immediately pauses the oracle.
     ///         While paused, all quote() calls revert via OZ EnforcedPause.
@@ -111,8 +93,6 @@ interface IDualOracle is ISiloOracle, IVersioned {
     /// @notice Removes the pause, resuming normal price responses.
     ///         Only callable by the owner.
     function unpause() external;
-
-    // ─── Admin: manual price override ─────────────────────────────────────────
 
     /// @notice Sets the manual price and manages override activation.
     ///

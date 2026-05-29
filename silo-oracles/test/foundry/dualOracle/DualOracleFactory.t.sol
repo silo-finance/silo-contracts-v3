@@ -4,7 +4,6 @@ pragma solidity 0.8.28;
 import {Test} from "forge-std/Test.sol";
 
 import {DualOracleFactory} from "silo-oracles/contracts/dualOracle/DualOracleFactory.sol";
-import {DualOracle} from "silo-oracles/contracts/dualOracle/DualOracle.sol";
 import {IDualOracle} from "silo-oracles/contracts/interfaces/IDualOracle.sol";
 import {IDualOracleFactory} from "silo-oracles/contracts/interfaces/IDualOracleFactory.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";

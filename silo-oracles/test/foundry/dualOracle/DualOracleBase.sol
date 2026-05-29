@@ -2,7 +2,7 @@
 pragma solidity 0.8.28;
 
 import {Test, Vm} from "forge-std/Test.sol";
-import {Clones} from "openzeppelin5/proxy/Clones.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 import {OwnableUpgradeable} from "openzeppelin5-upgradeable/access/OwnableUpgradeable.sol";
 import {Pausable} from "openzeppelin5/utils/Pausable.sol";
 
@@ -10,7 +10,6 @@ import {DualOracleFactory} from "silo-oracles/contracts/dualOracle/DualOracleFac
 import {DualOracle} from "silo-oracles/contracts/dualOracle/DualOracle.sol";
 import {IDualOracle} from "silo-oracles/contracts/interfaces/IDualOracle.sol";
 import {IDualOracleFactory} from "silo-oracles/contracts/interfaces/IDualOracleFactory.sol";
-import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {IERC20Metadata} from "silo-oracles/test/foundry/interfaces/IERC20Metadata.sol";
 import {SiloOracleMock1} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMock1.sol";
@@ -263,7 +262,7 @@ abstract contract DualOracleBase is Test {
     */
     function test_setManualPrice_nonzero_startsTimelock_emitsOverrideEnabled() public {
         uint256 setTime = block.timestamp;
-        uint64 expectedValidAt = uint64(setTime + TIMELOCK);
+        uint64 expectedValidAt = SafeCast.toUint64(setTime + TIMELOCK);
 
         vm.expectEmit(true, false, false, true, address(oracle));
         emit IDualOracle.OverrideValidAtSet(expectedValidAt);
@@ -519,7 +518,7 @@ abstract contract DualOracleBase is Test {
     */
     function test_latestRoundData_normalMode() public view {
         (, int256 answer,,,) = DualOracle(address(oracle)).latestRoundData();
-        assertEq(uint256(answer), oracleMock.price(), "answer should match primary oracle price");
+        assertEq(answer, SafeCast.toInt256(oracleMock.price()), "answer should match primary oracle price");
     }
 
     /*
@@ -532,7 +531,7 @@ abstract contract DualOracleBase is Test {
         vm.warp(block.timestamp + TIMELOCK);
 
         (, int256 answer,,,) = DualOracle(address(oracle)).latestRoundData();
-        assertEq(uint256(answer), manualPrice, "answer should return manualPrice in override mode");
+        assertEq(answer, SafeCast.toInt256(manualPrice), "answer should return manualPrice in override mode");
     }
 
     /*

@@ -3,6 +3,7 @@ pragma solidity 0.8.28;
 
 import {Ownable2StepUpgradeable} from "openzeppelin5-upgradeable/access/Ownable2StepUpgradeable.sol";
 import {PausableUpgradeable} from "openzeppelin5-upgradeable/utils/PausableUpgradeable.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IDualOracle} from "silo-oracles/contracts/interfaces/IDualOracle.sol";
@@ -159,7 +160,7 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
 
             // when override is not active, require a new activation with the updated price
             if (!isOverrideActive()) {
-                uint64 validAt = uint64(block.timestamp + timelock);
+                uint64 validAt = SafeCast.toUint64(block.timestamp + timelock);
                 overrideValidAt = validAt;
                 emit OverrideValidAtSet(validAt);
             }

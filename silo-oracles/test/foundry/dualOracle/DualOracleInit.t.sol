@@ -9,7 +9,6 @@ import {DualOracleFactory} from "silo-oracles/contracts/dualOracle/DualOracleFac
 import {DualOracle} from "silo-oracles/contracts/dualOracle/DualOracle.sol";
 import {IDualOracle} from "silo-oracles/contracts/interfaces/IDualOracle.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
-import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 import {IERC20Metadata} from "silo-oracles/test/foundry/interfaces/IERC20Metadata.sol";
 import {SiloOracleMock1} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMock1.sol";
 

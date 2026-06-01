@@ -94,7 +94,6 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         upperPriceBound = _upperPriceBound;
 
         require(baseTokenDecimals != 0, BaseTokenDecimalsMustBeGreaterThanZero());
-        require(_oracle.quote(10 ** baseTokenDecimals, _baseTokenInternal) > 0, OracleQuoteFailed());
     }
 
     /// @notice Forwards beforeQuote to the primary oracle.

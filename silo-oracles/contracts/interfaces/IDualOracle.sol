@@ -28,8 +28,6 @@ interface IDualOracle is ISiloOracle, IVersioned {
 
     error ZeroOracle();
     error ZeroOwner();
-    /// @notice Timelock must be between MIN_TIMELOCK and MAX_TIMELOCK
-    error InvalidTimelock();
     /// @notice lowerBound must be > 0 and < upperBound
     error LowerBoundMustBeGreaterThanZero();
     error InvalidBounds();
@@ -66,14 +64,6 @@ interface IDualOracle is ISiloOracle, IVersioned {
     /// @param _price Manual price in 18-decimal quote units per base unit.
     ///               Must satisfy lowerBound <= _price <= upperBound (or be zero to disable).
     function setManualPrice(uint256 _price) external;
-
-    /// @notice Minimum allowed timelock duration for override activation
-    // solhint-disable-next-line func-name-mixedcase
-    function MIN_TIMELOCK() external view returns (uint256);
-
-    /// @notice Maximum allowed timelock duration for override activation
-    // solhint-disable-next-line func-name-mixedcase
-    function MAX_TIMELOCK() external view returns (uint256);
 
     /// @notice The immutable primary price source wrapped by this oracle
     function oracle() external view returns (ISiloOracle);

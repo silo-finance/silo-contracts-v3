@@ -645,8 +645,6 @@ abstract contract DualOracleBase is Test {
         assertEq(oracle.upperBound(), UPPER_BOUND, "upperBound mismatch");
         assertEq(oracle.manualPrice(), 0, "manualPrice should be zero initially");
         assertEq(oracle.overrideValidAt(), 0, "overrideValidAt should be zero initially");
-        assertEq(oracle.MIN_TIMELOCK(), 1 days, "MIN_TIMELOCK mismatch");
-        assertEq(oracle.MAX_TIMELOCK(), 14 days, "MAX_TIMELOCK mismatch");
     }
 
     // ─── helpers ──────────────────────────────────────────────────────────────

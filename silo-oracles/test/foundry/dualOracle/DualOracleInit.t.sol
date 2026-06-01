@@ -87,54 +87,6 @@ contract DualOracleInitTest is Test {
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_initialize_revert_InvalidTimelock_tooLow
-    */
-    function test_DualOracle_initialize_revert_InvalidTimelock_tooLow() public {
-        DualOracle impl = DualOracle(address(factory.ORACLE_IMPLEMENTATION()));
-        uint32 tooLow = uint32(impl.MIN_TIMELOCK()) - 1;
-
-        DualOracle clone = _clonedOracle();
-        vm.expectRevert(IDualOracle.InvalidTimelock.selector);
-        clone.initialize(ISiloOracle(address(oracleMock)), owner, tooLow, LOWER_BOUND, UPPER_BOUND);
-    }
-
-    /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_initialize_revert_InvalidTimelock_tooHigh
-    */
-    function test_DualOracle_initialize_revert_InvalidTimelock_tooHigh() public {
-        DualOracle impl = DualOracle(address(factory.ORACLE_IMPLEMENTATION()));
-        uint32 tooHigh = uint32(impl.MAX_TIMELOCK()) + 1;
-
-        DualOracle clone = _clonedOracle();
-        vm.expectRevert(IDualOracle.InvalidTimelock.selector);
-        clone.initialize(ISiloOracle(address(oracleMock)), owner, tooHigh, LOWER_BOUND, UPPER_BOUND);
-    }
-
-    /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_initialize_acceptsMinTimelock
-    */
-    function test_DualOracle_initialize_acceptsMinTimelock() public {
-        DualOracle impl = DualOracle(address(factory.ORACLE_IMPLEMENTATION()));
-        uint32 minTimelock = uint32(impl.MIN_TIMELOCK());
-
-        DualOracle clone = _clonedOracle();
-        clone.initialize(ISiloOracle(address(oracleMock)), owner, minTimelock, LOWER_BOUND, UPPER_BOUND);
-        assertEq(clone.timelock(), minTimelock);
-    }
-
-    /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_initialize_acceptsMaxTimelock
-    */
-    function test_DualOracle_initialize_acceptsMaxTimelock() public {
-        DualOracle impl = DualOracle(address(factory.ORACLE_IMPLEMENTATION()));
-        uint32 maxTimelock = uint32(impl.MAX_TIMELOCK());
-
-        DualOracle clone = _clonedOracle();
-        clone.initialize(ISiloOracle(address(oracleMock)), owner, maxTimelock, LOWER_BOUND, UPPER_BOUND);
-        assertEq(clone.timelock(), maxTimelock);
-    }
-
-    /*
         FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_initialize_revert_LowerBoundMustBeGreaterThanZero
     */
     function test_DualOracle_initialize_revert_LowerBoundMustBeGreaterThanZero() public {

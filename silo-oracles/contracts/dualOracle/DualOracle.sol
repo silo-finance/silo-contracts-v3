@@ -29,12 +29,6 @@ import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 ///      Do not call initialize() directly — use the factory.
 contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, PausableUpgradeable {
 
-    /// @notice Minimum allowed timelock duration for override activation
-    uint256 public constant MIN_TIMELOCK = 1 days;
-
-    /// @notice Maximum allowed timelock duration for override activation
-    uint256 public constant MAX_TIMELOCK = 14 days;
-
     /// @notice The immutable primary price source wrapped by this oracle
     ISiloOracle public oracle;
 
@@ -85,7 +79,6 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     ) external initializer {
         require(address(_oracle) != address(0), ZeroOracle());
         require(_owner != address(0), ZeroOwner());
-        require(_timelock >= MIN_TIMELOCK && _timelock <= MAX_TIMELOCK, InvalidTimelock());
         require(_lowerBound > 0, LowerBoundMustBeGreaterThanZero());
         require(_lowerBound < _upperBound, InvalidBounds());
 

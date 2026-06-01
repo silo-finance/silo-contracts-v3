@@ -5,6 +5,7 @@ import {Test} from "forge-std/Test.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 import {OwnableUpgradeable} from "openzeppelin5-upgradeable/access/OwnableUpgradeable.sol";
 import {Pausable} from "openzeppelin5/utils/Pausable.sol";
+import {PausableUpgradeable} from "openzeppelin5-upgradeable/utils/PausableUpgradeable.sol";
 
 import {DualOracleFactory} from "silo-oracles/contracts/dualOracle/DualOracleFactory.sol";
 import {DualOracle} from "silo-oracles/contracts/dualOracle/DualOracle.sol";
@@ -489,6 +490,17 @@ abstract contract DualOracleBase is Test {
     function test_beforeQuote_forwardsToPrimaryOracle() public {
         vm.expectEmit(true, false, false, false, address(oracleMock));
         emit SiloOracleMock1.BeforeQuoteSiloOracleMock1();
+        oracle.beforeQuote(baseToken);
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_beforeQuote_revert_whenPaused
+    */
+    function test_beforeQuote_revert_whenPaused() public {
+        vm.prank(owner);
+        oracle.pause();
+
+        vm.expectRevert(PausableUpgradeable.EnforcedPause.selector);
         oracle.beforeQuote(baseToken);
     }
 

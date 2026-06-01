@@ -16,16 +16,16 @@ interface IDualOracleFactory {
     /// @param _oracle      Primary price source to wrap
     /// @param _owner       Address that will own (and control) the deployed oracle
     /// @param _timelock    Override-activation timelock in seconds; must be in [MIN_TIMELOCK, MAX_TIMELOCK]
-    /// @param _lowerBound  Minimum allowed manual price (inclusive, 18-decimal quote units); must be > 0
-    /// @param _upperBound  Maximum allowed manual price (inclusive, 18-decimal quote units); must be > lowerBound
+    /// @param _lowerPriceBound  Minimum allowed manual price (inclusive, 18-decimal quote units); must be > 0
+    /// @param _upperPriceBound  Maximum allowed manual price (inclusive, 18-decimal quote units); must be > lowerPriceBound
     /// @param _externalSalt Caller-supplied entropy for the CREATE2 deterministic address
     /// @return dualOracle  The deployed DualOracle instance
     function create(
         ISiloOracle _oracle,
         address _owner,
         uint32 _timelock,
-        uint256 _lowerBound,
-        uint256 _upperBound,
+        uint256 _lowerPriceBound,
+        uint256 _upperPriceBound,
         bytes32 _externalSalt
     ) external returns (IDualOracle dualOracle);
 
@@ -35,8 +35,8 @@ interface IDualOracleFactory {
     /// @param _underlyingOracleInitData  Encoded calldata forwarded to the underlying factory
     /// @param _owner       Address that will own the deployed oracle
     /// @param _timelock    Override-activation timelock in seconds
-    /// @param _lowerBound  Minimum allowed manual price (inclusive, 18-decimal quote units)
-    /// @param _upperBound  Maximum allowed manual price (inclusive, 18-decimal quote units)
+    /// @param _lowerPriceBound  Minimum allowed manual price (inclusive, 18-decimal quote units)
+    /// @param _upperPriceBound  Maximum allowed manual price (inclusive, 18-decimal quote units)
     /// @param _externalSalt Caller-supplied entropy for the CREATE2 deterministic address
     /// @return dualOracle  The deployed DualOracle instance
     function create(
@@ -44,8 +44,8 @@ interface IDualOracleFactory {
         bytes calldata _underlyingOracleInitData,
         address _owner,
         uint32 _timelock,
-        uint256 _lowerBound,
-        uint256 _upperBound,
+        uint256 _lowerPriceBound,
+        uint256 _upperPriceBound,
         bytes32 _externalSalt
     ) external returns (IDualOracle dualOracle);
 

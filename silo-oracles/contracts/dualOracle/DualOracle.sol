@@ -39,10 +39,10 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     uint256 public timelock;
 
     /// @notice Minimum manual price accepted by setManualPrice (inclusive, 18-decimal quote units)
-    uint256 public lowerBound;
+    uint256 public lowerPriceBound;
 
     /// @notice Maximum manual price accepted by setManualPrice (inclusive, 18-decimal quote units)
-    uint256 public upperBound;
+    uint256 public upperPriceBound;
 
     /// @notice The stored manual price in 18-decimal quote units per base unit.
     ///         Zero when override is not in use.
@@ -68,19 +68,19 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     /// @param _oracle     Primary price source; must be a valid ISiloOracle
     /// @param _owner      Address that will control pause and override
     /// @param _timelock   Override-activation timelock in seconds; must be in [MIN_TIMELOCK, MAX_TIMELOCK]
-    /// @param _lowerBound Minimum accepted manual price (inclusive, 18-decimal quote units); must be > 0
-    /// @param _upperBound Maximum accepted manual price (inclusive, 18-decimal quote units); must be > lowerBound
+    /// @param _lowerPriceBound Minimum accepted manual price (inclusive, 18-decimal quote units); must be > 0
+    /// @param _upperPriceBound Maximum accepted manual price (inclusive, 18-decimal quote units); must be > lowerPriceBound
     function initialize(
         ISiloOracle _oracle,
         address _owner,
         uint32 _timelock,
-        uint256 _lowerBound,
-        uint256 _upperBound
+        uint256 _lowerPriceBound,
+        uint256 _upperPriceBound
     ) external initializer {
         require(address(_oracle) != address(0), ZeroOracle());
         require(_owner != address(0), ZeroOwner());
-        require(_lowerBound > 0, LowerBoundMustBeGreaterThanZero());
-        require(_lowerBound < _upperBound, InvalidBounds());
+        require(_lowerPriceBound > 0, LowerBoundMustBeGreaterThanZero());
+        require(_lowerPriceBound < _upperPriceBound, InvalidBounds());
 
         __Ownable_init(_owner);
         __Pausable_init();
@@ -90,8 +90,8 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         _baseTokenInternal = Aggregator(address(_oracle)).baseToken();
         baseTokenDecimals = TokenHelper.assertAndGetDecimals(_baseTokenInternal);
         quoteToken = _oracle.quoteToken();
-        lowerBound = _lowerBound;
-        upperBound = _upperBound;
+        lowerPriceBound = _lowerPriceBound;
+        upperPriceBound = _upperPriceBound;
 
         require(baseTokenDecimals != 0, BaseTokenDecimalsMustBeGreaterThanZero());
         require(_oracle.quote(10 ** baseTokenDecimals, _baseTokenInternal) > 0, OracleQuoteFailed());
@@ -130,8 +130,8 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
             overrideValidAt = 0;
             emit OverrideValidAtSet(0);
         } else {
-            require(_price >= lowerBound, PriceBelowLowerBound());
-            require(_price <= upperBound, PriceAboveUpperBound());
+            require(_price >= lowerPriceBound, PriceBelowLowerBound());
+            require(_price <= upperPriceBound, PriceAboveUpperBound());
 
             manualPrice = _price;
             emit ManualPriceSet(_price);

@@ -39,8 +39,8 @@ contract DualOracleDeploy is CommonDeploy {
         address underlyingOracle = AddrLib.getAddress(vm.envString("UNDERLYING_ORACLE"));
         address ownerAddr = AddrLib.getAddress(vm.envString("OWNER"));
         uint32 timelockVal = uint32(vm.envUint("TIMELOCK"));
-        uint256 lowerBound = vm.envUint("LOWER_BOUND");
-        uint256 upperBound = vm.envUint("UPPER_BOUND");
+        uint256 lowerPriceBound = vm.envUint("LOWER_BOUND");
+        uint256 upperPriceBound = vm.envUint("UPPER_BOUND");
         bytes32 externalSaltVal = vm.envBytes32("EXTERNAL_SALT");
 
         console2.log("externalSaltVal:");
@@ -55,8 +55,8 @@ contract DualOracleDeploy is CommonDeploy {
             ISiloOracle(underlyingOracle),
             ownerAddr,
             timelockVal,
-            lowerBound,
-            upperBound,
+            lowerPriceBound,
+            upperPriceBound,
             externalSaltVal
         );
 

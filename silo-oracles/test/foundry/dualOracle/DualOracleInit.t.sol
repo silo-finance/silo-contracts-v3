@@ -160,8 +160,8 @@ contract DualOracleInitTest is Test {
         assertEq(DualOracle(address(dualOracle)).owner(), owner, "owner mismatch");
         assertEq(address(dualOracle.oracle()), address(oracleMock), "oracle mismatch");
         assertEq(dualOracle.timelock(), TIMELOCK, "timelock mismatch");
-        assertEq(dualOracle.lowerBound(), LOWER_BOUND, "lowerBound mismatch");
-        assertEq(dualOracle.upperBound(), UPPER_BOUND, "upperBound mismatch");
+        assertEq(dualOracle.lowerPriceBound(), LOWER_BOUND, "lowerPriceBound mismatch");
+        assertEq(dualOracle.upperPriceBound(), UPPER_BOUND, "upperPriceBound mismatch");
         assertEq(dualOracle.baseToken(), baseToken, "baseToken mismatch");
         assertEq(dualOracle.baseTokenDecimals(), 18, "baseTokenDecimals mismatch");
         assertEq(dualOracle.quoteToken(), oracleMock.quoteToken(), "quoteToken mismatch");

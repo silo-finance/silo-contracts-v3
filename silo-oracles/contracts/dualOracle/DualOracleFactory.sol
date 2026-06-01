@@ -36,12 +36,12 @@ contract DualOracleFactory is Create2Factory, IDualOracleFactory {
         bytes calldata _underlyingOracleInitData,
         address _owner,
         uint32 _timelock,
-        uint256 _lowerBound,
-        uint256 _upperBound,
+        uint256 _lowerPriceBound,
+        uint256 _upperPriceBound,
         bytes32 _externalSalt
     ) external returns (IDualOracle dualOracle) {
         address underlyingOracle = _deployUnderlyingOracle(_underlyingOracleFactory, _underlyingOracleInitData);
-        dualOracle = create(ISiloOracle(underlyingOracle), _owner, _timelock, _lowerBound, _upperBound, _externalSalt);
+        dualOracle = create(ISiloOracle(underlyingOracle), _owner, _timelock, _lowerPriceBound, _upperPriceBound, _externalSalt);
     }
 
     /// @inheritdoc IDualOracleFactory
@@ -61,12 +61,12 @@ contract DualOracleFactory is Create2Factory, IDualOracleFactory {
         ISiloOracle _oracle,
         address _owner,
         uint32 _timelock,
-        uint256 _lowerBound,
-        uint256 _upperBound,
+        uint256 _lowerPriceBound,
+        uint256 _upperPriceBound,
         bytes32 _externalSalt
     ) public returns (IDualOracle dualOracle) {
         dualOracle = _deployOracle(_externalSalt);
-        DualOracle(address(dualOracle)).initialize(_oracle, _owner, _timelock, _lowerBound, _upperBound);
+        DualOracle(address(dualOracle)).initialize(_oracle, _owner, _timelock, _lowerPriceBound, _upperPriceBound);
     }
 
     /// @dev Calls the underlying oracle factory with arbitrary calldata and decodes the returned address.

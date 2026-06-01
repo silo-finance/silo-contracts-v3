@@ -641,8 +641,8 @@ abstract contract DualOracleBase is Test {
         assertEq(oracle.baseToken(), oracleMock.baseToken(), "baseToken mismatch");
         assertEq(oracle.baseTokenDecimals(), 18, "baseTokenDecimals mismatch");
         assertEq(oracle.timelock(), TIMELOCK, "timelock mismatch");
-        assertEq(oracle.lowerBound(), LOWER_BOUND, "lowerBound mismatch");
-        assertEq(oracle.upperBound(), UPPER_BOUND, "upperBound mismatch");
+        assertEq(oracle.lowerPriceBound(), LOWER_BOUND, "lowerPriceBound mismatch");
+        assertEq(oracle.upperPriceBound(), UPPER_BOUND, "upperPriceBound mismatch");
         assertEq(oracle.manualPrice(), 0, "manualPrice should be zero initially");
         assertEq(oracle.overrideValidAt(), 0, "overrideValidAt should be zero initially");
     }

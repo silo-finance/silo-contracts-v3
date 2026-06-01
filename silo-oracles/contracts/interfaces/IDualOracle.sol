@@ -28,7 +28,7 @@ interface IDualOracle is ISiloOracle, IVersioned {
 
     error ZeroOracle();
     error ZeroOwner();
-    /// @notice lowerBound must be > 0 and < upperBound
+    /// @notice lowerPriceBound must be > 0 and < upperPriceBound
     error LowerBoundMustBeGreaterThanZero();
     error InvalidBounds();
     error BaseTokenDecimalsMustBeGreaterThanZero();
@@ -62,7 +62,7 @@ interface IDualOracle is ISiloOracle, IVersioned {
     ///         Only callable by the owner.
     ///
     /// @param _price Manual price in 18-decimal quote units per base unit.
-    ///               Must satisfy lowerBound <= _price <= upperBound (or be zero to disable).
+    ///               Must satisfy lowerPriceBound <= _price <= upperPriceBound (or be zero to disable).
     function setManualPrice(uint256 _price) external;
 
     /// @notice The immutable primary price source wrapped by this oracle
@@ -81,10 +81,10 @@ interface IDualOracle is ISiloOracle, IVersioned {
     function timelock() external view returns (uint256);
 
     /// @notice Minimum manual price accepted by setManualPrice (inclusive, 18-decimal quote units)
-    function lowerBound() external view returns (uint256);
+    function lowerPriceBound() external view returns (uint256);
 
     /// @notice Maximum manual price accepted by setManualPrice (inclusive, 18-decimal quote units)
-    function upperBound() external view returns (uint256);
+    function upperPriceBound() external view returns (uint256);
 
     /// @notice The stored manual price in 18-decimal quote units per base unit.
     ///         Zero when override is not in use.

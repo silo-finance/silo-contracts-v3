@@ -110,6 +110,14 @@ def main() -> int:
         print("IErrors is up to date. No custom errors changes detected.")
         return 0
 
+    if not new_errors:
+        write_summary(summary_path, summary)
+        print(
+            "IErrors changed, but no new custom errors were detected "
+            "(only removal/normalization/reordering)."
+        )
+        return 0
+
     write_summary(summary_path, summary)
     print_failure_instructions(new_errors)
     return 1

@@ -29,6 +29,11 @@ contract ManageableOracleFactory is Create2Factory, IManageableOracleFactory {
     }
 
     /// @inheritdoc IManageableOracleFactory
+    /// @dev WARNING: when this overload is invoked via SiloDeployer._createOracle, the
+    ///      `_externalSalt` slot may be silently corrupted because `_updateSalt` overwrites
+    ///      the last 32 bytes of calldata, while the `bytes calldata _underlyingOracleInitData`
+    ///      content is ABI-encoded in the tail and physically comes after the salt head slot.
+    ///      Deploy in single transaction. See KnownIssues.md § M-02.
     function create( // solhint-disable-line ordering
         address _underlyingOracleFactory,
         bytes calldata _underlyingOracleInitData,

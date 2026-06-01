@@ -11,8 +11,6 @@ import {Aggregator} from "../_common/Aggregator.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
-// solhint-disable ordering
-
 /// @title DualOracle
 /// @notice Wraps any ISiloOracle primary source and adds two governance-controlled
 ///         safety mechanisms: pause mode and a bounded manual price override.
@@ -106,23 +104,10 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         require(_oracle.quote(10 ** baseTokenDecimals, _baseTokenInternal) > 0, OracleQuoteFailed());
     }
 
-    /// @inheritdoc IDualOracle
-    function baseToken() public view override(Aggregator, IDualOracle) returns (address) {
-        return _baseTokenInternal;
-    }
-
     /// @notice Forwards beforeQuote to the primary oracle.
     /// @inheritdoc ISiloOracle
     function beforeQuote(address _baseToken) external virtual override {
         oracle.beforeQuote(_baseToken);
-    }
-
-    /// @notice Returns true when manualPrice is non-zero and the activation timelock has elapsed.
-    ///         This is the condition under which quote() returns the manual price instead of
-    ///         delegating to the primary oracle.
-    function isOverrideActive() public view returns (bool) {
-        uint64 validAt = overrideValidAt;
-        return validAt != 0 && block.timestamp >= validAt;
     }
 
     /// @notice Immediately pauses the oracle. All quote() calls revert while paused.
@@ -167,6 +152,25 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         }
     }
 
+    /// @inheritdoc IVersioned
+    // solhint-disable-next-line func-name-mixedcase
+    function VERSION() external pure virtual override returns (string memory version) {
+        version = "DualOracle 1.0.0";
+    }
+
+    /// @inheritdoc IDualOracle
+    function baseToken() public view override(Aggregator, IDualOracle) returns (address) {
+        return _baseTokenInternal;
+    }
+
+    /// @notice Returns true when manualPrice is non-zero and the activation timelock has elapsed.
+    ///         This is the condition under which quote() returns the manual price instead of
+    ///         delegating to the primary oracle.
+    function isOverrideActive() public view returns (bool) {
+        uint64 validAt = overrideValidAt;
+        return validAt != 0 && block.timestamp >= validAt;
+    }
+
     /// @notice Returns the price of _baseAmount of _baseToken denominated in quoteToken.
     ///         Reverts when paused (OZ EnforcedPause).
     ///         Returns manualPrice when override is active, otherwise delegates to the primary oracle.
@@ -181,11 +185,5 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     {
         if (isOverrideActive()) return manualPrice;
         else return oracle.quote(_baseAmount, _baseToken);
-    }
-
-    /// @inheritdoc IVersioned
-    // solhint-disable-next-line func-name-mixedcase
-    function VERSION() external pure virtual override returns (string memory version) {
-        version = "DualOracle 1.0.0";
     }
 }

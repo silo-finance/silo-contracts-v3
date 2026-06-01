@@ -20,6 +20,7 @@ interface IErrors {
     error BaseTokenMustBeTheSame();
     error BatchTxFailed(uint256,address,bytes);
     error BorrowNotPossible();
+    error CancelGeneratesZeroShares();
     error CantRemoveActiveGauge();
     error ClaimerUnauthorized();
     error CollateralDepositNotAllowed();
@@ -44,6 +45,9 @@ interface IErrors {
     error DeployerCannotBeZero();
     error Deprecated();
     error DifferentRewardsTokens();
+    error DistributionTimeExpired();
+    error DurationTooHigh();
+    error DurationTooLow();
     error ECDSAInvalidSignature();
     error ECDSAInvalidSignatureLength(uint256);
     error ECDSAInvalidSignatureS(bytes32);
@@ -58,14 +62,20 @@ interface IErrors {
     error ERC1967InvalidBeacon(address);
     error ERC1967InvalidImplementation(address);
     error ERC1967NonPayable();
+    error ERC20ExceededCap(uint256,uint256);
     error ERC20InsufficientAllowance(address,uint256,uint256);
     error ERC20InsufficientBalance(address,uint256,uint256);
     error ERC20InvalidApprover(address);
+    error ERC20InvalidCap(uint256);
     error ERC20InvalidReceiver(address);
     error ERC20InvalidSender(address);
     error ERC20InvalidSpender(address);
     error ERC2612ExpiredSignature(uint256);
     error ERC2612InvalidSigner(address,address);
+    error ERC4626ExceededMaxDeposit(address,uint256,uint256);
+    error ERC4626ExceededMaxMint(address,uint256,uint256);
+    error ERC4626ExceededMaxRedeem(address,uint256,uint256);
+    error ERC4626ExceededMaxWithdraw(address,uint256,uint256);
     error ERC721IncorrectOwner(address,uint256,address);
     error ERC721InsufficientApproval(address,uint256);
     error ERC721InvalidApprover(address);
@@ -143,6 +153,7 @@ interface IErrors {
     error InvalidDeployer();
     error InvalidDistributionEnd();
     error InvalidDmax();
+    error InvalidDurationOrder();
     error InvalidEthAggregatorDecimals();
     error InvalidFee();
     error InvalidFeeRange();
@@ -169,6 +180,7 @@ interface IErrors {
     error InvalidPrice();
     error InvalidProvider();
     error InvalidQuoteToken();
+    error InvalidRatioOrder();
     error InvalidRcompCap();
     error InvalidRcritMax();
     error InvalidRcritMin();
@@ -179,6 +191,7 @@ interface IErrors {
     error InvalidShareToken();
     error InvalidShortString();
     error InvalidSilo();
+    error InvalidSiloV1Address();
     error InvalidT1();
     error InvalidT2();
     error InvalidTCrit();
@@ -208,6 +221,7 @@ interface IErrors {
     error MaxFeeExceeded();
     error MaxFlashloanFeeExceeded();
     error MaxLiquidationFeeExceeded();
+    error MaxRatioOverflow();
     error MissingHookReceiver();
     error ModelConfigNotFound();
     error MultiplierAndDividerZero();
@@ -216,6 +230,7 @@ interface IErrors {
     error NegativeRcomp();
     error NegativeRcur();
     error NewIndexOverflow();
+    error NoBalance();
     error NoChange();
     error NoCollateralToLiquidate();
     error NoControllerForCollateral();
@@ -225,8 +240,10 @@ interface IErrors {
     error NoPendingUpdate();
     error NoPendingUpdateToCancel();
     error NoRepayAssets();
+    error NoSiloToRedeem();
     error NormalizationDividerTooLarge();
     error NormalizationScaleTooLarge();
+    error NotBeneficiary();
     error NotEnoughLiquidity();
     error NotImplemented();
     error NotInitialized();
@@ -274,6 +291,7 @@ interface IErrors {
     error ReceiverZero();
     error RecipientIsZero();
     error RecipientNotSolventAfterTransfer();
+    error RedeemIndexDoesNotExist();
     error ReentrancyGuardReentrantCall();
     error RepayDebtByDefaultingFailed();
     error RepayTooHigh();
@@ -290,11 +308,13 @@ interface IErrors {
     error SameAsset();
     error SameDaoFeeReceiver();
     error SameRange();
+    error SelfTransferNotAllowed();
     error SenderNotSolventAfterTransfer();
     error ShareTokenBeforeForbidden();
     error SiloFixtureHookReceiverImplNotFound(string);
     error SiloInitialized();
     error SomeError();
+    error StopAllRelatedPrograms();
     error StringTooLong(string);
     error StringsInsufficientHexLength(uint256,uint256);
     error Swap();
@@ -322,6 +342,7 @@ interface IErrors {
     error UseRenounceOwnership();
     error UserIsSolvent();
     error UserSolvent();
+    error VestingNotOver();
     error WrongGaugeShareToken();
     error WrongSilo();
     error WrongSiloConfig();
@@ -329,10 +350,12 @@ interface IErrors {
     error ZeroAddress();
     error ZeroAmount();
     error ZeroAmountOut();
+    error ZeroAssets();
     error ZeroBaseToken();
     error ZeroOracle();
     error ZeroOwner();
     error ZeroPrice();
     error ZeroQuote();
+    error ZeroShares();
     error ZeroTransfer();
 }

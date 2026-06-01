@@ -67,9 +67,9 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     ///         Do not call this directly — use DualOracleFactory.
     /// @param _oracle     Primary price source; must be a valid ISiloOracle
     /// @param _owner      Address that will control pause and override
-    /// @param _timelock   Override-activation timelock in seconds; must be in [MIN_TIMELOCK, MAX_TIMELOCK]
-    /// @param _lowerPriceBound Minimum accepted manual price (inclusive, 18-decimal quote units); must be > 0
-    /// @param _upperPriceBound Maximum accepted manual price (inclusive, 18-decimal quote units); must be > lowerPriceBound
+    /// @param _timelock        Override-activation timelock in seconds
+    /// @param _lowerPriceBound Minimum accepted manual price (18-decimal quote units); must be > 0
+    /// @param _upperPriceBound Maximum accepted manual price (18-decimal quote units); must be > _lowerPriceBound
     function initialize(
         ISiloOracle _oracle,
         address _owner,
@@ -124,24 +124,18 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         if (_price == 0) {
             // allow setting zero price to disable override mode without a new timelock
             manualPrice = 0;
-            emit ManualPriceSet(0);
-
             overrideValidAt = 0;
-            emit OverrideValidAtSet(0);
         } else {
             require(_price >= lowerPriceBound, PriceBelowLowerBound());
             require(_price <= upperPriceBound, PriceAboveUpperBound());
 
             manualPrice = _price;
-            emit ManualPriceSet(_price);
 
-            // when override is not active, require a new activation with the updated price
-            if (!isOverrideActive()) {
-                uint64 validAt = SafeCast.toUint64(block.timestamp + timelock);
-                overrideValidAt = validAt;
-                emit OverrideValidAtSet(validAt);
-            }
+            // when override is not active, start the activation timelock
+            if (!isOverrideActive()) overrideValidAt = SafeCast.toUint64(block.timestamp + timelock);
         }
+
+        emit ManualPriceUpdated(manualPrice, overrideValidAt);
     }
 
     /// @inheritdoc IVersioned

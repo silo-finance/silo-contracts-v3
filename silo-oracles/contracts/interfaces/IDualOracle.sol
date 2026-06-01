@@ -18,13 +18,10 @@ import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 ///
 ///         Pause / unpause events and the `paused()` view are inherited from OZ PausableUpgradeable.
 interface IDualOracle is ISiloOracle, IVersioned {
-    /// @notice Emitted when a manual price is set and the override timelock starts.
-    /// @param validAt Timestamp from which the override becomes active
-    event OverrideValidAtSet(uint64 validAt);
-
-    /// @notice Emitted whenever the manual price is written
-    /// @param price The new manual price (18-decimal quote units per base unit)
-    event ManualPriceSet(uint256 price);
+    /// @notice Emitted whenever the manual price or override activation timestamp is updated.
+    /// @param price   The new manual price (18-decimal quote units per base unit); zero means override disabled
+    /// @param validAt Timestamp from which the override becomes active; zero means override disabled
+    event ManualPriceUpdated(uint256 price, uint64 validAt);
 
     error ZeroOracle();
     error ZeroOwner();

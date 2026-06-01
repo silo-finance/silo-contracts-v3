@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.28;
 
-import {Test, Vm} from "forge-std/Test.sol";
+import {Test} from "forge-std/Test.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 import {OwnableUpgradeable} from "openzeppelin5-upgradeable/access/OwnableUpgradeable.sol";
 import {Pausable} from "openzeppelin5/utils/Pausable.sol";
@@ -243,33 +243,19 @@ abstract contract DualOracleBase is Test {
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_setManualPrice_nonzero_storesPrice_emitsManualPriceSet
+        FOUNDRY_PROFILE=oracles forge test --mt test_setManualPrice_nonzero_storesPrice_startsTimelock_emitsEvent
     */
-    function test_setManualPrice_nonzero_storesPrice_emitsManualPriceSet() public {
+    function test_setManualPrice_nonzero_storesPrice_startsTimelock_emitsEvent() public {
         uint256 price = 1e18;
+        uint64 expectedValidAt = SafeCast.toUint64(block.timestamp + TIMELOCK);
 
         vm.expectEmit(true, false, false, true, address(oracle));
-        emit IDualOracle.ManualPriceSet(price);
+        emit IDualOracle.ManualPriceUpdated(price, expectedValidAt);
 
         vm.prank(owner);
         oracle.setManualPrice(price);
 
         assertEq(oracle.manualPrice(), price, "manualPrice not stored");
-    }
-
-    /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_setManualPrice_nonzero_startsTimelock_emitsOverrideEnabled
-    */
-    function test_setManualPrice_nonzero_startsTimelock_emitsOverrideEnabled() public {
-        uint256 setTime = block.timestamp;
-        uint64 expectedValidAt = SafeCast.toUint64(setTime + TIMELOCK);
-
-        vm.expectEmit(true, false, false, true, address(oracle));
-        emit IDualOracle.OverrideValidAtSet(expectedValidAt);
-
-        vm.prank(owner);
-        oracle.setManualPrice(1e18);
-
         assertEq(oracle.overrideValidAt(), expectedValidAt, "overrideValidAt set incorrectly");
         assertFalse(oracle.isOverrideActive(), "override should not be active immediately");
     }
@@ -313,23 +299,21 @@ abstract contract DualOracleBase is Test {
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_setManualPrice_updateWhileActive_emitsOnlyManualPriceSet
+        FOUNDRY_PROFILE=oracles forge test --mt test_setManualPrice_updateWhileActive_emitsEventWithUnchangedValidAt
     */
-    function test_setManualPrice_updateWhileActive_emitsOnlyManualPriceSet() public {
+    function test_setManualPrice_updateWhileActive_emitsEventWithUnchangedValidAt() public {
         vm.prank(owner);
         oracle.setManualPrice(1e18);
         vm.warp(block.timestamp + TIMELOCK);
 
-        // record all logs to verify OverrideEnabled is NOT among them
-        vm.recordLogs();
+        uint64 firstValidAt = oracle.overrideValidAt();
+        assertTrue(oracle.isOverrideActive(), "override should be active");
+
+        vm.expectEmit(true, false, false, true, address(oracle));
+        emit IDualOracle.ManualPriceUpdated(1.1e18, firstValidAt);
+
         vm.prank(owner);
         oracle.setManualPrice(1.1e18);
-
-        Vm.Log[] memory logs = vm.getRecordedLogs();
-        bytes32 overrideEnabledTopic = IDualOracle.OverrideValidAtSet.selector;
-        for (uint256 i = 0; i < logs.length; i++) {
-            assertTrue(logs[i].topics[0] != overrideEnabledTopic, "OverrideEnabled must not be emitted when already active");
-        }
     }
 
     /*
@@ -341,10 +325,7 @@ abstract contract DualOracleBase is Test {
         assertFalse(oracle.isOverrideActive());
 
         vm.expectEmit(true, false, false, true, address(oracle));
-        emit IDualOracle.ManualPriceSet(0);
-
-        vm.expectEmit(false, false, false, false, address(oracle));
-        emit IDualOracle.OverrideValidAtSet(0);
+        emit IDualOracle.ManualPriceUpdated(0, 0);
 
         vm.prank(owner);
         oracle.setManualPrice(0);

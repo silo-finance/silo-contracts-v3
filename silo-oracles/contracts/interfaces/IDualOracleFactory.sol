@@ -16,8 +16,8 @@ interface IDualOracleFactory {
     /// @param _oracle      Primary price source to wrap
     /// @param _owner       Address that will own (and control) the deployed oracle
     /// @param _timelock    Override-activation timelock in seconds; must be in [MIN_TIMELOCK, MAX_TIMELOCK]
-    /// @param _lowerPriceBound  Minimum allowed manual price (inclusive, 18-decimal quote units); must be > 0
-    /// @param _upperPriceBound  Maximum allowed manual price (inclusive, 18-decimal quote units); must be > lowerPriceBound
+    /// @param _lowerPriceBound  Minimum allowed manual price (18-decimal quote units); must be > 0
+    /// @param _upperPriceBound  Maximum allowed manual price (18-decimal quote units); must be > _lowerPriceBound
     /// @param _externalSalt Caller-supplied entropy for the CREATE2 deterministic address
     /// @return dualOracle  The deployed DualOracle instance
     function create(

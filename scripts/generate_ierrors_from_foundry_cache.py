@@ -5,6 +5,9 @@ Generate common/utils/interfaces/IErrors.sol from Foundry artifacts.
 The script scans cache/foundry/out recursively, extracts all ABI entries
 with type == "error", deduplicates by canonical Solidity signature, sorts
 alphabetically, and writes the interface file.
+
+usage:
+    python3 scripts/generate_ierrors_from_foundry_cache.py
 """
 
 from __future__ import annotations

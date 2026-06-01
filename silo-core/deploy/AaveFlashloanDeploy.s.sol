@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.28;
 
-import {console2} from "forge-std/console2.sol";
+import {console} from "forge-std/console.sol";
 import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 
 import {CommonDeploy} from "./_CommonDeploy.sol";
@@ -28,7 +28,7 @@ contract AaveFlashloanDeploy is CommonDeploy {
         string memory chainAlias = ChainsLib.chainAlias();
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
 
-        console2.log("[AaveFlashloanDeploy] chainAlias", chainAlias);
+        emit log_named_string("[AaveFlashloanDeploy] chainAlias", chainAlias);
 
         address aavePoolAddressesProvider = AddrLib.getAddress(chainAlias, AddrKey.AAVE_POOL_ADDRESSES_PROVIDER);
         require(
@@ -36,13 +36,13 @@ contract AaveFlashloanDeploy is CommonDeploy {
             string.concat(AddrKey.AAVE_POOL_ADDRESSES_PROVIDER, " not deployed")
         );
 
-        console2.log("aavePoolAddressesProvider", aavePoolAddressesProvider);
+        emit log_named_string("aavePoolAddressesProvider", aavePoolAddressesProvider);
 
         vm.startBroadcast(deployerPrivateKey);
         aaveFlashloan = new AaveFlashloan(IPoolAddressesProvider(aavePoolAddressesProvider));
         vm.stopBroadcast();
 
-        console2.log("New AaveFlashloan deployed", address(aaveFlashloan));
+        emit log_named_string("New AaveFlashloan deployed", address(aaveFlashloan));
 
         _registerDeployment(address(aaveFlashloan), SiloCoreContracts.AAVE_FLASHLOAN);
     }

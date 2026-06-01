@@ -141,7 +141,7 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     /// @inheritdoc IVersioned
     // solhint-disable-next-line func-name-mixedcase
     function VERSION() external pure virtual override returns (string memory version) {
-        version = "DualOracle 1.0.0";
+        version = "DualOracle 4.23.0";
     }
 
     /// @inheritdoc IDualOracle

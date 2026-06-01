@@ -36,13 +36,13 @@ contract AaveFlashloanDeploy is CommonDeploy {
             string.concat(AddrKey.AAVE_POOL_ADDRESSES_PROVIDER, " not deployed")
         );
 
-        emit log_named_string("aavePoolAddressesProvider", aavePoolAddressesProvider);
+        emit log_named_address("aavePoolAddressesProvider", aavePoolAddressesProvider);
 
         vm.startBroadcast(deployerPrivateKey);
         aaveFlashloan = new AaveFlashloan(IPoolAddressesProvider(aavePoolAddressesProvider));
         vm.stopBroadcast();
 
-        emit log_named_string("New AaveFlashloan deployed", address(aaveFlashloan));
+        emit log_named_address("New AaveFlashloan deployed", address(aaveFlashloan));
 
         _registerDeployment(address(aaveFlashloan), SiloCoreContracts.AAVE_FLASHLOAN);
     }

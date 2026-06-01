@@ -60,7 +60,7 @@ abstract contract DualOracleBase is Test {
         FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_VERSION
     */
     function test_DualOracle_VERSION() public view {
-        assertEq(IVersioned(address(oracle)).VERSION(), "DualOracle 1.0.0");
+        assertEq(IVersioned(address(oracle)).VERSION(), "DualOracle 4.23.0");
     }
 
     // ─── baseToken ────────────────────────────────────────────────────────────

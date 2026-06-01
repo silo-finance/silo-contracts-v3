@@ -42,6 +42,17 @@ jobs:
                     cp target/release/silo-foundry-utils ../../silo-foundry-utils
                     ../../silo-foundry-utils --version
 
+            -   name: Build with test profiles
+                run: |
+                    FOUNDRY_PROFILE=echidna_defaulting forge build
+                    FOUNDRY_PROFILE=echidna_hookV3 forge build
+                    FOUNDRY_PROFILE=core-with-invariants forge build
+                    FOUNDRY_PROFILE=echidna_leverage forge build
+                    FOUNDRY_PROFILE=x_silo_echidna forge build
+
+            -   name: Sync IErrors file
+                run: python3 scripts/sync_ierrors_ci.py
+
             -   name: Run CryticToFoundryDefaulting tests
                 run: FOUNDRY_PROFILE=echidna_defaulting forge test --mc CryticToFoundryDefaulting --ffi -vv
 

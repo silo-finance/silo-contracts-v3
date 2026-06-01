@@ -78,6 +78,7 @@ jobs:
     if: needs.count-config-changes.outputs.config_count == '1'
 
     permissions:
+      contents: write
       pull-requests: write  # Required to post a comment on the PR
 
     steps:
@@ -358,4 +359,19 @@ jobs:
         with:
           header: new-markets
           path: new_market_comment.md
+
+      - name: Sync IErrors file
+        run: python3 scripts/sync_ierrors_ci.py --commit-on-pr
+
+      - name: Read IErrors sync summary
+        id: ierrors-summary
+        run: |
+          echo "new_errors_count=$(jq '.new_errors_count' ierrors_sync_summary.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment new custom errors on PR
+        if: steps.ierrors-summary.outputs.new_errors_count != '0'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: ierrors-sync
+          path: ierrors_comment.md
 

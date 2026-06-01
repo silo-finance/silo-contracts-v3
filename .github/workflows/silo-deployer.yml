@@ -60,8 +60,15 @@ jobs:
                ]
 
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            pull-requests: write
         steps:
             -   uses: actions/checkout@v5
+                with:
+                    fetch-depth: 0
+                    ref: ${{ github.head_ref || github.ref_name }}
+                    token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
                 
             # Cache all git submodules (large gitmodules/* tree and .git/modules) to speed up CI.
             # Keyed only by .gitmodules so cache can be reused across commits; git will fetch deltas if submodule refs change.
@@ -97,3 +104,20 @@ jobs:
             
             -   name: Vaults Deployer for ${{ matrix.match-rpc }}
                 run: FOUNDRY_PROFILE=vaults_tests RPC_URL=$${{ matrix.match-rpc }} forge test --mc VaultsDeploymentAddressesTest --ffi -vv
+
+            -   name: Sync IErrors file
+                if: matrix.match-rpc == 'RPC_MEGAETH'
+                run: python3 scripts/sync_ierrors_ci.py --commit-on-pr
+
+            -   name: Read IErrors sync summary
+                if: matrix.match-rpc == 'RPC_MEGAETH'
+                id: summary
+                run: |
+                    echo "new_errors_count=$(jq '.new_errors_count' ierrors_sync_summary.json)" >> "$GITHUB_OUTPUT"
+
+            -   name: Comment new custom errors on PR
+                if: matrix.match-rpc == 'RPC_MEGAETH' && github.event_name == 'pull_request' && steps.summary.outputs.new_errors_count != '0'
+                uses: marocchino/sticky-pull-request-comment@v2
+                with:
+                    header: ierrors-sync
+                    path: ierrors_comment.md

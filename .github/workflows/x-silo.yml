@@ -65,9 +65,16 @@ jobs:
   foundry:
     name: Foundry QA
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
       
       # Cache all git submodules (large gitmodules/* tree and .git/modules) to speed up CI.
       # Keyed only by .gitmodules so cache can be reused across commits; git will fetch deltas if submodule refs change.
@@ -119,3 +126,18 @@ jobs:
 
       - name: Run Forge tests
         run: FOUNDRY_PROFILE=x_silo forge test -vv --no-match-test "_skip_" --ffi
+
+      - name: Sync IErrors file
+        run: python3 scripts/sync_ierrors_ci.py --commit-on-pr
+
+      - name: Read IErrors sync summary
+        id: summary
+        run: |
+          echo "new_errors_count=$(jq '.new_errors_count' ierrors_sync_summary.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment new custom errors on PR
+        if: github.event_name == 'pull_request' && steps.summary.outputs.new_errors_count != '0'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: ierrors-sync
+          path: ierrors_comment.md

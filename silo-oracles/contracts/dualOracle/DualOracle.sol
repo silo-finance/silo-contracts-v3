@@ -160,7 +160,7 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     ///         delegating to the primary oracle.
     function isOverrideActive() public view returns (bool) {
         uint64 validAt = overrideValidAt;
-        return validAt != 0 && block.timestamp >= validAt;
+        return validAt != 0 && validAt <= block.timestamp;
     }
 
     /// @notice Returns the price of _baseAmount of _baseToken denominated in quoteToken.

@@ -129,27 +129,6 @@ contract DualOracleInitTest is Test {
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_initialize_revert_OracleQuoteFailed_returnsZero
-    */
-    function test_DualOracle_initialize_revert_OracleQuoteFailed_returnsZero() public {
-        address zeroQuoteOracle = makeAddr("ZeroQuoteOracle");
-
-        vm.mockCall(
-            zeroQuoteOracle, abi.encodeWithSelector(ISiloOracle.quoteToken.selector), abi.encode(oracleMock.quoteToken())
-        );
-        vm.mockCall(
-            zeroQuoteOracle, abi.encodeWithSelector(DualOracle.baseToken.selector), abi.encode(baseToken)
-        );
-        vm.mockCall(
-            zeroQuoteOracle, abi.encodeWithSelector(ISiloOracle.quote.selector), abi.encode(uint256(0))
-        );
-
-        DualOracle clone = _clonedOracle();
-        vm.expectRevert(IDualOracle.OracleQuoteFailed.selector);
-        clone.initialize(ISiloOracle(zeroQuoteOracle), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND);
-    }
-
-    /*
         FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_initialize_getters
     */
     function test_DualOracle_initialize_getters() public {

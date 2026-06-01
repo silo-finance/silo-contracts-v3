@@ -32,8 +32,6 @@ interface IDualOracle is ISiloOracle, IVersioned {
     error LowerBoundMustBeGreaterThanZero();
     error InvalidBounds();
     error BaseTokenDecimalsMustBeGreaterThanZero();
-    /// @notice Primary oracle returned zero on the sanity-check quote
-    error OracleQuoteFailed();
     /// @notice Submitted price equals the currently stored manual price
     error PriceNotChanged();
     /// @notice Submitted price is below the immutable lower bound

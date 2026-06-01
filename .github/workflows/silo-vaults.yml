@@ -99,6 +99,12 @@ jobs:
                 run: |
                     forge cache ls 2>&1 || echo "No cache yet (first fork test will create it)"
                     
+            -   name: Build with test profile
+                run: FOUNDRY_PROFILE=vaults_tests forge build
+
+            -   name: Sync IErrors file
+                run: python3 scripts/sync_ierrors_ci.py
+
             -   name: Run tests
                 run: FOUNDRY_PROFILE=vaults_tests forge test --no-match-test "_skip_" --nmc VaultsDeploymentAddressesTest -v --ffi
 
@@ -106,9 +112,6 @@ jobs:
                 run: |
                     forge --version
                     FOUNDRY_PROFILE=vaults forge build --sizes
-
-            -   name: Sync IErrors file
-                run: python3 scripts/sync_ierrors_ci.py
 
     linters:
         runs-on: ubuntu-latest

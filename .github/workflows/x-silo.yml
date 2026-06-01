@@ -117,8 +117,8 @@ jobs:
           run: |
               forge cache ls 2>&1 || echo "No cache yet (first fork test will create it)"
 
-      - name: Run Forge tests
-        run: FOUNDRY_PROFILE=x_silo forge test -vv --no-match-test "_skip_" --ffi
-
       - name: Sync IErrors file
         run: python3 scripts/sync_ierrors_ci.py
+
+      - name: Run Forge tests
+        run: FOUNDRY_PROFILE=x_silo forge test -vv --no-match-test "_skip_" --ffi

@@ -20,6 +20,7 @@ interface IErrors {
     error AlreadyPending();
     error AlreadySet();
     error AmountExceedsAllowance();
+    error AmountOverflow();
     error ApprovalFailed();
     error AssetLoss(uint256);
     error AssetNotSupported();
@@ -29,8 +30,10 @@ interface IErrors {
     error BaseTokenDecimalsAbove18();
     error BaseTokenDecimalsMustBeGreaterThanZero();
     error BaseTokenMustBeTheSame();
+    error BatchTxFailed(uint256,address,bytes);
     error BelowMinTimelock();
     error BorrowNotPossible();
+    error CancelGeneratesZeroShares();
     error CantAcceptFactory();
     error CantAcceptLogic();
     error CantRemoveActiveGauge();
@@ -63,6 +66,8 @@ interface IErrors {
     error DifferentRewardsTokens();
     error DistributionTimeExpired();
     error DuplicateMarket(address);
+    error DurationTooHigh();
+    error DurationTooLow();
     error ECDSAInvalidSignature();
     error ECDSAInvalidSignatureLength(uint256);
     error ECDSAInvalidSignatureS(bytes32);
@@ -106,17 +111,22 @@ interface IErrors {
     error EmptyAdressProvider();
     error EmptyBalance();
     error EmptyBalance(address);
+    error EmptyCLFactory();
     error EmptyCallSelector();
     error EmptyCollateralShareToken();
     error EmptyConfigAddress();
     error EmptyCoordinates();
     error EmptyGaugeAddress();
+    error EmptyIdleVaultFactory();
     error EmptyNativeToken();
     error EmptyPrimaryKey();
     error EmptyRecipient();
     error EmptyShareToken();
     error EmptySilo();
     error EmptySiloConfig();
+    error EmptySiloIncentivesControllerCLFactory();
+    error EmptySiloIncentivesControllerFactory();
+    error EmptySiloVaultFactory();
     error EmptyToken0();
     error EmptyToken1();
     error EmptyWithdrawals();
@@ -150,6 +160,7 @@ interface IErrors {
     error FullLiquidationRequired();
     error GaugeAlreadyConfigured();
     error GaugeIsNotConfigured();
+    error GaugeIsNotConfigured(address);
     error GovernorAlreadyCastVote(address);
     error GovernorAlreadyQueuedProposal(uint256);
     error GovernorDisabledDeposit();
@@ -196,6 +207,7 @@ interface IErrors {
     error InvalidBounds();
     error InvalidC1();
     error InvalidC2();
+    error InvalidCLFactory();
     error InvalidCallBeforeQuote();
     error InvalidClaimingLogicsLength();
     error InvalidCminus();
@@ -207,6 +219,7 @@ interface IErrors {
     error InvalidDeployment();
     error InvalidDistributionEnd();
     error InvalidDmax();
+    error InvalidDurationOrder();
     error InvalidEggsAddress();
     error InvalidEthAggregatorDecimals();
     error InvalidEthHeartbeat();
@@ -244,6 +257,7 @@ interface IErrors {
     error InvalidPrice();
     error InvalidProvider();
     error InvalidQuoteToken();
+    error InvalidRatioOrder();
     error InvalidRcompCap();
     error InvalidRcritMax();
     error InvalidRcritMin();
@@ -308,9 +322,11 @@ interface IErrors {
     error MaxLiquidationFeeExceeded();
     error MaxOutflowExceeded(address);
     error MaxQueueLengthExceeded();
+    error MaxRatioOverflow();
     error MaxSettableFlowCapExceeded();
     error MissingHookReceiver();
     error ModelConfigNotFound();
+    error MoreThanOneSiloVaultNotificationReceiver();
     error MultiplierAndDividerZero();
     error NativeTokenNotAccepted();
     error NativeTokenTransferFailed();
@@ -318,6 +334,7 @@ interface IErrors {
     error NegativeRcur();
     error NewIndexOverflow();
     error NewOracleZero();
+    error NoBalance();
     error NoChange();
     error NoCollateralToLiquidate();
     error NoControllerForCollateral();
@@ -328,12 +345,14 @@ interface IErrors {
     error NoPendingUpdateToCancel();
     error NoPendingValue();
     error NoRepayAssets();
+    error NoSiloToRedeem();
     error NonBorrowableSilo();
     error NonZeroCap();
     error NormalizationDividerTooLarge();
     error NormalizationScaleTooLarge();
     error NotAdminNorVaultOwner();
     error NotAllocatorRole();
+    error NotBeneficiary();
     error NotCuratorNorGuardianRole();
     error NotCuratorRole();
     error NotEnoughLiquidity();
@@ -350,6 +369,7 @@ interface IErrors {
     error NothingToPay();
     error NothingToWithdraw();
     error NotificationDispatchError();
+    error NotificationFailed();
     error NotificationReceiverAlreadyAdded();
     error NotificationReceiverNotFound();
     error OldPrice();
@@ -403,6 +423,7 @@ interface IErrors {
     error ReceiverZero();
     error RecipientIsZero();
     error RecipientNotSolventAfterTransfer();
+    error RedeemIndexDoesNotExist();
     error ReentrancyError();
     error ReentrancyGuardReentrantCall();
     error RepayDebtByDefaultingFailed();
@@ -410,6 +431,7 @@ interface IErrors {
     error RequestNotSupported();
     error ReturnZeroAssets();
     error ReturnZeroShares();
+    error RevertInClaimingLogic();
     error STokenNotSupported();
     error SafeCastOverflowedIntDowncast(uint8,int256);
     error SafeCastOverflowedIntToUint(int256);
@@ -420,6 +442,7 @@ interface IErrors {
     error SameAsset();
     error SameDaoFeeReceiver();
     error SameRange();
+    error SelfTransferNotAllowed();
     error SenderNotSolventAfterTransfer();
     error ShareTokenBeforeForbidden();
     error ShareTransferNotAllowed();
@@ -428,6 +451,7 @@ interface IErrors {
     error SiloInitialized();
     error SomeError();
     error StaticCallFailed();
+    error StopAllRelatedPrograms();
     error StringTooLong(string);
     error StringsInsufficientHexLength(uint256,uint256);
     error SupplyCapExceeded(address);
@@ -451,6 +475,7 @@ interface IErrors {
     error TwoWayMarketNotAllowed();
     error UnableToRepayFlashloan();
     error UnauthorizedMarket(address);
+    error UnderlyingMarketDoesNotHaveIncentives();
     error UnexpectedCollateralToken();
     error UnexpectedDebtToken();
     error UnknownAction();
@@ -463,11 +488,15 @@ interface IErrors {
     error UnsopportedNetworkForDeploy(string);
     error Unsupported();
     error UnsupportedFlashloanToken();
+    error UnsupportedInputType(string);
     error UnsupportedNetworkForDeploy(string);
     error UseRenounceOwnership();
     error UserIsSolvent();
     error UserSolvent();
+    error VaultAddressMismatch();
+    error VaultAssetCanNotBeRescued();
     error VaultIncentivesControllerZeroAddress();
+    error VestingNotOver();
     error WithdrawZero(address);
     error WrongAssetType();
     error WrongGaugeShareToken();

@@ -16,6 +16,11 @@ contract DIAOracleFactory is Create2Factory, OracleFactory {
         // noting to set
     }
 
+    /// @dev WARNING: when invoked via SiloDeployer._createOracle, the `_externalSalt` slot may
+    ///      be silently corrupted because `_updateSalt` overwrites the last 32 bytes of calldata,
+    ///      while the `string primaryKey` and `string secondaryKey` fields of `DIADeploymentConfig`
+    ///      are ABI-encoded in the tail and physically come after the salt head slot.
+    ///      Deploy in single transaction. See KnownIssues.md § M-02.
     function create(
         IDIAOracle.DIADeploymentConfig calldata _config,
         bytes32 _externalSalt

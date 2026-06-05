@@ -616,7 +616,7 @@ abstract contract DualOracleBase is Test {
 
         (, int256 answer,,,) = DualOracle(address(oracle)).latestRoundData();
         uint256 oneUnit = 10 ** oracle.baseTokenDecimals();
-        assertEq(uint256(answer), oracle.quote(oneUnit, baseToken));
+        assertEq(SafeCast.toUint256(answer), oracle.quote(oneUnit, baseToken));
     }
 
     /*

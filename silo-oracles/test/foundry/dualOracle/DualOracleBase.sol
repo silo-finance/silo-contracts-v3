@@ -468,6 +468,23 @@ abstract contract DualOracleBase is Test {
     }
 
     /*
+        FOUNDRY_PROFILE=oracles forge test --mt testFuzz_quote_scaledByBaseAmount_whenOverrideActive
+    */
+    function testFuzz_quote_scaledByBaseAmount_whenOverrideActive(uint256 _baseAmount) public {
+        uint256 manualPrice = LOWER_BOUND;
+        vm.prank(owner);
+        oracle.setManualPrice(manualPrice);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        // prevent overflow in _baseAmount * manualPrice
+        _baseAmount = bound(_baseAmount, 0, type(uint256).max / manualPrice);
+
+        uint256 expected = _baseAmount * manualPrice / 10 ** oracle.baseTokenDecimals();
+        assertEq(oracle.quote(_baseAmount, baseToken), expected);
+    }
+
+    /*
         FOUNDRY_PROFILE=oracles forge test --mt test_quote_resumesAfterUnpause_withOverrideActive
     */
     function test_quote_resumesAfterUnpause_withOverrideActive() public {

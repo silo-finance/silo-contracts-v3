@@ -169,6 +169,6 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         whenNotPaused
         returns (uint256 quoteAmount)
     {
-        return isOverrideActive() ? manualPrice : oracle.quote(_baseAmount, _baseToken);
+        return isOverrideActive() ? _baseAmount * manualPrice / 10 ** baseTokenDecimals : oracle.quote(_baseAmount, _baseToken);
     }
 }

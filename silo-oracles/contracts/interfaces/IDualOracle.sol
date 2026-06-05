@@ -49,7 +49,8 @@ interface IDualOracle is ISiloOracle, IVersioned {
     /// @notice Sets the manual price and manages override activation.
     ///
     ///         Behaviour by price value:
-    ///         - _price == 0  → clears manualPrice and overrideValidAt, disables override immediately (emits ManualPriceUpdated(0, 0))
+    ///         - _price == 0  → clears manualPrice and overrideValidAt, disables override immediately
+    ///                          (emits ManualPriceUpdated(0, 0))
     ///         - _price != 0  → validates bounds, stores price; if override not yet active, starts the timelock
     ///                          (emits ManualPriceUpdated(_price, overrideValidAt))
     ///

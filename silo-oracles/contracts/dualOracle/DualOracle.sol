@@ -3,6 +3,7 @@ pragma solidity 0.8.28;
 
 import {Ownable2StepUpgradeable} from "openzeppelin5-upgradeable/access/Ownable2StepUpgradeable.sol";
 import {PausableUpgradeable} from "openzeppelin5-upgradeable/utils/PausableUpgradeable.sol";
+import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
@@ -175,7 +176,9 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         require(_baseToken == _baseTokenInternal, AssetNotSupported());
 
         quoteAmount = isOverrideActive()
-            ? _baseAmount * manualPrice / 10 ** baseTokenDecimals
+            ? Math.mulDiv(_baseAmount, manualPrice, 10 ** baseTokenDecimals)
             : oracle.quote(_baseAmount, _baseToken);
+
+        require(quoteAmount != 0, ZeroQuote());
     }
 }

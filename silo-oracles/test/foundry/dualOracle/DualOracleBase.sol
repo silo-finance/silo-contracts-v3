@@ -13,6 +13,7 @@ import {IDualOracle} from "silo-oracles/contracts/interfaces/IDualOracle.sol";
 import {IDualOracleFactory} from "silo-oracles/contracts/interfaces/IDualOracleFactory.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {IERC20Metadata} from "silo-oracles/test/foundry/interfaces/IERC20Metadata.sol";
+import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {SiloOracleMock1} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMock1.sol";
 
@@ -543,11 +544,14 @@ abstract contract DualOracleBase is Test {
         vm.warp(block.timestamp + TIMELOCK);
         assertTrue(oracle.isOverrideActive());
 
-        // prevent overflow in _baseAmount * manualPrice
-        _baseAmount = bound(_baseAmount, 0, type(uint256).max / manualPrice);
+        uint256 expected = Math.mulDiv(_baseAmount, manualPrice, 10 ** oracle.baseTokenDecimals());
 
-        uint256 expected = _baseAmount * manualPrice / 10 ** oracle.baseTokenDecimals();
-        assertEq(oracle.quote(_baseAmount, baseToken), expected);
+        if (expected == 0) {
+            vm.expectRevert(IDualOracle.ZeroQuote.selector);
+            oracle.quote(_baseAmount, baseToken);
+        } else {
+            assertEq(oracle.quote(_baseAmount, baseToken), expected);
+        }
     }
 
     /*
@@ -558,15 +562,22 @@ abstract contract DualOracleBase is Test {
         uint256 _price
     ) public {
         _price = bound(_price, LOWER_BOUND, UPPER_BOUND);
-        _baseAmount = bound(_baseAmount, 0, type(uint256).max / _price);
+        // mulDiv result must fit in uint256: max result = _baseAmount * UPPER_BOUND / 1e18 = _baseAmount * 2
+        _baseAmount = bound(_baseAmount, 0, type(uint256).max / 2);
 
         vm.prank(owner);
         oracle.setManualPrice(_price);
         vm.warp(block.timestamp + TIMELOCK);
         assertTrue(oracle.isOverrideActive());
 
-        uint256 expected = _baseAmount * _price / 10 ** oracle.baseTokenDecimals();
-        assertEq(oracle.quote(_baseAmount, baseToken), expected);
+        uint256 expected = Math.mulDiv(_baseAmount, _price, 10 ** oracle.baseTokenDecimals());
+
+        if (expected == 0) {
+            vm.expectRevert(IDualOracle.ZeroQuote.selector);
+            oracle.quote(_baseAmount, baseToken);
+        } else {
+            assertEq(oracle.quote(_baseAmount, baseToken), expected);
+        }
     }
 
     /*
@@ -609,15 +620,31 @@ abstract contract DualOracleBase is Test {
     }
 
     /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_quote_revert_ZeroQuote_whenBaseAmountTooSmall_overrideActive
+    */
+    function test_quote_revert_ZeroQuote_whenBaseAmountTooSmall_overrideActive() public {
+        // manualPrice = LOWER_BOUND = 0.5e18; baseTokenDecimals = 18
+        // mulDiv(1, 0.5e18, 1e18) = 0 → ZeroQuote
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.ZeroQuote.selector);
+        oracle.quote(1, baseToken);
+    }
+
+    /*
         FOUNDRY_PROFILE=oracles forge test --mt test_quote_zeroBaseAmount_returnsZero_whenOverrideActive
     */
-    function test_quote_zeroBaseAmount_returnsZero_whenOverrideActive() public {
+    function test_quote_zeroBaseAmount_reverts_ZeroQuote_whenOverrideActive() public {
         vm.prank(owner);
         oracle.setManualPrice(UPPER_BOUND);
         vm.warp(block.timestamp + TIMELOCK);
         assertTrue(oracle.isOverrideActive());
 
-        assertEq(oracle.quote(0, baseToken), 0, "quote(0) must return 0 even with override active");
+        vm.expectRevert(IDualOracle.ZeroQuote.selector);
+        oracle.quote(0, baseToken);
     }
 
     /*

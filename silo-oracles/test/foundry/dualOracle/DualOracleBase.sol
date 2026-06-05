@@ -13,6 +13,7 @@ import {IDualOracle} from "silo-oracles/contracts/interfaces/IDualOracle.sol";
 import {IDualOracleFactory} from "silo-oracles/contracts/interfaces/IDualOracleFactory.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {IERC20Metadata} from "silo-oracles/test/foundry/interfaces/IERC20Metadata.sol";
+import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {SiloOracleMock1} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMock1.sol";
 
 /*
@@ -507,6 +508,26 @@ abstract contract DualOracleBase is Test {
     function test_beforeQuote_forwardsToPrimaryOracle() public {
         vm.expectEmit(true, false, false, false, address(oracleMock));
         emit SiloOracleMock1.BeforeQuoteSiloOracleMock1();
+        oracle.beforeQuote(baseToken);
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_beforeQuote_doesNotForwardToPrimary_whenOverrideActive
+    */
+    function test_beforeQuote_doesNotForwardToPrimary_whenOverrideActive() public {
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        // primary oracle is broken — its beforeQuote reverts
+        vm.mockCallRevert(
+            address(oracleMock),
+            abi.encodeWithSelector(ISiloOracle.beforeQuote.selector, baseToken),
+            "primary broken"
+        );
+
+        // override is active so DualOracle should skip the primary entirely — must not revert
         oracle.beforeQuote(baseToken);
     }
 

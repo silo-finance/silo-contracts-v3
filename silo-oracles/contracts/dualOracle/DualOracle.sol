@@ -99,7 +99,7 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     /// @notice Forwards beforeQuote to the primary oracle.
     /// @inheritdoc ISiloOracle
     function beforeQuote(address _baseToken) external virtual override whenNotPaused {
-        oracle.beforeQuote(_baseToken);
+        if (!isOverrideActive()) oracle.beforeQuote(_baseToken);
     }
 
     /// @notice Immediately pauses the oracle. All quote() calls revert while paused.

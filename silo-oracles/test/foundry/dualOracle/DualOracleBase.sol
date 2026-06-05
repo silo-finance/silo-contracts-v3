@@ -43,8 +43,6 @@ abstract contract DualOracleBase is Test {
         oracle = _createDualOracle();
     }
 
-    // ─── creation ─────────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_creation_emitsEvents
     */
@@ -55,8 +53,6 @@ abstract contract DualOracleBase is Test {
         _createDualOracle();
     }
 
-    // ─── VERSION ──────────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_VERSION
     */
@@ -64,16 +60,12 @@ abstract contract DualOracleBase is Test {
         assertEq(IVersioned(address(oracle)).VERSION(), "DualOracle 4.23.0");
     }
 
-    // ─── baseToken ────────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_baseToken
     */
     function test_DualOracle_baseToken() public view {
         assertEq(oracle.baseToken(), oracleMock.baseToken());
     }
-
-    // ─── isOverrideActive ─────────────────────────────────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_isOverrideActive_false_initially
@@ -116,8 +108,6 @@ abstract contract DualOracleBase is Test {
         assertTrue(oracle.isOverrideActive(), "override should be active after timelock expiry");
     }
 
-    // ─── pause ────────────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_pause_revert_whenNotOwner
     */
@@ -153,8 +143,6 @@ abstract contract DualOracleBase is Test {
         oracle.pause();
         vm.stopPrank();
     }
-
-    // ─── unpause ──────────────────────────────────────────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_unpause_revert_whenNotOwner
@@ -192,8 +180,6 @@ abstract contract DualOracleBase is Test {
 
         assertFalse(DualOracle(address(oracle)).paused(), "should not be paused after unpause()");
     }
-
-    // ─── setManualPrice ───────────────────────────────────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_setManualPrice_revert_whenNotOwner
@@ -374,8 +360,6 @@ abstract contract DualOracleBase is Test {
         assertTrue(oracle.isOverrideActive());
     }
 
-    // ─── quote ────────────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_quote_revert_whenPaused
     */
@@ -500,8 +484,6 @@ abstract contract DualOracleBase is Test {
         assertEq(oracle.quote(1e18, baseToken), manualPrice, "should return manualPrice after unpause with override active");
     }
 
-    // ─── beforeQuote ──────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_beforeQuote_forwardsToPrimaryOracle
     */
@@ -541,8 +523,6 @@ abstract contract DualOracleBase is Test {
         vm.expectRevert(PausableUpgradeable.EnforcedPause.selector);
         oracle.beforeQuote(baseToken);
     }
-
-    // ─── latestRoundData (Aggregator compatibility) ───────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_latestRoundData_normalMode
@@ -610,8 +590,6 @@ abstract contract DualOracleBase is Test {
         assertEq(answeredInRound, 0);
     }
 
-    // ─── ownership (Ownable2StepUpgradeable) ──────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_ownership_initialOwner
     */
@@ -661,8 +639,6 @@ abstract contract DualOracleBase is Test {
         DualOracle(address(oracle)).acceptOwnership();
     }
 
-    // ─── immutable config getters ─────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_getters_postInit
     */
@@ -677,8 +653,6 @@ abstract contract DualOracleBase is Test {
         assertEq(oracle.manualPrice(), 0, "manualPrice should be zero initially");
         assertEq(oracle.overrideValidAt(), 0, "overrideValidAt should be zero initially");
     }
-
-    // ─── helpers ──────────────────────────────────────────────────────────────
 
     function _beforeOracleCreation() internal virtual {
         vm.mockCall(baseToken, abi.encodeWithSelector(IERC20Metadata.decimals.selector), abi.encode(18));

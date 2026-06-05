@@ -3,6 +3,7 @@ pragma solidity 0.8.28;
 
 import {Ownable2StepUpgradeable} from "openzeppelin5-upgradeable/access/Ownable2StepUpgradeable.sol";
 import {PausableUpgradeable} from "openzeppelin5-upgradeable/utils/PausableUpgradeable.sol";
+import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
@@ -96,10 +97,13 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         require(baseTokenDecimals != 0, BaseTokenDecimalsMustBeGreaterThanZero());
     }
 
-    /// @notice Forwards beforeQuote to the primary oracle.
+    /// @notice Forwards beforeQuote to the primary oracle when override is not active.
+    ///         Skipped when override is active so a broken primary cannot block the override.
     /// @inheritdoc ISiloOracle
     function beforeQuote(address _baseToken) external virtual override whenNotPaused {
-        oracle.beforeQuote(_baseToken);
+        require(_baseToken == _baseTokenInternal, AssetNotSupported());
+
+        if (!isOverrideActive()) oracle.beforeQuote(_baseToken);
     }
 
     /// @notice Immediately pauses the oracle. All quote() calls revert while paused.
@@ -158,8 +162,8 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     }
 
     /// @notice Returns the price of _baseAmount of _baseToken denominated in quoteToken.
-    ///         Reverts when paused (OZ EnforcedPause).
-    ///         Returns manualPrice when override is active, otherwise delegates to the primary oracle.
+    ///         Reverts when paused or when _baseToken is not supported.
+    ///         Returns the scaled manual price when override is active, otherwise delegates to the primary oracle.
     /// @inheritdoc ISiloOracle
     function quote(uint256 _baseAmount, address _baseToken)
         public
@@ -169,6 +173,12 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         whenNotPaused
         returns (uint256 quoteAmount)
     {
-        return isOverrideActive() ? manualPrice : oracle.quote(_baseAmount, _baseToken);
+        require(_baseToken == _baseTokenInternal, AssetNotSupported());
+
+        quoteAmount = isOverrideActive()
+            ? Math.mulDiv(_baseAmount, manualPrice, 10 ** baseTokenDecimals)
+            : oracle.quote(_baseAmount, _baseToken);
+
+        require(quoteAmount != 0, ZeroQuote());
     }
 }

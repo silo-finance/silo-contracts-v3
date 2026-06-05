@@ -13,6 +13,8 @@ import {IDualOracle} from "silo-oracles/contracts/interfaces/IDualOracle.sol";
 import {IDualOracleFactory} from "silo-oracles/contracts/interfaces/IDualOracleFactory.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 import {IERC20Metadata} from "silo-oracles/test/foundry/interfaces/IERC20Metadata.sol";
+import {Math} from "openzeppelin5/utils/math/Math.sol";
+import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {SiloOracleMock1} from "silo-oracles/test/foundry/_mocks/silo-oracles/SiloOracleMock1.sol";
 
 /*
@@ -42,8 +44,6 @@ abstract contract DualOracleBase is Test {
         oracle = _createDualOracle();
     }
 
-    // ─── creation ─────────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_creation_emitsEvents
     */
@@ -54,8 +54,6 @@ abstract contract DualOracleBase is Test {
         _createDualOracle();
     }
 
-    // ─── VERSION ──────────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_VERSION
     */
@@ -63,16 +61,12 @@ abstract contract DualOracleBase is Test {
         assertEq(IVersioned(address(oracle)).VERSION(), "DualOracle 4.23.0");
     }
 
-    // ─── baseToken ────────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_baseToken
     */
     function test_DualOracle_baseToken() public view {
         assertEq(oracle.baseToken(), oracleMock.baseToken());
     }
-
-    // ─── isOverrideActive ─────────────────────────────────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_isOverrideActive_false_initially
@@ -115,8 +109,6 @@ abstract contract DualOracleBase is Test {
         assertTrue(oracle.isOverrideActive(), "override should be active after timelock expiry");
     }
 
-    // ─── pause ────────────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_pause_revert_whenNotOwner
     */
@@ -152,8 +144,6 @@ abstract contract DualOracleBase is Test {
         oracle.pause();
         vm.stopPrank();
     }
-
-    // ─── unpause ──────────────────────────────────────────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_unpause_revert_whenNotOwner
@@ -191,8 +181,6 @@ abstract contract DualOracleBase is Test {
 
         assertFalse(DualOracle(address(oracle)).paused(), "should not be paused after unpause()");
     }
-
-    // ─── setManualPrice ───────────────────────────────────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_setManualPrice_revert_whenNotOwner
@@ -277,6 +265,41 @@ abstract contract DualOracleBase is Test {
         vm.prank(owner);
         oracle.setManualPrice(UPPER_BOUND);
         assertEq(oracle.manualPrice(), UPPER_BOUND);
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt testFuzz_setManualPrice_rejectsBelowLowerBound
+    */
+    function testFuzz_setManualPrice_rejectsBelowLowerBound(uint256 _price) public {
+        _price = bound(_price, 1, LOWER_BOUND - 1);
+        vm.prank(owner);
+        vm.expectRevert(IDualOracle.PriceBelowLowerBound.selector);
+        oracle.setManualPrice(_price);
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt testFuzz_setManualPrice_rejectsAboveUpperBound
+    */
+    function testFuzz_setManualPrice_rejectsAboveUpperBound(uint256 _price) public {
+        _price = bound(_price, UPPER_BOUND + 1, type(uint256).max);
+        vm.prank(owner);
+        vm.expectRevert(IDualOracle.PriceAboveUpperBound.selector);
+        oracle.setManualPrice(_price);
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt testFuzz_setManualPrice_acceptsInBoundsPrice
+    */
+    function testFuzz_setManualPrice_acceptsInBoundsPrice(uint256 _price) public {
+        _price = bound(_price, LOWER_BOUND, UPPER_BOUND);
+        uint64 expectedValidAt = SafeCast.toUint64(block.timestamp + TIMELOCK);
+
+        vm.prank(owner);
+        oracle.setManualPrice(_price);
+
+        assertEq(oracle.manualPrice(), _price);
+        assertEq(oracle.overrideValidAt(), expectedValidAt);
+        assertFalse(oracle.isOverrideActive());
     }
 
     /*
@@ -373,7 +396,51 @@ abstract contract DualOracleBase is Test {
         assertTrue(oracle.isOverrideActive());
     }
 
-    // ─── quote ────────────────────────────────────────────────────────────────
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_quote_revert_AssetNotSupported_whenOverrideActive
+    */
+    function test_quote_revert_AssetNotSupported_whenOverrideActive() public {
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.AssetNotSupported.selector);
+        oracle.quote(1e18, makeAddr("wrongToken"));
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_quote_revert_AssetNotSupported_whenOverrideNotActive
+    */
+    function test_quote_revert_AssetNotSupported_whenOverrideNotActive() public {
+        assertFalse(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.AssetNotSupported.selector);
+        oracle.quote(1e18, makeAddr("wrongToken"));
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_beforeQuote_revert_AssetNotSupported_whenOverrideActive
+    */
+    function test_beforeQuote_revert_AssetNotSupported_whenOverrideActive() public {
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.AssetNotSupported.selector);
+        oracle.beforeQuote(makeAddr("wrongToken"));
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_beforeQuote_revert_AssetNotSupported_whenOverrideNotActive
+    */
+    function test_beforeQuote_revert_AssetNotSupported_whenOverrideNotActive() public {
+        assertFalse(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.AssetNotSupported.selector);
+        oracle.beforeQuote(makeAddr("wrongToken"));
+    }
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_quote_revert_whenPaused
@@ -468,6 +535,208 @@ abstract contract DualOracleBase is Test {
     }
 
     /*
+        FOUNDRY_PROFILE=oracles forge test --mt testFuzz_quote_scaledByBaseAmount_whenOverrideActive
+    */
+    function testFuzz_quote_scaledByBaseAmount_whenOverrideActive(uint256 _baseAmount) public {
+        uint256 manualPrice = LOWER_BOUND;
+        vm.prank(owner);
+        oracle.setManualPrice(manualPrice);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        uint256 expected = Math.mulDiv(_baseAmount, manualPrice, 10 ** oracle.baseTokenDecimals());
+
+        if (expected == 0) {
+            vm.expectRevert(IDualOracle.ZeroQuote.selector);
+            oracle.quote(_baseAmount, baseToken);
+        } else {
+            assertEq(oracle.quote(_baseAmount, baseToken), expected);
+        }
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt testFuzz_quote_scaledByBaseAmount_withVariousManualPrices
+    */
+    function testFuzz_quote_scaledByBaseAmount_withVariousManualPrices(
+        uint256 _baseAmount,
+        uint256 _price
+    ) public {
+        _price = bound(_price, LOWER_BOUND, UPPER_BOUND);
+        // mulDiv result must fit in uint256: max result = _baseAmount * UPPER_BOUND / 1e18 = _baseAmount * 2
+        _baseAmount = bound(_baseAmount, 0, type(uint256).max / 2);
+
+        vm.prank(owner);
+        oracle.setManualPrice(_price);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        uint256 expected = Math.mulDiv(_baseAmount, _price, 10 ** oracle.baseTokenDecimals());
+
+        if (expected == 0) {
+            vm.expectRevert(IDualOracle.ZeroQuote.selector);
+            oracle.quote(_baseAmount, baseToken);
+        } else {
+            assertEq(oracle.quote(_baseAmount, baseToken), expected);
+        }
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt testFuzz_isOverrideActive_falseBeforeBoundary
+    */
+    function testFuzz_isOverrideActive_falseBeforeBoundary(uint32 _shortfall) public {
+        _shortfall = uint32(bound(_shortfall, 1, TIMELOCK));
+
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+
+        vm.warp(block.timestamp + TIMELOCK - _shortfall);
+        assertFalse(oracle.isOverrideActive());
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt testFuzz_isOverrideActive_trueAtOrAfterBoundary
+    */
+    function testFuzz_isOverrideActive_trueAtOrAfterBoundary(uint32 _extra) public {
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+
+        vm.warp(block.timestamp + TIMELOCK + uint256(_extra));
+        assertTrue(oracle.isOverrideActive());
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt testFuzz_latestRoundData_answerEqualsQuoteForOneUnit
+    */
+    function testFuzz_latestRoundData_answerEqualsQuoteForOneUnit(uint256 _price) public {
+        _price = bound(_price, LOWER_BOUND, UPPER_BOUND);
+
+        vm.prank(owner);
+        oracle.setManualPrice(_price);
+        vm.warp(block.timestamp + TIMELOCK);
+
+        (, int256 answer,,,) = DualOracle(address(oracle)).latestRoundData();
+        uint256 oneUnit = 10 ** oracle.baseTokenDecimals();
+        assertEq(SafeCast.toUint256(answer), oracle.quote(oneUnit, baseToken));
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_quote_revert_ZeroQuote_whenBaseAmountTooSmall_overrideActive
+    */
+    function test_quote_revert_ZeroQuote_whenBaseAmountTooSmall_overrideActive() public {
+        // manualPrice = LOWER_BOUND = 0.5e18; baseTokenDecimals = 18
+        // mulDiv(1, 0.5e18, 1e18) = 0 → ZeroQuote
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.ZeroQuote.selector);
+        oracle.quote(1, baseToken);
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_quote_zeroBaseAmount_returnsZero_whenOverrideActive
+    */
+    function test_quote_zeroBaseAmount_reverts_ZeroQuote_whenOverrideActive() public {
+        vm.prank(owner);
+        oracle.setManualPrice(UPPER_BOUND);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.ZeroQuote.selector);
+        oracle.quote(0, baseToken);
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_scenario_priceUpdateDuringPendingTimelock_restartsTimelock
+    */
+    function test_scenario_priceUpdateDuringPendingTimelock_restartsTimelock() public {
+        vm.startPrank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+
+        // update price one second before original expiry — timelock must restart
+        vm.warp(block.timestamp + TIMELOCK - 1);
+        assertFalse(oracle.isOverrideActive());
+
+        uint64 restartedValidAt = SafeCast.toUint64(block.timestamp + TIMELOCK);
+        oracle.setManualPrice(UPPER_BOUND);
+        vm.stopPrank();
+
+        assertEq(oracle.overrideValidAt(), restartedValidAt, "timelock must restart from update time");
+
+        // original expiry no longer activates
+        vm.warp(block.timestamp + 1);
+        assertFalse(oracle.isOverrideActive(), "original boundary must not activate override");
+
+        // restarted expiry activates
+        vm.warp(uint256(restartedValidAt));
+        assertTrue(oracle.isOverrideActive());
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_scenario_pauseDuringPendingTimelock_overrideActiveAfterUnpause
+    */
+    function test_scenario_pauseDuringPendingTimelock_overrideActiveAfterUnpause() public {
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+        uint64 validAt = oracle.overrideValidAt();
+
+        vm.prank(owner);
+        oracle.pause();
+
+        // warp past the timelock expiry while paused
+        vm.warp(uint256(validAt) + 1);
+
+        vm.prank(owner);
+        oracle.unpause();
+
+        assertTrue(oracle.isOverrideActive(), "override must be active after unpause since timelock elapsed");
+        uint256 oneUnit = 10 ** oracle.baseTokenDecimals();
+        assertEq(oracle.quote(oneUnit, baseToken), LOWER_BOUND, "quote must return manual price");
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_scenario_newOwnerControlsOracleAfterTransfer
+    */
+    function test_scenario_newOwnerControlsOracleAfterTransfer() public {
+        address newOwner = makeAddr("NewOwner");
+
+        vm.prank(owner);
+        DualOracle(address(oracle)).transferOwnership(newOwner);
+        vm.prank(newOwner);
+        DualOracle(address(oracle)).acceptOwnership();
+
+        vm.prank(owner);
+        vm.expectRevert(
+            abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, owner)
+        );
+        oracle.setManualPrice(LOWER_BOUND);
+
+        vm.startPrank(newOwner);
+        oracle.setManualPrice(LOWER_BOUND);
+        oracle.pause();
+        vm.stopPrank();
+
+        assertTrue(DualOracle(address(oracle)).paused());
+        assertEq(oracle.manualPrice(), LOWER_BOUND);
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_beforeQuote_forwardsToPrimary_duringPendingTimelock
+    */
+    function test_beforeQuote_forwardsToPrimary_duringPendingTimelock() public {
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+
+        vm.warp(block.timestamp + TIMELOCK - 1);
+        assertFalse(oracle.isOverrideActive());
+
+        vm.expectEmit(true, false, false, false, address(oracleMock));
+        emit SiloOracleMock1.BeforeQuoteSiloOracleMock1();
+        oracle.beforeQuote(baseToken);
+    }
+
+    /*
         FOUNDRY_PROFILE=oracles forge test --mt test_quote_resumesAfterUnpause_withOverrideActive
     */
     function test_quote_resumesAfterUnpause_withOverrideActive() public {
@@ -482,14 +751,32 @@ abstract contract DualOracleBase is Test {
         assertEq(oracle.quote(1e18, baseToken), manualPrice, "should return manualPrice after unpause with override active");
     }
 
-    // ─── beforeQuote ──────────────────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_beforeQuote_forwardsToPrimaryOracle
     */
     function test_beforeQuote_forwardsToPrimaryOracle() public {
         vm.expectEmit(true, false, false, false, address(oracleMock));
         emit SiloOracleMock1.BeforeQuoteSiloOracleMock1();
+        oracle.beforeQuote(baseToken);
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_beforeQuote_doesNotForwardToPrimary_whenOverrideActive
+    */
+    function test_beforeQuote_doesNotForwardToPrimary_whenOverrideActive() public {
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        // primary oracle is broken — its beforeQuote reverts
+        vm.mockCallRevert(
+            address(oracleMock),
+            abi.encodeWithSelector(ISiloOracle.beforeQuote.selector, baseToken),
+            "primary broken"
+        );
+
+        // override is active so DualOracle should skip the primary entirely — must not revert
         oracle.beforeQuote(baseToken);
     }
 
@@ -503,8 +790,6 @@ abstract contract DualOracleBase is Test {
         vm.expectRevert(PausableUpgradeable.EnforcedPause.selector);
         oracle.beforeQuote(baseToken);
     }
-
-    // ─── latestRoundData (Aggregator compatibility) ───────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_latestRoundData_normalMode
@@ -572,8 +857,6 @@ abstract contract DualOracleBase is Test {
         assertEq(answeredInRound, 0);
     }
 
-    // ─── ownership (Ownable2StepUpgradeable) ──────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_ownership_initialOwner
     */
@@ -623,8 +906,6 @@ abstract contract DualOracleBase is Test {
         DualOracle(address(oracle)).acceptOwnership();
     }
 
-    // ─── immutable config getters ─────────────────────────────────────────────
-
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_getters_postInit
     */
@@ -639,8 +920,6 @@ abstract contract DualOracleBase is Test {
         assertEq(oracle.manualPrice(), 0, "manualPrice should be zero initially");
         assertEq(oracle.overrideValidAt(), 0, "overrideValidAt should be zero initially");
     }
-
-    // ─── helpers ──────────────────────────────────────────────────────────────
 
     function _beforeOracleCreation() internal virtual {
         vm.mockCall(baseToken, abi.encodeWithSelector(IERC20Metadata.decimals.selector), abi.encode(18));

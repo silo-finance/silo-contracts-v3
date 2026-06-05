@@ -396,6 +396,52 @@ abstract contract DualOracleBase is Test {
     }
 
     /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_quote_revert_AssetNotSupported_whenOverrideActive
+    */
+    function test_quote_revert_AssetNotSupported_whenOverrideActive() public {
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.AssetNotSupported.selector);
+        oracle.quote(1e18, makeAddr("wrongToken"));
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_quote_revert_AssetNotSupported_whenOverrideNotActive
+    */
+    function test_quote_revert_AssetNotSupported_whenOverrideNotActive() public {
+        assertFalse(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.AssetNotSupported.selector);
+        oracle.quote(1e18, makeAddr("wrongToken"));
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_beforeQuote_revert_AssetNotSupported_whenOverrideActive
+    */
+    function test_beforeQuote_revert_AssetNotSupported_whenOverrideActive() public {
+        vm.prank(owner);
+        oracle.setManualPrice(LOWER_BOUND);
+        vm.warp(block.timestamp + TIMELOCK);
+        assertTrue(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.AssetNotSupported.selector);
+        oracle.beforeQuote(makeAddr("wrongToken"));
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_beforeQuote_revert_AssetNotSupported_whenOverrideNotActive
+    */
+    function test_beforeQuote_revert_AssetNotSupported_whenOverrideNotActive() public {
+        assertFalse(oracle.isOverrideActive());
+
+        vm.expectRevert(IDualOracle.AssetNotSupported.selector);
+        oracle.beforeQuote(makeAddr("wrongToken"));
+    }
+
+    /*
         FOUNDRY_PROFILE=oracles forge test --mt test_quote_revert_whenPaused
     */
     function test_quote_revert_whenPaused() public {

@@ -35,6 +35,8 @@ interface IDualOracle is ISiloOracle, IVersioned {
     error PriceBelowLowerBound();
     /// @notice Submitted price is above the immutable upper bound
     error PriceAboveUpperBound();
+    /// @notice _baseToken passed to quote() or beforeQuote() is not the token this oracle prices
+    error AssetNotSupported();
 
     /// @notice Immediately pauses the oracle.
     ///         While paused, all quote() calls revert via OZ EnforcedPause.

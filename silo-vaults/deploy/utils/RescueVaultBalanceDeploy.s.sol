@@ -3,8 +3,8 @@ pragma solidity 0.8.28;
 
 import {IERC4626} from "openzeppelin5/interfaces/IERC4626.sol";
 
-// import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
-// import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
+import {AddrLib} from "silo-foundry-utils/lib/AddrLib.sol";
+import {ChainsLib} from "silo-foundry-utils/lib/ChainsLib.sol";
 
 import {AddrKey} from "common/addresses/AddrKey.sol";
 
@@ -30,12 +30,11 @@ contract RescueVaultBalanceDeploy is CommonDeploy {
     function run() public {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
 
-        // address receiver = AddrLib.getAddressSafe(ChainsLib.chainAlias(), AddrKey.DAO);
-        address receiver = 0x80071b39aA896aa12240c5194E42661D671bDFB2;
+        address receiver = AddrLib.getAddressSafe(ChainsLib.chainAlias(), AddrKey.GROWTH_MULTISIG);
         IERC4626 market = IERC4626(vm.envAddress("MARKET"));
 
         vm.startBroadcast(deployerPrivateKey);
-        RescueVaultBalance newLogic = new RescueVaultBalance(receiver, market);
+        RescueVaultBalance newLogic = new RescueVaultBalance({_receiver: receiver, _market: market});
 
         vm.stopBroadcast();
 

@@ -13,7 +13,7 @@ contract RescueVaultBalance is IIncentivesClaimingLogic {
     address public immutable RECEIVER;
     IERC4626 public immutable MARKET;
 
-    event VaultBalanceRescued(address indexed token, uint256 amount);
+    event VaultBalanceRescued(address indexed market, uint256 amount);
     
     error InvalidReceiverAddress();
     error InvalidMarketAddress();
@@ -34,13 +34,11 @@ contract RescueVaultBalance is IIncentivesClaimingLogic {
         // if the market is still present in the deposit (supply) or withdrawal queue, the balance must not be rescued.
         if (_isMarketInQueue(vault)) return;
 
-        IERC20 token = IERC20(IERC4626(address(vault)).asset());
-
-        uint256 balance = token.balanceOf(address(vault));
+        uint256 balance = MARKET.balanceOf(address(vault));
         if (balance == 0) return; 
 
-        try token.transfer(RECEIVER, balance) {
-            emit VaultBalanceRescued(address(token), balance);
+        try MARKET.redeem(balance, RECEIVER, address(vault)) returns (uint256 amount) {
+            emit VaultBalanceRescued(address(MARKET), amount);
         } catch {
             // do not lock/revert tx if transfer fails for any reason
         }

@@ -4,7 +4,7 @@ pragma solidity 0.8.28;
 
 import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
-import {SafeCast} from "openzeppelin-contracts/contracts/utils/math/SafeCast.sol";
+import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
 
 import {SiloStorageLib} from "silo-core/contracts/lib/SiloStorageLib.sol";
 import {DefaultingRepayLib} from "silo-core/contracts/hooks/defaulting/DefaultingRepayLib.sol";

@@ -36,7 +36,7 @@ contract RescueVaultBalanceTest is Test {
 
         _registerClaimingLogic(MARKET, claimingLogic);
 
-        uint256 vaultBalance = 2315048562846303750875;
+        uint256 vaultBalance = 2295339894285269787263854;
         IERC20 asset = IERC20(VAULT.asset());
 
         // the logic is delegatecalled by the vault, so the event is emitted from the vault address.
@@ -46,7 +46,8 @@ contract RescueVaultBalanceTest is Test {
         // any action that triggers `_claimRewards` will run the rescue logic.
         VAULT.claimRewards();
 
-        assertEq(asset.balanceOf(receiver), vaultBalance, "receiver should have received the rescued balance");
+        assertEq(asset.balanceOf(receiver), 0, "receiver should have no assets");
+        assertEq(MARKET.balanceOf(receiver), vaultBalance, "receiver should have no assets");
 
         // again, to make sure we will not revert or something
         VAULT.claimRewards();

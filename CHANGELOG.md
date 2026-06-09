@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.23.0] - 2026-06-09
+### Added
+- rescue WETH with claim logic
+
 ## [4.22.0] - 2026-05-26
 ### Added
 - new DKinkIRMConfig: static-2.8-3

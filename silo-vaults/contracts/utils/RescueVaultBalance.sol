@@ -31,7 +31,7 @@ contract RescueVaultBalance is IIncentivesClaimingLogic {
         ISiloVault vault = ISiloVault(address(this));
 
         // if the market is still present in the deposit (supply) or withdrawal queue, the balance must not be rescued.
-        if (_isMarketInQueue(vault)) return;
+        if (_isMarketInQueue()) return;
 
         uint256 balance = MARKET.balanceOf(address(vault));
         if (balance == 0) return; 
@@ -44,17 +44,18 @@ contract RescueVaultBalance is IIncentivesClaimingLogic {
     }
 
     /// @dev Returns true if `MARKET` is present in the vault deposit (supply) or withdrawal queue.
-    function _isMarketInQueue(ISiloVault _vault) internal view returns (bool) {
-        uint256 supplyQueueLength = _vault.supplyQueueLength();
+    function _isMarketInQueue() internal view returns (bool) {
+        ISiloVault vault = ISiloVault(address(this));
+        uint256 supplyQueueLength = vault.supplyQueueLength();
 
         for (uint256 i; i < supplyQueueLength; i++) {
-            if (_vault.supplyQueue(i) == MARKET) return true;
+            if (vault.supplyQueue(i) == MARKET) return true;
         }
 
-        uint256 withdrawQueueLength = _vault.withdrawQueueLength();
+        uint256 withdrawQueueLength = vault.withdrawQueueLength();
 
         for (uint256 i; i < withdrawQueueLength; i++) {
-            if (_vault.withdrawQueue(i) == MARKET) return true;
+            if (vault.withdrawQueue(i) == MARKET) return true;
         }
 
         return false;

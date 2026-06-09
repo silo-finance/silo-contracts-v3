@@ -59,7 +59,7 @@ contract RescueVaultBalanceTest is Test {
         // pick a market that is still present in the vault withdraw queue.
         IERC4626 connectedMarket = VAULT.withdrawQueue(0);
 
-        RescueVaultBalance claimingLogic = new RescueVaultBalance(receiver, connectedMarket);
+        RescueVaultBalance claimingLogic = new RescueVaultBalance({_receiver: receiver, _market: connectedMarket});
 
         _registerClaimingLogic(connectedMarket, claimingLogic);
 
@@ -81,11 +81,11 @@ contract RescueVaultBalanceTest is Test {
         address owner = VAULT.owner();
 
         vm.prank(owner);
-        incentivesModule.submitIncentivesClaimingLogic(_market, _logic);
+        incentivesModule.submitIncentivesClaimingLogic({_market: _market, _logic: _logic});
 
         // the logic comes from an untrusted factory, so the submission is subject to the vault timelock.
         vm.warp(block.timestamp + VAULT.timelock() + 1);
 
-        incentivesModule.acceptIncentivesClaimingLogic(_market, _logic);
+        incentivesModule.acceptIncentivesClaimingLogic({_market: _market, _logic: _logic});
     }
 }

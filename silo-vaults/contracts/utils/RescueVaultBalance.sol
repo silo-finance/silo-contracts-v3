@@ -36,7 +36,7 @@ contract RescueVaultBalance is IIncentivesClaimingLogic {
         uint256 balance = MARKET.balanceOf(address(vault));
         if (balance == 0) return; 
 
-        try MARKET.redeem(balance, RECEIVER, address(vault)) returns (uint256 amount) {
+        try MARKET.redeem({shares: balance, receiver: RECEIVER, owner: address(vault)}) returns (uint256 amount) {
             emit VaultBalanceRescued(address(MARKET), amount);
         } catch {
             // do not lock/revert tx if transfer fails for any reason

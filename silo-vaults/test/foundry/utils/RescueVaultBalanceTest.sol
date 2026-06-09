@@ -47,6 +47,9 @@ contract RescueVaultBalanceTest is Test {
         VAULT.claimRewards();
 
         assertEq(asset.balanceOf(receiver), vaultBalance, "receiver should have received the rescued balance");
+
+        // again, to make sure we will not revert or something
+        VAULT.claimRewards();
     }
 
     /// @dev when the market is still present in the vault withdraw queue, the balance must NOT be rescued.

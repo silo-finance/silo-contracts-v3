@@ -244,6 +244,7 @@ interface IErrors {
     error InvalidLTConfig0();
     error InvalidLTConfig1();
     error InvalidLt();
+    error InvalidMarketAddress();
     error InvalidMarketRemovalNonZeroCap(address);
     error InvalidMarketRemovalNonZeroSupply(address);
     error InvalidMarketRemovalTimelockNotElapsed(address);
@@ -261,6 +262,7 @@ interface IErrors {
     error InvalidRcompCap();
     error InvalidRcritMax();
     error InvalidRcritMin();
+    error InvalidReceiverAddress();
     error InvalidReturnData();
     error InvalidRewardToken();
     error InvalidRi();

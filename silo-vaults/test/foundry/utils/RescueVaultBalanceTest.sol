@@ -21,7 +21,7 @@ contract RescueVaultBalanceTest is Test {
     event VaultBalanceRescued(address indexed token, uint256 amount);
 
     function setUp() public {
-        vm.createSelectFork(vm.envString("RPC_ARBITRUM"), 73231114);
+        vm.createSelectFork(vm.envString("RPC_ARBITRUM"), 471674718);
     }
 
     /// @dev when the market is NOT present in the vault queues, the idle balance is rescued to the receiver.
@@ -36,12 +36,12 @@ contract RescueVaultBalanceTest is Test {
 
         _registerClaimingLogic(MARKET, claimingLogic);
 
-        uint256 vaultBalance = 123;
+        uint256 vaultBalance = 2315048562846303750875;
         IERC20 asset = IERC20(VAULT.asset());
 
         // the logic is delegatecalled by the vault, so the event is emitted from the vault address.
-        // vm.expectEmit(true, true, true, true, address(VAULT));
-        // emit VaultBalanceRescued(address(MARKET), vaultBalance);
+        vm.expectEmit(true, true, true, true, address(VAULT));
+        emit VaultBalanceRescued(address(MARKET), vaultBalance);
 
         // any action that triggers `_claimRewards` will run the rescue logic.
         VAULT.claimRewards();

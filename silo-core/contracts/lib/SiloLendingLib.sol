@@ -485,7 +485,7 @@ library SiloLendingLib {
             integralRevenue, fractions.revenue
         ) = SiloMathLib.calculateFraction(accruedInterest, _fees, fractions.revenue);
 
-        totalFees = _totalFees + integralRevenue;
+        totalFees = (accruedInterest * _fees) / 1e18 + integralRevenue;
 
         $.fractions = fractions;
         $.totalAssets[ISilo.AssetType.Debt] += integralInterest;

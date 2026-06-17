@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.28;
 
-import {Ownable2StepUpgradeable} from "openzeppelin5-upgradeable/access/Ownable2StepUpgradeable.sol";
+import {AccessControlEnumerableUpgradeable} from
+    "openzeppelin5-upgradeable/access/extensions/AccessControlEnumerableUpgradeable.sol";
 import {PausableUpgradeable} from "openzeppelin5-upgradeable/utils/PausableUpgradeable.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
@@ -26,9 +27,15 @@ import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 ///         quote() serves the manual price. Setting price to zero disables override immediately.
 ///         Pause / unpause are always immediate and have highest priority.
 ///
+///         Access control:
+///           DEFAULT_ADMIN_ROLE — full control: pause, unpause, setManualPrice, manage roles
+///           PRICE_SETTER_ROLE  — restricted: setManualPrice only; granted/revoked by admin
+///
 /// @dev Deployed as a minimal proxy clone via DualOracleFactory.
 ///      Do not call initialize() directly — use the factory.
-contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, PausableUpgradeable {
+contract DualOracle is IDualOracle, Aggregator, AccessControlEnumerableUpgradeable, PausableUpgradeable {
+
+    bytes32 public constant PRICE_SETTER_ROLE = keccak256("PRICE_SETTER_ROLE");
 
     /// @notice The immutable primary price source wrapped by this oracle
     ISiloOracle public oracle;
@@ -59,6 +66,14 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     /// @dev Storage for the base token address; exposed via baseToken()
     address internal _baseTokenInternal;
 
+    /// @notice Restricts access to DEFAULT_ADMIN_ROLE or PRICE_SETTER_ROLE.
+    modifier onlyAdminOrPriceSetter() {
+        if (!hasRole(DEFAULT_ADMIN_ROLE, msg.sender) && !hasRole(PRICE_SETTER_ROLE, msg.sender)) {
+            revert AccessControlUnauthorizedAccount(msg.sender, PRICE_SETTER_ROLE);
+        }
+        _;
+    }
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -66,14 +81,16 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
 
     /// @notice Initializes the cloned oracle instance.
     ///         Do not call this directly — use DualOracleFactory.
-    /// @param _oracle     Primary price source; must be a valid ISiloOracle
-    /// @param _owner      Address that will control pause and override
+    /// @param _oracle      Primary price source; must be a valid ISiloOracle
+    /// @param _owner       Address granted DEFAULT_ADMIN_ROLE (full control)
+    /// @param _priceSetter Address granted PRICE_SETTER_ROLE; may be address(0) to skip
     /// @param _timelock        Override-activation timelock in seconds
     /// @param _lowerPriceBound Minimum accepted manual price (18-decimal quote units); must be > 0
     /// @param _upperPriceBound Maximum accepted manual price (18-decimal quote units); must be > _lowerPriceBound
     function initialize(
         ISiloOracle _oracle,
         address _owner,
+        address _priceSetter,
         uint32 _timelock,
         uint256 _lowerPriceBound,
         uint256 _upperPriceBound
@@ -83,8 +100,11 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
         require(_lowerPriceBound > 0, LowerBoundMustBeGreaterThanZero());
         require(_lowerPriceBound < _upperPriceBound, InvalidBounds());
 
-        __Ownable_init(_owner);
+        __AccessControlEnumerable_init();
         __Pausable_init();
+
+        _grantRole(DEFAULT_ADMIN_ROLE, _owner);
+        if (_priceSetter != address(0)) _grantRole(PRICE_SETTER_ROLE, _priceSetter);
 
         oracle = _oracle;
         timelock = _timelock;
@@ -102,27 +122,26 @@ contract DualOracle is IDualOracle, Aggregator, Ownable2StepUpgradeable, Pausabl
     /// @inheritdoc ISiloOracle
     function beforeQuote(address _baseToken) external virtual override whenNotPaused {
         require(_baseToken == _baseTokenInternal, AssetNotSupported());
-
         if (!isOverrideActive()) oracle.beforeQuote(_baseToken);
     }
 
     /// @notice Immediately pauses the oracle. All quote() calls revert while paused.
     ///         Pause has highest priority and supersedes override mode.
-    ///         Only callable by the owner.
+    ///         Only callable by DEFAULT_ADMIN_ROLE.
     /// @dev Delegates to OZ _pause(); emits Paused(msg.sender).
-    function pause() external onlyOwner {
+    function pause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _pause();
     }
 
     /// @notice Removes the pause, resuming normal price responses.
-    ///         Only callable by the owner.
+    ///         Only callable by DEFAULT_ADMIN_ROLE.
     /// @dev Delegates to OZ _unpause(); emits Unpaused(msg.sender).
-    function unpause() external onlyOwner {
+    function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _unpause();
     }
 
     /// @inheritdoc IDualOracle
-    function setManualPrice(uint256 _price) external onlyOwner {
+    function setManualPrice(uint256 _price) external onlyAdminOrPriceSetter {
         require(_price != manualPrice, PriceNotChanged());
 
         if (_price == 0) {

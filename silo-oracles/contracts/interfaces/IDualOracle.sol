@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.5.0;
 
+import {IAccessControl} from "openzeppelin5/access/IAccessControl.sol";
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 
@@ -16,8 +17,15 @@ import {IVersioned} from "silo-core/contracts/interfaces/IVersioned.sol";
 ///         Priority order (highest → lowest):
 ///           Paused > Override active > Primary oracle
 ///
+///         Access control:
+///           DEFAULT_ADMIN_ROLE (bytes32(0)) — full control: pause, unpause, setManualPrice, manage roles
+///           PRICE_SETTER_ROLE               — restricted: setManualPrice only
+///
 ///         Pause / unpause events and the `paused()` view are inherited from OZ PausableUpgradeable.
-interface IDualOracle is ISiloOracle, IVersioned {
+interface IDualOracle is ISiloOracle, IVersioned, IAccessControl {
+    /// @notice Role identifier for addresses that may call setManualPrice
+    // solhint-disable-next-line func-name-mixedcase
+    function PRICE_SETTER_ROLE() external view returns (bytes32);
     /// @notice Emitted whenever the manual price or override activation timestamp is updated.
     /// @param price   The new manual price (18-decimal quote units per base unit); zero means override disabled
     /// @param validAt Timestamp from which the override becomes active; zero means override disabled

@@ -3,7 +3,7 @@ pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
 import {SafeCast} from "openzeppelin5/utils/math/SafeCast.sol";
-import {OwnableUpgradeable} from "openzeppelin5-upgradeable/access/OwnableUpgradeable.sol";
+import {IAccessControl} from "openzeppelin5/access/IAccessControl.sol";
 import {Pausable} from "openzeppelin5/utils/Pausable.sol";
 import {PausableUpgradeable} from "openzeppelin5-upgradeable/utils/PausableUpgradeable.sol";
 
@@ -25,8 +25,10 @@ abstract contract DualOracleBase is Test {
     uint256 internal constant LOWER_BOUND = 0.5e18;
     uint256 internal constant UPPER_BOUND = 2e18;
     uint32 internal constant TIMELOCK = 1 days;
+    bytes32 internal constant PRICE_SETTER_ROLE = keccak256("PRICE_SETTER_ROLE");
 
     address internal owner = makeAddr("Owner");
+    address internal priceSetter = makeAddr("PriceSetter");
     address internal nonOwner = makeAddr("NonOwner");
     address internal baseToken;
 
@@ -114,7 +116,9 @@ abstract contract DualOracleBase is Test {
     */
     function test_pause_revert_whenNotOwner() public {
         vm.prank(nonOwner);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, nonOwner));
+        vm.expectRevert(abi.encodeWithSelector(
+            IAccessControl.AccessControlUnauthorizedAccount.selector, nonOwner, bytes32(0)
+        ));
         oracle.pause();
     }
 
@@ -153,7 +157,9 @@ abstract contract DualOracleBase is Test {
         oracle.pause();
 
         vm.prank(nonOwner);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, nonOwner));
+        vm.expectRevert(abi.encodeWithSelector(
+            IAccessControl.AccessControlUnauthorizedAccount.selector, nonOwner, bytes32(0)
+        ));
         oracle.unpause();
     }
 
@@ -187,7 +193,11 @@ abstract contract DualOracleBase is Test {
     */
     function test_setManualPrice_revert_whenNotOwner() public {
         vm.prank(nonOwner);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, nonOwner));
+        vm.expectRevert(abi.encodeWithSelector(
+            IAccessControl.AccessControlUnauthorizedAccount.selector,
+            nonOwner,
+            PRICE_SETTER_ROLE
+        ));
         oracle.setManualPrice(1e18);
     }
 
@@ -696,23 +706,15 @@ abstract contract DualOracleBase is Test {
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_scenario_newOwnerControlsOracleAfterTransfer
+        FOUNDRY_PROFILE=oracles forge test --mt test_scenario_newAdminCanControlAfterRoleGrant
     */
-    function test_scenario_newOwnerControlsOracleAfterTransfer() public {
-        address newOwner = makeAddr("NewOwner");
+    function test_scenario_newAdminCanControlAfterRoleGrant() public {
+        address newAdmin = makeAddr("NewAdmin");
 
         vm.prank(owner);
-        DualOracle(address(oracle)).transferOwnership(newOwner);
-        vm.prank(newOwner);
-        DualOracle(address(oracle)).acceptOwnership();
+        DualOracle(address(oracle)).grantRole(bytes32(0), newAdmin);
 
-        vm.prank(owner);
-        vm.expectRevert(
-            abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, owner)
-        );
-        oracle.setManualPrice(LOWER_BOUND);
-
-        vm.startPrank(newOwner);
+        vm.startPrank(newAdmin);
         oracle.setManualPrice(LOWER_BOUND);
         oracle.pause();
         vm.stopPrank();
@@ -858,58 +860,96 @@ abstract contract DualOracleBase is Test {
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_ownership_initialOwner
+        FOUNDRY_PROFILE=oracles forge test --mt test_accessControl_ownerHasAdminRole
     */
-    function test_ownership_initialOwner() public view {
-        assertEq(DualOracle(address(oracle)).owner(), owner);
+    function test_accessControl_ownerHasAdminRole() public view {
+        assertTrue(DualOracle(address(oracle)).hasRole(bytes32(0), owner));
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_ownership_transferOwnership_onlyOwner
+        FOUNDRY_PROFILE=oracles forge test --mt test_accessControl_priceSetterHasPriceSetterRole
     */
-    function test_ownership_transferOwnership_onlyOwner() public {
+    function test_accessControl_priceSetterHasPriceSetterRole() public view {
+        assertTrue(oracle.hasRole(PRICE_SETTER_ROLE, priceSetter));
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_accessControl_nonAdminCannotGrantRole
+    */
+    function test_accessControl_nonAdminCannotGrantRole() public {
         vm.prank(nonOwner);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, nonOwner));
-        DualOracle(address(oracle)).transferOwnership(makeAddr("NewOwner"));
+        vm.expectRevert(abi.encodeWithSelector(
+            IAccessControl.AccessControlUnauthorizedAccount.selector, nonOwner, bytes32(0)
+        ));
+        DualOracle(address(oracle)).grantRole(PRICE_SETTER_ROLE, makeAddr("Anyone"));
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_ownership_transferAndAccept
+        FOUNDRY_PROFILE=oracles forge test --mt test_accessControl_adminCanGrantAndRevokePriceSetterRole
     */
-    function test_ownership_transferAndAccept() public {
-        address newOwner = makeAddr("NewOwner");
+    function test_accessControl_adminCanGrantAndRevokePriceSetterRole() public {
+        address newSetter = makeAddr("NewSetter");
 
         vm.prank(owner);
-        DualOracle(address(oracle)).transferOwnership(newOwner);
+        DualOracle(address(oracle)).grantRole(PRICE_SETTER_ROLE, newSetter);
+        assertTrue(oracle.hasRole(PRICE_SETTER_ROLE, newSetter));
 
-        assertEq(DualOracle(address(oracle)).owner(), owner, "owner should not change until accepted");
-        assertEq(DualOracle(address(oracle)).pendingOwner(), newOwner, "pendingOwner should be set");
-
-        vm.prank(newOwner);
-        DualOracle(address(oracle)).acceptOwnership();
-
-        assertEq(DualOracle(address(oracle)).owner(), newOwner, "owner should be updated after accept");
-        assertEq(DualOracle(address(oracle)).pendingOwner(), address(0), "pendingOwner should be cleared");
+        vm.prank(owner);
+        DualOracle(address(oracle)).revokeRole(PRICE_SETTER_ROLE, newSetter);
+        assertFalse(oracle.hasRole(PRICE_SETTER_ROLE, newSetter));
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_ownership_acceptOwnership_revert_whenNotPendingOwner
+        FOUNDRY_PROFILE=oracles forge test --mt test_accessControl_priceSetterCanSetManualPrice
     */
-    function test_ownership_acceptOwnership_revert_whenNotPendingOwner() public {
-        address newOwner = makeAddr("NewOwner");
+    function test_accessControl_priceSetterCanSetManualPrice() public {
+        vm.prank(priceSetter);
+        oracle.setManualPrice(LOWER_BOUND);
+        assertEq(oracle.manualPrice(), LOWER_BOUND);
+    }
 
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_accessControl_priceSetterCannotPause
+    */
+    function test_accessControl_priceSetterCannotPause() public {
+        vm.prank(priceSetter);
+        vm.expectRevert(abi.encodeWithSelector(
+            IAccessControl.AccessControlUnauthorizedAccount.selector, priceSetter, bytes32(0)
+        ));
+        oracle.pause();
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_accessControl_ownerCanSetManualPriceDirectly
+    */
+    function test_accessControl_ownerCanSetManualPriceDirectly() public {
         vm.prank(owner);
-        DualOracle(address(oracle)).transferOwnership(newOwner);
+        oracle.setManualPrice(UPPER_BOUND);
+        assertEq(oracle.manualPrice(), UPPER_BOUND);
+    }
 
-        vm.prank(nonOwner);
-        vm.expectRevert(abi.encodeWithSelector(OwnableUpgradeable.OwnableUnauthorizedAccount.selector, nonOwner));
-        DualOracle(address(oracle)).acceptOwnership();
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_accessControl_revokedPriceSetter_cannotSetManualPrice
+    */
+    function test_accessControl_revokedPriceSetter_cannotSetManualPrice() public {
+        vm.prank(owner);
+        DualOracle(address(oracle)).revokeRole(PRICE_SETTER_ROLE, priceSetter);
+
+        vm.prank(priceSetter);
+        vm.expectRevert(abi.encodeWithSelector(
+            IAccessControl.AccessControlUnauthorizedAccount.selector,
+            priceSetter,
+            PRICE_SETTER_ROLE
+        ));
+        oracle.setManualPrice(LOWER_BOUND);
     }
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_getters_postInit
     */
     function test_getters_postInit() public view {
+        assertTrue(oracle.hasRole(bytes32(0), owner), "owner should have DEFAULT_ADMIN_ROLE");
+        assertTrue(oracle.hasRole(PRICE_SETTER_ROLE, priceSetter), "priceSetter should have PRICE_SETTER_ROLE");
         assertEq(address(oracle.oracle()), address(oracleMock), "oracle mismatch");
         assertEq(oracle.quoteToken(), oracleMock.quoteToken(), "quoteToken mismatch");
         assertEq(oracle.baseToken(), oracleMock.baseToken(), "baseToken mismatch");

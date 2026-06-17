@@ -21,6 +21,7 @@ contract DualOracleInitTest is Test {
     uint32 internal constant TIMELOCK = 1 days;
 
     address internal owner = makeAddr("Owner");
+    address internal priceSetter = makeAddr("PriceSetter");
 
     DualOracleFactory internal factory;
     SiloOracleMock1 internal oracleMock;
@@ -39,12 +40,12 @@ contract DualOracleInitTest is Test {
     */
     function test_DualOracle_cannotInitializeTwice() public {
         IDualOracle dualOracle = factory.create(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
         );
 
         vm.expectRevert(Initializable.InvalidInitialization.selector);
         DualOracle(address(dualOracle)).initialize(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND
         );
     }
 
@@ -55,15 +56,16 @@ contract DualOracleInitTest is Test {
         DualOracle direct = new DualOracle();
 
         vm.expectRevert(Initializable.InvalidInitialization.selector);
-        direct.initialize(ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND);
+        direct.initialize(ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND);
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_directlyCreated_hasZeroOwner
+        FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_directlyCreated_hasNoAdmin
     */
-    function test_DualOracle_directlyCreated_hasZeroOwner() public {
+    function test_DualOracle_directlyCreated_hasNoAdmin() public {
         DualOracle direct = new DualOracle();
-        assertEq(direct.owner(), address(0));
+        assertFalse(direct.hasRole(direct.DEFAULT_ADMIN_ROLE(), owner));
+        assertFalse(direct.hasRole(direct.DEFAULT_ADMIN_ROLE(), address(this)));
     }
 
     /*
@@ -73,7 +75,7 @@ contract DualOracleInitTest is Test {
         DualOracle clone = _clonedOracle();
 
         vm.expectRevert(IDualOracle.ZeroOracle.selector);
-        clone.initialize(ISiloOracle(address(0)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND);
+        clone.initialize(ISiloOracle(address(0)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND);
     }
 
     /*
@@ -83,7 +85,7 @@ contract DualOracleInitTest is Test {
         DualOracle clone = _clonedOracle();
 
         vm.expectRevert(IDualOracle.ZeroOwner.selector);
-        clone.initialize(ISiloOracle(address(oracleMock)), address(0), TIMELOCK, LOWER_BOUND, UPPER_BOUND);
+        clone.initialize(ISiloOracle(address(oracleMock)), address(0), priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND);
     }
 
     /*
@@ -93,7 +95,7 @@ contract DualOracleInitTest is Test {
         DualOracle clone = _clonedOracle();
 
         vm.expectRevert(IDualOracle.LowerBoundMustBeGreaterThanZero.selector);
-        clone.initialize(ISiloOracle(address(oracleMock)), owner, TIMELOCK, 0, UPPER_BOUND);
+        clone.initialize(ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, 0, UPPER_BOUND);
     }
 
     /*
@@ -103,7 +105,7 @@ contract DualOracleInitTest is Test {
         DualOracle clone = _clonedOracle();
 
         vm.expectRevert(IDualOracle.InvalidBounds.selector);
-        clone.initialize(ISiloOracle(address(oracleMock)), owner, TIMELOCK, UPPER_BOUND, UPPER_BOUND);
+        clone.initialize(ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, UPPER_BOUND, UPPER_BOUND);
     }
 
     /*
@@ -113,7 +115,9 @@ contract DualOracleInitTest is Test {
         DualOracle clone = _clonedOracle();
 
         vm.expectRevert(IDualOracle.InvalidBounds.selector);
-        clone.initialize(ISiloOracle(address(oracleMock)), owner, TIMELOCK, UPPER_BOUND + 1, UPPER_BOUND);
+        clone.initialize(
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, UPPER_BOUND + 1, UPPER_BOUND
+        );
     }
 
     /*
@@ -125,7 +129,7 @@ contract DualOracleInitTest is Test {
         vm.mockCall(baseToken, abi.encodeWithSelector(IERC20Metadata.decimals.selector), abi.encode(uint8(0)));
 
         vm.expectRevert(IDualOracle.BaseTokenDecimalsMustBeGreaterThanZero.selector);
-        clone.initialize(ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND);
+        clone.initialize(ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND);
     }
 
     /*
@@ -133,10 +137,14 @@ contract DualOracleInitTest is Test {
     */
     function test_DualOracle_initialize_getters() public {
         IDualOracle dualOracle = factory.create(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
         );
 
-        assertEq(DualOracle(address(dualOracle)).owner(), owner, "owner mismatch");
+        DualOracle d = DualOracle(address(dualOracle));
+
+        assertTrue(d.hasRole(d.DEFAULT_ADMIN_ROLE(), owner), "owner should have DEFAULT_ADMIN_ROLE");
+        assertTrue(d.hasRole(d.PRICE_SETTER_ROLE(), priceSetter), "priceSetter should have PRICE_SETTER_ROLE");
+        assertFalse(d.hasRole(d.PRICE_SETTER_ROLE(), owner), "owner should not have PRICE_SETTER_ROLE by default");
         assertEq(address(dualOracle.oracle()), address(oracleMock), "oracle mismatch");
         assertEq(dualOracle.timelock(), TIMELOCK, "timelock mismatch");
         assertEq(dualOracle.lowerPriceBound(), LOWER_BOUND, "lowerPriceBound mismatch");
@@ -147,7 +155,20 @@ contract DualOracleInitTest is Test {
         assertEq(dualOracle.manualPrice(), 0, "manualPrice should be zero");
         assertEq(dualOracle.overrideValidAt(), 0, "overrideValidAt should be zero");
         assertFalse(dualOracle.isOverrideActive(), "override should not be active");
-        assertFalse(DualOracle(address(dualOracle)).paused(), "should not be paused");
+        assertFalse(d.paused(), "should not be paused");
+    }
+
+    /*
+        FOUNDRY_PROFILE=oracles forge test --mt test_DualOracle_initialize_withZeroPriceSetter_succeeds
+    */
+    function test_DualOracle_initialize_withZeroPriceSetter_succeeds() public {
+        IDualOracle dualOracle = factory.create(
+            ISiloOracle(address(oracleMock)), owner, address(0), TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+        );
+
+        DualOracle d = DualOracle(address(dualOracle));
+        assertTrue(d.hasRole(d.DEFAULT_ADMIN_ROLE(), owner));
+        assertEq(d.getRoleMemberCount(d.PRICE_SETTER_ROLE()), 0, "no price setter should be assigned");
     }
 
     // ─── helpers ──────────────────────────────────────────────────────────────

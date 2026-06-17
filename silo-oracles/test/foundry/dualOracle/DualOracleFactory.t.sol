@@ -23,18 +23,18 @@ contract DualOracleFactoryTest is Test {
     DualOracleFactory internal factory;
     SiloOracleMock1 internal oracleMock;
     address internal owner;
+    address internal priceSetter;
     address internal baseToken;
 
     function setUp() public {
         oracleMock = new SiloOracleMock1();
         factory = new DualOracleFactory();
         owner = makeAddr("Owner");
+        priceSetter = makeAddr("PriceSetter");
         baseToken = oracleMock.baseToken();
 
         vm.mockCall(baseToken, abi.encodeWithSelector(IERC20Metadata.decimals.selector), abi.encode(18));
     }
-
-    // ─── ORACLE_IMPLEMENTATION ────────────────────────────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_ORACLE_IMPLEMENTATION_isSet
@@ -42,8 +42,6 @@ contract DualOracleFactoryTest is Test {
     function test_ORACLE_IMPLEMENTATION_isSet() public view {
         assertTrue(address(factory.ORACLE_IMPLEMENTATION()) != address(0), "implementation should not be zero");
     }
-
-    // ─── predictAddress ───────────────────────────────────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_predictAddress_revert_DeployerCannotBeZero
@@ -59,7 +57,7 @@ contract DualOracleFactoryTest is Test {
     function test_predictAddress_matchesDeploy() public {
         address predicted = factory.predictAddress(address(this), bytes32(0));
         IDualOracle deployed = factory.create(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
         );
         assertEq(address(deployed), predicted, "predicted address should match deployed");
     }
@@ -79,25 +77,23 @@ contract DualOracleFactoryTest is Test {
     function test_predictAddress_frontrun_doesNotAffectOwnPrediction() public {
         address predicted = factory.predictAddress(address(this), bytes32(0));
 
-        // frontrunner deploys first from a different address
         vm.prank(makeAddr("Frontrunner"));
-        factory.create(ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0));
+        factory.create(
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+        );
 
-        // our deploy should still land at the predicted address (salt includes msg.sender)
         IDualOracle deployed = factory.create(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
         );
         assertEq(address(deployed), predicted, "frontrun should not affect our predicted address");
     }
-
-    // ─── create (direct oracle path) ──────────────────────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_create_withOracle_registersInFactory
     */
     function test_create_withOracle_registersInFactory() public {
         IDualOracle deployed = factory.create(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
         );
         assertTrue(factory.createdInFactory(address(deployed)), "oracle should be registered");
     }
@@ -111,7 +107,9 @@ contract DualOracleFactoryTest is Test {
         vm.expectEmit(true, false, false, false, address(factory));
         emit IDualOracleFactory.DualOracleCreated(predicted);
 
-        factory.create(ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0));
+        factory.create(
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+        );
     }
 
     /*
@@ -119,10 +117,10 @@ contract DualOracleFactoryTest is Test {
     */
     function test_create_withOracle_differentSalts_differentAddresses() public {
         IDualOracle oracle1 = factory.create(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(uint256(1))
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(uint256(1))
         );
         IDualOracle oracle2 = factory.create(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(uint256(2))
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(uint256(2))
         );
         assertTrue(address(oracle1) != address(oracle2), "different salts should produce different addresses");
     }
@@ -132,15 +130,16 @@ contract DualOracleFactoryTest is Test {
     */
     function test_create_withOracle_sameSalt_differentAddresses_dueToNonce() public {
         IDualOracle oracle1 = factory.create(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
         );
         IDualOracle oracle2 = factory.create(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
         );
-        assertTrue(address(oracle1) != address(oracle2), "nonce increment should produce different addresses for same salt");
+        assertTrue(
+            address(oracle1) != address(oracle2),
+            "nonce increment should produce different addresses for same salt"
+        );
     }
-
-    // ─── create (underlying factory path) ─────────────────────────────────────
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_create_withUnderlyingFactory_works
@@ -150,7 +149,7 @@ contract DualOracleFactoryTest is Test {
         bytes memory initData = abi.encodeWithSelector(MockOracleFactory.create.selector, address(oracleMock));
 
         IDualOracle deployed = factory.create(
-            address(mockFactory), initData, owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+            address(mockFactory), initData, owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
         );
 
         assertEq(address(deployed.oracle()), address(oracleMock), "wrong underlying oracle");
@@ -162,7 +161,7 @@ contract DualOracleFactoryTest is Test {
     */
     function test_create_withUnderlyingFactory_revert_ZeroFactory() public {
         vm.expectRevert(IDualOracleFactory.ZeroFactory.selector);
-        factory.create(address(0), bytes(""), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0));
+        factory.create(address(0), bytes(""), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0));
     }
 
     /*
@@ -173,35 +172,35 @@ contract DualOracleFactoryTest is Test {
         vm.mockCallRevert(failingFactory, bytes(""), abi.encodePacked("factory failed"));
 
         vm.expectRevert(IDualOracleFactory.FailedToCreateUnderlyingOracle.selector);
-        factory.create(failingFactory, bytes(""), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0));
+        factory.create(
+            failingFactory, bytes(""), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+        );
     }
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_create_withUnderlyingFactory_revert_FailedToCreateUnderlyingOracle_wrongReturnSize
     */
     function test_create_withUnderlyingFactory_revert_FailedToCreateUnderlyingOracle_wrongReturnSize() public {
-        // factory that returns 64 bytes (two addresses) instead of the required 32 bytes
         address badReturnFactory = makeAddr("BadReturnFactory");
-        vm.mockCall(
-            badReturnFactory,
-            bytes(""),
-            abi.encode(address(oracleMock), address(oracleMock))
-        );
+        vm.mockCall(badReturnFactory, bytes(""), abi.encode(address(oracleMock), address(oracleMock)));
 
         vm.expectRevert(IDualOracleFactory.FailedToCreateUnderlyingOracle.selector);
-        factory.create(badReturnFactory, bytes(""), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0));
+        factory.create(
+            badReturnFactory, bytes(""), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+        );
     }
 
     /*
         FOUNDRY_PROFILE=oracles forge test --mt test_create_withUnderlyingFactory_revert_FailedToCreateUnderlyingOracle_emptyReturn
     */
     function test_create_withUnderlyingFactory_revert_FailedToCreateUnderlyingOracle_emptyReturn() public {
-        // factory that returns empty bytes (success=true but data.length==0 != 32)
         address emptyReturnFactory = makeAddr("EmptyReturnFactory");
         vm.mockCall(emptyReturnFactory, bytes(""), bytes(""));
 
         vm.expectRevert(IDualOracleFactory.FailedToCreateUnderlyingOracle.selector);
-        factory.create(emptyReturnFactory, bytes(""), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0));
+        factory.create(
+            emptyReturnFactory, bytes(""), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+        );
     }
 
     /*

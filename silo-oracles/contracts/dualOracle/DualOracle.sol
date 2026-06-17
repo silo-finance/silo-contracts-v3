@@ -154,8 +154,8 @@ contract DualOracle is IDualOracle, Aggregator, AccessControlEnumerableUpgradeab
 
             manualPrice = _price;
 
-            // when override is not active, start the activation timelock
-            if (!isOverrideActive()) overrideValidAt = SafeCast.toUint64(block.timestamp + timelock);
+            // start the timelock only on the first price set; subsequent updates keep the original validAt
+            if (overrideValidAt == 0) overrideValidAt = SafeCast.toUint64(block.timestamp + timelock);
         }
 
         emit ManualPriceUpdated(manualPrice, overrideValidAt);

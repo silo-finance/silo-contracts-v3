@@ -658,29 +658,26 @@ abstract contract DualOracleBase is Test {
     }
 
     /*
-        FOUNDRY_PROFILE=oracles forge test --mt test_scenario_priceUpdateDuringPendingTimelock_restartsTimelock
+        FOUNDRY_PROFILE=oracles forge test --mt test_scenario_priceUpdateDuringPendingTimelock_doesNotRestartTimelock
     */
-    function test_scenario_priceUpdateDuringPendingTimelock_restartsTimelock() public {
+    function test_scenario_priceUpdateDuringPendingTimelock_doesNotRestartTimelock() public {
         vm.startPrank(owner);
         oracle.setManualPrice(LOWER_BOUND);
+        uint64 originalValidAt = oracle.overrideValidAt();
 
-        // update price one second before original expiry — timelock must restart
+        // update price one second before original expiry — timelock must NOT restart
         vm.warp(block.timestamp + TIMELOCK - 1);
         assertFalse(oracle.isOverrideActive());
 
-        uint64 restartedValidAt = SafeCast.toUint64(block.timestamp + TIMELOCK);
         oracle.setManualPrice(UPPER_BOUND);
         vm.stopPrank();
 
-        assertEq(oracle.overrideValidAt(), restartedValidAt, "timelock must restart from update time");
+        assertEq(oracle.overrideValidAt(), originalValidAt, "timelock must not change after first set");
+        assertEq(oracle.manualPrice(), UPPER_BOUND, "price should update");
 
-        // original expiry no longer activates
-        vm.warp(block.timestamp + 1);
-        assertFalse(oracle.isOverrideActive(), "original boundary must not activate override");
-
-        // restarted expiry activates
-        vm.warp(uint256(restartedValidAt));
-        assertTrue(oracle.isOverrideActive());
+        // original expiry still activates
+        vm.warp(uint256(originalValidAt));
+        assertTrue(oracle.isOverrideActive(), "original boundary must still activate override");
     }
 
     /*

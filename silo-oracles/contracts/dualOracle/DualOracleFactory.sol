@@ -47,15 +47,15 @@ contract DualOracleFactory is Create2Factory, IDualOracleFactory {
         bytes32 _externalSalt
     ) external returns (IDualOracle dualOracle) {
         address underlyingOracle = _deployUnderlyingOracle(_underlyingOracleFactory, _underlyingOracleInitData);
-        dualOracle = create(
-            ISiloOracle(underlyingOracle),
-            _owner,
-            _priceSetter,
-            _timelock,
-            _lowerPriceBound,
-            _upperPriceBound,
-            _externalSalt
-        );
+        dualOracle = create({
+            _oracle: ISiloOracle(underlyingOracle),
+            _owner: _owner,
+            _priceSetter: _priceSetter,
+            _timelock: _timelock,
+            _lowerPriceBound: _lowerPriceBound,
+            _upperPriceBound: _upperPriceBound,
+            _externalSalt: _externalSalt
+        });
     }
 
     /// @inheritdoc IDualOracleFactory

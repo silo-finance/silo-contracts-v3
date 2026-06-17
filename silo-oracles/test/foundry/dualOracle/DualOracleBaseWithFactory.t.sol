@@ -15,7 +15,7 @@ contract DualOracleBaseWithFactoryTest is DualOracleBase {
         bytes memory initData = abi.encodeWithSelector(MockOracleFactory.create.selector, address(oracleMock));
 
         dualOracle = factory.create(
-            address(mockFactory), initData, owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+            address(mockFactory), initData, owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
         );
     }
 }

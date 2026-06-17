@@ -12,7 +12,7 @@ import {DualOracleBase} from "silo-oracles/test/foundry/dualOracle/DualOracleBas
 contract DualOracleBaseWithOracleTest is DualOracleBase {
     function _createDualOracle() internal override returns (IDualOracle dualOracle) {
         dualOracle = factory.create(
-            ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
+            ISiloOracle(address(oracleMock)), owner, priceSetter, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0)
         );
     }
 }

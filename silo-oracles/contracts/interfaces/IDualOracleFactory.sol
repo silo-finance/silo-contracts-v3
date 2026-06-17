@@ -14,8 +14,9 @@ interface IDualOracleFactory {
 
     /// @notice Create a new DualOracle wrapping an existing ISiloOracle
     /// @param _oracle      Primary price source to wrap
-    /// @param _owner       Address that will own (and control) the deployed oracle
-    /// @param _timelock    Override-activation timelock in seconds; must be in [MIN_TIMELOCK, MAX_TIMELOCK]
+    /// @param _owner       Address granted DEFAULT_ADMIN_ROLE (full control)
+    /// @param _priceSetter Address granted PRICE_SETTER_ROLE; may be address(0) to skip
+    /// @param _timelock    Override-activation timelock in seconds;
     /// @param _lowerPriceBound  Minimum allowed manual price (18-decimal quote units); must be > 0
     /// @param _upperPriceBound  Maximum allowed manual price (18-decimal quote units); must be > _lowerPriceBound
     /// @param _externalSalt Caller-supplied entropy for the CREATE2 deterministic address
@@ -23,6 +24,7 @@ interface IDualOracleFactory {
     function create(
         ISiloOracle _oracle,
         address _owner,
+        address _priceSetter,
         uint32 _timelock,
         uint256 _lowerPriceBound,
         uint256 _upperPriceBound,
@@ -33,7 +35,8 @@ interface IDualOracleFactory {
     ///         Primarily used by SiloDeployer to compose oracle creation in a single transaction.
     /// @param _underlyingOracleFactory   Factory address used to deploy the primary oracle
     /// @param _underlyingOracleInitData  Encoded calldata forwarded to the underlying factory
-    /// @param _owner       Address that will own the deployed oracle
+    /// @param _owner       Address granted DEFAULT_ADMIN_ROLE (full control)
+    /// @param _priceSetter Address granted PRICE_SETTER_ROLE; may be address(0) to skip
     /// @param _timelock    Override-activation timelock in seconds
     /// @param _lowerPriceBound  Minimum allowed manual price (inclusive, 18-decimal quote units)
     /// @param _upperPriceBound  Maximum allowed manual price (inclusive, 18-decimal quote units)
@@ -43,6 +46,7 @@ interface IDualOracleFactory {
         address _underlyingOracleFactory,
         bytes calldata _underlyingOracleInitData,
         address _owner,
+        address _priceSetter,
         uint32 _timelock,
         uint256 _lowerPriceBound,
         uint256 _upperPriceBound,

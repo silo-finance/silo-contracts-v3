@@ -81,9 +81,14 @@ contract DualOracleFactory is Create2Factory, IDualOracleFactory {
         bytes32 _externalSalt
     ) public returns (IDualOracle dualOracle) {
         dualOracle = _deployOracle(_externalSalt);
-        DualOracle(address(dualOracle)).initialize(
-            _oracle, _owner, _priceSetter, _timelock, _lowerPriceBound, _upperPriceBound
-        );
+        DualOracle(address(dualOracle)).initialize({
+            _oracle: _oracle,
+            _owner: _owner,
+            _priceSetter: _priceSetter,
+            _timelock: _timelock,
+            _lowerPriceBound: _lowerPriceBound,
+            _upperPriceBound: _upperPriceBound
+        });
     }
 
     /// @dev Calls the underlying oracle factory with arbitrary calldata and decodes the returned address.

@@ -51,11 +51,11 @@ interface IDualOracle is ISiloOracle, IVersioned, IAccessControl {
     /// @notice Immediately pauses the oracle.
     ///         While paused, all quote() calls revert via OZ EnforcedPause.
     ///         Pause has highest priority and supersedes override mode.
-    ///         Only callable by the owner.
+    ///         Only callable by DEFAULT_ADMIN_ROLE.
     function pause() external;
 
     /// @notice Removes the pause, resuming normal price responses.
-    ///         Only callable by the owner.
+    ///         Only callable by DEFAULT_ADMIN_ROLE.
     function unpause() external;
 
     /// @notice Sets the manual price and manages override activation.
@@ -63,11 +63,11 @@ interface IDualOracle is ISiloOracle, IVersioned, IAccessControl {
     ///         Behaviour by price value:
     ///         - _price == 0  → clears manualPrice and overrideValidAt, disables override immediately
     ///                          (emits ManualPriceUpdated(0, 0))
-    ///         - _price != 0  → validates bounds, stores price; if override not yet active, starts the timelock
+    ///         - _price != 0  → validates bounds, stores price; starts the timelock on the first call only
     ///                          (emits ManualPriceUpdated(_price, overrideValidAt))
     ///
-    ///         Price updates do NOT restart the timelock once the override is active.
-    ///         Only callable by the owner.
+    ///         Subsequent price updates while the timelock is pending or active do NOT reset overrideValidAt.
+    ///         Callable by DEFAULT_ADMIN_ROLE or PRICE_SETTER_ROLE.
     ///
     /// @param _price Manual price in 18-decimal quote units per base unit.
     ///               Must satisfy lowerPriceBound <= _price <= upperPriceBound (or be zero to disable).

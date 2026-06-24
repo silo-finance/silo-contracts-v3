@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.24.0] - 2026-06-24
+### Added
+- new IRM config "static-5-20"
+
 ## [4.23.0] - 2026-06-09
 ### Added
 - RescueVaultBalance (#1943)

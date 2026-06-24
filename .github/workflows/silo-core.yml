@@ -142,6 +142,12 @@ jobs:
                 run: |
                     forge cache ls 2>&1 || echo "No cache yet (first fork test will create it)"
 
+            -   name: Build with test profile
+                run: FOUNDRY_PROFILE=core_test forge build
+
+            -   name: Sync IErrors file
+                run: python3 scripts/sync_ierrors_ci.py
+
             -   name: all fast test
                 run: FOUNDRY_PROFILE=core_test forge test --no-match-test "_skip_" --nmc "MaxBorrow|MaxLiquidationTest|MaxLiquidationBadDebt|PreviewTest|PreviewDepositTest|PreviewMintTest|SiloLensCompatibilityTest|NewMarketTest|SiloDeployerIntegrationTest|BackwardsCompatibleGaugeLikeTest|DefaultingLiquidation|CryticToFoundry|ERC4626ComplianceTest|PartialLiquidation1weiTest|InterestOverflowTest|MaxWithdrawAndFractionsTest|LiquidationHelperTest|MaxLiquidationWithChunksTest|MaxLiquidationDustWithChunksTest|MaxWithdrawTest|MaxLiquidationLTV100FullWithChunksTest" --ffi -vv
 
@@ -319,3 +325,4 @@ jobs:
 
             -   name: ${{ matrix.match-test }}
                 run: FOUNDRY_PROFILE=core_test forge test --mc ${{ matrix.match-test }} --ffi -vv
+

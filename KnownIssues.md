@@ -72,6 +72,21 @@ Workarounds for this case are:
 For example, with a deposit of 10 wei, it will give us ~10000 shares, so `999 + 10000 shares converts to ~ 1 assets` and liquidation will succeed.
 
 
+### M-02: SiloDeployer._updateSalt corrupts calldata for factories with dynamic-type parameters
+
+`SiloDeployer._updateSalt` injects a deterministic salt by blindly overwriting the last 32 bytes of
+the ABI-encoded calldata. This assumes `_externalSalt` is physically the last word in the encoding.
+However, ABI encoding places the *content* of dynamic types (`bytes`, `string`, arrays) in the tail
+section, which follows the head slot reserved for `_externalSalt`. When a factory's `create` function
+has a preceding `bytes calldata` parameter or a struct containing `string`/`bytes` fields, the tail
+content (e.g. oracle init calldata or DIA feed keys) is physically last, not `_externalSalt`. The
+assembly write overwrites that tail data instead of the salt slot, silently corrupting the calldata
+and rendering the deployed oracle unusable.
+
+Affected factories (not full list): `ManageableOracleFactory.create` (bytes calldata path),
+`DualOracleFactory.create` (bytes calldata path), `DIAOracleFactory.create` (string fields in
+`DIADeploymentConfig`).
+
 ### IRM
 
 Future IRM models might be susceptible to gas exhaustion attacks

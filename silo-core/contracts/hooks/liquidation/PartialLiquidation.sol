@@ -35,7 +35,7 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
         bytes4 customError;
     }
 
-    function __PartialLiquidation_init(address _owner) // solhint-disable-line func-name-mixedcase
+    function __PartialLiquidation_init(address _owner) // solhint-disable-line func-name-mixedcase, ordering
         internal
         virtual
         onlyInitializing
@@ -44,7 +44,7 @@ abstract contract PartialLiquidation is TransientReentrancy, BaseHookReceiver, I
     }
 
     /// @inheritdoc IPartialLiquidation
-    function liquidationCall( // solhint-disable-line function-max-lines, code-complexity
+    function liquidationCall( // solhint-disable-line function-max-lines, code-complexity, ordering
         address _collateralAsset,
         address _debtAsset,
         address _borrower,

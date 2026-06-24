@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.23.0] - 2026-06-09
+### Added
+- RescueVaultBalance (#1943)
+- Dual Oracle Fixes (#1932)
+- Dual Oracle (#1924)
+- collect all custom errors (#1930)
+
+### Markets
+- silo-market: PT-sUSDp(USDp)-2026/07/31 / savUSD on Avalanche C-Chain (#1928)
+- silo-market: PT-savUSD(avUSD)-2026/08/07 / PT-sw-avUSDx(avUSD)-2026/08/07 on Avalanche C-Chain (#1929)
+
 ## [4.22.0] - 2026-05-26
 ### Added
 - new DKinkIRMConfig: static-2.8-3

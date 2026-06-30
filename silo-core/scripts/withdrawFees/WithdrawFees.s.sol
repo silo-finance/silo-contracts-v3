@@ -14,7 +14,6 @@ import {CommonDeploy} from "silo-core/deploy/_CommonDeploy.sol";
 import {SiloCoreContracts} from "silo-core/common/SiloCoreContracts.sol";
 import {ISiloLens} from "silo-core/contracts/interfaces/ISiloLens.sol";
 import {IMulticall3} from "silo-core/scripts/interfaces/IMulticall3.sol";
-import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 import {Rounding} from "silo-core/contracts/lib/Rounding.sol";
 import {PriceFormatter} from "silo-core/deploy/lib/PriceFormatter.sol";
 
@@ -48,12 +47,15 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
 
         string memory json = vm.readFile(dataPath);
         address[] memory silos = vm.parseJsonAddressArray(json, ".silos");
+        // asset symbol/decimals are immutable, precomputed by 2_discover_silos.py (index-aligned)
+        string[] memory symbols = vm.parseJsonStringArray(json, ".siloSymbols");
+        uint256[] memory decimals = vm.parseJsonUintArray(json, ".siloDecimals");
 
         console2.log("Loaded silos from", dataPath);
         console2.log("Total discovered silos", silos.length);
 
         for (uint256 i = 0; i < silos.length; i++) {
-            _pushWithdrawFeesCall({_lens: lens, _silo: silos[i]});
+            _pushWithdrawFeesCall({_lens: lens, _silo: silos[i], _symbol: symbols[i], _decimals: decimals[i]});
         }
 
         console2.log("Total amount of silos to call", calls.length);
@@ -65,7 +67,12 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         vm.stopBroadcast();
     }
 
-    function _pushWithdrawFeesCall(ISiloLens _lens, address _silo) internal {
+    function _pushWithdrawFeesCall(
+        ISiloLens _lens,
+        address _silo,
+        string memory _symbol,
+        uint256 _decimals
+    ) internal {
         if (blacklistedSilos[block.chainid][_silo]) return;
 
         ISilo(_silo).accrueInterest();
@@ -86,11 +93,7 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
             return;
         }
 
-        address asset = ISilo(_silo).asset();
-        string memory symbol = TokenHelper.symbol(asset);
-
-        uint256 underlyingAssetDecimals = TokenHelper.assertAndGetDecimals(asset);
-        uint256 withdrawLimit = 10 ** underlyingAssetDecimals / 100;
+        uint256 withdrawLimit = 10 ** _decimals / 100;
 
         // skip markets with < 0.01 token fees
         if (daoRevenue < withdrawLimit && deployerRevenue < withdrawLimit) {
@@ -99,11 +102,11 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
                     "Skipping silo: ",
                     Strings.toHexString(_silo),
                     " ",
-                    symbol,
+                    _symbol,
                     " with daoRevenue: ",
-                    PriceFormatter.formatPriceInE(daoRevenue, underlyingAssetDecimals),
+                    PriceFormatter.formatPriceInE(daoRevenue, _decimals),
                     " and deployerRevenue: ",
-                    PriceFormatter.formatPriceInE(deployerRevenue, underlyingAssetDecimals)
+                    PriceFormatter.formatPriceInE(deployerRevenue, _decimals)
                 )
             );
 
@@ -121,11 +124,11 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         string memory messageToLog = string.concat(
             Strings.toHexString(_silo),
             " daoAndDeployerRevenue in token ",
-            symbol,
+            _symbol,
             " amount (in asset decimals)"
         );
 
-        emit log_named_decimal_uint(messageToLog, daoRevenue + deployerRevenue, underlyingAssetDecimals);
+        emit log_named_decimal_uint(messageToLog, daoRevenue + deployerRevenue, _decimals);
     }
 
     // copied logic from Silo.sol

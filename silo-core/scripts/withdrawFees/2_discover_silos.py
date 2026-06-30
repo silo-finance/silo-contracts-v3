@@ -6,6 +6,10 @@ starting silo id (cached, or probed among the known bases {1,100,101,3000,3001})
 then batch-reads `idToSiloConfig(id)` + `getSilos()` via Multicall3 and stores
 {siloId, siloConfig, silo0, silo1} plus `lastCheckedId` for incremental reruns.
 
+It also enriches each silo with its immutable asset metadata (asset/symbol/decimals)
+in a `siloMeta` map, fetched once via Multicall3, so WithdrawFees.s.sol does not have
+to read it from chain on every run.
+
 Usage:
   python3 silo-core/scripts/withdrawFees/2_discover_silos.py \
       --chain arbitrum_one --rpc-url $RPC_ARBITRUM
@@ -22,6 +26,9 @@ import _common
 
 ID_TO_CONFIG_SIG = "idToSiloConfig(uint256)"
 GET_SILOS_SIG = "getSilos()"
+ASSET_SIG = "asset()"
+SYMBOL_SIG = "symbol()"
+DECIMALS_SIG = "decimals()"
 
 # probe id -> resolved start id (mirrors WithdrawFees.s.sol _resolveStartingSiloId)
 START_CANDIDATES: list[tuple[int, int]] = [
@@ -38,6 +45,33 @@ def decode_two_addresses(return_data: str) -> tuple[str, str]:
     if len(raw) < 128:
         return _common.ZERO_ADDRESS, _common.ZERO_ADDRESS
     return "0x" + raw[24:64], "0x" + raw[88:128]
+
+
+def decode_uint(return_data: str) -> int:
+    hex_str = return_data[2:] if return_data.startswith("0x") else return_data
+    return int(hex_str, 16) if hex_str else 0
+
+
+def decode_string(return_data: str) -> str:
+    """Decode an ERC20 symbol() return: ABI string OR a right-padded bytes32."""
+    hex_str = return_data[2:] if return_data.startswith("0x") else return_data
+    try:
+        raw = bytes.fromhex(hex_str)
+    except ValueError:
+        return ""
+    if not raw:
+        return ""
+    # bytes32-style symbol (e.g. MKR): single word, NUL-padded ascii
+    if len(raw) == 32:
+        return raw.rstrip(b"\x00").decode("utf-8", "replace").strip()
+    # ABI-encoded dynamic string: [offset][length][data...]
+    if len(raw) >= 64:
+        offset = int.from_bytes(raw[:32], "big")
+        if offset + 32 <= len(raw):
+            length = int.from_bytes(raw[offset:offset + 32], "big")
+            data = raw[offset + 32:offset + 32 + length]
+            return data.decode("utf-8", "replace").strip()
+    return raw.rstrip(b"\x00").decode("utf-8", "replace").strip()
 
 
 def configs_for_ids(rpc_url: str, factory: str, ids: list[int]) -> dict[int, str]:
@@ -148,14 +182,9 @@ def discover_factory(rpc_url: str, factory: str, record: dict) -> dict:
     return record
 
 
-def rebuild_flat_lists(data: dict) -> None:
-    """Maintain the top-level `silos` address array consumed by WithdrawFees.s.sol.
-
-    Flat, deduped (lowercased) list of every non-zero silo0/silo1 across all factories.
-    Per-market `siloId` is intentionally kept only inside each factory's `silos[]` entry,
-    where it is unambiguous (it is not unique across factories, so a flat list is useless).
-    """
-    silos: list[str] = []
+def collect_silo_addresses(data: dict) -> list[str]:
+    """Flat, order-preserving, deduped list of every non-zero silo0/silo1."""
+    addrs: list[str] = []
     seen: set[str] = set()
     for factory in data.get("factories", {}).values():
         for entry in factory.get("silos", []):
@@ -167,8 +196,82 @@ def rebuild_flat_lists(data: dict) -> None:
                 if low in seen:
                     continue
                 seen.add(low)
-                silos.append(addr)
+                addrs.append(addr)
+    return addrs
+
+
+def enrich_metadata(rpc_url: str, data: dict) -> None:
+    """Fill data['siloMeta'][silo] = {asset, symbol, decimals} for silos missing it.
+
+    Immutable per token, so only fetched once. Two Multicall3 reads: asset() per silo,
+    then symbol()+decimals() per unique asset.
+    """
+    meta: dict = data.setdefault("siloMeta", {})
+    missing = [a for a in collect_silo_addresses(data) if a.lower() not in meta]
+    if not missing:
+        print("  metadata: up to date")
+        return
+
+    print(f"  metadata: fetching asset/symbol/decimals for {len(missing)} silo(s)")
+
+    # 1) asset() for every silo
+    asset_results = _common.aggregate3(rpc_url, [(a, _common.selector(ASSET_SIG)) for a in missing])
+    silo_asset: dict[str, str] = {}
+    for silo, (success, ret) in zip(missing, asset_results):
+        silo_asset[silo] = _common.decode_address(ret) if success else _common.ZERO_ADDRESS
+
+    # 2) symbol() + decimals() for every unique (non-zero) asset
+    unique_assets: list[str] = []
+    seen_assets: set[str] = set()
+    for silo in missing:
+        asset = silo_asset[silo]
+        if _common.is_zero_address(asset):
+            continue
+        if asset.lower() not in seen_assets:
+            seen_assets.add(asset.lower())
+            unique_assets.append(asset)
+
+    asset_meta: dict[str, dict] = {}
+    if unique_assets:
+        calls: list[tuple[str, str]] = []
+        for asset in unique_assets:
+            calls.append((asset, _common.selector(SYMBOL_SIG)))
+            calls.append((asset, _common.selector(DECIMALS_SIG)))
+        results = _common.aggregate3(rpc_url, calls)
+        for i, asset in enumerate(unique_assets):
+            ok_symbol, ret_symbol = results[2 * i]
+            ok_decimals, ret_decimals = results[2 * i + 1]
+            asset_meta[asset.lower()] = {
+                "symbol": decode_string(ret_symbol) if ok_symbol else "",
+                "decimals": decode_uint(ret_decimals) if ok_decimals else 0,
+            }
+
+    for silo in missing:
+        asset = silo_asset[silo]
+        am = asset_meta.get(asset.lower(), {"symbol": "", "decimals": 0})
+        meta[silo.lower()] = {"asset": asset, "symbol": am["symbol"], "decimals": am["decimals"]}
+
+
+def rebuild_flat_lists(data: dict) -> None:
+    """Maintain the top-level parallel arrays consumed by WithdrawFees.s.sol.
+
+    `silos` / `siloSymbols` / `siloDecimals` are index-aligned. Deduped (lowercased)
+    over every non-zero silo0/silo1 across all factories; symbol/decimals come from the
+    cached `siloMeta`. Per-market `siloId` is intentionally kept only inside each
+    factory's `silos[]` entry (it is not unique across factories, so a flat list is useless).
+    """
+    meta: dict = data.get("siloMeta", {})
+    silos: list[str] = []
+    symbols: list[str] = []
+    decimals: list[int] = []
+    for addr in collect_silo_addresses(data):
+        entry = meta.get(addr.lower(), {})
+        silos.append(addr)
+        symbols.append(entry.get("symbol", ""))
+        decimals.append(entry.get("decimals", 0))
     data["silos"] = silos
+    data["siloSymbols"] = symbols
+    data["siloDecimals"] = decimals
     data.pop("siloIds", None)  # drop legacy flat id array if present
 
 
@@ -206,6 +309,11 @@ def main() -> int:
         # persist after every factory (incremental)
         rebuild_flat_lists(data)
         out_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+    # backfill immutable asset metadata (symbol/decimals) once, then rebuild + persist
+    enrich_metadata(args.rpc_url, data)
+    rebuild_flat_lists(data)
+    out_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
     total_silos = sum(len(f.get("silos", [])) for f in factories.values())
     print(f"[{chain.alias}] done. Total silos on file: {total_silos}")

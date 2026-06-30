@@ -155,7 +155,10 @@ def load_data_file(path: Path, alias: str, chain_id: int) -> dict:
     data.setdefault("chain", alias)
     data.setdefault("chainId", chain_id)
     data.setdefault("factories", {})
+    # index-aligned flat arrays consumed by WithdrawFees.s.sol (filled in stage 2)
     data.setdefault("silos", [])
+    data.setdefault("siloSymbols", [])
+    data.setdefault("siloDecimals", [])
     data.pop("siloIds", None)  # drop legacy flat id array if present
     return data
 

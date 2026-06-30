@@ -1164,5 +1164,1901 @@
     "0xaa7e2395eef1aa3e3c36a2813fc0ddc88ff8eaf1",
     "0x38b6da31faf95992702536a6bc2fa77f02a7722d",
     "0x8bf727b69cde720b6dbdb85ef8d09923d40487cf"
-  ]
+  ],
+  "siloSymbols": [
+    "WETH",
+    "USDC",
+    "GM",
+    "WETH",
+    "WETH",
+    "USDC",
+    "GM",
+    "USDC",
+    "GM",
+    "USDC",
+    "GM",
+    "USDC",
+    "GM",
+    "USDC",
+    "PGOLD",
+    "USD\u20ae0",
+    "PUSD",
+    "USD\u20ae0",
+    "TT6",
+    "TT18",
+    "TT6",
+    "TT18",
+    "WETH",
+    "USDC",
+    "WETH",
+    "USDC",
+    "WETH",
+    "USDC",
+    "WETH",
+    "USDC",
+    "WETH",
+    "USDC",
+    "WETH",
+    "USDC",
+    "sUSDX",
+    "USDC",
+    "sUSDX",
+    "USDC",
+    "ARB",
+    "USDC",
+    "WBTC",
+    "USDC",
+    "PENDLE",
+    "USDC",
+    "wstETH",
+    "WETH",
+    "WETH",
+    "USDC",
+    "sUSDX",
+    "USDC",
+    "ARB",
+    "USDC",
+    "WBTC",
+    "USDC",
+    "PENDLE",
+    "USDC",
+    "PENDLE",
+    "USDC",
+    "PENDLE",
+    "USDC",
+    "wstETH",
+    "WETH",
+    "ezETH",
+    "WETH",
+    "WBTC",
+    "WETH",
+    "WBTC",
+    "WETH",
+    "ARB",
+    "WETH",
+    "ETH+",
+    "WETH",
+    "WETH",
+    "USDC",
+    "PEAS",
+    "USDC",
+    "PEAS",
+    "USDC",
+    "GRAIL",
+    "USDC",
+    "sUSDX",
+    "USDC",
+    "sUSDX",
+    "USDC",
+    "ARB",
+    "USDC",
+    "WBTC",
+    "USDC",
+    "oLP",
+    "USDC",
+    "gUSDC",
+    "USDC",
+    "yUSD",
+    "USDC",
+    "yUSD",
+    "USDC",
+    "wstETH",
+    "WETH",
+    "sUSDS",
+    "USDC",
+    "sUSDS",
+    "USDC",
+    "sUSDe",
+    "USDC",
+    "rsETH",
+    "WETH",
+    "weETH",
+    "WETH",
+    "weETH",
+    "WETH",
+    "syrupUSDC",
+    "USDC",
+    "syrupUSDC",
+    "USDC",
+    "syrupUSDC",
+    "USDC",
+    "PT-sUSDai-20NOV2025",
+    "USDC",
+    "PT-sUSDai-20NOV2025",
+    "USDC",
+    "xUSD",
+    "USDC",
+    "RYT",
+    "USDC",
+    "wstUSR",
+    "USDC",
+    "wstUSR",
+    "USDC",
+    "USDC",
+    "USDai",
+    "PT-thBILL-27NOV2025",
+    "USDC",
+    "PT-sUSDai-19FEB2026",
+    "USDC",
+    "PT-USDai-19FEB2026",
+    "USDC",
+    "PT-thBILL-19FEB2026",
+    "USDC",
+    "yUSD",
+    "USDC",
+    "yUSD",
+    "USDC",
+    "bNVDA",
+    "USDC",
+    "GM",
+    "USDC",
+    "rsETH",
+    "WETH",
+    "rsETH",
+    "WETH",
+    "PGOLD",
+    "PUSD",
+    "weETH",
+    "WETH",
+    "ezETH",
+    "WETH",
+    "ezETH",
+    "WETH",
+    "ezETH",
+    "WETH",
+    "ezETH",
+    "WETH",
+    "PT-thBILL-19FEB2026",
+    "USDC",
+    "PT-thBILL-19FEB2026",
+    "USDC",
+    "PT-thBILL-19FEB2026",
+    "USDC",
+    "PT-thBILL-19FEB2026",
+    "USDC",
+    "ezETH",
+    "WETH",
+    "WETH",
+    "USDC",
+    "WETH",
+    "USDC",
+    "USDC",
+    "WETH",
+    "USDC",
+    "USD\u20ae0",
+    "USDC",
+    "WETH",
+    "USDC",
+    "DAI",
+    "USDC",
+    "DAI",
+    "WBTC",
+    "USDC",
+    "wstETH",
+    "WETH",
+    "GM",
+    "WETH",
+    "SolvBTC",
+    "WBTC",
+    "ETH+",
+    "WETH",
+    "WETH",
+    "USDC",
+    "WETH",
+    "USDC",
+    "ARB",
+    "USDC",
+    "PENDLE",
+    "USDC",
+    "WBTC",
+    "DAI",
+    "1INCH",
+    "WETH",
+    "ETH+",
+    "WETH",
+    "GM",
+    "WETH",
+    "SolvBTC",
+    "WBTC",
+    "wstETH",
+    "WETH",
+    "WETH",
+    "USDC",
+    "ARB",
+    "USDC",
+    "WBTC",
+    "DAI",
+    "PENDLE",
+    "USDC",
+    "USD\u20ae0",
+    "DAI",
+    "1INCH",
+    "WETH",
+    "WETH",
+    "USDC",
+    "WETH",
+    "USD\u20ae0",
+    "LINK",
+    "WETH",
+    "ARB",
+    "USD\u20ae0",
+    "ARB",
+    "UNI",
+    "WBTC",
+    "",
+    "WBTC",
+    "USDC",
+    "WETH",
+    "USDC",
+    "LINK",
+    "USD\u20ae0",
+    "GNS",
+    "USD\u20ae0",
+    "GRT",
+    "USD\u20ae0",
+    "ARB",
+    "USD\u20ae0",
+    "GNS",
+    "USD\u20ae0",
+    "GRT",
+    "USD\u20ae0",
+    "WETH",
+    "USDC",
+    "WETH",
+    "USDC",
+    "WETH",
+    "USD\u20ae0",
+    "ARB",
+    "WETH",
+    "GMX",
+    "DAI",
+    "UNI",
+    "USDC",
+    "GMX",
+    "UNI"
+  ],
+  "siloDecimals": [
+    18,
+    6,
+    18,
+    18,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    6,
+    18,
+    6,
+    18,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    8,
+    6,
+    18,
+    6,
+    18,
+    18,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    8,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    18,
+    18,
+    18,
+    8,
+    18,
+    8,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    8,
+    6,
+    6,
+    6,
+    6,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    18,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    18,
+    6,
+    18,
+    6,
+    6,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    6,
+    18,
+    6,
+    6,
+    18,
+    6,
+    18,
+    6,
+    6,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    18,
+    18,
+    18,
+    6,
+    18,
+    6,
+    6,
+    18,
+    6,
+    6,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    8,
+    6,
+    18,
+    18,
+    18,
+    18,
+    18,
+    8,
+    18,
+    18,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    8,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    18,
+    8,
+    18,
+    18,
+    18,
+    6,
+    18,
+    6,
+    8,
+    18,
+    18,
+    6,
+    6,
+    18,
+    18,
+    18,
+    18,
+    6,
+    18,
+    6,
+    18,
+    18,
+    18,
+    6,
+    18,
+    18,
+    8,
+    0,
+    8,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    6,
+    18,
+    18,
+    18,
+    18,
+    18,
+    6,
+    18,
+    18
+  ],
+  "siloMeta": {
+    "0x86a142a3e1dc26fa8f98d688397a4b25e9c12813": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xe42e547c9c46c7b2bad4914228699c0e09c1034d": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x964ff17fba045fc59e691c36b36391a3aabfeafb": {
+      "asset": "0x450bb6774dd8a756274e0ab4107953259d2ac541",
+      "symbol": "GM",
+      "decimals": 18
+    },
+    "0x82fba738b8f4a7293922f2e23c981c4b2af6b2b9": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xfd7497784c39750239498ff32e0dd303d2c6225f": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x78445e53151b523f64d70c929ed602b8f75014c8": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x29fbc5e388ac1dea875f5ae6fef503eabbb507e8": {
+      "asset": "0x47c031236e19d024b42f8ae6780e44a573170703",
+      "symbol": "GM",
+      "decimals": 18
+    },
+    "0x2b6469973e2208658b0718cbd58bbddab9a0a81d": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x411dec1e8e4b0b5b6fc80fb66802c891b2ec3668": {
+      "asset": "0x70d95587d40a2caf56bd97485ab3eec10bee6336",
+      "symbol": "GM",
+      "decimals": 18
+    },
+    "0x76cc7a8470e6af05330eefd053b8562ef7c0b7b3": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x80a2e9780134f63aa0d993f52cde969c0467e954": {
+      "asset": "0x47c031236e19d024b42f8ae6780e44a573170703",
+      "symbol": "GM",
+      "decimals": 18
+    },
+    "0xb3fbd6c0e4c5951d19920f2900ca7b8b4ae692ed": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x3c4c97b79c75dd7f7ebd7768501ee81d2ff78b7b": {
+      "asset": "0x70d95587d40a2caf56bd97485ab3eec10bee6336",
+      "symbol": "GM",
+      "decimals": 18
+    },
+    "0xbda33960012dff000057c84fa260d07f10b52516": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xad56be3fe13dbddd4e04ea7ec26b97d128df3f6b": {
+      "asset": "0x3e76bb02286bfeaa89dd35f11253f2cbce634f91",
+      "symbol": "PGOLD",
+      "decimals": 18
+    },
+    "0x9742caaf28de201f32c4a2321bb54fd02e28ffb4": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0x371b40c0840b749eef9585fd9785ac6fad1e233b": {
+      "asset": "0xc8fb643d18f1e53698cfda5c8fdf0cdc03c1dbec",
+      "symbol": "PUSD",
+      "decimals": 18
+    },
+    "0x8e6d42fbdab2018b333163bf4dca52ea8deb38d4": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0xe27c4dc50a5917d1740df0990c6071f9a24475f7": {
+      "asset": "0x0bdf3ca9d5155eb24e3fb8569a69be77deb102f6",
+      "symbol": "TT6",
+      "decimals": 6
+    },
+    "0x1b4b5d2b936c9472ca23e06703bd87d8b0c2fdc4": {
+      "asset": "0x19403c915f5559da95c02e2d9fa9695771755f2b",
+      "symbol": "TT18",
+      "decimals": 18
+    },
+    "0xc937f6fc7bad543e763f4730e23f0b93a3d56624": {
+      "asset": "0x0bdf3ca9d5155eb24e3fb8569a69be77deb102f6",
+      "symbol": "TT6",
+      "decimals": 6
+    },
+    "0x62c0474189c1fb592d12ab26929c2424b62d0960": {
+      "asset": "0x19403c915f5559da95c02e2d9fa9695771755f2b",
+      "symbol": "TT18",
+      "decimals": 18
+    },
+    "0x8cc53b8a2b86aa4647ecf95d5ed190f33e4ab43b": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x53b09990f7d37e0c3c660d99bae98a11ac7701a5": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xca550a42af03f72929d4837818bef764b80ff89f": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x97a6766bd84e8d3e553da2abec3fcac188697577": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x84d1b853c1f34a01c6120013ac7ac704d5383a8d": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x5b73fb33c602351664d02ed199847b7a155297b5": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xa78bd64bffc961e2cf4d43e63c2f91145bc9cf1a": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xa8cfe031b65dfe7374acbfa71aa7a41f08f411c2": {
+      "asset": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xd07f67198e9515d16b5de35425377bc747f92795": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xca38a00f6b5fa77b60810365861d5c8f6ae25035": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xed029b1624e50e5379499ca7ab6505c2b88d6017": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x66844c9bce0dae0edac29055ae5fe7bdb3dbb6ec": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xe66f5f9f7851cd81ff9b202181df03972e147f68": {
+      "asset": "0x7788a3538c5fc7f9c7c8a74eac4c898fc8d87d92",
+      "symbol": "sUSDX",
+      "decimals": 18
+    },
+    "0x6a99235326e90039562f658b1490adfacdcd43de": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x98a1bd756479643b68e6d7d0a87bf2ffdccf9669": {
+      "asset": "0x7788a3538c5fc7f9c7c8a74eac4c898fc8d87d92",
+      "symbol": "sUSDX",
+      "decimals": 18
+    },
+    "0x62769509a5e9b986b50cbe2b0cc427e19b0dca49": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xfe85857a2b32954e61768d7d449c174a35ba1099": {
+      "asset": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "symbol": "ARB",
+      "decimals": 18
+    },
+    "0x7eebc03f164fd27c1fe91c8d3f605f7ed575914f": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x5bfaefab3463dee80f44a2852bab065d1efa7401": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0x83f3d5e9ea6523952a3fd065bc666a81b4abe1fe": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x221382a720a95ebaf54be834aa82a638616c249a": {
+      "asset": "0x0c880f6761f1af8d9aa9c466984b80dab9a8c9e8",
+      "symbol": "PENDLE",
+      "decimals": 18
+    },
+    "0x8fe33758698aa7a5abe72b89e351d39cbd8e60da": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x5d9f74708b7cf1b0f84d7cd7845270bb79f158cb": {
+      "asset": "0x5979d7b546e38e414f7e9822514be443a4800529",
+      "symbol": "wstETH",
+      "decimals": 18
+    },
+    "0xad14b49021210da4300de4e525f40ca1f9111c21": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xc2fa086c60a519e331c0fa67cb54f593dfee9f38": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x65d5eebe8270237d6a257b7fa6c61f6078a7de96": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x630f0226cd92b4ddd2cc0009442b360acebfe8c7": {
+      "asset": "0x7788a3538c5fc7f9c7c8a74eac4c898fc8d87d92",
+      "symbol": "sUSDX",
+      "decimals": 18
+    },
+    "0x8a19707948e40b5c0b4a2de154afbf001a78e3bb": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x3165357b548f16084bb32d3343fc533c1d58c9f0": {
+      "asset": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "symbol": "ARB",
+      "decimals": 18
+    },
+    "0x1802f129333135f0dae48d42ae07515405f84f7e": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xbb9b15cbe157cfea76e0868335d9a58d6170d785": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0x95fcd486a795418e14314188cbd72e5b489b8aaf": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x89baec31987d454e3606e24ddf38e75222cfb587": {
+      "asset": "0x0c880f6761f1af8d9aa9c466984b80dab9a8c9e8",
+      "symbol": "PENDLE",
+      "decimals": 18
+    },
+    "0x0070f8fee4effced0dd8fe49e685595b6b70fb95": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xcaea1f531a0c8548efaf4b7175a6582c675d995c": {
+      "asset": "0x0c880f6761f1af8d9aa9c466984b80dab9a8c9e8",
+      "symbol": "PENDLE",
+      "decimals": 18
+    },
+    "0xd6df9901e1fdd58739fec69b9b2587dca7833c07": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xfc1ac64e5afd67465b29d14d0dc1d1d081016394": {
+      "asset": "0x0c880f6761f1af8d9aa9c466984b80dab9a8c9e8",
+      "symbol": "PENDLE",
+      "decimals": 18
+    },
+    "0x86b1c293e56cbac04d9c15a1af2ef1d2050ff6cd": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x4642389f7e976918dcd7c2784d5cfd6e185e3c32": {
+      "asset": "0x5979d7b546e38e414f7e9822514be443a4800529",
+      "symbol": "wstETH",
+      "decimals": 18
+    },
+    "0x42109645a1db6529ae581f3025b16839284357ba": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x35c29915de3fedd041143f82a448ec88e5409ecc": {
+      "asset": "0x2416092f143378750bb29b79ed961ab195cceea5",
+      "symbol": "ezETH",
+      "decimals": 18
+    },
+    "0x5b4f550a2557ad0576676f55c48db6094676a67a": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xdb50872f056b3c9ee888f8012ef78581438ade11": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0x8d39a7661fa31d6528b0836fdfdd233c94df1f84": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x47d2494065769133ff03d84159bb8bce8cd1bccd": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0x7cfc994e6fb35632982798291bd1598bfbf498e9": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x1ebdde501adf8d175dabe21b13f2dc5f9246a28e": {
+      "asset": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "symbol": "ARB",
+      "decimals": 18
+    },
+    "0xb4e19e26338b15533bc9ec3160e48821a987077d": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xfd625acff4227f4fc5eb904104030c308a4b3457": {
+      "asset": "0x18c14c2d707b2212e17d1579789fc06010cfca23",
+      "symbol": "ETH+",
+      "decimals": 18
+    },
+    "0xda6ce2546cc1682c93e9034f8d2ae96f68bb26b9": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x6df68cbce4fe07b3d62e1b702f0aa9e39a796402": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x2b4cd9ce791f5c9e5f7697b19498e51699786034": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xb1d9a73f7f5f7c06618ca70561945880c661444e": {
+      "asset": "0x02f92800f57bcd74066f5709f1daa1a4302df875",
+      "symbol": "PEAS",
+      "decimals": 18
+    },
+    "0xa954969b014ad5e9c0dd989be08a81cc5fe1bced": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xa7ca1b0d4a36db43e344d4cdfc5758f3db7d42b0": {
+      "asset": "0x02f92800f57bcd74066f5709f1daa1a4302df875",
+      "symbol": "PEAS",
+      "decimals": 18
+    },
+    "0x3b6f23fe9ec3af9a65830ecfd5e8673680455501": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xab45413e2d2ba7605422e7e1b18dd4575b5e666e": {
+      "asset": "0x3d9907f9a368ad0a51be60f7da3b97cf940982d8",
+      "symbol": "GRAIL",
+      "decimals": 18
+    },
+    "0x28141ab551b268c0799f9b9aa208fa0e91457451": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xabd30fa438c81e459f2026459a81eb79a6ccfa18": {
+      "asset": "0x7788a3538c5fc7f9c7c8a74eac4c898fc8d87d92",
+      "symbol": "sUSDX",
+      "decimals": 18
+    },
+    "0xfe4705b3523a69f1baef1123367396d208263139": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xd8872677af7bf49d85352fc18c7c32f106f6fc49": {
+      "asset": "0x7788a3538c5fc7f9c7c8a74eac4c898fc8d87d92",
+      "symbol": "sUSDX",
+      "decimals": 18
+    },
+    "0x2433d6ac11193b4695d9ca73530de93c538ad18a": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xb4741d0e37094b618744e7429aa94a14e8ed436e": {
+      "asset": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "symbol": "ARB",
+      "decimals": 18
+    },
+    "0x90c994d4abf0e2ec64e7adbe21ce1bc40deb9208": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x4051848a725988107b98bb95ff83e74d715e249d": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0x0fa502ed3f4860b689f8cb660b794c6cb219d80a": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x3dda706384597e8ce0f94c06e90c7ad900621685": {
+      "asset": "0x20d419a8e12c45f88fda7c5760bb6923cee27f98",
+      "symbol": "oLP",
+      "decimals": 6
+    },
+    "0x942da67dfc79dee4aefaa1cfc30dee33937c0e1b": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x174c493399aaa0a954578b00b83ed81aa0c6bcfe": {
+      "asset": "0xd3443ee1e91af28e5fb858fbd0d72a63ba8046e0",
+      "symbol": "gUSDC",
+      "decimals": 6
+    },
+    "0xab9c406559c8321b182de83be8204a1cc259d3f0": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x6ee1df3a70669612a5219f62ae8d00310756d194": {
+      "asset": "0x4772d2e014f9fc3a820c444e3313968e9a5c8121",
+      "symbol": "yUSD",
+      "decimals": 18
+    },
+    "0xc5b9851f4ed8c58e07a7e53b1a51bc277e0d24b7": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x401d249138d30caf0b38f48e740cd7088ac6e592": {
+      "asset": "0x4772d2e014f9fc3a820c444e3313968e9a5c8121",
+      "symbol": "yUSD",
+      "decimals": 18
+    },
+    "0x1cf4649a2b38747f8e3e70e00f6fa5aeb14a12ba": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xed5ef6ee1139dbc3d48b1e5336b4a9f1c240fb6f": {
+      "asset": "0x5979d7b546e38e414f7e9822514be443a4800529",
+      "symbol": "wstETH",
+      "decimals": 18
+    },
+    "0xabacc4ff86564ac1af46c0b518c3264a29ef9859": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x67cdbb7da76745c38fbd93906f9b5c69dbc20a7c": {
+      "asset": "0xddb46999f8891663a8f2828d25298f70416d7610",
+      "symbol": "sUSDS",
+      "decimals": 18
+    },
+    "0xff487be1a60b9b9d7a69d18074de11ef65d79f43": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xd8cb4cbf7f86b84eaeb44730a6b6e69162eac02d": {
+      "asset": "0xddb46999f8891663a8f2828d25298f70416d7610",
+      "symbol": "sUSDS",
+      "decimals": 18
+    },
+    "0x68e95f16383685331aae1d4940a24fe25c57c6aa": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x0bceeade3c746373309805abfce67b3e8573e6a6": {
+      "asset": "0x211cc4dd073734da055fbf44a2b4667d5e5fe5d2",
+      "symbol": "sUSDe",
+      "decimals": 18
+    },
+    "0xef3234a3580be76cccdae29958490ca57923796e": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xc19c532ce32a41c8329508153ace85a2534d4b1b": {
+      "asset": "0x4186bfc76e2e237523cbc30fd220fe055156b41f",
+      "symbol": "rsETH",
+      "decimals": 18
+    },
+    "0x3a52dd6fa7881fc6cd3da9a6e776ff748a2bc636": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x4bd61ec7b3727d1acf669f80ae3607c55a72a3c7": {
+      "asset": "0x35751007a407ca6feffe80b3cb397736d2cf4dbe",
+      "symbol": "weETH",
+      "decimals": 18
+    },
+    "0xc0209d60f8cdfbdaf1dca6c64d5a7bf739fcbef0": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x038722a3b78a10816ae0edc6afa768b03048a0cc": {
+      "asset": "0x35751007a407ca6feffe80b3cb397736d2cf4dbe",
+      "symbol": "weETH",
+      "decimals": 18
+    },
+    "0x3613d1789583c790d30f3c6c7786a4f36f81c6ec": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xcd5b209dc6b7f3212f2585d29a23e6fbc3c7b993": {
+      "asset": "0x41ca7586cc1311807b4605fbb748a3b8862b42b5",
+      "symbol": "syrupUSDC",
+      "decimals": 6
+    },
+    "0x5cb917a1a6be6200770a6bb22ea81b8401a848cb": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x31ba980ef5379d2ced096ae630b4c3ee3a1c24ad": {
+      "asset": "0x41ca7586cc1311807b4605fbb748a3b8862b42b5",
+      "symbol": "syrupUSDC",
+      "decimals": 6
+    },
+    "0x80d20e8e4f5bbd1a805ccc252f6e807123a192f6": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x205e7605a8f548c16cbbb280bb1003bc1ea487ca": {
+      "asset": "0x41ca7586cc1311807b4605fbb748a3b8862b42b5",
+      "symbol": "syrupUSDC",
+      "decimals": 6
+    },
+    "0xd2e5dd2c5de9f6229f4ca1ec2a5614b0cdc2ec84": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x70e0c89eec128461b8a94114ec7fa46a5611e4f5": {
+      "asset": "0x936f210d277bf489a3211cef9ab4bc47a7b69c96",
+      "symbol": "PT-sUSDai-20NOV2025",
+      "decimals": 18
+    },
+    "0x166f4c1513a7b5c36ff17151871dad59e024ee9b": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xefa3b356ff48f8e234f2eb1157e43115468d191a": {
+      "asset": "0x936f210d277bf489a3211cef9ab4bc47a7b69c96",
+      "symbol": "PT-sUSDai-20NOV2025",
+      "decimals": 18
+    },
+    "0xdc1ab820c92735e7a5e48f10fa3d8424ec47a93e": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xf0543d476e7906374863091034fe679a7be8ee20": {
+      "asset": "0x6eaf19b2fc24552925db245f9ff613157a7dbb4c",
+      "symbol": "xUSD",
+      "decimals": 6
+    },
+    "0xacb7432a4bb15402ce2afe0a7c9d5b738604f6f9": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x12dcd0ed4e25ef0599c29034fde8bcbcdda47957": {
+      "asset": "0x1759aef9c1ad57b2d16caec43f451ba46d504fd7",
+      "symbol": "RYT",
+      "decimals": 18
+    },
+    "0x6e4a7aadabb1e8fa23a90a8464a3e174b69043f0": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xe0cf4514a0b7217929cbb0cc11fdafac39695629": {
+      "asset": "0x66cfbd79257dc5217903a36293120282548e2254",
+      "symbol": "wstUSR",
+      "decimals": 18
+    },
+    "0x580ea0be50f8c2331b1797d7bc317707ed584911": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x9cf01d5da5c382199da0cc029560d5d4f698dd76": {
+      "asset": "0x66cfbd79257dc5217903a36293120282548e2254",
+      "symbol": "wstUSR",
+      "decimals": 18
+    },
+    "0xa9a4bd976dbcfc2b89f554467ac85e2c758e2618": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x291f5bd3d239603224ad6d9ca5eef20224914dbd": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x2882fba24c577343fa7916a114047850ff4a261f": {
+      "asset": "0x0a1a1a107e45b7ced86833863f482bc5f4ed82ef",
+      "symbol": "USDai",
+      "decimals": 18
+    },
+    "0x89513dce1441fe314d21c663d17231a193946aee": {
+      "asset": "0x5a791652f3b140d357df072d355a98ab754877d1",
+      "symbol": "PT-thBILL-27NOV2025",
+      "decimals": 6
+    },
+    "0x1dc45c4451a99882fda13c98de8c940961875a92": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x0449d2b62ca64411a3bf0364787f599071660e92": {
+      "asset": "0x1bf1311fcf914a69dd5805c9b06b72f80539cb3f",
+      "symbol": "PT-sUSDai-19FEB2026",
+      "decimals": 18
+    },
+    "0x84ed0f5586ba014a1e7300cd8bf5eb905d9f1b26": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xf2c8d2a66f1f741cee2912d56248f8dd596232a8": {
+      "asset": "0x5b2c615e22272234aacf187632a0531ca1243279",
+      "symbol": "PT-USDai-19FEB2026",
+      "decimals": 18
+    },
+    "0x936ac4d3f90a4d92233f62cec3bd351a10d9e244": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x60637070286cab3e05cf2735d272a1d673bced2c": {
+      "asset": "0x9b3924f9652cabf3db48b7b4c92e474c571b3ab4",
+      "symbol": "PT-thBILL-19FEB2026",
+      "decimals": 6
+    },
+    "0xff8952c568f342b4be7f49f89c6c846a03993020": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x63fae89ab4ea233fcc81130191dfad54186bb576": {
+      "asset": "0x4772d2e014f9fc3a820c444e3313968e9a5c8121",
+      "symbol": "yUSD",
+      "decimals": 18
+    },
+    "0xd029229f1220e558d2b152820095a041a2ec6eb6": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xba81ced1dc83151cddc0418ce2c75fb7455696a1": {
+      "asset": "0x4772d2e014f9fc3a820c444e3313968e9a5c8121",
+      "symbol": "yUSD",
+      "decimals": 18
+    },
+    "0x4399d47049a36be1ad4c5d415d4db8e6c8bac764": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xefe090a2fe73733451fc158472565c6c5cfaf190": {
+      "asset": "0xa34c5e0abe843e10461e2c9586ea03e55dbcc495",
+      "symbol": "bNVDA",
+      "decimals": 18
+    },
+    "0xd28002a9737f5c204ce0da2f24c8294b02c03244": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x14fcf0fe1cccc16b43c640c114835e3ae2981dfc": {
+      "asset": "0x7c11f78ce78768518d743e81fdfa2f860c6b9a77",
+      "symbol": "GM",
+      "decimals": 18
+    },
+    "0xc06f9c1118b226d9dfea0f25a499f5801bbec503": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xd21fe78ede28afd90eee5f5797253f1626338a59": {
+      "asset": "0x4186bfc76e2e237523cbc30fd220fe055156b41f",
+      "symbol": "rsETH",
+      "decimals": 18
+    },
+    "0x7d7b2664a9f65c1848a9a08493e3173532a10df6": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x24a5eb888a805dd8cbe3b8ed3672dea338496b78": {
+      "asset": "0x4186bfc76e2e237523cbc30fd220fe055156b41f",
+      "symbol": "rsETH",
+      "decimals": 18
+    },
+    "0xb77ff64638a2cab0a102b3c7964514cb50d577ca": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x5333d421ef1e8ff8314e5bdbd2abd119a9a08456": {
+      "asset": "0x3e76bb02286bfeaa89dd35f11253f2cbce634f91",
+      "symbol": "PGOLD",
+      "decimals": 18
+    },
+    "0xed9f6d6b4889424173e582f2c12c41791ddfdaca": {
+      "asset": "0xc8fb643d18f1e53698cfda5c8fdf0cdc03c1dbec",
+      "symbol": "PUSD",
+      "decimals": 18
+    },
+    "0x892826bde29d0bfaba00220f7d9fd42d02c36955": {
+      "asset": "0x35751007a407ca6feffe80b3cb397736d2cf4dbe",
+      "symbol": "weETH",
+      "decimals": 18
+    },
+    "0x763ed23ffe6910ea06318c62a03c6439f91165a8": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x31e0dc776a5daf1d2ee71747dcb11e8c28b47331": {
+      "asset": "0x2416092f143378750bb29b79ed961ab195cceea5",
+      "symbol": "ezETH",
+      "decimals": 18
+    },
+    "0xb50b73996e90b532f4018d20eb438471e8ff43fe": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x775f51c12c76af389cc8e0aefde8bb98db0f3ccc": {
+      "asset": "0x2416092f143378750bb29b79ed961ab195cceea5",
+      "symbol": "ezETH",
+      "decimals": 18
+    },
+    "0xe1fbc2e5fc8d969575f10c6259c095085ccd11fb": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x413c3665937650eb198663e6c0ecdf963f8a15d6": {
+      "asset": "0x2416092f143378750bb29b79ed961ab195cceea5",
+      "symbol": "ezETH",
+      "decimals": 18
+    },
+    "0xa1a9a102a61d14c65ce28f2fd5e0275521aaa3a5": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xd933ccd5ebfd5d112a6468edf442c52c4768a76a": {
+      "asset": "0x2416092f143378750bb29b79ed961ab195cceea5",
+      "symbol": "ezETH",
+      "decimals": 18
+    },
+    "0x44aaf507ca1db091fbfd9cfac59b506b28e77ca6": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x39f84bf42cb7159b8de4126f0b3655c5840f766b": {
+      "asset": "0x9b3924f9652cabf3db48b7b4c92e474c571b3ab4",
+      "symbol": "PT-thBILL-19FEB2026",
+      "decimals": 6
+    },
+    "0xaf072a9e72cdc51e72276a76cf6ae0d63612925f": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xc5658fe0fd10dae58073b56023eaa764b04c6597": {
+      "asset": "0x9b3924f9652cabf3db48b7b4c92e474c571b3ab4",
+      "symbol": "PT-thBILL-19FEB2026",
+      "decimals": 6
+    },
+    "0xc68ec83fb240074d9671ab8bce3937509a279bf6": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x352a2d21faf799bf5316696d0c2d8a0a4111ed24": {
+      "asset": "0x9b3924f9652cabf3db48b7b4c92e474c571b3ab4",
+      "symbol": "PT-thBILL-19FEB2026",
+      "decimals": 6
+    },
+    "0x06f005dcef8025dfbcd22fb839bee64381421b21": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x11e78fba590e23bead04f983c0aacb6c2e59184e": {
+      "asset": "0x9b3924f9652cabf3db48b7b4c92e474c571b3ab4",
+      "symbol": "PT-thBILL-19FEB2026",
+      "decimals": 6
+    },
+    "0x3a877cd9700133fc7067e5265f6ee476fb78bca9": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xd1d813cc48a3ade6f12e74681c7ca3614b3cf2d2": {
+      "asset": "0x2416092f143378750bb29b79ed961ab195cceea5",
+      "symbol": "ezETH",
+      "decimals": 18
+    },
+    "0xbac74e1b3be5c472d8b386695f2f9eec31b9cc50": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x9e0504342a5b06003339987e4e6a267f061a5dcf": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x5ad392954a7f78a33f73e56e9b65c4d8e19a8504": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xf6a0f90a300d804147f4dcd0cec83eb6af0bfb50": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x0dfcd92b272bf8188d74c2a219efe206fda5c7d1": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x0ec7acfbed671977dc8409ad7786fc2961c2454b": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x1d94cbd29bd13f1516d62362fe1d2f96f80970be": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x2a3b686dec8ded90aed1aec9dcf289dbf82c7973": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x2691adfaad4a34502c2be4aab6c26bf4497eb582": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0x3c91d761920bd6063606ce478fe8e39e61c3f2c4": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x7ae9788d79a15b8897ff3f9e85f8885b0c4f93df": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x584d5b1a086f8f6f6607c1902424ed16fa5d5843": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xed586ca4f7a6f3924730934144d39a16e6643d35": {
+      "asset": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+      "symbol": "DAI",
+      "decimals": 18
+    },
+    "0xae91cd64041e1bd4f4954254e146facbf7cb9a77": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x5e5540930ef576c5044af00056e85327600ab305": {
+      "asset": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+      "symbol": "DAI",
+      "decimals": 18
+    },
+    "0x7b54d87c877a10cd0b06de61d7cc17210d8c52ec": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0x593afb8331835f897ece3f415bcb6f325d837bb8": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x825afdb1fa7a5466624e4178d0a36b6db8dd0d25": {
+      "asset": "0x5979d7b546e38e414f7e9822514be443a4800529",
+      "symbol": "wstETH",
+      "decimals": 18
+    },
+    "0x4e513ec0f16004519dd95c421d249add7c59d656": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xdc3373f448b1e5684f1464f87046c41eea78417b": {
+      "asset": "0x70d95587d40a2caf56bd97485ab3eec10bee6336",
+      "symbol": "GM",
+      "decimals": 18
+    },
+    "0x71c168610a065a50a78262628668e4fe8ca99f0b": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x0434ade027a0fb844888971423ac0ed9db17708e": {
+      "asset": "0x3647c54c4c2c65bc7a2d63c0da2809b399dbbdc0",
+      "symbol": "SolvBTC",
+      "decimals": 18
+    },
+    "0x6c38c7deef097b900cb9d1eeb9dc714f7e3f63dc": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0x76cbc1f128050e0d969080df02347c739635ec9e": {
+      "asset": "0x18c14c2d707b2212e17d1579789fc06010cfca23",
+      "symbol": "ETH+",
+      "decimals": 18
+    },
+    "0x357b5520c9bc5215d4eb7939757ee987a5e98443": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xf1458d5a9bb6798c0b02b54d14e9ab661fd68b49": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x7c2cfaa86f7af6b6dcb02e437103f9b8ba84e5c4": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x9bf8a8e0a36e99b9fe84773e7f00e182a8ad5684": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xbab646bda0f6b3cabf8eded6530bd00ac04652b6": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x4362d0946a98a1f45addad7af21399f762e77864": {
+      "asset": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "symbol": "ARB",
+      "decimals": 18
+    },
+    "0x96576376b733688887742178c91069bb873dfe1a": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x6cb24be4bd50e183c5f061a3ac9e13de393b4c47": {
+      "asset": "0x0c880f6761f1af8d9aa9c466984b80dab9a8c9e8",
+      "symbol": "PENDLE",
+      "decimals": 18
+    },
+    "0x369da45aad36cf05491017500d21e64f2a3507eb": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x2082ec08022f43846604f4415cf9dc743d75e390": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0xbfb0e345cee0c6d3b3347986693aabaca902d0c3": {
+      "asset": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+      "symbol": "DAI",
+      "decimals": 18
+    },
+    "0x274efbac683e5762e7228a5b1a79e64f4a902c1f": {
+      "asset": "0x6314c31a7a1652ce482cffe247e9cb7c3f4bb9af",
+      "symbol": "1INCH",
+      "decimals": 18
+    },
+    "0x90944f7f0362cecdd5a6409f1686aeb5a9371b21": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xe5552b56084acaa0287b15eb5a93b63d5e3130ea": {
+      "asset": "0x18c14c2d707b2212e17d1579789fc06010cfca23",
+      "symbol": "ETH+",
+      "decimals": 18
+    },
+    "0x434fd6c7396e5bafb701a6ca634a90105ac943d4": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x1a869fa6615b1629b8ec78ce02859f722c1d2e28": {
+      "asset": "0x70d95587d40a2caf56bd97485ab3eec10bee6336",
+      "symbol": "GM",
+      "decimals": 18
+    },
+    "0x7d3de8c063bdd905f4aa147bd4d6081457cb89a5": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xcb48b1d28de468bdfe6030235f78ab1466b8c052": {
+      "asset": "0x3647c54c4c2c65bc7a2d63c0da2809b399dbbdc0",
+      "symbol": "SolvBTC",
+      "decimals": 18
+    },
+    "0xf6ddc4579cc8a9903d20c2890ffe54bcae148fe4": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0x0f3e42679f6cf6ee00b7eac7b1676ca044615402": {
+      "asset": "0x5979d7b546e38e414f7e9822514be443a4800529",
+      "symbol": "wstETH",
+      "decimals": 18
+    },
+    "0x58a31d1f2be10bf2b48c6ecffbb27d1f3194e547": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x86404112a8deef94549ea2b85386940e7d1ecbf4": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x8d26767a6f077c6b969240200b27f0b7529b2dee": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xdc4252487011d8172abcf7046e8979e59994398f": {
+      "asset": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "symbol": "ARB",
+      "decimals": 18
+    },
+    "0x656b11180ac49a14f36e41e236c62561f9c8f16f": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x4b560fcc463cb7848ef44e59bde3630277c4b8ee": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0xe5ddb4fa8abecddd80f9110816fcecf7a696a822": {
+      "asset": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+      "symbol": "DAI",
+      "decimals": 18
+    },
+    "0x2c38fbbbc99972e42172d07a3084e1cff32a253c": {
+      "asset": "0x0c880f6761f1af8d9aa9c466984b80dab9a8c9e8",
+      "symbol": "PENDLE",
+      "decimals": 18
+    },
+    "0x32cb3bb0e2751b47ada87049dfa3eaaa654116f7": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x670ef695c67dbfda7f22f18a1341ce27ece69313": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0x6f62e9e2edf745f90f900d389c42ffbb53ac36df": {
+      "asset": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+      "symbol": "DAI",
+      "decimals": 18
+    },
+    "0x58c0c474fcdc98afb0a530075a93959fb483aad4": {
+      "asset": "0x6314c31a7a1652ce482cffe247e9cb7c3f4bb9af",
+      "symbol": "1INCH",
+      "decimals": 18
+    },
+    "0x8b306bdc8bb8cfe6f3ca0301b4dea62c273b3d00": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x6bf68d7449df37d733fed72fa9c141774ae4bfc0": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xb28379319492d2023765cb89265bddfa6dbaae19": {
+      "asset": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xac6da095f1b684b15c0ef3894444cdb47859dfae": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x6534b35933c90dc2abf4cc47aff149f75db97e79": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0x16a2e13c17828baa852c13cb26ff1adb2bbd9f95": {
+      "asset": "0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
+      "symbol": "LINK",
+      "decimals": 18
+    },
+    "0x5d216642ce5936177f39ee12d57b1fe0d934bcb1": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x4017f00ba979dbbea3f5c4788d9d149d0f6306f3": {
+      "asset": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "symbol": "ARB",
+      "decimals": 18
+    },
+    "0x386ec5c2adbb1edd797ad95fd2b3e3dfbea5bb47": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0x6257e6113f79b71aae26a75bacff5077e3b438f3": {
+      "asset": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "symbol": "ARB",
+      "decimals": 18
+    },
+    "0xa57a817129dfa930668ff5bc36c6d7a5ce6b2ccc": {
+      "asset": "0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
+      "symbol": "UNI",
+      "decimals": 18
+    },
+    "0x0b20debd8026e7e133a5b0fdcbb1e2c637bf42c6": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0x0c12cb6146358ac771aa0d72bc37f2f0a991e4a7": {
+      "asset": "0x7f580f8a02b759c350e6b8340e7c2d4b8162b6a9",
+      "symbol": "",
+      "decimals": 0
+    },
+    "0x2d5397ea9175f784c172415f1a77d1eba07543c7": {
+      "asset": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "0xadb9a64c751837406e9f234de3ec13065583ffb9": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x759cd08ca50a50810fe5374315ad7b4813e9d336": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xc6598394b8e4c21b495b031950549da19d31d520": {
+      "asset": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x91d4d73d17a2d1a7129e9d293185d8fbecc29a8c": {
+      "asset": "0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
+      "symbol": "LINK",
+      "decimals": 18
+    },
+    "0xce8f83ef7b568c53493702c28b9ab5eecb1447c1": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0x76c71ca93630f1034ea893779da69d11eed8146b": {
+      "asset": "0x18c11fd286c5ec11c3b683caa813b77f5163a122",
+      "symbol": "GNS",
+      "decimals": 18
+    },
+    "0x8a57add1a93e1fa633f27938262eb131cd29a3d6": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0xb1a8b3338c4509dc24ca4a8a9c10c24c15f6dc9a": {
+      "asset": "0x9623063377ad1b27544c965ccd7342f7ea7e88c7",
+      "symbol": "GRT",
+      "decimals": 18
+    },
+    "0xbb398afd1487daa9d7a6f1feb6940dc0ed72b36b": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0x855e95f0ff97f346757837c6e0360a1a3a75c094": {
+      "asset": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "symbol": "ARB",
+      "decimals": 18
+    },
+    "0x75fccc1bb4cefce8facdc0e959c017e1c011c9c4": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0xba61dd97c6b62c9ada7a522a3afab29144161c79": {
+      "asset": "0x18c11fd286c5ec11c3b683caa813b77f5163a122",
+      "symbol": "GNS",
+      "decimals": 18
+    },
+    "0x7298867389f72ad3343c3cc701bd96ff7faec895": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0x0e123d100ddc978aa3ca0cf06cbec449701137e7": {
+      "asset": "0x9623063377ad1b27544c965ccd7342f7ea7e88c7",
+      "symbol": "GRT",
+      "decimals": 18
+    },
+    "0x474a9ace9ca051ed38f80fd4dc7148473f3609b3": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0xef1bfd9dfb7a68f23f9546c52acdf3c40d45514f": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xa73e1d3102690be045b51787c5db58116001b003": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x42297002d718ba59458098cc4279f88f0f967d76": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x247c9710c66b30dc548c04942e456e4d9c130341": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0xfc33e95c12a69addbf3adf1aa0d2e364f6d5d8db": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0x9916137f0dbf3e7f084cfd686354b06c25589b23": {
+      "asset": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+      "symbol": "USD\u20ae0",
+      "decimals": 6
+    },
+    "0xb57b87aa7d22b56428f47ffac0f054dda46925d2": {
+      "asset": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+      "symbol": "ARB",
+      "decimals": 18
+    },
+    "0xbf5e9816069ca23f51bc5487f4c1f8e73ca52f40": {
+      "asset": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "0xcf04c1a612309d8802ee976c80224c3fa0d2852a": {
+      "asset": "0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+      "symbol": "GMX",
+      "decimals": 18
+    },
+    "0x269e656050a8ccf62d322da3fdc179198dda730c": {
+      "asset": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+      "symbol": "DAI",
+      "decimals": 18
+    },
+    "0x28f12838de6d88cec2d090cc52eb64b37908d423": {
+      "asset": "0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
+      "symbol": "UNI",
+      "decimals": 18
+    },
+    "0xaa7e2395eef1aa3e3c36a2813fc0ddc88ff8eaf1": {
+      "asset": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    "0x38b6da31faf95992702536a6bc2fa77f02a7722d": {
+      "asset": "0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+      "symbol": "GMX",
+      "decimals": 18
+    },
+    "0x8bf727b69cde720b6dbdb85ef8d09923d40487cf": {
+      "asset": "0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
+      "symbol": "UNI",
+      "decimals": 18
+    }
+  }
 }

@@ -372,11 +372,11 @@ def main() -> int:
     for factory in list(factories):
         discover_factory(args.rpc_url, factory, factories[factory])
         # persist factory discovery after each one (incremental)
-        out_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+        out_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     # rebuild the consumable silo list (+ backfill immutable asset metadata) once
     build_silo_list(args.rpc_url, data)
-    out_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    out_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     print(f"[{chain.alias}] done. Total silos on file: {len(data['silos'])}")
     return 0

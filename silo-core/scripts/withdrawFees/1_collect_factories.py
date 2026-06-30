@@ -165,7 +165,7 @@ def load_data_file(path: Path, alias: str, chain_id: int) -> dict:
 
 def save_data_file(path: Path, data: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:

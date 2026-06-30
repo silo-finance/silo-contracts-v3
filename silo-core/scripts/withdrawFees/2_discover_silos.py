@@ -24,7 +24,8 @@ from pathlib import Path
 
 import _common
 
-ID_TO_CONFIG_SIG = "idToSiloConfig(uint256)"
+ID_TO_CONFIG_SIG = "idToSiloConfig(uint256)"  # current factories: id -> SiloConfig
+ID_TO_SILOS_SIG = "idToSilos(uint256)"        # legacy factories: id -> [silo0, silo1]
 GET_SILOS_SIG = "getSilos()"
 ASSET_SIG = "asset()"
 SYMBOL_SIG = "symbol()"
@@ -90,8 +91,19 @@ def configs_for_ids(rpc_url: str, factory: str, ids: list[int]) -> dict[int, str
     return out
 
 
+def _get_next_silo_id(rpc_url: str, factory: str, attempts: int = 3) -> int:
+    """Read getNextSiloId(); every factory has it, so retry transient RPC errors then raise."""
+    last_error: Exception | None = None
+    for _ in range(attempts):
+        try:
+            return _common.cast_call_uint(rpc_url, factory, "getNextSiloId()(uint256)")
+        except RuntimeError as exc:
+            last_error = exc
+    raise RuntimeError(f"getNextSiloId() failed for {factory} after {attempts} attempts: {last_error}")
+
+
 def silos_for_configs(rpc_url: str, configs: dict[int, str]) -> dict[int, tuple[str, str]]:
-    """Return {siloId: (silo0, silo1)} by calling getSilos() on each config."""
+    """Return {siloId: (silo0, silo1)} by calling getSilos() on each config (current factories)."""
     if not configs:
         return {}
     ids = list(configs)
@@ -107,27 +119,57 @@ def silos_for_configs(rpc_url: str, configs: dict[int, str]) -> dict[int, tuple[
     return out
 
 
-def resolve_start_id(rpc_url: str, factory: str, next_id: int) -> int | None:
-    """Probe known bases; return the resolved start id, or None if none found."""
+def legacy_silos_for_ids(rpc_url: str, factory: str, ids: list[int]) -> dict[int, tuple[str, str]]:
+    """Return {siloId: (silo0, silo1)} via the legacy idToSilos(uint256) returns (address[2])."""
+    if not ids:
+        return {}
+    calls = [(factory, _common.encode_uint_call(ID_TO_SILOS_SIG, i)) for i in ids]
+    results = _common.aggregate3(rpc_url, calls)
+    out: dict[int, tuple[str, str]] = {}
+    for silo_id, (success, data) in zip(ids, results):
+        if not success:
+            continue
+        silo0, silo1 = decode_two_addresses(data)
+        if not _common.is_zero_address(silo0):
+            out[silo_id] = (silo0, silo1)
+    return out
+
+
+def resolve_start(rpc_url: str, factory: str, next_id: int) -> tuple[int | None, bool]:
+    """Probe the known bases with both ABIs.
+
+    Returns (start_id, legacy). `legacy` is True when the factory exposes the old
+    idToSilos(uint256) layout instead of idToSiloConfig(uint256). (None, False) means
+    no silo was found at any known base (empty factory).
+    """
     probes = [(probe, start) for probe, start in START_CANDIDATES if probe < next_id]
     if not probes:
-        return None
-    found = configs_for_ids(rpc_url, factory, [probe for probe, _ in probes])
+        return None, False
+
+    probe_ids = [probe for probe, _ in probes]
+
+    # current layout first
+    found_new = configs_for_ids(rpc_url, factory, probe_ids)
     for probe, start in probes:
-        if probe in found:
-            return start
-    return None
+        if probe in found_new:
+            return start, False
+
+    # legacy layout fallback (mirrors the old WithdrawFees.s.sol OldFactory.idToSilos path)
+    found_legacy = legacy_silos_for_ids(rpc_url, factory, probe_ids)
+    for probe, start in probes:
+        if probe in found_legacy:
+            return start, True
+
+    return None, False
 
 
 def discover_factory(rpc_url: str, factory: str, record: dict) -> dict:
-    """Update `record` in place with discovered silos and return it."""
-    try:
-        next_id = _common.cast_call_uint(rpc_url, factory, "getNextSiloId()(uint256)")
-    except RuntimeError:
-        print(f"  {factory}: getNextSiloId() reverted - likely an old/incompatible factory, skipping")
-        record["old"] = True
-        return record
+    """Update `record` in place with discovered silos and return it.
 
+    getNextSiloId() must succeed for every factory; a failure is raised (not skipped)
+    so we never silently drop a factory and miss its silos.
+    """
+    next_id = _get_next_silo_id(rpc_url, factory)
     print(f"  {factory}: nextSiloId={next_id}")
 
     if next_id <= 1:
@@ -137,17 +179,22 @@ def discover_factory(rpc_url: str, factory: str, record: dict) -> dict:
 
     last_checked = record.get("lastCheckedId")
     start_id = record.get("startId")
+    legacy = bool(record.get("legacy", False))
 
     if last_checked is not None and start_id is not None:
         scan_from = last_checked + 1
     else:
-        start_id = resolve_start_id(rpc_url, factory, next_id)
+        start_id, legacy = resolve_start(rpc_url, factory, next_id)
         if start_id is None:
             record["lastCheckedId"] = next_id - 1
-            print("    no start id among {1,100,101,3000,3001} - empty or old factory")
+            print("    no start id among {1,100,101,3000,3001} - empty factory")
             return record
         record["startId"] = start_id
+        record["legacy"] = legacy
         scan_from = start_id
+
+    if legacy:
+        print("    legacy factory (idToSilos layout)")
 
     if scan_from >= next_id:
         print("    up to date, nothing new")
@@ -157,19 +204,25 @@ def discover_factory(rpc_url: str, factory: str, record: dict) -> dict:
     ids = list(range(scan_from, next_id))
     print(f"    scanning ids {scan_from}..{next_id - 1} ({len(ids)} ids)")
 
-    configs = configs_for_ids(rpc_url, factory, ids)
-    silos = silos_for_configs(rpc_url, configs)
+    if legacy:
+        configs = {}
+        silos = legacy_silos_for_ids(rpc_url, factory, ids)
+    else:
+        configs = configs_for_ids(rpc_url, factory, ids)
+        silos = silos_for_configs(rpc_url, configs)
+
+    discovered_ids = sorted(silos) if legacy else sorted(configs)
 
     existing_ids = {s["siloId"] for s in record.setdefault("silos", [])}
     added = 0
-    for silo_id in sorted(configs):
+    for silo_id in discovered_ids:
         if silo_id in existing_ids:
             continue
         silo0, silo1 = silos.get(silo_id, (_common.ZERO_ADDRESS, _common.ZERO_ADDRESS))
         record["silos"].append(
             {
                 "siloId": silo_id,
-                "siloConfig": configs[silo_id],
+                "siloConfig": configs.get(silo_id, ""),
                 "silo0": silo0,
                 "silo1": silo1,
             }

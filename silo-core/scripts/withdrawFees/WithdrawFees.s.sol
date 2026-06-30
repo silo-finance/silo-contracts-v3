@@ -29,6 +29,16 @@ To run this stage alone for a single chain:
         --ffi --rpc-url $RPC_ARBITRUM --broadcast
 */
 contract WithdrawFees is CommonDeploy, StdAssertions {
+    // matches one object in the per-chain data file `silos` array.
+    // NOTE: fields MUST stay in alphabetical order so `vm.parseJson` can decode the
+    // JSON objects (keys are sorted alphabetically) straight into this struct.
+    struct SiloData {
+        address asset;
+        uint256 decimals;
+        address silo;
+        string symbol;
+    }
+
     IMulticall3 multicall3 = IMulticall3(0xcA11bde05977b3631167028862bE2a173976CA11);
     IMulticall3.Call3[] calls;
 
@@ -46,16 +56,15 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
             string.concat("silo-core/scripts/withdrawFees/data/", ChainsLib.chainAlias(), ".json");
 
         string memory json = vm.readFile(dataPath);
-        address[] memory silos = vm.parseJsonAddressArray(json, ".silos");
-        // asset symbol/decimals are immutable, precomputed by 2_discover_silos.py (index-aligned)
-        string[] memory symbols = vm.parseJsonStringArray(json, ".siloSymbols");
-        uint256[] memory decimals = vm.parseJsonUintArray(json, ".siloDecimals");
+        // each silo carries its (immutable) asset symbol/decimals, precomputed by 2_discover_silos.py
+        bytes memory raw = vm.parseJson(json, ".silos");
+        SiloData[] memory silos = abi.decode(raw, (SiloData[]));
 
         console2.log("Loaded silos from", dataPath);
         console2.log("Total discovered silos", silos.length);
 
         for (uint256 i = 0; i < silos.length; i++) {
-            _pushWithdrawFeesCall({_lens: lens, _silo: silos[i], _symbol: symbols[i], _decimals: decimals[i]});
+            _pushWithdrawFeesCall({_lens: lens, _silo: silos[i].silo, _symbol: silos[i].symbol, _decimals: silos[i].decimals});
         }
 
         console2.log("Total amount of silos to call", calls.length);

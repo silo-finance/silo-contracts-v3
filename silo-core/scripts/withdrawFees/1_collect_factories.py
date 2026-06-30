@@ -155,11 +155,11 @@ def load_data_file(path: Path, alias: str, chain_id: int) -> dict:
     data.setdefault("chain", alias)
     data.setdefault("chainId", chain_id)
     data.setdefault("factories", {})
-    # index-aligned flat arrays consumed by WithdrawFees.s.sol (filled in stage 2)
+    # consumable list of {silo, asset, symbol, decimals}, filled/maintained in stage 2
     data.setdefault("silos", [])
-    data.setdefault("siloSymbols", [])
-    data.setdefault("siloDecimals", [])
-    data.pop("siloIds", None)  # drop legacy flat id array if present
+    # drop superseded shapes from older runs
+    for legacy_key in ("siloIds", "siloSymbols", "siloDecimals", "siloMeta"):
+        data.pop(legacy_key, None)
     return data
 
 

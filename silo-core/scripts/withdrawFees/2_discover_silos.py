@@ -253,30 +253,19 @@ def collect_silo_addresses(data: dict) -> list[str]:
     return addrs
 
 
-def enrich_metadata(rpc_url: str, data: dict) -> None:
-    """Fill data['siloMeta'][silo] = {asset, symbol, decimals} for silos missing it.
+def fetch_metadata(rpc_url: str, silos: list[str]) -> dict[str, dict]:
+    """Return {siloLower: {asset, symbol, decimals}} for the given silos.
 
-    Immutable per token, so only fetched once. Two Multicall3 reads: asset() per silo,
-    then symbol()+decimals() per unique asset.
+    Two Multicall3 reads: asset() per silo, then symbol()+decimals() per unique asset.
     """
-    meta: dict = data.setdefault("siloMeta", {})
-    missing = [a for a in collect_silo_addresses(data) if a.lower() not in meta]
-    if not missing:
-        print("  metadata: up to date")
-        return
-
-    print(f"  metadata: fetching asset/symbol/decimals for {len(missing)} silo(s)")
-
-    # 1) asset() for every silo
-    asset_results = _common.aggregate3(rpc_url, [(a, _common.selector(ASSET_SIG)) for a in missing])
+    asset_results = _common.aggregate3(rpc_url, [(s, _common.selector(ASSET_SIG)) for s in silos])
     silo_asset: dict[str, str] = {}
-    for silo, (success, ret) in zip(missing, asset_results):
+    for silo, (success, ret) in zip(silos, asset_results):
         silo_asset[silo] = _common.decode_address(ret) if success else _common.ZERO_ADDRESS
 
-    # 2) symbol() + decimals() for every unique (non-zero) asset
     unique_assets: list[str] = []
     seen_assets: set[str] = set()
-    for silo in missing:
+    for silo in silos:
         asset = silo_asset[silo]
         if _common.is_zero_address(asset):
             continue
@@ -299,33 +288,56 @@ def enrich_metadata(rpc_url: str, data: dict) -> None:
                 "decimals": decode_uint(ret_decimals) if ok_decimals else 0,
             }
 
-    for silo in missing:
+    out: dict[str, dict] = {}
+    for silo in silos:
         asset = silo_asset[silo]
         am = asset_meta.get(asset.lower(), {"symbol": "", "decimals": 0})
-        meta[silo.lower()] = {"asset": asset, "symbol": am["symbol"], "decimals": am["decimals"]}
+        out[silo.lower()] = {"asset": asset, "symbol": am["symbol"], "decimals": am["decimals"]}
+    return out
 
 
-def rebuild_flat_lists(data: dict) -> None:
-    """Maintain the top-level parallel arrays consumed by WithdrawFees.s.sol.
+def build_silo_list(rpc_url: str, data: dict) -> None:
+    """(Re)build the top-level `silos` array consumed by WithdrawFees.s.sol.
 
-    `silos` / `siloSymbols` / `siloDecimals` are index-aligned. Deduped (lowercased)
-    over every non-zero silo0/silo1 across all factories; symbol/decimals come from the
-    cached `siloMeta`. Per-market `siloId` is intentionally kept only inside each
-    factory's `silos[]` entry (it is not unique across factories, so a flat list is useless).
+    A flat, deduped, human-readable list of objects:
+        {"silo", "asset", "symbol", "decimals"}
+    Asset metadata is immutable, so it is cached in this very list and only fetched for
+    silos that are new since the last run. Keys are alphabetical so Foundry can decode the
+    array straight into a struct. Per-market provenance (siloId/siloConfig/silo0/silo1)
+    stays inside each factory's `silos[]` entry.
     """
-    meta: dict = data.get("siloMeta", {})
-    silos: list[str] = []
-    symbols: list[str] = []
-    decimals: list[int] = []
-    for addr in collect_silo_addresses(data):
-        entry = meta.get(addr.lower(), {})
-        silos.append(addr)
-        symbols.append(entry.get("symbol", ""))
-        decimals.append(entry.get("decimals", 0))
+    cached = {
+        obj["silo"].lower(): obj
+        for obj in data.get("silos", [])
+        if isinstance(obj, dict) and obj.get("silo")
+    }
+
+    addresses = collect_silo_addresses(data)
+    missing = [a for a in addresses if a.lower() not in cached]
+    if missing:
+        print(f"  metadata: fetching asset/symbol/decimals for {len(missing)} new silo(s)")
+        fetched = fetch_metadata(rpc_url, missing)
+    else:
+        print("  metadata: up to date")
+        fetched = {}
+
+    silos: list[dict] = []
+    for addr in addresses:
+        low = addr.lower()
+        meta = cached.get(low) or fetched.get(low, {})
+        silos.append(
+            {
+                "silo": addr,
+                "asset": meta.get("asset", _common.ZERO_ADDRESS),
+                "symbol": meta.get("symbol", ""),
+                "decimals": meta.get("decimals", 0),
+            }
+        )
+
     data["silos"] = silos
-    data["siloSymbols"] = symbols
-    data["siloDecimals"] = decimals
-    data.pop("siloIds", None)  # drop legacy flat id array if present
+    # drop superseded shapes from older runs
+    for legacy_key in ("siloIds", "siloSymbols", "siloDecimals", "siloMeta"):
+        data.pop(legacy_key, None)
 
 
 def parse_args() -> argparse.Namespace:
@@ -359,17 +371,14 @@ def main() -> int:
 
     for factory in list(factories):
         discover_factory(args.rpc_url, factory, factories[factory])
-        # persist after every factory (incremental)
-        rebuild_flat_lists(data)
+        # persist factory discovery after each one (incremental)
         out_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
-    # backfill immutable asset metadata (symbol/decimals) once, then rebuild + persist
-    enrich_metadata(args.rpc_url, data)
-    rebuild_flat_lists(data)
+    # rebuild the consumable silo list (+ backfill immutable asset metadata) once
+    build_silo_list(args.rpc_url, data)
     out_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
-    total_silos = sum(len(f.get("silos", [])) for f in factories.values())
-    print(f"[{chain.alias}] done. Total silos on file: {total_silos}")
+    print(f"[{chain.alias}] done. Total silos on file: {len(data['silos'])}")
     return 0
 
 

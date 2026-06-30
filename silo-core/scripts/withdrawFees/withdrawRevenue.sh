@@ -11,6 +11,9 @@
 #   chain ...    optional list of chain aliases (default: all known chains)
 #
 # A failure on one chain never aborts the others; a summary is printed at the end.
+#
+# Note: written to be compatible with the stock macOS bash 3.2 (no mapfile / no
+# associative arrays), so it runs the same with `./withdrawRevenue.sh` everywhere.
 
 set -uo pipefail
 
@@ -33,70 +36,121 @@ for arg in "$@"; do
     case "$arg" in
         --parallel) PARALLEL=true ;;
         --dry-run)  DRY_RUN=true ;;
-        -h|--help)  sed -n '2,14p' "${BASH_SOURCE[0]}"; exit 0 ;;
+        -h|--help)  sed -n '2,17p' "${BASH_SOURCE[0]}"; exit 0 ;;
         --*)        echo "Unknown flag: $arg" >&2; exit 1 ;;
         *)          CHAINS+=("$arg") ;;
     esac
 done
 
+# Default to all known chains (read line-by-line; bash 3.2 has no `mapfile`).
 if [ "${#CHAINS[@]}" -eq 0 ]; then
-    mapfile -t CHAINS < <(py -c "import _common;print('\n'.join(_common.CHAINS))")
+    while IFS= read -r _chain; do
+        [ -n "$_chain" ] && CHAINS+=("$_chain")
+    done < <(py -c "import _common;print('\n'.join(_common.CHAINS))")
 fi
+
+if [ "${#CHAINS[@]}" -eq 0 ]; then
+    echo "ERROR: no chains to process (could not read chain list from _common.py)." >&2
+    exit 1
+fi
+
+echo "Chains to process (${#CHAINS[@]}): ${CHAINS[*]}"
+$DRY_RUN && echo "Mode: DRY-RUN (no broadcast)"
+$PARALLEL && echo "Mode: PARALLEL (per-chain logs in ${LOG_DIR})"
 
 run_chain() {
     local chain="$1"
     local env_var rpc broadcast
 
-    env_var="$(chain_rpc_env "$chain")" || { echo "[$chain] unknown chain alias"; return 1; }
+    echo "[$chain] ===== start ====="
+
+    if ! env_var="$(chain_rpc_env "$chain" 2>/dev/null)"; then
+        echo "[$chain] FAILED: unknown chain alias (not defined in _common.py)"
+        return 1
+    fi
+    echo "[$chain] using RPC env var: ${env_var}"
+
     rpc="$(rpc_url_for_env "$env_var")"
     if [ -z "$rpc" ]; then
-        echo "[$chain] $env_var is empty/unset in .env, skipping"
+        echo "[$chain] FAILED: ${env_var} is empty/unset in .env (cannot reach this chain)"
         return 1
     fi
 
     echo "[$chain] stage 1/3: collect factories from git history"
-    py "${SCRIPT_DIR}/1_collect_factories.py" --chain "$chain" || return 1
+    if ! py "${SCRIPT_DIR}/1_collect_factories.py" --chain "$chain"; then
+        echo "[$chain] FAILED at stage 1/3 (collect factories)"
+        return 1
+    fi
 
     echo "[$chain] stage 2/3: discover silos via RPC"
-    py "${SCRIPT_DIR}/2_discover_silos.py" --chain "$chain" --rpc-url "$rpc" || return 1
+    if ! py "${SCRIPT_DIR}/2_discover_silos.py" --chain "$chain" --rpc-url "$rpc"; then
+        echo "[$chain] FAILED at stage 2/3 (discover silos)"
+        return 1
+    fi
 
     echo "[$chain] stage 3/3: withdraw fees"
     broadcast="--broadcast"
     $DRY_RUN && broadcast=""
-    ( cd "$REPO_ROOT" && FOUNDRY_PROFILE=core forge script "$WITHDRAW_SCRIPT" --ffi --rpc-url "$rpc" $broadcast ) \
-        || return 1
+    if ! ( cd "$REPO_ROOT" && FOUNDRY_PROFILE=core forge script "$WITHDRAW_SCRIPT" --ffi --rpc-url "$rpc" $broadcast ); then
+        echo "[$chain] FAILED at stage 3/3 (withdraw fees)"
+        return 1
+    fi
+
+    echo "[$chain] ===== done ====="
 }
 
 mkdir -p "$LOG_DIR"
-declare -A STATUS
+
+# Parallel indexed arrays (bash 3.2 has no associative arrays): STATUS[i] / PIDS[i]
+# correspond to CHAINS[i].
+STATUS=()
+PIDS=()
+overall=0
 
 if $PARALLEL; then
-    declare -A PIDS
-    for chain in "${CHAINS[@]}"; do
+    i=0
+    while [ "$i" -lt "${#CHAINS[@]}" ]; do
+        chain="${CHAINS[$i]}"
         ( run_chain "$chain" ) >"${LOG_DIR}/${chain}.log" 2>&1 &
-        PIDS[$chain]=$!
-        echo "[$chain] started (pid ${PIDS[$chain]}) -> ${LOG_DIR}/${chain}.log"
+        PIDS[$i]=$!
+        echo "[$chain] started (pid ${PIDS[$i]}) -> ${LOG_DIR}/${chain}.log"
+        i=$((i + 1))
     done
-    for chain in "${CHAINS[@]}"; do
-        if wait "${PIDS[$chain]}"; then STATUS[$chain]=OK; else STATUS[$chain]=FAIL; fi
+    i=0
+    while [ "$i" -lt "${#CHAINS[@]}" ]; do
+        chain="${CHAINS[$i]}"
+        if wait "${PIDS[$i]}"; then
+            STATUS[$i]=OK
+            echo "[$chain] finished: OK"
+        else
+            STATUS[$i]=FAIL
+            echo "[$chain] finished: FAIL (see ${LOG_DIR}/${chain}.log)"
+        fi
+        i=$((i + 1))
     done
 else
-    for chain in "${CHAINS[@]}"; do
-        echo "================ $chain ================"
+    i=0
+    while [ "$i" -lt "${#CHAINS[@]}" ]; do
+        chain="${CHAINS[$i]}"
+        echo ""
+        echo "================ ${chain} ($((i + 1))/${#CHAINS[@]}) ================"
         if run_chain "$chain" 2>&1 | tee "${LOG_DIR}/${chain}.log"; then
-            STATUS[$chain]=OK
+            STATUS[$i]=OK
         else
-            STATUS[$chain]=FAIL
+            STATUS[$i]=FAIL
         fi
+        i=$((i + 1))
     done
 fi
 
 echo ""
 echo "==================== SUMMARY ===================="
-overall=0
-for chain in "${CHAINS[@]}"; do
-    echo "  ${chain}: ${STATUS[$chain]:-SKIPPED}"
-    [ "${STATUS[$chain]:-}" = "FAIL" ] && overall=1
+i=0
+while [ "$i" -lt "${#CHAINS[@]}" ]; do
+    chain="${CHAINS[$i]}"
+    echo "  ${chain}: ${STATUS[$i]:-SKIPPED}"
+    [ "${STATUS[$i]:-}" = "FAIL" ] && overall=1
+    i=$((i + 1))
 done
 
 echo ""

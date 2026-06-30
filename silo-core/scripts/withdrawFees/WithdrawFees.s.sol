@@ -43,8 +43,10 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         string symbol;
     }
 
-    // number of read calls batched per silo (protocolFees, getFeesAndFeeReceivers, getLiquidity)
-    uint256 internal constant READS_PER_SILO = 3;
+    // read calls batched per silo: accrueInterest, protocolFees, getFeesAndFeeReceivers, getLiquidity.
+    // accrueInterest runs first so protocolFees/getLiquidity reflect pending interest. It is part of
+    // the (non-broadcast) aggregate3 read, so it only mutates the simulated state, never on-chain.
+    uint256 internal constant READS_PER_SILO = 4;
 
     IMulticall3 multicall3 = IMulticall3(0xcA11bde05977b3631167028862bE2a173976CA11);
     IMulticall3.Call3[] calls;
@@ -75,11 +77,12 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
 
         // 2) decide per silo (pure local processing of the batched results)
         for (uint256 i = 0; i < silos.length; i++) {
+            // reads[i * READS_PER_SILO] is accrueInterest (state-priming only, result ignored)
             _pushWithdrawFeesCall({
                 _silo: silos[i],
-                _protocolFeesResult: reads[i * READS_PER_SILO],
-                _feeReceiversResult: reads[i * READS_PER_SILO + 1],
-                _liquidityResult: reads[i * READS_PER_SILO + 2]
+                _protocolFeesResult: reads[i * READS_PER_SILO + 1],
+                _feeReceiversResult: reads[i * READS_PER_SILO + 2],
+                _liquidityResult: reads[i * READS_PER_SILO + 3]
             });
         }
 
@@ -105,16 +108,21 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
             ISilo silo = ISilo(_silos[i].silo);
 
             reads[i * READS_PER_SILO] = IMulticall3.Call3({
-                target: address(_lens),
+                target: address(silo),
                 allowFailure: true,
-                callData: abi.encodeCall(ISiloLens.protocolFees, (silo))
+                callData: abi.encodeCall(ISilo.accrueInterest, ())
             });
             reads[i * READS_PER_SILO + 1] = IMulticall3.Call3({
                 target: address(_lens),
                 allowFailure: true,
-                callData: abi.encodeCall(ISiloLens.getFeesAndFeeReceivers, (silo))
+                callData: abi.encodeCall(ISiloLens.protocolFees, (silo))
             });
             reads[i * READS_PER_SILO + 2] = IMulticall3.Call3({
+                target: address(_lens),
+                allowFailure: true,
+                callData: abi.encodeCall(ISiloLens.getFeesAndFeeReceivers, (silo))
+            });
+            reads[i * READS_PER_SILO + 3] = IMulticall3.Call3({
                 target: address(silo),
                 allowFailure: true,
                 callData: abi.encodeCall(ISilo.getLiquidity, ())

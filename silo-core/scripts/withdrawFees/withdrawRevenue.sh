@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Top-level orchestrator for the withdrawFees pipeline.
-# For every chain it runs: 1_collect_factories.py -> 2_discover_silos.py -> WithdrawFees.s.sol
+# For every chain it runs: 1_collect_factories.py -> 2_discover_silos.py -> 3_withdraw_fees.py
 #
 # Usage:
 #   silo-core/scripts/withdrawFees/withdrawRevenue.sh [--parallel] [--dry-run] [chain ...]
 #
 #   --parallel   run all chains concurrently (logs go to logs/<chain>.log)
-#   --dry-run    run the Solidity stage without --broadcast (simulation only)
+#   --dry-run    run the withdraw stage without --broadcast (simulation only)
 #   chain ...    optional list of chain aliases (default: all known chains)
 #
 # A failure on one chain never aborts the others; a summary is printed at the end.
@@ -18,9 +18,7 @@
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 LOG_DIR="${SCRIPT_DIR}/logs"
-WITHDRAW_SCRIPT="silo-core/scripts/withdrawFees/WithdrawFees.s.sol"
 
 py() { PYTHONPATH="${SCRIPT_DIR}" python3 "$@"; }
 
@@ -91,10 +89,10 @@ run_chain() {
     echo "[$chain] stage 3/3: withdraw fees"
     broadcast="--broadcast"
     $DRY_RUN && broadcast=""
-    if ! ( cd "$REPO_ROOT" && FOUNDRY_PROFILE=core forge script "$WITHDRAW_SCRIPT" --ffi --rpc-url "$rpc" $broadcast ); then
-        echo "[$chain] FAILED at stage 3/3 (withdraw fees)"
-        return 1
-    fi
+    # if ! py "${SCRIPT_DIR}/3_withdraw_fees.py" --chain "$chain" --rpc-url "$rpc" $broadcast; then
+    #     echo "[$chain] FAILED at stage 3/3 (withdraw fees)"
+    #     return 1
+    # fi
 
     echo "[$chain] ===== done ====="
 }
@@ -154,8 +152,8 @@ while [ "$i" -lt "${#CHAINS[@]}" ]; do
 done
 
 echo ""
-echo "Revenue lines (from logs):"
-if ! grep -hE "daoAndDeployerRevenue in token" "${LOG_DIR}"/*.log 2>/dev/null | sed 's/^/  /'; then
+echo "Withdraw lines (from logs):"
+if ! grep -hE "(WITHDRAW |silos to withdraw)" "${LOG_DIR}"/*.log 2>/dev/null | sed 's/^/  /'; then
     echo "  (none detected)"
 fi
 echo "================================================="

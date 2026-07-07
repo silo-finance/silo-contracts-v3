@@ -1,0 +1,33 @@
+{
+  "chain": "mantle",
+  "chainId": 5000,
+  "factories": {
+    "0xe5b39b0b2173caA82BaEa368952c6183cA2DA3Ac": {
+      "startId": 3001,
+      "lastCheckedId": 3001,
+      "silos": [
+        {
+          "siloId": 3001,
+          "siloConfig": "0xd00b1c7abfd386ea8d921da70a78e3f52634dc5d",
+          "silo0": "0xf3f5bc52b82c5bbb5c26d71b71301cfe7576bffa",
+          "silo1": "0xcc9faab22949ef2a11a6664aa99b6ab15dcfa137"
+        }
+      ],
+      "legacy": false
+    }
+  },
+  "silos": [
+    {
+      "silo": "0xf3f5bc52b82c5bbb5c26d71b71301cfe7576bffa",
+      "asset": "0x779ded0c9e1022225f8e0630b35a9b54be713736",
+      "symbol": "USDT0",
+      "decimals": 6
+    },
+    {
+      "silo": "0xcc9faab22949ef2a11a6664aa99b6ab15dcfa137",
+      "asset": "0xdeaddeaddeaddeaddeaddeaddeaddeaddead1111",
+      "symbol": "WETH",
+      "decimals": 18
+    }
+  ]
+}

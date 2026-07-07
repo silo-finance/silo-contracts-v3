@@ -1,0 +1,69 @@
+{
+  "chain": "megaeth",
+  "chainId": 4326,
+  "factories": {
+    "0x95a7bC57c738C7f64103B93D04f49cbCa566afFD": {
+      "startId": 3001,
+      "lastCheckedId": 3003,
+      "silos": [
+        {
+          "siloId": 3001,
+          "siloConfig": "0xe9b2e8006b6ea4f4f22d5126cad89d4e17a59bc3",
+          "silo0": "0x405cd197a16cde72927308b86cced434fb62aa04",
+          "silo1": "0x5f587a1b09d4f033d074874f765f3e61e7faf095"
+        },
+        {
+          "siloId": 3002,
+          "siloConfig": "0x21af0468a00d4ced22b49b16575abfd9d5b075f6",
+          "silo0": "0x74969c6fa0b0696e7027240d9fd8dec567a8914c",
+          "silo1": "0xe13a58bad37f2221719f1bc55efeaa9a4570528c"
+        },
+        {
+          "siloId": 3003,
+          "siloConfig": "0x0bec26a1ed6f935bade68c3ec70f55131428bc8c",
+          "silo0": "0x8d5d78f36d323ffcb875df6e4e66f0b26a52b152",
+          "silo1": "0xb22c408f572094d2a2408e9653c4ae0b0558dec1"
+        }
+      ],
+      "legacy": false
+    }
+  },
+  "silos": [
+    {
+      "silo": "0x405cd197a16cde72927308b86cced434fb62aa04",
+      "asset": "0x601ac63637933d88285a025c685ac4e9a92a98da",
+      "symbol": "wstETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x5f587a1b09d4f033d074874f765f3e61e7faf095",
+      "asset": "0x4200000000000000000000000000000000000006",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x74969c6fa0b0696e7027240d9fd8dec567a8914c",
+      "asset": "0x68fe7f83ba331e32d9fa3def98a5538176635339",
+      "symbol": "savUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xe13a58bad37f2221719f1bc55efeaa9a4570528c",
+      "asset": "0xfafddbb3fc7688494971a79cc65dca3ef82079e7",
+      "symbol": "USDm",
+      "decimals": 18
+    },
+    {
+      "silo": "0x8d5d78f36d323ffcb875df6e4e66f0b26a52b152",
+      "asset": "0x68fe7f83ba331e32d9fa3def98a5538176635339",
+      "symbol": "savUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xb22c408f572094d2a2408e9653c4ae0b0558dec1",
+      "asset": "0xfafddbb3fc7688494971a79cc65dca3ef82079e7",
+      "symbol": "USDm",
+      "decimals": 18
+    }
+  ]
+}

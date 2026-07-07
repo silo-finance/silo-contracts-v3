@@ -1,0 +1,130 @@
+{
+  "chain": "injective",
+  "chainId": 1776,
+  "factories": {
+    "0x39021662EF7679845E6851E38E01912f556A861f": {
+      "startId": 3001,
+      "lastCheckedId": 3003,
+      "silos": [
+        {
+          "siloId": 3001,
+          "siloConfig": "0x6ce30e1b1a67d9ed3f1231032822fddc8adfd5a4",
+          "silo0": "0x8cfefc2c391a0a405b2769d69ccf7f98984bf3ab",
+          "silo1": "0x049567e8306386e3ca13e244465eb6c26019a005"
+        },
+        {
+          "siloId": 3002,
+          "siloConfig": "0x21893ef8d24c5cfad7e7bd7922a928533642baa0",
+          "silo0": "0x2727dad8584ebd3acd549c351ea94b9b3bf4fd88",
+          "silo1": "0x7238d0d8ec375c9a32a51710295aeb679e77f38b"
+        },
+        {
+          "siloId": 3003,
+          "siloConfig": "0xcd73f3f6dc33b46502cb9c53a67bdded0bbaefc4",
+          "silo0": "0x4aaadf5c3a4d839055531743121e1227153ff0fb",
+          "silo1": "0x2de94d1aa2246ce8c78c2f716cc94ec8ade0ade2"
+        }
+      ],
+      "legacy": false
+    },
+    "0xD2bf5845Ebc4d2b7966dD20Ad59Cb620F355A235": {
+      "startId": 3000,
+      "lastCheckedId": 3002,
+      "silos": [
+        {
+          "siloId": 3000,
+          "siloConfig": "0xe095fa150d05af72f6941ecb1310103741639d18",
+          "silo0": "0xe5b6cefef63425e1e4e92262c34c6c4c220e640e",
+          "silo1": "0x2153cddefd9d30b52351fa2e129e6fca3536a9e8"
+        },
+        {
+          "siloId": 3001,
+          "siloConfig": "0xe8f90c41ac4ef8d546893a893dde7e28304cf9c1",
+          "silo0": "0xb7bb7333e30d316fff3b35ef6ac152457427d1c4",
+          "silo1": "0xe3e0b9e82c5730802eaeb296dbb54625e2c13518"
+        },
+        {
+          "siloId": 3002,
+          "siloConfig": "0x5471e3d7f04d9bc04ed0bdbd5cfb167083abc476",
+          "silo0": "0x8253842d7e416fc4a49c44718cd04c42c359429d",
+          "silo1": "0x3517870b5ce8ceb146e8464df761cdab92efa9a0"
+        }
+      ],
+      "legacy": false
+    }
+  },
+  "silos": [
+    {
+      "silo": "0x8cfefc2c391a0a405b2769d69ccf7f98984bf3ab",
+      "asset": "0x2d6e0e0c209d79b43f5d3d62e93d6a9f1e9317bd",
+      "symbol": "yINJ",
+      "decimals": 18
+    },
+    {
+      "silo": "0x049567e8306386e3ca13e244465eb6c26019a005",
+      "asset": "0x0000000088827d2d103ee2d9a6b781773ae03ffb",
+      "symbol": "WINJ",
+      "decimals": 18
+    },
+    {
+      "silo": "0x2727dad8584ebd3acd549c351ea94b9b3bf4fd88",
+      "asset": "0x2d6e0e0c209d79b43f5d3d62e93d6a9f1e9317bd",
+      "symbol": "yINJ",
+      "decimals": 18
+    },
+    {
+      "silo": "0x7238d0d8ec375c9a32a51710295aeb679e77f38b",
+      "asset": "0x0000000088827d2d103ee2d9a6b781773ae03ffb",
+      "symbol": "WINJ",
+      "decimals": 18
+    },
+    {
+      "silo": "0x4aaadf5c3a4d839055531743121e1227153ff0fb",
+      "asset": "0x2d6e0e0c209d79b43f5d3d62e93d6a9f1e9317bd",
+      "symbol": "yINJ",
+      "decimals": 18
+    },
+    {
+      "silo": "0x2de94d1aa2246ce8c78c2f716cc94ec8ade0ade2",
+      "asset": "0x0000000088827d2d103ee2d9a6b781773ae03ffb",
+      "symbol": "WINJ",
+      "decimals": 18
+    },
+    {
+      "silo": "0xe5b6cefef63425e1e4e92262c34c6c4c220e640e",
+      "asset": "0x0000000088827d2d103ee2d9a6b781773ae03ffb",
+      "symbol": "WINJ",
+      "decimals": 18
+    },
+    {
+      "silo": "0x2153cddefd9d30b52351fa2e129e6fca3536a9e8",
+      "asset": "0x88f7f2b685f9692caf8c478f5badf09ee9b1cc13",
+      "symbol": "USDT",
+      "decimals": 6
+    },
+    {
+      "silo": "0xb7bb7333e30d316fff3b35ef6ac152457427d1c4",
+      "asset": "0x0000000088827d2d103ee2d9a6b781773ae03ffb",
+      "symbol": "WINJ",
+      "decimals": 18
+    },
+    {
+      "silo": "0xe3e0b9e82c5730802eaeb296dbb54625e2c13518",
+      "asset": "0x88f7f2b685f9692caf8c478f5badf09ee9b1cc13",
+      "symbol": "USDT",
+      "decimals": 6
+    },
+    {
+      "silo": "0x8253842d7e416fc4a49c44718cd04c42c359429d",
+      "asset": "0x2d6e0e0c209d79b43f5d3d62e93d6a9f1e9317bd",
+      "symbol": "yINJ",
+      "decimals": 18
+    },
+    {
+      "silo": "0x3517870b5ce8ceb146e8464df761cdab92efa9a0",
+      "asset": "0x0000000088827d2d103ee2d9a6b781773ae03ffb",
+      "symbol": "WINJ",
+      "decimals": 18
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "chain": "xdc",
+  "chainId": 50,
+  "factories": {
+    "0xf81d90DF1B63d48536E78564d24d5DD8F2BE58aD": {
+      "startId": null,
+      "lastCheckedId": null,
+      "silos": []
+    }
+  },
+  "silos": []
+}

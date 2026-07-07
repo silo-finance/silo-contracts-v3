@@ -1,0 +1,17 @@
+{
+  "chain": "okx",
+  "chainId": 196,
+  "factories": {
+    "0x650b50E16A703e53A7944CCad513ad21670F0D09": {
+      "startId": null,
+      "lastCheckedId": 3000,
+      "silos": []
+    },
+    "0x1C7861978D11E9fd13257607d3FCf7bF3478f6EB": {
+      "startId": null,
+      "lastCheckedId": 2999,
+      "silos": []
+    }
+  },
+  "silos": []
+}

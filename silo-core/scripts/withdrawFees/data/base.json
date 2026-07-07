@@ -1,0 +1,17 @@
+{
+  "chain": "base",
+  "chainId": 8453,
+  "factories": {
+    "0xeB3C9fcE37A355df8f4a01CdaFA75b370607a21f": {
+      "startId": null,
+      "lastCheckedId": 3000,
+      "silos": []
+    },
+    "0x98F231070354F3a541081368b107155232CFfb1c": {
+      "startId": null,
+      "lastCheckedId": 2999,
+      "silos": []
+    }
+  },
+  "silos": []
+}

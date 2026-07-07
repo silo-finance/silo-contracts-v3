@@ -1,0 +1,2235 @@
+{
+  "chain": "sonic",
+  "chainId": 146,
+  "factories": {
+    "0xf81d90DF1B63d48536E78564d24d5DD8F2BE58aD": {
+      "startId": 3001,
+      "lastCheckedId": 3002,
+      "silos": [
+        {
+          "siloId": 3001,
+          "siloConfig": "0x180a8ff4c343b6eea2ff0feb2dcc92a360bf7025",
+          "silo0": "0x0e2ef70d9b204a9cd30508a4e399b61ffb821152",
+          "silo1": "0x6ac3b234a7e918423a9e4768655515bb942535de"
+        },
+        {
+          "siloId": 3002,
+          "siloConfig": "0x9e37e4240515cd4a58dd61a9569d4bd035674315",
+          "silo0": "0x86225514802b46c793833496ac7af1685a243767",
+          "silo1": "0xba592db2f9cd6aa517cb84e527483826d4d6a1dd"
+        }
+      ],
+      "legacy": false
+    },
+    "0x55C5b74BC138C42dCb0deb206AE325a828Cd1372": {
+      "startId": null,
+      "lastCheckedId": 2999,
+      "silos": []
+    },
+    "0x4e9dE3a64c911A37f7EB2fCb06D1e68c3cBe9203": {
+      "startId": 100,
+      "lastCheckedId": 164,
+      "silos": [
+        {
+          "siloId": 100,
+          "siloConfig": "0xcca43bbf12d93a9fd490169a316d8f45cce44b74",
+          "silo0": "0x424bb941286ee510ba10b3f7f04bdebd97ac56c3",
+          "silo1": "0x94f51c6be4801a2be393adeed889d620338113f2"
+        },
+        {
+          "siloId": 101,
+          "siloConfig": "0x1c3387b0035ef8a7e287a675d4b284429e9e727c",
+          "silo0": "0x6304ffe23d2ca68bd9269562564446bce1985cc9",
+          "silo1": "0xd6139daf3485e0a8fb12cb406d0568769a79f5e4"
+        },
+        {
+          "siloId": 102,
+          "siloConfig": "0xcfe8e86213d9d9fc0d38a25ef32e6e6523247266",
+          "silo0": "0x6ec9b5cba68542f6afbfa7004a7a3600f09a2703",
+          "silo1": "0xd47031f7b044dffeb9b041c4ecf16209f6a1b0b2"
+        },
+        {
+          "siloId": 103,
+          "siloConfig": "0x16b621a9219b2ddc64c50643d1e5ad3686806084",
+          "silo0": "0xfb6587720c73bc086e2978983538ad3011123161",
+          "silo1": "0x8c96c244586e0d8f6889413f7f525dade3b4ab85"
+        },
+        {
+          "siloId": 104,
+          "siloConfig": "0x8f8c453eceb87deecc921009cc30e9f05c30c77e",
+          "silo0": "0x4cbea6f5ee7766915b98a7789fc1bcb026be0e77",
+          "silo1": "0x8a810a8bdcecc5ca467e9fac5a5a846d36c5bf7e"
+        },
+        {
+          "siloId": 105,
+          "siloConfig": "0x19c064a1043b7bd691e04b493ca4a320359adf31",
+          "silo0": "0xf9f735382cb366c81341e7c491b4f0458f23c575",
+          "silo1": "0x4f55e28d36b30a638c3aa1d5cbf9c4ccb3831506"
+        },
+        {
+          "siloId": 106,
+          "siloConfig": "0xc4dfa46c1caf77d6a99effbaeb83cb1ede80ce6d",
+          "silo0": "0xda3c11c2ddaab7205a244b2a9e7f919594ceb39b",
+          "silo1": "0x418d3fdfa4b79e485a9c0f16127959a67abd0877"
+        },
+        {
+          "siloId": 107,
+          "siloConfig": "0x6f742bcbf6203b49a92c9d95a29debf436965517",
+          "silo0": "0xd7c9e31958803771357b56bae661a9e92ff60d3e",
+          "silo1": "0x3444504d57bacd7ecc07f0c5688d7047d0360cf2"
+        },
+        {
+          "siloId": 108,
+          "siloConfig": "0x97672557c344ac0d5f62422e2d48e084fc2de37e",
+          "silo0": "0x3b7ae8c5d44f3c248d7309f82a8d5791023027c3",
+          "silo1": "0xcd95a588c0190bf9810381a19ecad8bc8306d7f2"
+        },
+        {
+          "siloId": 109,
+          "siloConfig": "0x3bba440e6583ec37de533e738fe067e7ae83f2e6",
+          "silo0": "0xb57ca4633f8d0fe4f24d3cc811b5dea257fc976d",
+          "silo1": "0x3ecd2863eda4e28b8c64a2fb09d9a84de09d054c"
+        },
+        {
+          "siloId": 110,
+          "siloConfig": "0x8df65db90da2cb5a80df502a89bba2bb19299e08",
+          "silo0": "0x9d89cf7636a11b209865d99792d9e20a5e8bef21",
+          "silo1": "0xd2a1d1432bb6a386edd0c583f3148c5b4f020cfc"
+        },
+        {
+          "siloId": 111,
+          "siloConfig": "0x8cd31c996d51e37da7535bc28e0f8cf91555830e",
+          "silo0": "0xf79ec180c0b81bc18f7171fd4f648fbfd061207d",
+          "silo1": "0xae79b0d94e1c53cd2e8160899b8d58ec138d341f"
+        },
+        {
+          "siloId": 112,
+          "siloConfig": "0x60109eab799ec246978a2ce89aa584e9190b71c8",
+          "silo0": "0x172a687c397e315dbe56ed78ab347d7743d0d4fa",
+          "silo1": "0xa1627a0e1d0ebca9326d2219b84df0c600bed4b1"
+        },
+        {
+          "siloId": 113,
+          "siloConfig": "0x974b10b1e5f67f7de8154f46fb50dcab485b434c",
+          "silo0": "0x5f1d95fc7b1cd074dcfec6931ca8e90868b5042a",
+          "silo1": "0xd215c85f2fb5834b0490ccc8213aa560c4b9dc34"
+        },
+        {
+          "siloId": 114,
+          "siloConfig": "0x44bb9a90f2e301a03dace64936e89ba88b0ff0e4",
+          "silo0": "0x745b5ae86abcee095f38d2f9d6ab7f39d31e28bb",
+          "silo1": "0xbc25a15006928e13b8c6ef33a6e6e5ec95888bd3"
+        },
+        {
+          "siloId": 115,
+          "siloConfig": "0x21c6dcd256cdf9c4c8598bbf93ce7e93d4fc470c",
+          "silo0": "0xd5c7e4f82beb89c8160f8966168c7e78376cbd7f",
+          "silo1": "0x2e6b3e1cf7346a52c9f139fb47dfa43a18f851a7"
+        },
+        {
+          "siloId": 116,
+          "siloConfig": "0xe84468ae819c506f08e86ec7912c36a610d337e7",
+          "silo0": "0x0f1355ae261ffca4b3f915e648cc30e1ccdada39",
+          "silo1": "0x4e1ed20cc6d7378ef0b61fe70cad641ab52b36a0"
+        },
+        {
+          "siloId": 117,
+          "siloConfig": "0x238fe5459c5c656432a0b3368092fa4be4f282bf",
+          "silo0": "0x2c881acfc86046dd0c9db3619f2e85078fba1ba6",
+          "silo1": "0x19e8def4e499d1a8d651a8dad5b616ddd8e92330"
+        },
+        {
+          "siloId": 118,
+          "siloConfig": "0x0f9341f6e8b9017bcb9c4c74187f3aa32fb1cb7d",
+          "silo0": "0x596aef68a03a0e35c4d8e624fbbdb0df0862f172",
+          "silo1": "0xb1412442aa998950f2f652667d5eba35fe66e43f"
+        },
+        {
+          "siloId": 119,
+          "siloConfig": "0xae2b876574be580c307a999cb6cbada1231a2828",
+          "silo0": "0x413145e8b6acfe1ff9e8a7a6730d848f4ece06cf",
+          "silo1": "0x623d2ec4fc0a3217b1e7e2a29c0adf96b1b15508"
+        },
+        {
+          "siloId": 120,
+          "siloConfig": "0xf080f03baeda2741746ca2cd9d80ed53b57473f8",
+          "silo0": "0x501ee3d6cb84004c7970ca24f3dac07d61a25e4d",
+          "silo1": "0x1a089424f52502139888fa4c0ed2fa088e9e1d51"
+        },
+        {
+          "siloId": 121,
+          "siloConfig": "0x154f7a91a2c629ccce888deac959259b1869e4ac",
+          "silo0": "0xccddbbbd1e36a6eda3a84cdcee2040a86225ba71",
+          "silo1": "0xed9777944a2fb32504a410d23f246463b3f40908"
+        },
+        {
+          "siloId": 122,
+          "siloConfig": "0xbe8e5539beaa9ba11fbd8dedafa15013e8706928",
+          "silo0": "0xd481c8d0e85796473df3facc70f5b75530db1a92",
+          "silo1": "0xa93b75380d628dbc7443059d014dce9d6123cba7"
+        },
+        {
+          "siloId": 123,
+          "siloConfig": "0xf80b8908cbbcd85210cab083e9570f9c8e7c39d9",
+          "silo0": "0x75c550776c191a8f6ae22edc742ad2788723b66e",
+          "silo1": "0xc6ee9a58d5270e53fd1361946899b6d0553142b4"
+        },
+        {
+          "siloId": 124,
+          "siloConfig": "0xc2e3f557fe397b112857b43ebfe90838e211c858",
+          "silo0": "0x43f143bc5588961198f1db9fbbb0887c3e3f45ae",
+          "silo1": "0x5160d30d4a71db55947434163d6133dce0ed649c"
+        },
+        {
+          "siloId": 125,
+          "siloConfig": "0xc9f6139ba51bcfd0967549ef85edbb51e3b1a168",
+          "silo0": "0x6e8c150224d6e9b646889b96eff6f7fd742e2c22",
+          "silo1": "0x0ab02dd08c1555d1a20c76a6ea30e3e36f3e06d4"
+        },
+        {
+          "siloId": 126,
+          "siloConfig": "0x0731a01b87fda4aeeef735df70e1f09ad3dbedf4",
+          "silo0": "0x81d74d4019ad71ac99c46aaf77613d0b3c1842eb",
+          "silo1": "0xc77fccb9ff0dbe6a261be672f2ebfbc3e053aa1d"
+        },
+        {
+          "siloId": 127,
+          "siloConfig": "0xcc5883892e841d7737aead02223713df7c56260a",
+          "silo0": "0x184d9332a054a9d89a1794eabdbb931b31209605",
+          "silo1": "0x72c59147eae0d7e86b16677ebc3a2be5a7da4509"
+        },
+        {
+          "siloId": 128,
+          "siloConfig": "0x5e25052f5ea79522ab71d4b33e2916d16a58b8f9",
+          "silo0": "0x1c1791911483e98875d162355fec47f37613f0fb",
+          "silo1": "0x8c98b43bf61f2b07c4d26f85732217948fca2a90"
+        },
+        {
+          "siloId": 129,
+          "siloConfig": "0xf7c787cbc67c9fd80e7b473c8c9c0f680931e5da",
+          "silo0": "0xfa502640510341ed792db8471e4b4c1fdaba3358",
+          "silo1": "0x6dcac46c125e3f6c9fcdda31c1739022626a7b52"
+        },
+        {
+          "siloId": 130,
+          "siloConfig": "0xe158e41673e56948175fa77816cc6fd0e621055c",
+          "silo0": "0xccfc29834530068ff1bd25b38c32c2e3bf489401",
+          "silo1": "0xd981183c89d755862edb70096052c03e98ea4370"
+        },
+        {
+          "siloId": 131,
+          "siloConfig": "0x3426ab3cc0f490b34a258a547fa44b8632796145",
+          "silo0": "0xcc36a8c2b6d9aaa95d648fdf6e9534ea3bfe5729",
+          "silo1": "0xe33c55e65bd4d782bf11ff3cbad87a1ee2522430"
+        },
+        {
+          "siloId": 132,
+          "siloConfig": "0xd90d44280f3782e1af1a6ef45e0db1169ae34b2a",
+          "silo0": "0x78db85d7c2ec33bc6323386e720e074658943102",
+          "silo1": "0x66e2d2022029bb8a2fd62a9ecf83b75d6ea17ed0"
+        },
+        {
+          "siloId": 133,
+          "siloConfig": "0xc7e271d77036c41e018a173d311b53d58a1f9f36",
+          "silo0": "0x61f76af4c747561981aa1e29c031015c90d267ec",
+          "silo1": "0x2439d39dc355d2c33625ead2492d2a0d21d7a953"
+        },
+        {
+          "siloId": 134,
+          "siloConfig": "0x3d81c83515108e8765f54e42d821416f5c3b3719",
+          "silo0": "0x9f2509f9f037db3f45a45822bf0ed11644fd6826",
+          "silo1": "0xe41d5a0bd095d02125c79d2a754d12a328c59429"
+        },
+        {
+          "siloId": 135,
+          "siloConfig": "0xe551862edc7452818e267d3b35dac491de8776ad",
+          "silo0": "0x06433ef2a99f3a240f1d39203bffa1d1b015538a",
+          "silo1": "0xafee8ff865920347500092500144a9b148d536b3"
+        },
+        {
+          "siloId": 136,
+          "siloConfig": "0x6466bd77ab7e04b8e71e145bfbe6972fbf02ac7a",
+          "silo0": "0x045e18e005682c5e1885dc494d391434ab3cba95",
+          "silo1": "0xba22de33d549844dca0e85cab85147339c330171"
+        },
+        {
+          "siloId": 137,
+          "siloConfig": "0x0bd6dfd6e6bd5228e9849ac65f7c16f2a7eadb40",
+          "silo0": "0x98f89e1ba855892a696d688f37abb799bb09358b",
+          "silo1": "0x9e258c1744d087c3eb03f7819f36c6d439300f91"
+        },
+        {
+          "siloId": 138,
+          "siloConfig": "0xe3d37b2d77f37ec479f1999a747b53cd6a53d2f4",
+          "silo0": "0x86291d166a62b129593b23f8649d55db0b03e9fb",
+          "silo1": "0x61ffbead1d4dc9ffba35eb16fd6cadee9b37b2aa"
+        },
+        {
+          "siloId": 139,
+          "siloConfig": "0x8b0ed1ae82cf78513d37a4ed0c7feb2236a5e94f",
+          "silo0": "0xc3516fccab884950055e437f10df4be90da2f50c",
+          "silo1": "0x757c56fd12b619fa10a24c2881222f7069f4aa6d"
+        },
+        {
+          "siloId": 140,
+          "siloConfig": "0x10ad9dd6f1250d496f1cb65b7cb3c33a3605e1dc",
+          "silo0": "0x44380b9085b4d63db2bc6a3784023d10bd5c3824",
+          "silo1": "0x45a5a6f63448f23e8e67cd5fc6221fbc5ef6105f"
+        },
+        {
+          "siloId": 141,
+          "siloConfig": "0xcb2dcdc5e4016d0be706df5e312fb3e7c2341497",
+          "silo0": "0x94b4bdd55bac19da3b0a31edc0fc899ae918699e",
+          "silo1": "0x7184bea7743ccfbe390f9cd830095a13ef867941"
+        },
+        {
+          "siloId": 142,
+          "siloConfig": "0x3cf921f2b95fc5d87296e2a0e251af19bdeab2bb",
+          "silo0": "0x996914f35ad06eebc2d2f567cecb22c9cc1b182a",
+          "silo1": "0x41d1cb44d30867f50df4eef0b8d43d7b476416c5"
+        },
+        {
+          "siloId": 143,
+          "siloConfig": "0x4f535e255ef5b8f9b481746f3bece8e4d6e23167",
+          "silo0": "0xd9f4bf371c90a1bf5c569ce6f2d1880f8b534be7",
+          "silo1": "0xc67f14111e6d5a88fc18163cb5bece2f4b5afcd5"
+        },
+        {
+          "siloId": 144,
+          "siloConfig": "0x8d022ebed88860dd4f4bb65b9a800734287794a7",
+          "silo0": "0x257fde96c56f5178bc4e12b7799085741b604f6b",
+          "silo1": "0xebb7e8227f1d962ebed535a1522962ac16c31000"
+        },
+        {
+          "siloId": 145,
+          "siloConfig": "0xab494da676ec7dde147a1ebc66447174ebca4a52",
+          "silo0": "0xd52f39e57090f2cf1fdeb7474959341cf8a8a878",
+          "silo1": "0xaf1bdae843d90c546de5001f7b107b46e1a26aa9"
+        },
+        {
+          "siloId": 146,
+          "siloConfig": "0xbd8261e594bc583f551fc98c1a5bc543dcda36f3",
+          "silo0": "0x8701325ffb6912124279c8ff94f3f89f0130615d",
+          "silo1": "0xc6fee7d4c0cfc63dab5266c2ea8b2731f007742e"
+        },
+        {
+          "siloId": 147,
+          "siloConfig": "0x1ef1e59055de03d98c4eba17d2bbc1d9e0aae370",
+          "silo0": "0xa193127c7b3df536973cfeebeec48f3ac8e6cd59",
+          "silo1": "0x76df755a9f40463f14d0a2b7cba3ccf05404eedf"
+        },
+        {
+          "siloId": 148,
+          "siloConfig": "0xd69a52b8645ce74f2b27a7bd19bea246077138dd",
+          "silo0": "0x34ecb6422c04f992918ae3fa1ef10b4cb523bf83",
+          "silo1": "0x27968d36b937dcb26f33902fa489e5b228b104be"
+        },
+        {
+          "siloId": 149,
+          "siloConfig": "0x070e15a309fe3d70d7c1f0a0d2f3cc8efa17c0b0",
+          "silo0": "0x4cbd1ae8f51243f34a52e122ac1fd7b65b2b7bdd",
+          "silo1": "0x020337e7af11372d971781f5d09a071757e4a4b7"
+        },
+        {
+          "siloId": 150,
+          "siloConfig": "0x7f6d8bc0a5b5be5195bb700f7ca880dd45c797be",
+          "silo0": "0xc5d2c47e5de634e68ee7097e3dc7839d2ff18dae",
+          "silo1": "0x1aa2de1b2127c67ab72f2106624d2ba4ea33bc62"
+        },
+        {
+          "siloId": 151,
+          "siloConfig": "0x6c184788251815f441f2a455f9976fe8015dfec2",
+          "silo0": "0xcc4a06b4b33c281eec7dccd97f91b6a9cdd919f3",
+          "silo1": "0xc79c3dab274cce8b306cdf0bff0d1d6de54b84ae"
+        },
+        {
+          "siloId": 152,
+          "siloConfig": "0xaabc65a0c0f31907c1e6f785ce62433ebccbd56d",
+          "silo0": "0xcab5be443e343327f46be55f77c46bb30dc00b23",
+          "silo1": "0x9a18acc3f69d3cc5cbc39a87abe363713394e426"
+        },
+        {
+          "siloId": 153,
+          "siloConfig": "0xb37ec4a417c2540b2c353ae4a7d9cbc576f702ea",
+          "silo0": "0xa7a903487d986445c8e523ed563087235d9f06fa",
+          "silo1": "0xe12f5847264c65878dcf8620f137273da7a75eaf"
+        },
+        {
+          "siloId": 154,
+          "siloConfig": "0xfd2559a183dde3776a984ebaa8825699f7e180ec",
+          "silo0": "0x48276b0c8a911c4b0aac2faaa472261ddd9cf818",
+          "silo1": "0x518fdd28e2fccfa62cefb1853bbdc82cca32db03"
+        },
+        {
+          "siloId": 155,
+          "siloConfig": "0xa651183878081e0780c63c75d1e26b38b1f96413",
+          "silo0": "0x7df587b1997bcd547d48839d56f9937e52e4b01e",
+          "silo1": "0x5f7e19421e078ff014532b11cf60637031ede668"
+        },
+        {
+          "siloId": 156,
+          "siloConfig": "0x8fc5b4c09f1ac233f91f6920f9b3425d7cfdaa3b",
+          "silo0": "0xb9dd7d468284fbd062a35e340cc053b762c13fa4",
+          "silo1": "0xba9db757bfe5b1f94ec39ecb95ebd0713aa26554"
+        },
+        {
+          "siloId": 157,
+          "siloConfig": "0xfd1ca9a6a4b68c630c632788b792b6faf942efc4",
+          "silo0": "0xb60b15f105f7d906f481b42451e4791b0d137c93",
+          "silo1": "0xe2d51c0b148d1196a752253034d3c716c8951573"
+        },
+        {
+          "siloId": 158,
+          "siloConfig": "0xc473897b7212ed9e3c84f1ff8623b9adfa722b66",
+          "silo0": "0x33bbe7595e62ea0ec5c61785ae5062c7017ddc6f",
+          "silo1": "0xf51b795b5e5a1eac12c08813603717a43728edf7"
+        },
+        {
+          "siloId": 159,
+          "siloConfig": "0x737040aa3d3234f678860ca8c88333af4ed72b76",
+          "silo0": "0x5b8b129f423611529392e8548b75fa1d23fc93dd",
+          "silo1": "0xdf60ac3eedd0e83a0d023036318d1de3e08545f3"
+        },
+        {
+          "siloId": 160,
+          "siloConfig": "0x2d8766702b06f0bd9b09fd8f9febfbb7d55ebc99",
+          "silo0": "0x93129e12cf1f842bb49f9a7eb43c71bbb598d140",
+          "silo1": "0x853c02497d5de5088b38a4ec3bd72a06442fa945"
+        },
+        {
+          "siloId": 161,
+          "siloConfig": "0xf12cf4d84015b3f3ae44b6642d763d7252a56370",
+          "silo0": "0x543560d827cb4e6f0b7e996e18a3a9fdd0e4da1f",
+          "silo1": "0x710a57873c679a8f88a718b0eb0220719b41b6cc"
+        },
+        {
+          "siloId": 162,
+          "siloConfig": "0xb1ce04a37f67d53287dcd3fb9bfb871c7570f1cd",
+          "silo0": "0xaa7183bb17b95937d7a5c2436acfb28358d5b9d0",
+          "silo1": "0x14051378d64f1ffe2f54a689ee0619a9d591e533"
+        },
+        {
+          "siloId": 163,
+          "siloConfig": "0x476b8d6a7ad1fbdbabbf16f5a6d13e45699f8ca6",
+          "silo0": "0x2b236cb8926a97b1918f49a756ab7f4a8b9e6005",
+          "silo1": "0xaa6f83aefca699a10fea81b49b8b0c0f14e23ec5"
+        },
+        {
+          "siloId": 164,
+          "siloConfig": "0x9651e5d70d20d3d2a1451827e638c4ea813ed4d5",
+          "silo0": "0x129ebc62019244f528e40c210604d5cf262ea8bf",
+          "silo1": "0xd611d97d648c6b30f2b736e6e26e588bac8f6d70"
+        }
+      ],
+      "legacy": false
+    },
+    "0x89E3Cf1c67C0c0701EF7926A79f65EeEb52904eF": {
+      "startId": null,
+      "lastCheckedId": 99,
+      "silos": []
+    },
+    "0xa42001D6d2237d2c74108FE360403C4b796B7170": {
+      "startId": 1,
+      "lastCheckedId": 55,
+      "silos": [
+        {
+          "siloId": 1,
+          "siloConfig": "0x16775ba977e48a67819b302ba5e1d2e9c954f421",
+          "silo0": "0xbff04857353cc593f85c40a1d47342d3e3633115",
+          "silo1": "0xe61527810f6dadf21a8ed4ee7c884cc977611f0f"
+        },
+        {
+          "siloId": 2,
+          "siloConfig": "0x875be2b0aef69589a21c9ef73cd92d8e71b20043",
+          "silo0": "0x0f0d1cfb37c310e2de33dc2c23849bf24014faea",
+          "silo1": "0x164832d4b539709adf6df94d5fc2eddba82af899"
+        },
+        {
+          "siloId": 3,
+          "siloConfig": "0x78c246f67c8a6ce03a1d894d4cf68004bd55deea",
+          "silo0": "0x396922ef30cf012973343f7174db850c7d265278",
+          "silo1": "0x47d8490be37adc7af053322d6d779153689e13c1"
+        },
+        {
+          "siloId": 4,
+          "siloConfig": "0x2ce93450af4293626010dec277f7baa2005d868a",
+          "silo0": "0x8f0694db47d8bcbe74ddbb43c8cbe0bc0c2daa40",
+          "silo1": "0xe179af0bae65738ed5766aa70d6b8a45553d0a3a"
+        },
+        {
+          "siloId": 5,
+          "siloConfig": "0x79cfedda2323c467fec034621ccdb4d3b1f6f444",
+          "silo0": "0x5f06f5d205c1f81417cc5a554a34f46c47a1e37f",
+          "silo1": "0x7d09707fd06792d3aecb9a3feb509c05d5fe6405"
+        },
+        {
+          "siloId": 6,
+          "siloConfig": "0xd663b1994f6f7e80c886c5bad6d4153779548211",
+          "silo0": "0xec56fd815c6d603df0c77038c8eeffd2ca3b8a6f",
+          "silo1": "0xbc0e4a000666a893928454e4c587c28fe6de6ce5"
+        },
+        {
+          "siloId": 7,
+          "siloConfig": "0x45c218eb1e22d565227969478cf5d35c737ef4a4",
+          "silo0": "0x364c72c6fb022522ef490ecc5e945f6afe47af95",
+          "silo1": "0x2b421676be0d42e9975f3e364932c8c1bc498805"
+        },
+        {
+          "siloId": 8,
+          "siloConfig": "0x4915f6d3c9a7b20cedfc5d3854f2802f30311d13",
+          "silo0": "0xe223c8e92aa91e966ca31d5c6590ff7167e25801",
+          "silo1": "0x4e216c15697c1392fe59e1014b009505e05810df"
+        },
+        {
+          "siloId": 9,
+          "siloConfig": "0x9603af53dc37f4bb6386f358a51a04fa8f599101",
+          "silo0": "0x4bfead9975a64545c3594090327ef6666c2f6164",
+          "silo1": "0x427514a905fa6beaed9a36e308fcfa06ce54e95b"
+        },
+        {
+          "siloId": 10,
+          "siloConfig": "0xcde453450d830ba284943c3aab49f19dc7904b76",
+          "silo0": "0x91112b1c5779b6668e61aa776862781232add587",
+          "silo1": "0xbc7787ed47b2912e822407b695948de4a2d4619d"
+        },
+        {
+          "siloId": 11,
+          "siloConfig": "0xc180a042d4d408ba5847fa36000f031b3c239470",
+          "silo0": "0xd8e21d3cb790af3e31c4f42313694f45a5dabecd",
+          "silo1": "0x913a34de91347ebaba0433d6da41e775004585c4"
+        },
+        {
+          "siloId": 12,
+          "siloConfig": "0xa9e974074d2ebd950f742449200a56a5097c928e",
+          "silo0": "0x34bb955f10f01e05d2639a12a9fbf770853eac4b",
+          "silo1": "0x9ed5a9c8f09aa245f105b23b1ee27723c4ad8d69"
+        },
+        {
+          "siloId": 13,
+          "siloConfig": "0xc1f3d4f5f734d6dc9e7d4f639ebe489acd4542ab",
+          "silo0": "0x52fc9e0a68b6a4c9b57b9d1d99fb71449a99dcd8",
+          "silo1": "0x87178fe8698c7eda8aa207083c3d66aea569ab98"
+        },
+        {
+          "siloId": 14,
+          "siloConfig": "0x2cecab227be8ded256b74d9196d697bcae91d5ac",
+          "silo0": "0xa4ed37118e626cdc4bf476e0a56226ccf8615e31",
+          "silo1": "0x370ef438d92a396a142d041535a9ba2aa1755e74"
+        },
+        {
+          "siloId": 15,
+          "siloConfig": "0xfe514e71f0933f63b374056557aed3dbb381c646",
+          "silo0": "0x34bb967d21bfed31f2a2eb4478a520c254b16d2e",
+          "silo1": "0x2f5dc399b1e31f9808d1ef1256917abd2447c74f"
+        },
+        {
+          "siloId": 16,
+          "siloConfig": "0xca6179510ad0672b9d5576029bb1bd5c6c0f58b5",
+          "silo0": "0x088cdac81b0a14ef772393317282f9744ceb062b",
+          "silo1": "0xfaa37aa6375a25ceac74e44060ca60dce778f05f"
+        },
+        {
+          "siloId": 17,
+          "siloConfig": "0x876f0cd8a0cee21390fbb64af3a4f410f8f1a164",
+          "silo0": "0x40e1669751112a447238e6d95e6ccdef634888d7",
+          "silo1": "0x7d8a572ad3d2613657bb52ac99abf863c68273a2"
+        },
+        {
+          "siloId": 18,
+          "siloConfig": "0xc3eee3c25bc9bef998332428cdff81d1f0d1f201",
+          "silo0": "0xf3b7a981a221ceab381f139c5d385138cd43eeab",
+          "silo1": "0xc26f296c8e98f051cbb2b0e976f3fd18d773f0d9"
+        },
+        {
+          "siloId": 19,
+          "siloConfig": "0x18ea6ee9a2f9d40e4893e01e3e842b335dd82a2f",
+          "silo0": "0xc1443014adbcdb8a17bb74d3e64c9fb6bf63caf1",
+          "silo1": "0x2842829ffaa454369d20fa10067f15b1ed7ade92"
+        },
+        {
+          "siloId": 20,
+          "siloConfig": "0x062a36bbe0306c2fd7aecdf25843291fbab96ad2",
+          "silo0": "0xf55902de87bd80c6a35614b48d7f8b612a083c12",
+          "silo1": "0x322e1d5384aa4ed66aeca770b95686271de61dc3"
+        },
+        {
+          "siloId": 21,
+          "siloConfig": "0x4307732833a3112b66c7b6d9737336538bb0214a",
+          "silo0": "0x424ac5880e24c34f50ee4b962c53a3c3517d844f",
+          "silo1": "0xd556b398f6b24d95ee24947be634190b0b0b7083"
+        },
+        {
+          "siloId": 22,
+          "siloConfig": "0x1a030f39a8cf9f0b2649e97cf6d0c7853aeacf78",
+          "silo0": "0x1d7e3726afec5088e11438258193a199f9d5ba93",
+          "silo1": "0x112380065a2cb73a5a429d9ba7368cc5e8434595"
+        },
+        {
+          "siloId": 23,
+          "siloConfig": "0xbc24c0f594eca381956895957c771437d61400d3",
+          "silo0": "0x4e09ff794d255a123b00efa30162667a8054a845",
+          "silo1": "0x5954ce6671d97d24b782920ddcdbb4b1e63ab2de"
+        },
+        {
+          "siloId": 24,
+          "siloConfig": "0xdf32c1dcf2b73e214c394954f744213945e27cf8",
+          "silo0": "0x253ddf25fe778dff9f35837f4e569e24083e510f",
+          "silo1": "0xb1b1792db2b79a93b3ce4a74e959b5627bdcde4e"
+        },
+        {
+          "siloId": 25,
+          "siloConfig": "0x6bdf0d12d4b534d5f46c53a90dddfbe6c0e85dc7",
+          "silo0": "0x21580de05c4f3d6d6a5345b03a898c33b872ab51",
+          "silo1": "0x016c306e103fbf48ec24810d078c65ad13c5f11b"
+        },
+        {
+          "siloId": 26,
+          "siloConfig": "0xefa367570b11f8745b403c0d458b9d2eaf424686",
+          "silo0": "0xe8e1a980a7fc8d47d337d704fa73fbb81ee55c25",
+          "silo1": "0x219656f33c58488d09d518badf50aa8cdcaca2aa"
+        },
+        {
+          "siloId": 27,
+          "siloConfig": "0xaaf2f78f5ea77bf4ea150e869c54eeb73185a3bf",
+          "silo0": "0xe453c128f9fa860960913f40ef975b1fe5621e9e",
+          "silo1": "0x7e88ae5e50474a48dea4c42a634aa7485e7caa62"
+        },
+        {
+          "siloId": 28,
+          "siloConfig": "0xa3bf8b1ee377bbe6152a6885eaee8747dcbea35d",
+          "silo0": "0xf03c5b0ccbc4840aa2a0c896dc56ca79e75d1879",
+          "silo1": "0x6c49b18333a1135e9a376560c07e6d1fd0350eaf"
+        },
+        {
+          "siloId": 29,
+          "siloConfig": "0x9dee0665dea998dc33942215a06b36e278eb8b7f",
+          "silo0": "0xcf7c6f417a3afc97c59505198085f64dcf8a9373",
+          "silo1": "0x2a3e56fd2a3a9f43adb5c16d7e1a28602b056177"
+        },
+        {
+          "siloId": 30,
+          "siloConfig": "0xa3904721824d8b96a4a47c8dc5c93e8a89f7435e",
+          "silo0": "0x2f834b87a07e397d2f92a26df39cb5d33d2d3a56",
+          "silo1": "0xd4bc8906e4b853e5aa536c242ebcb19c88de4fbd"
+        },
+        {
+          "siloId": 31,
+          "siloConfig": "0x91d87099fa714a201297856d29380195adb62962",
+          "silo0": "0xf2f6609c0d9a8e6bd9be51359e67b58c9d33e771",
+          "silo1": "0x0588651ee0b84b3ca8035a69d60ff18c0263df71"
+        },
+        {
+          "siloId": 32,
+          "siloConfig": "0xe67cce118e9cceae51996e4d290f9b77d960e3d7",
+          "silo0": "0x0dfa6b53c05b07e29b49a878fc96153cc03c3e72",
+          "silo1": "0x0a94e18bdbccd048198806d7ff28a1b1d2590724"
+        },
+        {
+          "siloId": 33,
+          "siloConfig": "0x11bba83002915bb204b348c2174626612260ddaa",
+          "silo0": "0x38207373c2cf5ff809da0d72f9965eec1c87420f",
+          "silo1": "0x42ce2234fd5a26bf161477a996961c4d01f466a3"
+        },
+        {
+          "siloId": 34,
+          "siloConfig": "0x3605509b2c8bff9808da5dd5c81547d9edc4ffa2",
+          "silo0": "0x8cbff16c01154669b4dda5b2cf8724d8ccbd3516",
+          "silo1": "0x6030ad53d90ec2fb67f3805794dbb3fa5fd6eb64"
+        },
+        {
+          "siloId": 35,
+          "siloConfig": "0x4bb15418ef55367c638ca376b50276facb4a30ca",
+          "silo0": "0x356fcc93b96c8590e02fd6077f8886e1b31e2122",
+          "silo1": "0x08c320a84a59c6f533e0dca655cf497594bca1f9"
+        },
+        {
+          "siloId": 36,
+          "siloConfig": "0xdace786cef546c258c67b3ef68aed91b887be0f0",
+          "silo0": "0xd90545b06e7a6f9d2194d8f26e72c9b0d4e00d60",
+          "silo1": "0x11ba70c0ebab7946ac84f0e6d79162b0cbb2693f"
+        },
+        {
+          "siloId": 37,
+          "siloConfig": "0xe7579d515bd1676b6da703786189a457b9bb3fc3",
+          "silo0": "0x854475b78880767e246163031b5be44f14426c26",
+          "silo1": "0xda14a41dbda731f03a94cb722191639dd22b35b2"
+        },
+        {
+          "siloId": 38,
+          "siloConfig": "0xef242ee3ef20aabde1aa54dd054ea0361afdd21d",
+          "silo0": "0x1a4cf24bb9c63e5448f00fa36f6da0fcef1d9088",
+          "silo1": "0x03fa4567e11acf9d69e7899fd6334545e852d0d2"
+        },
+        {
+          "siloId": 39,
+          "siloConfig": "0x9fae379a9565dcd3822359ad1b4736396de357e7",
+          "silo0": "0xdb1d0ee0bc0527060a3b523492e86e80359b7317",
+          "silo1": "0x960f49fa7b5263323a2425d5bf7c5eafdf9139e2"
+        },
+        {
+          "siloId": 40,
+          "siloConfig": "0xc38a36cc0f1d616351d901a75bf3d58fca4de71f",
+          "silo0": "0x058766008d237faf3b05eeeebabc73c64d677bae",
+          "silo1": "0x24f7692af5231d559219d07c65276ad8c8cee9a3"
+        },
+        {
+          "siloId": 41,
+          "siloConfig": "0x115d53d01df03293a5c5a1df569f450869613bdd",
+          "silo0": "0x7db82f430f333ac5d93963e0a93fafef7061f998",
+          "silo1": "0xe75b0b3d24b988ada7136f6b8d491b727c36c27f"
+        },
+        {
+          "siloId": 42,
+          "siloConfig": "0xd7eb10819c92f3c555bd6be1d8e21d0f3916a669",
+          "silo0": "0xf380b8b0bff34252f607d18d83a47cb8c7374891",
+          "silo1": "0xe45fd2ebd7a2e1bed8660b3c526a8fa236c23ace"
+        },
+        {
+          "siloId": 43,
+          "siloConfig": "0x7c83aeba152405e0b6a949fa457ccb5031432c09",
+          "silo0": "0x035f9b3fc67d349e23aa6ebe5b94026695e97ab6",
+          "silo1": "0x567ae84fcc968c3724cc9de216cca5907130124e"
+        },
+        {
+          "siloId": 44,
+          "siloConfig": "0xad108d6c7bcfc529b889598d96653bbb3d00e2fc",
+          "silo0": "0xc5584e00349158dc04e9e5a857ab6c6f34b00c03",
+          "silo1": "0xc3a18f1efa66234e7d233c8ad00d597f6e585f2b"
+        },
+        {
+          "siloId": 45,
+          "siloConfig": "0xfba52e40f708536b844bd573bd2b04ecbaa0e08e",
+          "silo0": "0x8ad7cefe75be38667bf0b96d343d173ecd25e13e",
+          "silo1": "0xc752ff3e331eff7e63ac8d36f24ec8ecd8ec373d"
+        },
+        {
+          "siloId": 46,
+          "siloConfig": "0xda6787a3543a01bf770ddf3953be5b9c99c1cbd0",
+          "silo0": "0x558d6d6d53270ae8ba622daf123983d9f3c21792",
+          "silo1": "0xe6605932e4a686534d19005bb9db0fba1f101272"
+        },
+        {
+          "siloId": 47,
+          "siloConfig": "0x6478362fbefd083f71705bd2bbbf3465170cdf4f",
+          "silo0": "0x83e23bebeddf0b4a9c56305d142b70cf5d8187ef",
+          "silo1": "0x24c74b30d1a4261608e84bf5a618693032681dac"
+        },
+        {
+          "siloId": 48,
+          "siloConfig": "0x6452b9ae8011800457b42c4fbbdf4579afb96228",
+          "silo0": "0x0df2b7c7e2023a3eefcd24486c47abac9df80ac3",
+          "silo1": "0x5863a7b7e087e6576de1b6acb38c6c72cac20ac4"
+        },
+        {
+          "siloId": 49,
+          "siloConfig": "0x18555e17a97974a07841f652e45263b9ce8ad369",
+          "silo0": "0x21b7def97680992b1f1a8b8e5966eae32e6ab8f3",
+          "silo1": "0xa18a8f100f2c976044f2f84fae1ee9f807ae7893"
+        },
+        {
+          "siloId": 50,
+          "siloConfig": "0x2f33ccbb08743d51e086bdc1ba20fb8ceb9bad40",
+          "silo0": "0xb0f7931c300097c462f2c8568750d1c496f62205",
+          "silo1": "0xb488af9a423ee9012db3b90b213dcca2cd9c4070"
+        },
+        {
+          "siloId": 51,
+          "siloConfig": "0x12e082a98c2292382f9e2bd03cad7fb41242831a",
+          "silo0": "0x36798869d32fa5a617085044d84e0636a7830abb",
+          "silo1": "0xc92e96acb616476ed117f263fa68ce21f6d554d3"
+        },
+        {
+          "siloId": 52,
+          "siloConfig": "0xed7f8c077711b86b574ed94bb84895fbf147cd8e",
+          "silo0": "0x19926d2163fde0d77f7d50bb88701a6f51f45fab",
+          "silo1": "0xfbd3cccb196ce900be5e2d008a6c2fde90760408"
+        },
+        {
+          "siloId": 53,
+          "siloConfig": "0xae5a3b4f482c7dbb219e4ae3e5bb975de3a28d56",
+          "silo0": "0x5dfc90275f1f5e04654884532f0fed66bf6d0c07",
+          "silo1": "0x46d2249ed33a2ce6603ab1ce1b33ea2c244b0e86"
+        },
+        {
+          "siloId": 54,
+          "siloConfig": "0x0ff333b3c7e12ae53cfaed98232541c06d7cd2ab",
+          "silo0": "0x04f124bf435545a3c79a8ee3ffb6c51213cf5175",
+          "silo1": "0xbe0d3c8801206cc9f35a6626f90ef9f4f2983a3d"
+        },
+        {
+          "siloId": 55,
+          "siloConfig": "0x243d2d11fd323b929a2756c81afa455200134fca",
+          "silo0": "0x15641c093e566bd951c5e08e505a644478125f70",
+          "silo1": "0x4935fadb17df859667cc4f7bfe6a8cb24f86f8d0"
+        }
+      ],
+      "legacy": false
+    }
+  },
+  "silos": [
+    {
+      "silo": "0x0e2ef70d9b204a9cd30508a4e399b61ffb821152",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x6ac3b234a7e918423a9e4768655515bb942535de",
+      "asset": "0x000000000eccff26b795f73fb0a70d48da657fef",
+      "symbol": "USSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x86225514802b46c793833496ac7af1685a243767",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xba592db2f9cd6aa517cb84e527483826d4d6a1dd",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x424bb941286ee510ba10b3f7f04bdebd97ac56c3",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x94f51c6be4801a2be393adeed889d620338113f2",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x6304ffe23d2ca68bd9269562564446bce1985cc9",
+      "asset": "0x9731842ed581816913933c01de142c7ee412a8c8",
+      "symbol": "PT-Silo-46-scUSD-14AUG2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0xd6139daf3485e0a8fb12cb406d0568769a79f5e4",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x6ec9b5cba68542f6afbfa7004a7a3600f09a2703",
+      "asset": "0x9731842ed581816913933c01de142c7ee412a8c8",
+      "symbol": "PT-Silo-46-scUSD-14AUG2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0xd47031f7b044dffeb9b041c4ecf16209f6a1b0b2",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xfb6587720c73bc086e2978983538ad3011123161",
+      "asset": "0x930441aa7ab17654df5663781ca0c02cc17e6643",
+      "symbol": "PT-aSonUSDC-14AUG2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0x8c96c244586e0d8f6889413f7f525dade3b4ab85",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x4cbea6f5ee7766915b98a7789fc1bcb026be0e77",
+      "asset": "0x77d8f09053c28faf1e00df6511b23125d438616f",
+      "symbol": "PT-Silo-20-USDC.e-17JUL2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0x8a810a8bdcecc5ca467e9fac5a5a846d36c5bf7e",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xf9f735382cb366c81341e7c491b4f0458f23c575",
+      "asset": "0x0fb682c9692addcc1769f4d4d938c54420d54fa3",
+      "symbol": "PT-wstkscUSD-18DEC2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0x4f55e28d36b30a638c3aa1d5cbf9c4ccb3831506",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xda3c11c2ddaab7205a244b2a9e7f919594ceb39b",
+      "asset": "0x200338559c1975d1f216adcda8352aff2869afab",
+      "symbol": "PT-wOS-18DEC2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0x418d3fdfa4b79e485a9c0f16127959a67abd0877",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd7c9e31958803771357b56bae661a9e92ff60d3e",
+      "asset": "0x7e52f587f5b870d4c2cac8559ac4c49742d31a28",
+      "symbol": "PT-wstkscETH-18DEC2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0x3444504d57bacd7ecc07f0c5688d7047d0360cf2",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x3b7ae8c5d44f3c248d7309f82a8d5791023027c3",
+      "asset": "0x7e52f587f5b870d4c2cac8559ac4c49742d31a28",
+      "symbol": "PT-wstkscETH-18DEC2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0xcd95a588c0190bf9810381a19ecad8bc8306d7f2",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0xb57ca4633f8d0fe4f24d3cc811b5dea257fc976d",
+      "asset": "0x4772d2e014f9fc3a820c444e3313968e9a5c8121",
+      "symbol": "yUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x3ecd2863eda4e28b8c64a2fb09d9a84de09d054c",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x9d89cf7636a11b209865d99792d9e20a5e8bef21",
+      "asset": "0xb1e25689d55734fd3fffc939c4c3eb52dff8a794",
+      "symbol": "OS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd2a1d1432bb6a386edd0c583f3148c5b4f020cfc",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0xf79ec180c0b81bc18f7171fd4f648fbfd061207d",
+      "asset": "0x4772d2e014f9fc3a820c444e3313968e9a5c8121",
+      "symbol": "yUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xae79b0d94e1c53cd2e8160899b8d58ec138d341f",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x172a687c397e315dbe56ed78ab347d7743d0d4fa",
+      "asset": "0x6202b9f02e30e5e1c62cc01e4305450e5d83b926",
+      "symbol": "xUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0xa1627a0e1d0ebca9326d2219b84df0c600bed4b1",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x5f1d95fc7b1cd074dcfec6931ca8e90868b5042a",
+      "asset": "0xe2bc30a4896ff4c52adcb180213666d2d6b21c6d",
+      "symbol": "PT-stS-18DEC2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd215c85f2fb5834b0490ccc8213aa560c4b9dc34",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x745b5ae86abcee095f38d2f9d6ab7f39d31e28bb",
+      "asset": "0x5bff88ca1442c2496f7e475e9e7786383bc070c0",
+      "symbol": "sfrxUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xbc25a15006928e13b8c6ef33a6e6e5ec95888bd3",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd5c7e4f82beb89c8160f8966168c7e78376cbd7f",
+      "asset": "0x9fb76f7ce5fceaa2c42887ff441d46095e494206",
+      "symbol": "wstkscUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x2e6b3e1cf7346a52c9f139fb47dfa43a18f851a7",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x0f1355ae261ffca4b3f915e648cc30e1ccdada39",
+      "asset": "0x930441aa7ab17654df5663781ca0c02cc17e6643",
+      "symbol": "PT-aSonUSDC-14AUG2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0x4e1ed20cc6d7378ef0b61fe70cad641ab52b36a0",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x2c881acfc86046dd0c9db3619f2e85078fba1ba6",
+      "asset": "0x7e2bcdb749d90aa1e9e7262872ac8b1e062b2c4d",
+      "symbol": "PENDLE-LPT",
+      "decimals": 18
+    },
+    {
+      "silo": "0x19e8def4e499d1a8d651a8dad5b616ddd8e92330",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x596aef68a03a0e35c4d8e624fbbdb0df0862f172",
+      "asset": "0x6202b9f02e30e5e1c62cc01e4305450e5d83b926",
+      "symbol": "xUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0xb1412442aa998950f2f652667d5eba35fe66e43f",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x413145e8b6acfe1ff9e8a7a6730d848f4ece06cf",
+      "asset": "0x930441aa7ab17654df5663781ca0c02cc17e6643",
+      "symbol": "PT-aSonUSDC-14AUG2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0x623d2ec4fc0a3217b1e7e2a29c0adf96b1b15508",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x501ee3d6cb84004c7970ca24f3dac07d61a25e4d",
+      "asset": "0xaaaaaaaac311d0572bffb4772fe985a750e88805",
+      "symbol": "wmetaUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x1a089424f52502139888fa4c0ed2fa088e9e1d51",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xccddbbbd1e36a6eda3a84cdcee2040a86225ba71",
+      "asset": "0xaaaaaaaac311d0572bffb4772fe985a750e88805",
+      "symbol": "wmetaUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xed9777944a2fb32504a410d23f246463b3f40908",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xd481c8d0e85796473df3facc70f5b75530db1a92",
+      "asset": "0x4809010926aec940b550d34a46a52739f996d75d",
+      "symbol": "wsrUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xa93b75380d628dbc7443059d014dce9d6123cba7",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x75c550776c191a8f6ae22edc742ad2788723b66e",
+      "asset": "0xaaaaaaaac311d0572bffb4772fe985a750e88805",
+      "symbol": "wmetaUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xc6ee9a58d5270e53fd1361946899b6d0553142b4",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x43f143bc5588961198f1db9fbbb0887c3e3f45ae",
+      "asset": "0xbb30e76d9bb2cc9631f7fc5eb8e87b5aff32bfbd",
+      "symbol": "scBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x5160d30d4a71db55947434163d6133dce0ed649c",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x6e8c150224d6e9b646889b96eff6f7fd742e2c22",
+      "asset": "0xaaaaaaaac311d0572bffb4772fe985a750e88805",
+      "symbol": "wmetaUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x0ab02dd08c1555d1a20c76a6ea30e3e36f3e06d4",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x81d74d4019ad71ac99c46aaf77613d0b3c1842eb",
+      "asset": "0x5bff88ca1442c2496f7e475e9e7786383bc070c0",
+      "symbol": "sfrxUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xc77fccb9ff0dbe6a261be672f2ebfbc3e053aa1d",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x184d9332a054a9d89a1794eabdbb931b31209605",
+      "asset": "0x930441aa7ab17654df5663781ca0c02cc17e6643",
+      "symbol": "PT-aSonUSDC-14AUG2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0x72c59147eae0d7e86b16677ebc3a2be5a7da4509",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x1c1791911483e98875d162355fec47f37613f0fb",
+      "asset": "0xbbbbbbbbbd0ae69510ce374a86749f8276647b19",
+      "symbol": "wmetaS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x8c98b43bf61f2b07c4d26f85732217948fca2a90",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xfa502640510341ed792db8471e4b4c1fdaba3358",
+      "asset": "0x79bbf4508b1391af3a0f4b30bb5fc4aa9ab0e07c",
+      "symbol": "Anon",
+      "decimals": 18
+    },
+    {
+      "silo": "0x6dcac46c125e3f6c9fcdda31c1739022626a7b52",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xccfc29834530068ff1bd25b38c32c2e3bf489401",
+      "asset": "0x9fb76f7ce5fceaa2c42887ff441d46095e494206",
+      "symbol": "wstkscUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0xd981183c89d755862edb70096052c03e98ea4370",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xcc36a8c2b6d9aaa95d648fdf6e9534ea3bfe5729",
+      "asset": "0x9fb76f7ce5fceaa2c42887ff441d46095e494206",
+      "symbol": "wstkscUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0xe33c55e65bd4d782bf11ff3cbad87a1ee2522430",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x78db85d7c2ec33bc6323386e720e074658943102",
+      "asset": "0x9fb76f7ce5fceaa2c42887ff441d46095e494206",
+      "symbol": "wstkscUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x66e2d2022029bb8a2fd62a9ecf83b75d6ea17ed0",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x61f76af4c747561981aa1e29c031015c90d267ec",
+      "asset": "0x16af6b1315471dc306d47e9ccefed6e5996285b6",
+      "symbol": "xETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x2439d39dc355d2c33625ead2492d2a0d21d7a953",
+      "asset": "0x3bce5cb273f0f148010bbea2470e7b5df84c7812",
+      "symbol": "scETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x9f2509f9f037db3f45a45822bf0ed11644fd6826",
+      "asset": "0xb88ff15ae5f82c791e637b27337909bcf8065270",
+      "symbol": "xBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0xe41d5a0bd095d02125c79d2a754d12a328c59429",
+      "asset": "0xbb30e76d9bb2cc9631f7fc5eb8e87b5aff32bfbd",
+      "symbol": "scBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x06433ef2a99f3a240f1d39203bffa1d1b015538a",
+      "asset": "0xbb30e76d9bb2cc9631f7fc5eb8e87b5aff32bfbd",
+      "symbol": "scBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0xafee8ff865920347500092500144a9b148d536b3",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x045e18e005682c5e1885dc494d391434ab3cba95",
+      "asset": "0xb88ff15ae5f82c791e637b27337909bcf8065270",
+      "symbol": "xBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0xba22de33d549844dca0e85cab85147339c330171",
+      "asset": "0xbb30e76d9bb2cc9631f7fc5eb8e87b5aff32bfbd",
+      "symbol": "scBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x98f89e1ba855892a696d688f37abb799bb09358b",
+      "asset": "0x9fb76f7ce5fceaa2c42887ff441d46095e494206",
+      "symbol": "wstkscUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x9e258c1744d087c3eb03f7819f36c6d439300f91",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x86291d166a62b129593b23f8649d55db0b03e9fb",
+      "asset": "0xc7990369da608c2f4903715e3bd22f2970536c29",
+      "symbol": "smsUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x61ffbead1d4dc9ffba35eb16fd6cadee9b37b2aa",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xc3516fccab884950055e437f10df4be90da2f50c",
+      "asset": "0x300e1d4401c77eea8dccedb049ddf1f326ef4a80",
+      "symbol": "JUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x757c56fd12b619fa10a24c2881222f7069f4aa6d",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x44380b9085b4d63db2bc6a3784023d10bd5c3824",
+      "asset": "0x9f0df7799f6fdad409300080cff680f5a23df4b1",
+      "symbol": "wOS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x45a5a6f63448f23e8e67cd5fc6221fbc5ef6105f",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x94b4bdd55bac19da3b0a31edc0fc899ae918699e",
+      "asset": "0x5ee17fd12ede62b508f9615db384ce7b834ba657",
+      "symbol": "PT-smsUSD-30OCT2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0x7184bea7743ccfbe390f9cd830095a13ef867941",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x996914f35ad06eebc2d2f567cecb22c9cc1b182a",
+      "asset": "0x300e1d4401c77eea8dccedb049ddf1f326ef4a80",
+      "symbol": "JUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x41d1cb44d30867f50df4eef0b8d43d7b476416c5",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd9f4bf371c90a1bf5c569ce6f2d1880f8b534be7",
+      "asset": "0x300e1d4401c77eea8dccedb049ddf1f326ef4a80",
+      "symbol": "JUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xc67f14111e6d5a88fc18163cb5bece2f4b5afcd5",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x257fde96c56f5178bc4e12b7799085741b604f6b",
+      "asset": "0x6202b9f02e30e5e1c62cc01e4305450e5d83b926",
+      "symbol": "xUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0xebb7e8227f1d962ebed535a1522962ac16c31000",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd52f39e57090f2cf1fdeb7474959341cf8a8a878",
+      "asset": "0x4772d2e014f9fc3a820c444e3313968e9a5c8121",
+      "symbol": "yUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xaf1bdae843d90c546de5001f7b107b46e1a26aa9",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x8701325ffb6912124279c8ff94f3f89f0130615d",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xc6fee7d4c0cfc63dab5266c2ea8b2731f007742e",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xa193127c7b3df536973cfeebeec48f3ac8e6cd59",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x76df755a9f40463f14d0a2b7cba3ccf05404eedf",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x34ecb6422c04f992918ae3fa1ef10b4cb523bf83",
+      "asset": "0x0fb682c9692addcc1769f4d4d938c54420d54fa3",
+      "symbol": "PT-wstkscUSD-18DEC2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0x27968d36b937dcb26f33902fa489e5b228b104be",
+      "asset": "0x53a6abb52b2f968fa80df6a894e4f1b1020da975",
+      "symbol": "dUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x4cbd1ae8f51243f34a52e122ac1fd7b65b2b7bdd",
+      "asset": "0x300e1d4401c77eea8dccedb049ddf1f326ef4a80",
+      "symbol": "JUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x020337e7af11372d971781f5d09a071757e4a4b7",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xc5d2c47e5de634e68ee7097e3dc7839d2ff18dae",
+      "asset": "0xc7990369da608c2f4903715e3bd22f2970536c29",
+      "symbol": "smsUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x1aa2de1b2127c67ab72f2106624d2ba4ea33bc62",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xcc4a06b4b33c281eec7dccd97f91b6a9cdd919f3",
+      "asset": "0xc7990369da608c2f4903715e3bd22f2970536c29",
+      "symbol": "smsUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xc79c3dab274cce8b306cdf0bff0d1d6de54b84ae",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xcab5be443e343327f46be55f77c46bb30dc00b23",
+      "asset": "0xc7990369da608c2f4903715e3bd22f2970536c29",
+      "symbol": "smsUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x9a18acc3f69d3cc5cbc39a87abe363713394e426",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xa7a903487d986445c8e523ed563087235d9f06fa",
+      "asset": "0x200338559c1975d1f216adcda8352aff2869afab",
+      "symbol": "PT-wOS-18DEC2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0xe12f5847264c65878dcf8620f137273da7a75eaf",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x48276b0c8a911c4b0aac2faaa472261ddd9cf818",
+      "asset": "0x200338559c1975d1f216adcda8352aff2869afab",
+      "symbol": "PT-wOS-18DEC2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0x518fdd28e2fccfa62cefb1853bbdc82cca32db03",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x7df587b1997bcd547d48839d56f9937e52e4b01e",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x5f7e19421e078ff014532b11cf60637031ede668",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xb9dd7d468284fbd062a35e340cc053b762c13fa4",
+      "asset": "0xecac9c5f704e954931349da37f60e39f515c11c1",
+      "symbol": "LBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0xba9db757bfe5b1f94ec39ecb95ebd0713aa26554",
+      "asset": "0x0555e30da8f98308edb960aa94c0db47230d2b9c",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0xb60b15f105f7d906f481b42451e4791b0d137c93",
+      "asset": "0xecac9c5f704e954931349da37f60e39f515c11c1",
+      "symbol": "LBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0xe2d51c0b148d1196a752253034d3c716c8951573",
+      "asset": "0x0555e30da8f98308edb960aa94c0db47230d2b9c",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x33bbe7595e62ea0ec5c61785ae5062c7017ddc6f",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xf51b795b5e5a1eac12c08813603717a43728edf7",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x5b8b129f423611529392e8548b75fa1d23fc93dd",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0xdf60ac3eedd0e83a0d023036318d1de3e08545f3",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x93129e12cf1f842bb49f9a7eb43c71bbb598d140",
+      "asset": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+      "symbol": "stS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x853c02497d5de5088b38a4ec3bd72a06442fa945",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x543560d827cb4e6f0b7e996e18a3a9fdd0e4da1f",
+      "asset": "0x0000000000000000000000000000000000000000",
+      "symbol": "",
+      "decimals": 0
+    },
+    {
+      "silo": "0x710a57873c679a8f88a718b0eb0220719b41b6cc",
+      "asset": "0x0000000000000000000000000000000000000000",
+      "symbol": "",
+      "decimals": 0
+    },
+    {
+      "silo": "0xaa7183bb17b95937d7a5c2436acfb28358d5b9d0",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x14051378d64f1ffe2f54a689ee0619a9d591e533",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x2b236cb8926a97b1918f49a756ab7f4a8b9e6005",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xaa6f83aefca699a10fea81b49b8b0c0f14e23ec5",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x129ebc62019244f528e40c210604d5cf262ea8bf",
+      "asset": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+      "symbol": "stS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd611d97d648c6b30f2b736e6e26e588bac8f6d70",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xbff04857353cc593f85c40a1d47342d3e3633115",
+      "asset": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+      "symbol": "stS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xe61527810f6dadf21a8ed4ee7c884cc977611f0f",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x0f0d1cfb37c310e2de33dc2c23849bf24014faea",
+      "asset": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+      "symbol": "stS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x164832d4b539709adf6df94d5fc2eddba82af899",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x396922ef30cf012973343f7174db850c7d265278",
+      "asset": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+      "symbol": "stS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x47d8490be37adc7af053322d6d779153689e13c1",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x8f0694db47d8bcbe74ddbb43c8cbe0bc0c2daa40",
+      "asset": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+      "symbol": "stS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xe179af0bae65738ed5766aa70d6b8a45553d0a3a",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x5f06f5d205c1f81417cc5a554a34f46c47a1e37f",
+      "asset": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+      "symbol": "stS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x7d09707fd06792d3aecb9a3feb509c05d5fe6405",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xec56fd815c6d603df0c77038c8eeffd2ca3b8a6f",
+      "asset": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+      "symbol": "stS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xbc0e4a000666a893928454e4c587c28fe6de6ce5",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x364c72c6fb022522ef490ecc5e945f6afe47af95",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x2b421676be0d42e9975f3e364932c8c1bc498805",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xe223c8e92aa91e966ca31d5c6590ff7167e25801",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x4e216c15697c1392fe59e1014b009505e05810df",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x4bfead9975a64545c3594090327ef6666c2f6164",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x427514a905fa6beaed9a36e308fcfa06ce54e95b",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x91112b1c5779b6668e61aa776862781232add587",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0xbc7787ed47b2912e822407b695948de4a2d4619d",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xd8e21d3cb790af3e31c4f42313694f45a5dabecd",
+      "asset": "0xcc0966d8418d412c599a6421b760a847eb169a8c",
+      "symbol": "xSolvBTC",
+      "decimals": 18
+    },
+    {
+      "silo": "0x913a34de91347ebaba0433d6da41e775004585c4",
+      "asset": "0x541fd749419ca806a8bc7da8ac23d346f2df8b77",
+      "symbol": "SolvBTC",
+      "decimals": 18
+    },
+    {
+      "silo": "0x34bb955f10f01e05d2639a12a9fbf770853eac4b",
+      "asset": "0xcc0966d8418d412c599a6421b760a847eb169a8c",
+      "symbol": "xSolvBTC",
+      "decimals": 18
+    },
+    {
+      "silo": "0x9ed5a9c8f09aa245f105b23b1ee27723c4ad8d69",
+      "asset": "0x541fd749419ca806a8bc7da8ac23d346f2df8b77",
+      "symbol": "SolvBTC",
+      "decimals": 18
+    },
+    {
+      "silo": "0x52fc9e0a68b6a4c9b57b9d1d99fb71449a99dcd8",
+      "asset": "0xcc0966d8418d412c599a6421b760a847eb169a8c",
+      "symbol": "xSolvBTC",
+      "decimals": 18
+    },
+    {
+      "silo": "0x87178fe8698c7eda8aa207083c3d66aea569ab98",
+      "asset": "0x541fd749419ca806a8bc7da8ac23d346f2df8b77",
+      "symbol": "SolvBTC",
+      "decimals": 18
+    },
+    {
+      "silo": "0xa4ed37118e626cdc4bf476e0a56226ccf8615e31",
+      "asset": "0xcc0966d8418d412c599a6421b760a847eb169a8c",
+      "symbol": "xSolvBTC",
+      "decimals": 18
+    },
+    {
+      "silo": "0x370ef438d92a396a142d041535a9ba2aa1755e74",
+      "asset": "0x541fd749419ca806a8bc7da8ac23d346f2df8b77",
+      "symbol": "SolvBTC",
+      "decimals": 18
+    },
+    {
+      "silo": "0x34bb967d21bfed31f2a2eb4478a520c254b16d2e",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x2f5dc399b1e31f9808d1ef1256917abd2447c74f",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x088cdac81b0a14ef772393317282f9744ceb062b",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xfaa37aa6375a25ceac74e44060ca60dce778f05f",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x40e1669751112a447238e6d95e6ccdef634888d7",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x7d8a572ad3d2613657bb52ac99abf863c68273a2",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xf3b7a981a221ceab381f139c5d385138cd43eeab",
+      "asset": "0x9f0df7799f6fdad409300080cff680f5a23df4b1",
+      "symbol": "wOS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xc26f296c8e98f051cbb2b0e976f3fd18d773f0d9",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xc1443014adbcdb8a17bb74d3e64c9fb6bf63caf1",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x2842829ffaa454369d20fa10067f15b1ed7ade92",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xf55902de87bd80c6a35614b48d7f8b612a083c12",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x322e1d5384aa4ed66aeca770b95686271de61dc3",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x424ac5880e24c34f50ee4b962c53a3c3517d844f",
+      "asset": "0x9f0df7799f6fdad409300080cff680f5a23df4b1",
+      "symbol": "wOS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd556b398f6b24d95ee24947be634190b0b0b7083",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x1d7e3726afec5088e11438258193a199f9d5ba93",
+      "asset": "0x9f0df7799f6fdad409300080cff680f5a23df4b1",
+      "symbol": "wOS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x112380065a2cb73a5a429d9ba7368cc5e8434595",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x4e09ff794d255a123b00efa30162667a8054a845",
+      "asset": "0x9fb76f7ce5fceaa2c42887ff441d46095e494206",
+      "symbol": "wstkscUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x5954ce6671d97d24b782920ddcdbb4b1e63ab2de",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x253ddf25fe778dff9f35837f4e569e24083e510f",
+      "asset": "0xfa85fe5a8f5560e9039c04f2b0a90de1415abd70",
+      "symbol": "wanS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xb1b1792db2b79a93b3ce4a74e959b5627bdcde4e",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x21580de05c4f3d6d6a5345b03a898c33b872ab51",
+      "asset": "0xfa85fe5a8f5560e9039c04f2b0a90de1415abd70",
+      "symbol": "wanS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x016c306e103fbf48ec24810d078c65ad13c5f11b",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xe8e1a980a7fc8d47d337d704fa73fbb81ee55c25",
+      "asset": "0xe8a41c62bb4d5863c6eadc96792cfe90a1f37c47",
+      "symbol": "wstkscETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x219656f33c58488d09d518badf50aa8cdcaca2aa",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0xe453c128f9fa860960913f40ef975b1fe5621e9e",
+      "asset": "0x79bbf4508b1391af3a0f4b30bb5fc4aa9ab0e07c",
+      "symbol": "Anon",
+      "decimals": 18
+    },
+    {
+      "silo": "0x7e88ae5e50474a48dea4c42a634aa7485e7caa62",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xf03c5b0ccbc4840aa2a0c896dc56ca79e75d1879",
+      "asset": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+      "symbol": "stS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x6c49b18333a1135e9a376560c07e6d1fd0350eaf",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xcf7c6f417a3afc97c59505198085f64dcf8a9373",
+      "asset": "0xf26ff70573ddc8a90bd7865af8d7d70b8ff019bc",
+      "symbol": "EGGS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x2a3e56fd2a3a9f43adb5c16d7e1a28602b056177",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x2f834b87a07e397d2f92a26df39cb5d33d2d3a56",
+      "asset": "0xf26ff70573ddc8a90bd7865af8d7d70b8ff019bc",
+      "symbol": "EGGS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd4bc8906e4b853e5aa536c242ebcb19c88de4fbd",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xf2f6609c0d9a8e6bd9be51359e67b58c9d33e771",
+      "asset": "0xecac9c5f704e954931349da37f60e39f515c11c1",
+      "symbol": "LBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x0588651ee0b84b3ca8035a69d60ff18c0263df71",
+      "asset": "0x0555e30da8f98308edb960aa94c0db47230d2b9c",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x0dfa6b53c05b07e29b49a878fc96153cc03c3e72",
+      "asset": "0xecac9c5f704e954931349da37f60e39f515c11c1",
+      "symbol": "LBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x0a94e18bdbccd048198806d7ff28a1b1d2590724",
+      "asset": "0xbb30e76d9bb2cc9631f7fc5eb8e87b5aff32bfbd",
+      "symbol": "scBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x38207373c2cf5ff809da0d72f9965eec1c87420f",
+      "asset": "0xf26ff70573ddc8a90bd7865af8d7d70b8ff019bc",
+      "symbol": "EGGS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x42ce2234fd5a26bf161477a996961c4d01f466a3",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x8cbff16c01154669b4dda5b2cf8724d8ccbd3516",
+      "asset": "0xbe27993204ec64238f71a527b4c4d5f4949034c3",
+      "symbol": "PT-wstkscUSD-29MAY2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0x6030ad53d90ec2fb67f3805794dbb3fa5fd6eb64",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x356fcc93b96c8590e02fd6077f8886e1b31e2122",
+      "asset": "0xa2161e75edf50d70544e6588788a5732a3105c00",
+      "symbol": "PT-wstkscETH-29MAY2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0x08c320a84a59c6f533e0dca655cf497594bca1f9",
+      "asset": "0x50c42deacd8fc9773493ed674b675be577f2634b",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd90545b06e7a6f9d2194d8f26e72c9b0d4e00d60",
+      "asset": "0xe5da20f15420ad15de0fa650600afc998bbe3955",
+      "symbol": "stS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x11ba70c0ebab7946ac84f0e6d79162b0cbb2693f",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x854475b78880767e246163031b5be44f14426c26",
+      "asset": "0xbe27993204ec64238f71a527b4c4d5f4949034c3",
+      "symbol": "PT-wstkscUSD-29MAY2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0xda14a41dbda731f03a94cb722191639dd22b35b2",
+      "asset": "0x80eede496655fb9047dd39d9f418d5483ed600df",
+      "symbol": "frxUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x1a4cf24bb9c63e5448f00fa36f6da0fcef1d9088",
+      "asset": "0x420df605d062f8611efb3f203bf258159b8fffde",
+      "symbol": "PT-stS-29MAY2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0x03fa4567e11acf9d69e7899fd6334545e852d0d2",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xdb1d0ee0bc0527060a3b523492e86e80359b7317",
+      "asset": "0x46eb02b9f47634c4fab3110cc7adc1c6311dfac1",
+      "symbol": "PT-wOS-29MAY2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0x960f49fa7b5263323a2425d5bf7c5eafdf9139e2",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x058766008d237faf3b05eeeebabc73c64d677bae",
+      "asset": "0x420df605d062f8611efb3f203bf258159b8fffde",
+      "symbol": "PT-stS-29MAY2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0x24f7692af5231d559219d07c65276ad8c8cee9a3",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x7db82f430f333ac5d93963e0a93fafef7061f998",
+      "asset": "0x46eb02b9f47634c4fab3110cc7adc1c6311dfac1",
+      "symbol": "PT-wOS-29MAY2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0xe75b0b3d24b988ada7136f6b8d491b727c36c27f",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xf380b8b0bff34252f607d18d83a47cb8c7374891",
+      "asset": "0xff6771a9565f18638fab2972ba7fc798ad8bcad0",
+      "symbol": "ylBTCLST",
+      "decimals": 8
+    },
+    {
+      "silo": "0xe45fd2ebd7a2e1bed8660b3c526a8fa236c23ace",
+      "asset": "0xbb30e76d9bb2cc9631f7fc5eb8e87b5aff32bfbd",
+      "symbol": "scBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x035f9b3fc67d349e23aa6ebe5b94026695e97ab6",
+      "asset": "0xa79d00c0fea6baabe8a1fed0c41c4d36e7b81895",
+      "symbol": "ylstETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x567ae84fcc968c3724cc9de216cca5907130124e",
+      "asset": "0x3bce5cb273f0f148010bbea2470e7b5df84c7812",
+      "symbol": "scETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0xc5584e00349158dc04e9e5a857ab6c6f34b00c03",
+      "asset": "0xbe27993204ec64238f71a527b4c4d5f4949034c3",
+      "symbol": "PT-wstkscUSD-29MAY2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0xc3a18f1efa66234e7d233c8ad00d597f6e585f2b",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x8ad7cefe75be38667bf0b96d343d173ecd25e13e",
+      "asset": "0x930441aa7ab17654df5663781ca0c02cc17e6643",
+      "symbol": "PT-aSonUSDC-14AUG2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0xc752ff3e331eff7e63ac8d36f24ec8ecd8ec373d",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x558d6d6d53270ae8ba622daf123983d9f3c21792",
+      "asset": "0x930441aa7ab17654df5663781ca0c02cc17e6643",
+      "symbol": "PT-aSonUSDC-14AUG2025",
+      "decimals": 6
+    },
+    {
+      "silo": "0xe6605932e4a686534d19005bb9db0fba1f101272",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x83e23bebeddf0b4a9c56305d142b70cf5d8187ef",
+      "asset": "0xa2161e75edf50d70544e6588788a5732a3105c00",
+      "symbol": "PT-wstkscETH-29MAY2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0x24c74b30d1a4261608e84bf5a618693032681dac",
+      "asset": "0x3bce5cb273f0f148010bbea2470e7b5df84c7812",
+      "symbol": "scETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x0df2b7c7e2023a3eefcd24486c47abac9df80ac3",
+      "asset": "0x5bff88ca1442c2496f7e475e9e7786383bc070c0",
+      "symbol": "sfrxUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x5863a7b7e087e6576de1b6acb38c6c72cac20ac4",
+      "asset": "0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae",
+      "symbol": "scUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x21b7def97680992b1f1a8b8e5966eae32e6ab8f3",
+      "asset": "0x3333111a391cc08fa51353e9195526a70b333333",
+      "symbol": "x33",
+      "decimals": 18
+    },
+    {
+      "silo": "0xa18a8f100f2c976044f2f84fae1ee9f807ae7893",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xb0f7931c300097c462f2c8568750d1c496f62205",
+      "asset": "0x0555e30da8f98308edb960aa94c0db47230d2b9c",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0xb488af9a423ee9012db3b90b213dcca2cd9c4070",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x36798869d32fa5a617085044d84e0636a7830abb",
+      "asset": "0x789ca09b0b4bcc83062d817c43206f96bd464015",
+      "symbol": "PT-wanS-28AUG2025",
+      "decimals": 18
+    },
+    {
+      "silo": "0xc92e96acb616476ed117f263fa68ce21f6d554d3",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x19926d2163fde0d77f7d50bb88701a6f51f45fab",
+      "asset": "0x871a101dcf22fe4fe37be7b654098c801cba1c88",
+      "symbol": "beS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xfbd3cccb196ce900be5e2d008a6c2fde90760408",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x5dfc90275f1f5e04654884532f0fed66bf6d0c07",
+      "asset": "0xe715cba7b5ccb33790cebff1436809d36cb17e57",
+      "symbol": "EURC.e",
+      "decimals": 6
+    },
+    {
+      "silo": "0x46d2249ed33a2ce6603ab1ce1b33ea2c244b0e86",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x04f124bf435545a3c79a8ee3ffb6c51213cf5175",
+      "asset": "0x9f0df7799f6fdad409300080cff680f5a23df4b1",
+      "symbol": "wOS",
+      "decimals": 18
+    },
+    {
+      "silo": "0xbe0d3c8801206cc9f35a6626f90ef9f4f2983a3d",
+      "asset": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+      "symbol": "wS",
+      "decimals": 18
+    },
+    {
+      "silo": "0x15641c093e566bd951c5e08e505a644478125f70",
+      "asset": "0x9fb76f7ce5fceaa2c42887ff441d46095e494206",
+      "symbol": "wstkscUSD",
+      "decimals": 6
+    },
+    {
+      "silo": "0x4935fadb17df859667cc4f7bfe6a8cb24f86f8d0",
+      "asset": "0x29219dd400f2bf60e5a23d13be72b486d4038894",
+      "symbol": "USDC",
+      "decimals": 6
+    }
+  ]
+}

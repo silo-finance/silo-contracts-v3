@@ -1,0 +1,159 @@
+{
+  "chain": "ink",
+  "chainId": 57073,
+  "factories": {
+    "0xD13921239e3832FDC4141FDE544D3D058B529A5D": {
+      "startId": 100,
+      "lastCheckedId": 107,
+      "silos": [
+        {
+          "siloId": 100,
+          "siloConfig": "0x08a2ba3e265e1cedd822e0fe046815060526011e",
+          "silo0": "0x382e9320f5ed4b00599470535e117605ed97c24b",
+          "silo1": "0xe696f33ea32276ae90a947d27ba859a947df55a7"
+        },
+        {
+          "siloId": 101,
+          "siloConfig": "0x2478f21dca62f090590fe296baeb800b4cc2e855",
+          "silo0": "0x5c0565a969a92fba102d2d4e0c2e048cac336ec8",
+          "silo1": "0x7f3285ab6bd2f3773e1e58f49dbf1dab3f819057"
+        },
+        {
+          "siloId": 102,
+          "siloConfig": "0x0576d14d9eb0649e9eaca66f21fdd4f6cb8abf9c",
+          "silo0": "0xe1a5e90faacbdcff920224b2dc3598a2f23b4e70",
+          "silo1": "0x44c1a06c9ac4316279c30d45e025e0dc8bb9839b"
+        },
+        {
+          "siloId": 103,
+          "siloConfig": "0xbc2bb9ab0a9e1deee8812ce12780379f9e9e9d3e",
+          "silo0": "0x8813ef55a0cd5c91f8279c369a25795c2240f7f1",
+          "silo1": "0xd9a43553f1b7bc0695b751c927a06e4f09eeba1d"
+        },
+        {
+          "siloId": 104,
+          "siloConfig": "0x8e70120d27108e1093db2d182e1a83ba674482ee",
+          "silo0": "0x8b399343ae9039ba32a3c239f44a997ad9324633",
+          "silo1": "0xc6cc36b3b9b9cb79d0f3553d898b49614bf3780d"
+        },
+        {
+          "siloId": 105,
+          "siloConfig": "0xcee596b8e9a138a541310084b251fbc5deab753f",
+          "silo0": "0x76844330430a30e3cd18c5718478b68dc5ea84ff",
+          "silo1": "0x5e7dfe2ab5321125dd30e7d177bd544d83427d2a"
+        },
+        {
+          "siloId": 106,
+          "siloConfig": "0xa902e0833d4ed6dfcf1bd928bbbc9634ddb54ba7",
+          "silo0": "0x1290d983e7ca3eb9c25e6e48f5dda5c474974c48",
+          "silo1": "0x4db563e34ee043a153f486352e1cc81ebd47855d"
+        },
+        {
+          "siloId": 107,
+          "siloConfig": "0x225e300756e2989ee021f2087452d2158be4c95c",
+          "silo0": "0xe11c9c897b54877d6ad4171f55491bfcd114cac9",
+          "silo1": "0x0e92808db5e6b0838bf4d9f7395f7cf82939fc90"
+        }
+      ],
+      "legacy": false
+    }
+  },
+  "silos": [
+    {
+      "silo": "0x382e9320f5ed4b00599470535e117605ed97c24b",
+      "asset": "0x4200000000000000000000000000000000000006",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0xe696f33ea32276ae90a947d27ba859a947df55a7",
+      "asset": "0xf1815bd50389c46847f0bda824ec8da914045d14",
+      "symbol": "USDC.e",
+      "decimals": 6
+    },
+    {
+      "silo": "0x5c0565a969a92fba102d2d4e0c2e048cac336ec8",
+      "asset": "0x4200000000000000000000000000000000000006",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x7f3285ab6bd2f3773e1e58f49dbf1dab3f819057",
+      "asset": "0x0200c29006150606b650577bbe7b6248f58470c1",
+      "symbol": "USD₮0",
+      "decimals": 6
+    },
+    {
+      "silo": "0xe1a5e90faacbdcff920224b2dc3598a2f23b4e70",
+      "asset": "0x4200000000000000000000000000000000000006",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x44c1a06c9ac4316279c30d45e025e0dc8bb9839b",
+      "asset": "0x0200c29006150606b650577bbe7b6248f58470c1",
+      "symbol": "USD₮0",
+      "decimals": 6
+    },
+    {
+      "silo": "0x8813ef55a0cd5c91f8279c369a25795c2240f7f1",
+      "asset": "0x4200000000000000000000000000000000000006",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd9a43553f1b7bc0695b751c927a06e4f09eeba1d",
+      "asset": "0x0200c29006150606b650577bbe7b6248f58470c1",
+      "symbol": "USD₮0",
+      "decimals": 6
+    },
+    {
+      "silo": "0x8b399343ae9039ba32a3c239f44a997ad9324633",
+      "asset": "0x4200000000000000000000000000000000000006",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0xc6cc36b3b9b9cb79d0f3553d898b49614bf3780d",
+      "asset": "0x0200c29006150606b650577bbe7b6248f58470c1",
+      "symbol": "USD₮0",
+      "decimals": 6
+    },
+    {
+      "silo": "0x76844330430a30e3cd18c5718478b68dc5ea84ff",
+      "asset": "0x4200000000000000000000000000000000000006",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    {
+      "silo": "0x5e7dfe2ab5321125dd30e7d177bd544d83427d2a",
+      "asset": "0x0200c29006150606b650577bbe7b6248f58470c1",
+      "symbol": "USD₮0",
+      "decimals": 6
+    },
+    {
+      "silo": "0x1290d983e7ca3eb9c25e6e48f5dda5c474974c48",
+      "asset": "0x73e0c0d45e048d25fc26fa3159b0aa04bfa4db98",
+      "symbol": "kBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x4db563e34ee043a153f486352e1cc81ebd47855d",
+      "asset": "0x0200c29006150606b650577bbe7b6248f58470c1",
+      "symbol": "USD₮0",
+      "decimals": 6
+    },
+    {
+      "silo": "0xe11c9c897b54877d6ad4171f55491bfcd114cac9",
+      "asset": "0x73e0c0d45e048d25fc26fa3159b0aa04bfa4db98",
+      "symbol": "kBTC",
+      "decimals": 8
+    },
+    {
+      "silo": "0x0e92808db5e6b0838bf4d9f7395f7cf82939fc90",
+      "asset": "0x4200000000000000000000000000000000000006",
+      "symbol": "WETH",
+      "decimals": 18
+    }
+  ]
+}

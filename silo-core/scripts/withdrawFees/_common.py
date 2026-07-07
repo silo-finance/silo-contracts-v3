@@ -10,8 +10,30 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
-# Canonical Multicall3 address (same on every supported chain).
+# Canonical Multicall3 address (deployed here on most chains).
 MULTICALL3 = "0xcA11bde05977b3631167028862bE2a173976CA11"
+
+# Chains where Multicall3 is NOT at the canonical address. On these chains a call to
+# the canonical address reverts with "does not have any code".
+MULTICALL3_OVERRIDES: dict[str, str] = {
+    "xdc": "0x0B1795ccA8E4eC4df02346a082df54D437F8D9aF",
+}
+
+# Multicall3 used by aggregate3() for the current run. A run is always single-chain,
+# so entry points call activate_chain() once to point this at the right address.
+_active_multicall3 = MULTICALL3
+
+
+def multicall3_for(alias: str) -> str:
+    """Multicall3 address for a chain (canonical unless overridden)."""
+    return MULTICALL3_OVERRIDES.get(alias, MULTICALL3)
+
+
+def activate_chain(alias: str) -> str:
+    """Select the Multicall3 address aggregate3() will use for this run."""
+    global _active_multicall3
+    _active_multicall3 = multicall3_for(alias)
+    return _active_multicall3
 
 
 @dataclass(frozen=True)
@@ -172,7 +194,7 @@ def aggregate3(
     for start in range(0, len(calls), batch_size):
         batch = calls[start:start + batch_size]
         tuples = ",".join(f"({target},true,{data})" for target, data in batch)
-        out = _run_cast(["call", MULTICALL3, sig, f"[{tuples}]", "--rpc-url", rpc_url])
+        out = _run_cast(["call", _active_multicall3, sig, f"[{tuples}]", "--rpc-url", rpc_url])
         pairs = _parse_pairs(out)
         if len(pairs) != len(batch):
             raise RuntimeError(

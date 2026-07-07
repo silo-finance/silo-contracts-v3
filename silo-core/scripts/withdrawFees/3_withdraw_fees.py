@@ -206,7 +206,7 @@ def broadcast_withdrawals(args: argparse.Namespace, alias: str, silos: list[str]
 
     print(f"[{alias}] broadcasting withdrawFees multicall for {len(silos)} silo(s)")
     cmd = [
-        "cast", "send", _common.MULTICALL3, sig, multicall_arg,
+        "cast", "send", _common.multicall3_for(alias), sig, multicall_arg,
         "--rpc-url", args.rpc_url,
         "--private-key", private_key,
     ]

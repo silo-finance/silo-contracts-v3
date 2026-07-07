@@ -356,6 +356,8 @@ def main() -> int:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 
+    _common.activate_chain(chain.alias)
+
     out_path = _common.data_file(chain.alias)
     if not out_path.exists():
         print(f"ERROR: {out_path} not found. Run 1_collect_factories.py first.", file=sys.stderr)

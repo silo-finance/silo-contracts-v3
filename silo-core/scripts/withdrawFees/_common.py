@@ -130,6 +130,18 @@ def encode_uint_call(signature: str, value: int) -> str:
     return selector(signature) + f"{value:064x}"
 
 
+def encode_address_call(signature: str, address: str) -> str:
+    """Calldata for a single-address function, e.g. protocolFees(address)."""
+    raw = address[2:] if address.startswith("0x") else address
+    return selector(signature) + raw.lower().rjust(64, "0")
+
+
+def deployment_address(alias: str, contract_file: str) -> str:
+    """Read the `address` field of silo-core/deployments/<alias>/<contract_file>."""
+    path = repo_root() / "silo-core" / "deployments" / alias / contract_file
+    return json.loads(path.read_text(encoding="utf-8"))["address"]
+
+
 def cast_call_uint(rpc_url: str, to: str, signature_with_return: str) -> int:
     """Call a no-arg view returning a single uint."""
     out = _run_cast(["call", to, signature_with_return, "--rpc-url", rpc_url, "--json"])

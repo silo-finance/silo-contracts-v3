@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """Stage 1: collect every SiloFactory address from git history into data/<chain>.json.
 
-Walks the git history (master + develop) of
+Walks the git history (master + develop) of the EXACT path
 `silo-core/deployments/<chain>/SiloFactory.sol.json`, newest -> oldest, reading the
 `address` field at each commit. New unique factory addresses are merged into the
 per-chain data file. Incremental: stops as soon as it reaches an address already
 saved in the data file (delete the file to force a full re-scan).
+
+NOTE: we deliberately do NOT use `git log --follow`. Rename/copy detection compares
+file *content*, and every chain's `SiloFactory.sol.json` is near-identical JSON, so
+`--follow` would jump into other chains' history and collect foreign factory
+addresses that never belonged to this chain.
 
 Usage:
   python3 silo-core/scripts/withdrawFees/1_collect_factories.py --chain arbitrum_one
@@ -29,8 +34,6 @@ class TimelineEntry:
     commit: str
     short_commit: str
     date: str
-    path: str
-    origin_status: str  # status of this path at this commit: A / M / R<old> / ...
 
 
 def run_git(args: list[str]) -> str:
@@ -73,48 +76,32 @@ def address_at_commit(commit: str, path: str, json_key: str) -> str | None:
     return value if isinstance(value, str) and value else None
 
 
-def build_timeline(ref: str, initial_path: str, json_key: str) -> list[TimelineEntry]:
-    """Newest -> oldest list of (address, commit, date, path) for the tracked file.
+def build_timeline(ref: str, path: str, json_key: str) -> list[TimelineEntry]:
+    """Newest -> oldest list of (address, commit, date) for the tracked file.
 
-    Uses --follow so renames/moves are traversed back to the file's true origin.
+    Follows ONLY the exact path (no --follow / rename / copy detection). This is
+    deliberate: every chain has its own `SiloFactory.sol.json`, and those files are
+    near-identical JSON, so git's rename/copy heuristic would otherwise jump into a
+    different chain's history and collect factory addresses that never belonged to
+    this chain.
     """
     log_output = run_git([
         "log",
         ref,
-        "--follow",
-        "--name-status",
         "--format=__COMMIT__%H %ci",
         "--",
-        initial_path,
+        path,
     ])
 
     timeline: list[TimelineEntry] = []
-    current_path = initial_path
-    commit: str | None = None
-    date: str = ""
-    status_lines: list[str] = []
-
-    def flush() -> None:
-        nonlocal commit, date, current_path, status_lines
-        if commit is None:
-            return
-
-        origin_status = "?"
-        next_path = current_path
-        for raw in status_lines:
-            parts = raw.rstrip("\n").split("\t")
-            if len(parts) < 2:
-                continue
-            status = parts[0]
-            if status.startswith(("R", "C")) and len(parts) >= 3:
-                old_path, new_path = parts[1], parts[2]
-                if new_path == current_path:
-                    origin_status = f"{status} from {old_path}"
-                    next_path = old_path
-            elif parts[-1] == current_path:
-                origin_status = status
-
-        address = address_at_commit(commit, current_path, json_key)
+    for line in log_output.splitlines():
+        if not line.startswith("__COMMIT__"):
+            continue
+        rest = line[len("__COMMIT__"):].strip()
+        commit, _, date = rest.partition(" ")
+        if not commit:
+            continue
+        address = address_at_commit(commit, path, json_key)
         if address:
             timeline.append(
                 TimelineEntry(
@@ -122,27 +109,8 @@ def build_timeline(ref: str, initial_path: str, json_key: str) -> list[TimelineE
                     commit=commit,
                     short_commit=commit[:8],
                     date=date,
-                    path=current_path,
-                    origin_status=origin_status,
                 )
             )
-
-        current_path = next_path
-        commit = None
-        date = ""
-        status_lines = []
-
-    for line in log_output.splitlines():
-        if line.startswith("__COMMIT__"):
-            flush()
-            rest = line[len("__COMMIT__"):].strip()
-            commit, _, date = rest.partition(" ")
-            continue
-        if commit is None:
-            continue
-        if line.strip():
-            status_lines.append(line)
-    flush()
 
     return timeline
 
@@ -244,29 +212,42 @@ def main() -> int:
     if not new_addresses:
         print("  (none - data file already up to date)")
 
+    # Sanity check: any factory on file that never appears in git history for this
+    # chain's exact path is stale/foreign (e.g. left over from the old --follow bug).
+    git_addresses = {e.address.lower() for e in full_timeline}
+    if git_addresses:
+        stale = [addr for addr in data["factories"] if addr.lower() not in git_addresses]
+        if stale:
+            print("", file=sys.stderr)
+            print(
+                f"WARNING: {len(stale)} factory address(es) on file are NOT in the git "
+                f"history of {deployment_path}:",
+                file=sys.stderr,
+            )
+            for addr in stale:
+                print(f"  ! {addr}", file=sys.stderr)
+            print(
+                "  These do not belong to this chain and should be removed from the data file.",
+                file=sys.stderr,
+            )
+
     if full_timeline:
         origin = min(full_timeline, key=lambda e: e.date)
         print("")
-        print("Origin of SiloFactory.sol.json (oldest commit in history):")
+        print(f"Origin of {deployment_path} (oldest commit in history):")
         print(f"  commit : {origin.short_commit}")
         print(f"  date   : {origin.date}")
-        print(f"  path   : {origin.path}")
-        print(f"  status : {origin.origin_status}")
-        if origin.origin_status.startswith(("R", "C")):
-            print("  NOTE: origin is a rename/copy - verify the original path above is the true start.")
-        elif not origin.origin_status.startswith("A"):
-            print("  NOTE: oldest commit is not an 'A' (add); history may extend beyond what --follow traced.")
 
         print("")
         print("Full address timeline (newest -> oldest, deduped per branch order):")
-        print("  address | commit | date | path | status")
+        print("  address | commit | date")
         printed: set[tuple[str, str]] = set()
         for e in full_timeline:
             key = (e.address.lower(), e.commit)
             if key in printed:
                 continue
             printed.add(key)
-            print(f"  {e.address} | {e.short_commit} | {e.date} | {e.path} | {e.origin_status}")
+            print(f"  {e.address} | {e.short_commit} | {e.date}")
 
     print(f"\nTotal factories on file for {chain.alias}: {len(data['factories'])}")
     return 0

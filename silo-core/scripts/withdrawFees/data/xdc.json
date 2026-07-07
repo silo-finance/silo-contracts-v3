@@ -3,10 +3,175 @@
   "chainId": 50,
   "factories": {
     "0xf81d90DF1B63d48536E78564d24d5DD8F2BE58aD": {
-      "startId": null,
-      "lastCheckedId": null,
-      "silos": []
+      "startId": 3001,
+      "lastCheckedId": 3009,
+      "silos": [
+        {
+          "siloId": 3001,
+          "siloConfig": "0x2188056dc8471e0c24f8820fb0a7c858d49d940f",
+          "silo0": "0xb6c5797637ec0c81d7c5a5759c6e00f6620b9a0c",
+          "silo1": "0x0465ec10918b55dd8998e2a829eb9e0265da7f96"
+        },
+        {
+          "siloId": 3002,
+          "siloConfig": "0x0d419dc8128d5738a62753deb8ea3508aed95253",
+          "silo0": "0x9ebc79a0d5c6a2cb8c294da02f6675cd3f42d677",
+          "silo1": "0xd1ed56ed95c02634d9e2385a04cd5b97078dd932"
+        },
+        {
+          "siloId": 3003,
+          "siloConfig": "0x519303893fad9de0b5af1bf20a35145f1f2690c4",
+          "silo0": "0x40a686bf959db56a127a3c6aa9aa4a97147ffc77",
+          "silo1": "0x6851075c3ae69ea03db75cc1dd025df6d908bb98"
+        },
+        {
+          "siloId": 3004,
+          "siloConfig": "0x6007ec05764e1ecd2811d8a2c8f5f125f0b47f7d",
+          "silo0": "0xd89bb9b2074d57cbcac9c7a35d0bfe76947acdd6",
+          "silo1": "0xa4aefb80459da75246b6937a827a929328d7941d"
+        },
+        {
+          "siloId": 3005,
+          "siloConfig": "0x27c2d9f9d4a91e01e066b1416097d70f444231d9",
+          "silo0": "0x12339f823801debd3da0f6e00dabf1da3e62e0ea",
+          "silo1": "0x1f5c3aeaaa18749078765bd2b504b32005221603"
+        },
+        {
+          "siloId": 3006,
+          "siloConfig": "0x4cc32f75c0ddc6f6efd87955227a6280a79bf570",
+          "silo0": "0x66a4c6a0facc520bdad6dd500d4bed495cc38240",
+          "silo1": "0x1b6076ad42abf2cbf775615da5afbce45103d78d"
+        },
+        {
+          "siloId": 3007,
+          "siloConfig": "0xc23259f0dc7c9704ea978322df1cf80932098594",
+          "silo0": "0x00fcf6d60aa804f485cd99a9cae3a7a2793704ca",
+          "silo1": "0xf3d1fcb16374fa8f4a5135706c7a5ef4483c1e95"
+        },
+        {
+          "siloId": 3008,
+          "siloConfig": "0xe239b303c6500a729d7542f7339a5dac1f64b9ef",
+          "silo0": "0xdbb74aff8d8713f5b8d8edce5a9896f5ebc8dafb",
+          "silo1": "0x02b43d9658078d2317b22da7bb62d7bcd460ded9"
+        },
+        {
+          "siloId": 3009,
+          "siloConfig": "0x3eba91d894d3f20c1284effa8b6fbf4ec50dc8ba",
+          "silo0": "0xf107e8d834eee5716c14b79901912c88baab9805",
+          "silo1": "0xc414c974d92fc4bafc3b867456d3e38c238e8221"
+        }
+      ],
+      "legacy": false
     }
   },
-  "silos": []
+  "silos": [
+    {
+      "silo": "0xb6c5797637ec0c81d7c5a5759c6e00f6620b9a0c",
+      "asset": "0x951857744785e80e2de051c32ee7b25f9c458c42",
+      "symbol": "WXDC",
+      "decimals": 18
+    },
+    {
+      "silo": "0x0465ec10918b55dd8998e2a829eb9e0265da7f96",
+      "asset": "0xfa2958cb79b0491cc627c1557f441ef849ca8eb1",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x9ebc79a0d5c6a2cb8c294da02f6675cd3f42d677",
+      "asset": "0x951857744785e80e2de051c32ee7b25f9c458c42",
+      "symbol": "WXDC",
+      "decimals": 18
+    },
+    {
+      "silo": "0xd1ed56ed95c02634d9e2385a04cd5b97078dd932",
+      "asset": "0xfa2958cb79b0491cc627c1557f441ef849ca8eb1",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x40a686bf959db56a127a3c6aa9aa4a97147ffc77",
+      "asset": "0x3d8eadb739d1ef95dd53d718e4810721837c69c1",
+      "symbol": "scrvUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0x6851075c3ae69ea03db75cc1dd025df6d908bb98",
+      "asset": "0xfa2958cb79b0491cc627c1557f441ef849ca8eb1",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xd89bb9b2074d57cbcac9c7a35d0bfe76947acdd6",
+      "asset": "0x951857744785e80e2de051c32ee7b25f9c458c42",
+      "symbol": "WXDC",
+      "decimals": 18
+    },
+    {
+      "silo": "0xa4aefb80459da75246b6937a827a929328d7941d",
+      "asset": "0xfa2958cb79b0491cc627c1557f441ef849ca8eb1",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x12339f823801debd3da0f6e00dabf1da3e62e0ea",
+      "asset": "0x951857744785e80e2de051c32ee7b25f9c458c42",
+      "symbol": "WXDC",
+      "decimals": 18
+    },
+    {
+      "silo": "0x1f5c3aeaaa18749078765bd2b504b32005221603",
+      "asset": "0xfa2958cb79b0491cc627c1557f441ef849ca8eb1",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x66a4c6a0facc520bdad6dd500d4bed495cc38240",
+      "asset": "0x7054f74d6cb418e987b73c9f3c23e5cec18217b2",
+      "symbol": "ynRWAx",
+      "decimals": 18
+    },
+    {
+      "silo": "0x1b6076ad42abf2cbf775615da5afbce45103d78d",
+      "asset": "0xfa2958cb79b0491cc627c1557f441ef849ca8eb1",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x00fcf6d60aa804f485cd99a9cae3a7a2793704ca",
+      "asset": "0x7054f74d6cb418e987b73c9f3c23e5cec18217b2",
+      "symbol": "ynRWAx",
+      "decimals": 18
+    },
+    {
+      "silo": "0xf3d1fcb16374fa8f4a5135706c7a5ef4483c1e95",
+      "asset": "0xfa2958cb79b0491cc627c1557f441ef849ca8eb1",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xdbb74aff8d8713f5b8d8edce5a9896f5ebc8dafb",
+      "asset": "0xfa2958cb79b0491cc627c1557f441ef849ca8eb1",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0x02b43d9658078d2317b22da7bb62d7bcd460ded9",
+      "asset": "0x4809010926aec940b550d34a46a52739f996d75d",
+      "symbol": "wsrUSD",
+      "decimals": 18
+    },
+    {
+      "silo": "0xf107e8d834eee5716c14b79901912c88baab9805",
+      "asset": "0xfa2958cb79b0491cc627c1557f441ef849ca8eb1",
+      "symbol": "USDC",
+      "decimals": 6
+    },
+    {
+      "silo": "0xc414c974d92fc4bafc3b867456d3e38c238e8221",
+      "asset": "0x4809010926aec940b550d34a46a52739f996d75d",
+      "symbol": "wsrUSD",
+      "decimals": 18
+    }
+  ]
 }

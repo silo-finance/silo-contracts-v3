@@ -4,10 +4,10 @@
 # For every chain it runs: 1_collect_factories.py -> 2_discover_silos.py -> 3_withdraw_fees.py
 #
 # Usage:
-#   silo-core/scripts/withdrawFees/withdrawRevenue.sh [--parallel] [--dry-run] [chain ...]
+#   silo-core/scripts/withdrawFees/withdrawRevenue.sh [--parallel] [--broadcast] [chain ...]
 #
 #   --parallel   run all chains concurrently (logs go to logs/<chain>.log)
-#   --dry-run    run the withdraw stage without --broadcast (simulation only)
+#   --broadcast  send withdraw transactions (default is dry-run / simulation only)
 #   chain ...    optional list of chain aliases (default: all known chains)
 #
 # A failure on one chain never aborts the others; a summary is printed at the end.
@@ -27,16 +27,16 @@ chain_rpc_env() { py -c "import sys,_common;print(_common.get_chain(sys.argv[1])
 rpc_url_for_env() { py -c "import sys,_common;print(_common.load_dotenv().get(sys.argv[1],''))" "$1"; }
 
 PARALLEL=false
-DRY_RUN=false
+BROADCAST=false
 CHAINS=()
 
 for arg in "$@"; do
     case "$arg" in
-        --parallel) PARALLEL=true ;;
-        --dry-run)  DRY_RUN=true ;;
-        -h|--help)  sed -n '2,17p' "${BASH_SOURCE[0]}"; exit 0 ;;
-        --*)        echo "Unknown flag: $arg" >&2; exit 1 ;;
-        *)          CHAINS+=("$arg") ;;
+        --parallel)  PARALLEL=true ;;
+        --broadcast) BROADCAST=true ;;
+        -h|--help)   sed -n '2,17p' "${BASH_SOURCE[0]}"; exit 0 ;;
+        --*)         echo "Unknown flag: $arg" >&2; exit 1 ;;
+        *)           CHAINS+=("$arg") ;;
     esac
 done
 
@@ -53,7 +53,11 @@ if [ "${#CHAINS[@]}" -eq 0 ]; then
 fi
 
 echo "Chains to process (${#CHAINS[@]}): ${CHAINS[*]}"
-$DRY_RUN && echo "Mode: DRY-RUN (no broadcast)"
+if $BROADCAST; then
+    echo "Mode: BROADCAST (sending transactions)"
+else
+    echo "Mode: DRY-RUN (no broadcast; pass --broadcast to send txs)"
+fi
 $PARALLEL && echo "Mode: PARALLEL (per-chain logs in ${LOG_DIR})"
 
 run_chain() {
@@ -87,12 +91,13 @@ run_chain() {
     fi
 
     echo "[$chain] stage 3/3: withdraw fees"
-    broadcast="--broadcast"
-    $DRY_RUN && broadcast=""
-    # if ! py "${SCRIPT_DIR}/3_withdraw_fees.py" --chain "$chain" --rpc-url "$rpc" $broadcast; then
-    #     echo "[$chain] FAILED at stage 3/3 (withdraw fees)"
-    #     return 1
-    # fi
+    broadcast=""
+    $BROADCAST && broadcast="--broadcast"
+    if ! py "${SCRIPT_DIR}/3_withdraw_fees.py" --chain "$chain" --rpc-url "$rpc" \
+        --summary-out "${LOG_DIR}/${chain}.withdraw_summary.json" $broadcast; then
+        echo "[$chain] FAILED at stage 3/3 (withdraw fees)"
+        return 1
+    fi
 
     echo "[$chain] ===== done ====="
 }
@@ -152,10 +157,9 @@ while [ "$i" -lt "${#CHAINS[@]}" ]; do
 done
 
 echo ""
-echo "Withdraw lines (from logs):"
-if ! grep -hE "(WITHDRAW |silos to withdraw)" "${LOG_DIR}"/*.log 2>/dev/null | sed 's/^/  /'; then
-    echo "  (none detected)"
-fi
-echo "================================================="
+echo ""
+echo "==================== WITHDRAW REVENUE SUMMARY ===================="
+py "${SCRIPT_DIR}/3_withdraw_fees.py" --aggregate-summaries "$LOG_DIR" "${CHAINS[@]}"
+echo "================================================================="
 
 exit $overall

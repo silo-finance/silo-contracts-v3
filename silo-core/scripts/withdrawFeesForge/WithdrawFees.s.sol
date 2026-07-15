@@ -46,7 +46,7 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
 
     function run() public {
         ISiloFactory factory = ISiloFactory(vm.envAddress("FACTORY"));
-        ISiloLens lens = ISiloLens(getDeployedAddress(SiloCoreContracts.SILO_LENS));
+        // ISiloLens lens = ISiloLens(getDeployedAddress(SiloCoreContracts.SILO_LENS));
 
         _configureRevenueExclusions();
 
@@ -58,6 +58,10 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         console2.log("Starting silo id for a SiloFactory is", startingSiloId);
         uint256 amountOfMarkets = nextSiloId - startingSiloId;
         console2.log("Total markets exist", amountOfMarkets, "\n");
+
+        // Preview phase executes withdrawFees on-chain; revert before broadcast so multicall
+        // sees fresh daoAndDeployerRevenue (otherwise EarnedZero on the second call).
+        uint256 snap = vm.snapshotState();
 
         for (uint256 i = 0; i < amountOfMarkets; i++) {
             uint256 siloId = startingSiloId + i;
@@ -82,32 +86,37 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
 
             if (silo0 == address(0)) continue;
 
-            _pushWithdrawFeesCall({_lens: lens, _silo: silo0, _siloId: siloId});
-            _pushWithdrawFeesCall({_lens: lens, _silo: silo1, _siloId: siloId});
+            _pushWithdrawFeesCall({_silo: silo0, _siloId: siloId});
+            _pushWithdrawFeesCall({_silo: silo1, _siloId: siloId});
         }
 
         console2.log("Total amount of silos to call", calls.length);
         if (calls.length == 0) return;
 
+        IMulticall3.Call3[] memory callsToBroadcast = calls;
+        vm.revertToState(snap);
+
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
         vm.startBroadcast(deployerPrivateKey);
-        multicall3.aggregate3(calls);
+        multicall3.aggregate3(callsToBroadcast);
         vm.stopBroadcast();
     }
 
-    function _pushWithdrawFeesCall(ISiloLens _lens, address _silo, uint256 _siloId) internal {
+    function _pushWithdrawFeesCall(address _silo, uint256 _siloId) internal {
+        console2.log("\tchecking silo ", _silo, " on chain ", uint256(block.chainid));
+
         if (_excludedFromRevenue[block.chainid][_silo]) return;
 
-        ISilo(_silo).accrueInterest();
+        // ISilo(_silo).accrueInterest();
 
-        uint256 daoAndDeployerRevenue = _lens.protocolFees(ISilo(_silo));
+        // uint256 daoAndDeployerRevenue = _lens.protocolFees(ISilo(_silo));
 
-        if (daoAndDeployerRevenue == 0) {
-            console2.log("daoAndDeployerRevenue == 0 in silo", _silo, " #", _siloId);
-            return;
-        }
+        // if (daoAndDeployerRevenue == 0) {
+        //     console2.log("daoAndDeployerRevenue == 0 in silo", _silo, " #", _siloId);
+        //     return;
+        // }
 
-        (uint256 revenueToWithdraw, address asset) = _withdrawFeesPreview(ISilo(_silo), daoAndDeployerRevenue);
+        (uint256 revenueToWithdraw, address asset) = _withdrawFeesPreview(ISilo(_silo));
 
         if (revenueToWithdraw == 0) {
             console2.log("no fees to withdraw in silo", _silo, " #", _siloId);
@@ -158,21 +167,23 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
     }
 
     function _configureRevenueExclusions() internal {
-        // blacklisted on token
-        _excludedFromRevenue[42161][0xeD9F6d6B4889424173E582f2c12C41791ddFdaCA] = true;
+        _excludedFromRevenue[42161][0xeD9F6d6B4889424173E582f2c12C41791ddFdaCA] = true; // blacklisted on token
+        _excludedFromRevenue[42161][0x0c12cB6146358AC771Aa0d72bc37F2f0a991e4A7] = true; // undefined issue
     }
 
     // copied liquidity cap from Actions.withdrawFees (not getLiquidity())
-    function _withdrawFeesPreview(ISilo _silo, uint256 _daoAndDeployerRevenue)
+    function _withdrawFeesPreview(ISilo _silo)
         internal
-        view
         returns (uint256 revenueToWithdraw, address _asset)
     {
         _asset = _silo.asset();
-        uint256 siloBalance = IERC20(_asset).balanceOf(address(_silo));
-        uint256 protectedAssets = _silo.getTotalAssetsStorage(ISilo.AssetType.Protected);
-        uint256 availableLiquidity = protectedAssets > siloBalance ? 0 : siloBalance - protectedAssets;
+        uint256 balanceBefore = IERC20(_asset).balanceOf(address(_silo));
 
-        revenueToWithdraw = _daoAndDeployerRevenue > availableLiquidity ? availableLiquidity : _daoAndDeployerRevenue;
+        try _silo.withdrawFees() {
+            uint256 balanceAfter = IERC20(_asset).balanceOf(address(_silo));
+            revenueToWithdraw = balanceBefore - balanceAfter;
+        } catch {
+            revenueToWithdraw = 0;
+        }
     }
 }

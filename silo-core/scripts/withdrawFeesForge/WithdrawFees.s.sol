@@ -42,10 +42,13 @@ FOUNDRY_PROFILE=core \
 contract WithdrawFees is CommonDeploy, StdAssertions {
     IMulticall3 multicall3 = IMulticall3(0xcA11bde05977b3631167028862bE2a173976CA11);
     IMulticall3.Call3[] calls;
+    mapping(uint256 chainId => mapping(address silo => bool excluded)) internal _excludedFromRevenue;
 
     function run() public {
         ISiloFactory factory = ISiloFactory(vm.envAddress("FACTORY"));
         ISiloLens lens = ISiloLens(getDeployedAddress(SiloCoreContracts.SILO_LENS));
+
+        _configureRevenueExclusions();
 
         uint256 startingSiloId = vm.envUint("START_SILO_ID");
         uint256 nextSiloId = factory.getNextSiloId();
@@ -93,6 +96,8 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
     }
 
     function _pushWithdrawFeesCall(ISiloLens _lens, address _silo, uint256 _siloId) internal {
+        if (_excludedFromRevenue[block.chainid][_silo]) return;
+
         ISilo(_silo).accrueInterest();
 
         uint256 daoAndDeployerRevenue = _lens.protocolFees(ISilo(_silo));
@@ -152,11 +157,17 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         );
     }
 
+    function _configureRevenueExclusions() internal {
+        // blacklisted on token
+        _excludedFromRevenue[42161][0xeD9F6d6B4889424173E582f2c12C41791ddFdaCA] = true;
+    }
+
     // copied liquidity cap from Actions.withdrawFees (not getLiquidity())
-    function _withdrawFeesPreview(
-        ISilo _silo,
-        uint256 _daoAndDeployerRevenue
-    ) internal view returns (uint256 revenueToWithdraw, address _asset) {
+    function _withdrawFeesPreview(ISilo _silo, uint256 _daoAndDeployerRevenue)
+        internal
+        view
+        returns (uint256 revenueToWithdraw, address _asset)
+    {
         _asset = _silo.asset();
         uint256 siloBalance = IERC20(_asset).balanceOf(address(_silo));
         uint256 protectedAssets = _silo.getTotalAssetsStorage(ISilo.AssetType.Protected);

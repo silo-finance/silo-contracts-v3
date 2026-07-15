@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.28;
 
+import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {Strings} from "openzeppelin5/utils/Strings.sol";
 
@@ -20,45 +21,49 @@ import {Rounding} from "silo-core/contracts/lib/Rounding.sol";
 import {PriceFormatter} from "silo-core/deploy/lib/PriceFormatter.sol";
 
 /*
+Legacy Forge-based withdraw fees script. The current solution is the Python pipeline in
+silo-core/scripts/withdrawFees/ (run via withdrawRevenue.sh there). Kept for reference
+and as a fallback.
+
 you can run it via:
-./silo-core/scripts/withdrawRevenue.sh
+./silo-core/scripts/withdrawFeesForge/withdrawRevenue.sh
 
 # arbitrum
 
 FOUNDRY_PROFILE=core FACTORY=0x384DC7759d35313F0b567D42bf2f611B285B657C\
-  forge script silo-core/scripts/WithdrawFees.s.sol \
+  forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
   --ffi --rpc-url $RPC_ARBITRUM --broadcast
 
 FOUNDRY_PROFILE=core FACTORY=0x621Eacb756c7fa8bC0EA33059B881055d1693a33\
-  forge script silo-core/scripts/WithdrawFees.s.sol \
+  forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
   --ffi --rpc-url $RPC_ARBITRUM --broadcast
 
 FOUNDRY_PROFILE=core FACTORY=0x44347A91Cf3E9B30F80e2161438E0f10fCeDA0a0\
-  forge script silo-core/scripts/WithdrawFees.s.sol \
+  forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
   --ffi --rpc-url $RPC_ARBITRUM --broadcast
 
   
 FOUNDRY_PROFILE=core FACTORY=0x92cECB67Ed267FF98026F814D813fDF3054C6Ff9 \
-    forge script silo-core/scripts/WithdrawFees.s.sol \
+    forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
     --ffi --rpc-url $RPC_AVALANCHE --broadcast
 
 FOUNDRY_PROFILE=core FACTORY=0x22a3cF6149bFa611bAFc89Fd721918EC3Cf7b581\
-    forge script silo-core/scripts/WithdrawFees.s.sol \
+    forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
     --ffi --rpc-url $RPC_MAINNET --broadcast
 
 FOUNDRY_PROFILE=core FACTORY=0xFa773e2c7df79B43dc4BCdAe398c5DCA94236BC5\
-    forge script silo-core/scripts/WithdrawFees.s.sol \
+    forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
     --ffi --rpc-url $RPC_OPTIMISM --broadcast
 
 # sonic 
 
 FOUNDRY_PROFILE=core FACTORY=0x4e9dE3a64c911A37f7EB2fCb06D1e68c3cBe9203\
-    forge script silo-core/scripts/WithdrawFees.s.sol \
+    forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
     --ffi --rpc-url $RPC_SONIC --broadcast
 
 
 FOUNDRY_PROFILE=core FACTORY=0xa42001D6d2237d2c74108FE360403C4b796B7170\
-    forge script silo-core/scripts/WithdrawFees.s.sol \
+    forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
     --ffi --rpc-url $RPC_SONIC --broadcast
 */
 contract WithdrawFees is CommonDeploy, StdAssertions {
@@ -170,7 +175,7 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         return _factory.idToSiloConfig(101) != address(0);
     }
 
-    // copied logic from Silo.sol
+    // copied liquidity cap from Actions.withdrawFees (not getLiquidity())
     function _withdrawFeesPreview(
         ISilo _silo,
         uint256 earnedFees,
@@ -178,7 +183,13 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         uint256 deployerFee,
         address deployerFeeReceiver
     ) internal view returns (uint256 daoRevenue, uint256 deployerRevenue) {
-        uint256 availableLiquidity = _silo.getLiquidity();
+        address asset = _silo.asset();
+        uint256 siloBalance = IERC20(asset).balanceOf(address(_silo));
+        uint256 protectedAssets = _silo.getTotalAssetsStorage(ISilo.AssetType.Protected);
+
+        uint256 availableLiquidity;
+        unchecked { availableLiquidity = protectedAssets > siloBalance ? 0 : siloBalance - protectedAssets; }
+
         if (earnedFees > availableLiquidity) earnedFees = availableLiquidity;
         if (earnedFees == 0) return (0, 0);
 

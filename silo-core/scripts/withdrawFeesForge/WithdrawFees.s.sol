@@ -54,7 +54,7 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
 
         console2.log("Starting silo id for a SiloFactory is", startingSiloId);
         uint256 amountOfMarkets = nextSiloId - startingSiloId;
-        console2.log("Total markets exist", amountOfMarkets);
+        console2.log("Total markets exist", amountOfMarkets, "\n");
 
         for (uint256 i = 0; i < amountOfMarkets; i++) {
             uint256 siloId = startingSiloId + i;
@@ -79,13 +79,8 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
 
             if (silo0 == address(0)) continue;
 
-            // if (legacy) {
-            //     _pushLegacyWithdrawFeesCall(silo0);
-            //     _pushLegacyWithdrawFeesCall(silo1);
-            // } else {
-                _pushWithdrawFeesCall({_lens: lens, _silo: silo0, _siloId: siloId});
-                _pushWithdrawFeesCall({_lens: lens, _silo: silo1, _siloId: siloId});
-            // }
+            _pushWithdrawFeesCall({_lens: lens, _silo: silo0, _siloId: siloId});
+            _pushWithdrawFeesCall({_lens: lens, _silo: silo1, _siloId: siloId});
         }
 
         console2.log("Total amount of silos to call", calls.length);
@@ -97,54 +92,40 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         vm.stopBroadcast();
     }
 
-    function _pushLegacyWithdrawFeesCall(address _silo) internal {
-        calls.push(
-            IMulticall3.Call3({
-                target: _silo, callData: abi.encodeWithSelector(ISilo.withdrawFees.selector), allowFailure: true
-            })
-        );
-    }
-
     function _pushWithdrawFeesCall(ISiloLens _lens, address _silo, uint256 _siloId) internal {
         ISilo(_silo).accrueInterest();
 
         uint256 daoAndDeployerRevenue = _lens.protocolFees(ISilo(_silo));
+
         if (daoAndDeployerRevenue == 0) {
             console2.log("daoAndDeployerRevenue == 0 in silo", _silo, " #", _siloId);
             return;
         }
 
-        (, address deployerFeeReceiver, uint256 daoFee, uint256 deployerFee) =
-            _lens.getFeesAndFeeReceivers(ISilo(_silo));
+        (uint256 revenueToWithdraw, address asset) = _withdrawFeesPreview(ISilo(_silo), daoAndDeployerRevenue);
 
-        (uint256 daoRevenue, uint256 deployerRevenue) =
-            _withdrawFeesPreview(ISilo(_silo), daoAndDeployerRevenue, daoFee, deployerFee, deployerFeeReceiver);
-
-        if (daoRevenue == 0 && deployerRevenue == 0) {
+        if (revenueToWithdraw == 0) {
             console2.log("no fees to withdraw in silo", _silo, " #", _siloId);
             return;
         }
 
-        address asset = ISilo(_silo).asset();
         string memory symbol = TokenHelper.symbol(asset);
 
         uint256 underlyingAssetDecimals = TokenHelper.assertAndGetDecimals(asset);
-        uint256 withdrawLimit = 10 ** underlyingAssetDecimals / 1000;
+        uint256 withdrawLimit = 10 ** underlyingAssetDecimals / 100;
 
-        // skip markets with < 0.001 token fees
-        if (daoRevenue < withdrawLimit && deployerRevenue < withdrawLimit) {
+        // skip markets with not enough fees to withdraw
+        if (revenueToWithdraw < withdrawLimit) {
             console2.log(
                 string.concat(
                     "[ID#",
                     Strings.toString(_siloId),
-                    "] Skipping silo: ",
+                    "] skipping ",
                     Strings.toHexString(_silo),
+                    " with ",
+                    PriceFormatter.formatPriceInE(revenueToWithdraw, underlyingAssetDecimals),
                     " ",
-                    symbol,
-                    " with daoRevenue: ",
-                    PriceFormatter.formatPriceInE(daoRevenue, underlyingAssetDecimals),
-                    " and deployerRevenue: ",
-                    PriceFormatter.formatPriceInE(deployerRevenue, underlyingAssetDecimals)
+                    symbol
                 )
             );
 
@@ -157,43 +138,30 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
             })
         );
 
-        string memory messageToLog = string.concat(
-            Strings.toString(_siloId),
-            " id daoAndDeployerRevenue in token ",
-            TokenHelper.symbol(ISilo(_silo).asset()),
-            " amount (in asset decimals)"
+        console2.log(
+            string.concat(
+                "[ID#",
+                Strings.toString(_siloId),
+                "] WITHDRAWING from ",
+                Strings.toHexString(_silo),
+                " ",
+                PriceFormatter.formatPriceInE(revenueToWithdraw, underlyingAssetDecimals),
+                " ",
+                symbol
+            )
         );
-
-        emit log_named_decimal_uint(messageToLog, daoRevenue + deployerRevenue, underlyingAssetDecimals);
     }
 
     // copied liquidity cap from Actions.withdrawFees (not getLiquidity())
     function _withdrawFeesPreview(
         ISilo _silo,
-        uint256 earnedFees,
-        uint256 daoFee,
-        uint256 deployerFee,
-        address deployerFeeReceiver
-    ) internal view returns (uint256 daoRevenue, uint256 deployerRevenue) {
-        address asset = _silo.asset();
-        uint256 siloBalance = IERC20(asset).balanceOf(address(_silo));
+        uint256 _daoAndDeployerRevenue
+    ) internal view returns (uint256 revenueToWithdraw, address _asset) {
+        _asset = _silo.asset();
+        uint256 siloBalance = IERC20(_asset).balanceOf(address(_silo));
         uint256 protectedAssets = _silo.getTotalAssetsStorage(ISilo.AssetType.Protected);
+        uint256 availableLiquidity = protectedAssets > siloBalance ? 0 : siloBalance - protectedAssets;
 
-        uint256 availableLiquidity;
-        unchecked {
-            availableLiquidity = protectedAssets > siloBalance ? 0 : siloBalance - protectedAssets;
-        }
-
-        if (earnedFees > availableLiquidity) earnedFees = availableLiquidity;
-        if (earnedFees == 0) return (0, 0);
-
-        daoRevenue = earnedFees;
-
-        if (deployerFeeReceiver != address(0)) {
-            // split fees proportionally
-            daoRevenue = Math.mulDiv(daoRevenue, daoFee, daoFee + deployerFee, Rounding.DAO_REVENUE);
-            // `daoRevenue` is chunk of `earnedFees`, so safe to uncheck
-            deployerRevenue = earnedFees - daoRevenue;
-        }
+        revenueToWithdraw = _daoAndDeployerRevenue > availableLiquidity ? availableLiquidity : _daoAndDeployerRevenue;
     }
 }

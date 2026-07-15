@@ -20,51 +20,24 @@ import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 import {Rounding} from "silo-core/contracts/lib/Rounding.sol";
 import {PriceFormatter} from "silo-core/deploy/lib/PriceFormatter.sol";
 
+interface IOldSiloFactory {
+    function idToSilos(uint256 _id) external view returns (address silo0, address silo1);
+}
+
 /*
 Legacy Forge-based withdraw fees script. The current solution is the Python pipeline in
 silo-core/scripts/withdrawFees/ (run via withdrawRevenue.sh there). Kept for reference
 and as a fallback.
 
-you can run it via:
+Run all configured factories via:
 ./silo-core/scripts/withdrawFeesForge/withdrawRevenue.sh
 
-# arbitrum
-
-FOUNDRY_PROFILE=core FACTORY=0x384DC7759d35313F0b567D42bf2f611B285B657C\
+Or run one factory directly:
+FOUNDRY_PROFILE=core \
+  FACTORY=0x384DC7759d35313F0b567D42bf2f611B285B657C \
+  START_SILO_ID=100 \
   forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
   --ffi --rpc-url $RPC_ARBITRUM --broadcast
-
-FOUNDRY_PROFILE=core FACTORY=0x621Eacb756c7fa8bC0EA33059B881055d1693a33\
-  forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
-  --ffi --rpc-url $RPC_ARBITRUM --broadcast
-
-FOUNDRY_PROFILE=core FACTORY=0x44347A91Cf3E9B30F80e2161438E0f10fCeDA0a0\
-  forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
-  --ffi --rpc-url $RPC_ARBITRUM --broadcast
-
-  
-FOUNDRY_PROFILE=core FACTORY=0x92cECB67Ed267FF98026F814D813fDF3054C6Ff9 \
-    forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
-    --ffi --rpc-url $RPC_AVALANCHE --broadcast
-
-FOUNDRY_PROFILE=core FACTORY=0x22a3cF6149bFa611bAFc89Fd721918EC3Cf7b581\
-    forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
-    --ffi --rpc-url $RPC_MAINNET --broadcast
-
-FOUNDRY_PROFILE=core FACTORY=0xFa773e2c7df79B43dc4BCdAe398c5DCA94236BC5\
-    forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
-    --ffi --rpc-url $RPC_OPTIMISM --broadcast
-
-# sonic 
-
-FOUNDRY_PROFILE=core FACTORY=0x4e9dE3a64c911A37f7EB2fCb06D1e68c3cBe9203\
-    forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
-    --ffi --rpc-url $RPC_SONIC --broadcast
-
-
-FOUNDRY_PROFILE=core FACTORY=0xa42001D6d2237d2c74108FE360403C4b796B7170\
-    forge script silo-core/scripts/withdrawFeesForge/WithdrawFees.s.sol \
-    --ffi --rpc-url $RPC_SONIC --broadcast
 */
 contract WithdrawFees is CommonDeploy, StdAssertions {
     IMulticall3 multicall3 = IMulticall3(0xcA11bde05977b3631167028862bE2a173976CA11);
@@ -74,19 +47,10 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         ISiloFactory factory = ISiloFactory(vm.envAddress("FACTORY"));
         ISiloLens lens = ISiloLens(getDeployedAddress(SiloCoreContracts.SILO_LENS));
 
-        uint256 startingSiloId;
+        uint256 startingSiloId = vm.envUint("START_SILO_ID");
         uint256 nextSiloId = factory.getNextSiloId();
 
-        if (_startingIdIsOne(factory)) {
-            startingSiloId = 1;
-        } else if (_startingIdIsHundredOne(factory)) {
-            startingSiloId = 101;
-        } else if (nextSiloId == 101 || nextSiloId == 1) {
-            console2.log("No silos exist");
-            return;
-        } else {
-            revert("Starting Silo id is not 1 or 101");
-        }
+        require(startingSiloId <= nextSiloId, "START_SILO_ID out of range");
 
         console2.log("Starting silo id for a SiloFactory is", startingSiloId);
         uint256 amountOfMarkets = nextSiloId - startingSiloId;
@@ -94,11 +58,34 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
 
         for (uint256 i = 0; i < amountOfMarkets; i++) {
             uint256 siloId = startingSiloId + i;
-            ISiloConfig config = ISiloConfig(factory.idToSiloConfig(siloId));
+            address silo0;
+            address silo1;
+            bool legacy;
 
-            (address silo0, address silo1) = config.getSilos();
-            _pushWithdrawFeesCall(lens, silo0, siloId);
-            _pushWithdrawFeesCall(lens, silo1, siloId);
+            try factory.idToSiloConfig(siloId) returns (address config) {
+                if (config == address(0)) continue;
+
+                try ISiloConfig(config).getSilos() returns (address _silo0, address _silo1) {
+                    silo0 = _silo0;
+                    silo1 = _silo1;
+                } catch {
+                    legacy = true;
+                    (silo0, silo1) = IOldSiloFactory(address(factory)).idToSilos(siloId);
+                }
+            } catch {
+                legacy = true;
+                (silo0, silo1) = IOldSiloFactory(address(factory)).idToSilos(siloId);
+            }
+
+            if (silo0 == address(0)) continue;
+
+            // if (legacy) {
+            //     _pushLegacyWithdrawFeesCall(silo0);
+            //     _pushLegacyWithdrawFeesCall(silo1);
+            // } else {
+                _pushWithdrawFeesCall({_lens: lens, _silo: silo0, _siloId: siloId});
+                _pushWithdrawFeesCall({_lens: lens, _silo: silo1, _siloId: siloId});
+            // }
         }
 
         console2.log("Total amount of silos to call", calls.length);
@@ -110,10 +97,22 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         vm.stopBroadcast();
     }
 
+    function _pushLegacyWithdrawFeesCall(address _silo) internal {
+        calls.push(
+            IMulticall3.Call3({
+                target: _silo, callData: abi.encodeWithSelector(ISilo.withdrawFees.selector), allowFailure: true
+            })
+        );
+    }
+
     function _pushWithdrawFeesCall(ISiloLens _lens, address _silo, uint256 _siloId) internal {
         ISilo(_silo).accrueInterest();
+
         uint256 daoAndDeployerRevenue = _lens.protocolFees(ISilo(_silo));
-        if (daoAndDeployerRevenue == 0) return;
+        if (daoAndDeployerRevenue == 0) {
+            console2.log("daoAndDeployerRevenue == 0 in silo", _silo, " #", _siloId);
+            return;
+        }
 
         (, address deployerFeeReceiver, uint256 daoFee, uint256 deployerFee) =
             _lens.getFeesAndFeeReceivers(ISilo(_silo));
@@ -121,15 +120,18 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         (uint256 daoRevenue, uint256 deployerRevenue) =
             _withdrawFeesPreview(ISilo(_silo), daoAndDeployerRevenue, daoFee, deployerFee, deployerFeeReceiver);
 
-        if (daoRevenue == 0 && deployerRevenue == 0) return;
+        if (daoRevenue == 0 && deployerRevenue == 0) {
+            console2.log("no fees to withdraw in silo", _silo, " #", _siloId);
+            return;
+        }
 
         address asset = ISilo(_silo).asset();
         string memory symbol = TokenHelper.symbol(asset);
 
         uint256 underlyingAssetDecimals = TokenHelper.assertAndGetDecimals(asset);
-        uint256 withdrawLimit = 10 ** underlyingAssetDecimals / 100;
+        uint256 withdrawLimit = 10 ** underlyingAssetDecimals / 1000;
 
-        // skip markets with < 0.01 token fees
+        // skip markets with < 0.001 token fees
         if (daoRevenue < withdrawLimit && deployerRevenue < withdrawLimit) {
             console2.log(
                 string.concat(
@@ -151,9 +153,7 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
 
         calls.push(
             IMulticall3.Call3({
-                target: _silo,
-                callData: abi.encodeWithSelector(ISilo.withdrawFees.selector),
-                allowFailure: false
+                target: _silo, callData: abi.encodeWithSelector(ISilo.withdrawFees.selector), allowFailure: false
             })
         );
 
@@ -165,14 +165,6 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         );
 
         emit log_named_decimal_uint(messageToLog, daoRevenue + deployerRevenue, underlyingAssetDecimals);
-    }
-
-    function _startingIdIsOne(ISiloFactory _factory) internal view returns (bool) {
-        return _factory.idToSiloConfig(1) != address(0);
-    }
-
-    function _startingIdIsHundredOne(ISiloFactory _factory) internal view returns (bool) {
-        return _factory.idToSiloConfig(101) != address(0);
     }
 
     // copied liquidity cap from Actions.withdrawFees (not getLiquidity())
@@ -188,7 +180,9 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         uint256 protectedAssets = _silo.getTotalAssetsStorage(ISilo.AssetType.Protected);
 
         uint256 availableLiquidity;
-        unchecked { availableLiquidity = protectedAssets > siloBalance ? 0 : siloBalance - protectedAssets; }
+        unchecked {
+            availableLiquidity = protectedAssets > siloBalance ? 0 : siloBalance - protectedAssets;
+        }
 
         if (earnedFees > availableLiquidity) earnedFees = availableLiquidity;
         if (earnedFees == 0) return (0, 0);

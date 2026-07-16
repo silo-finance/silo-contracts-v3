@@ -14,7 +14,6 @@ import {CommonDeploy} from "silo-core/deploy/_CommonDeploy.sol";
 import {SiloCoreContracts} from "silo-core/common/SiloCoreContracts.sol";
 import {ISiloConfig} from "silo-core/contracts/interfaces/ISiloConfig.sol";
 import {ISiloFactory} from "silo-core/contracts/interfaces/ISiloFactory.sol";
-import {ISiloLens} from "silo-core/contracts/interfaces/ISiloLens.sol";
 import {IMulticall3} from "silo-core/scripts/interfaces/IMulticall3.sol";
 import {TokenHelper} from "silo-core/contracts/lib/TokenHelper.sol";
 import {Rounding} from "silo-core/contracts/lib/Rounding.sol";
@@ -40,13 +39,24 @@ FOUNDRY_PROFILE=core \
   --ffi --rpc-url $RPC_ARBITRUM --broadcast
 */
 contract WithdrawFees is CommonDeploy, StdAssertions {
-    IMulticall3 multicall3 = IMulticall3(0xcA11bde05977b3631167028862bE2a173976CA11);
+    address internal constant _MULTICALL3 = 0xcA11bde05977b3631167028862bE2a173976CA11;
+    // XDC does not have Multicall3 at the canonical address.
+    address internal constant _MULTICALL3_XDC = 0x0B1795ccA8E4eC4df02346a082df54D437F8D9aF;
+
+    IMulticall3 multicall3;
     IMulticall3.Call3[] calls;
     mapping(uint256 chainId => mapping(address silo => bool excluded)) internal _excludedFromRevenue;
 
+    uint256 internal constant _XDC_CHAIN_ID = 50;
+    uint256 internal constant _INJECTIVE_CHAIN_ID = 1776;
+    // Injective token balances are unreliable in preview; 1e18 passes the min-withdraw threshold.
+    uint256 internal constant _INJECTIVE_PREVIEW_AMOUNT = 1e18;
+
     function run() public {
         ISiloFactory factory = ISiloFactory(vm.envAddress("FACTORY"));
-        // ISiloLens lens = ISiloLens(getDeployedAddress(SiloCoreContracts.SILO_LENS));
+        console2.log("\n\nFactory ", address(factory), " on chain ", uint256(block.chainid));
+
+        multicall3 = IMulticall3(block.chainid == _XDC_CHAIN_ID ? _MULTICALL3_XDC : _MULTICALL3);
 
         _configureRevenueExclusions();
 
@@ -103,18 +113,12 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
     }
 
     function _pushWithdrawFeesCall(address _silo, uint256 _siloId) internal {
-        console2.log("\tchecking silo ", _silo, " on chain ", uint256(block.chainid));
-
         if (_excludedFromRevenue[block.chainid][_silo]) return;
 
-        // ISilo(_silo).accrueInterest();
-
-        // uint256 daoAndDeployerRevenue = _lens.protocolFees(ISilo(_silo));
-
-        // if (daoAndDeployerRevenue == 0) {
-        //     console2.log("daoAndDeployerRevenue == 0 in silo", _silo, " #", _siloId);
-        //     return;
-        // }
+        if (block.chainid == _INJECTIVE_CHAIN_ID) {
+            _pushInjectiveWithdrawFeesCall(_silo, _siloId);
+            return;
+        }
 
         (uint256 revenueToWithdraw, address asset) = _withdrawFeesPreview(ISilo(_silo));
 
@@ -166,9 +170,58 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         );
     }
 
+    /// @dev Injective: always multicall every silo; balances in preview are unreliable.
+    function _pushInjectiveWithdrawFeesCall(address _silo, uint256 _siloId) internal {
+        (uint256 revenueToWithdraw, address asset) = _withdrawFeesPreview(ISilo(_silo));
+
+        calls.push(
+            IMulticall3.Call3({
+                target: _silo, callData: abi.encodeWithSelector(ISilo.withdrawFees.selector), allowFailure: true
+            })
+        );
+
+        string memory symbol = TokenHelper.symbol(asset);
+        uint256 underlyingAssetDecimals = TokenHelper.assertAndGetDecimals(asset);
+
+        if (revenueToWithdraw == 0) {
+            console2.log("no fees to withdraw in silo (injective preview reverted)", _silo, " #", _siloId);
+            return;
+        }
+
+        console2.log(
+            string.concat(
+                "[ID#",
+                Strings.toString(_siloId),
+                "] WITHDRAWING from ",
+                Strings.toHexString(_silo),
+                " ",
+                PriceFormatter.formatPriceInE(revenueToWithdraw, underlyingAssetDecimals),
+                " ",
+                symbol
+            )
+        );
+    }
+
     function _configureRevenueExclusions() internal {
         _excludedFromRevenue[42161][0xeD9F6d6B4889424173E582f2c12C41791ddFdaCA] = true; // blacklisted on token
         _excludedFromRevenue[42161][0x0c12cB6146358AC771Aa0d72bc37F2f0a991e4A7] = true; // undefined issue
+        _excludedFromRevenue[10][0x7EFaA35f9739a0627ab52405669f0CaAE6735E27] = true; // undefined issue
+        _excludedFromRevenue[10][0x4Dac4fAb7596229be21f542E5f0f7300015e30E1] = true; // undefined issue
+
+        _excludedFromRevenue[10][0x6C4A4b92b89546E2300EBA88075aC43A528cdF42] = true; // undefined issue
+        _excludedFromRevenue[10][0x4d39082132a7b43C5d2A819D6005e46D59a98b8e] = true; // undefined issue
+
+        _excludedFromRevenue[10][0x0c3483D91B724BeC0E7402382c3D8f9F2387DC7a] = true; // undefined issue
+        _excludedFromRevenue[10][0x61a1C602bA141D1d14012bD08EbC432460D9C8D3] = true; // undefined issue
+
+        _excludedFromRevenue[10][0xd49F2CCE33f1746098B477CdB0493D164a3341a1] = true; // undefined issue
+        _excludedFromRevenue[10][0xeC8a6Eda8b0b451C41b22f32D85BfbB51e0b5725] = true; // undefined issue
+
+        _excludedFromRevenue[10][0x83a8f32345A8C853292f596d29A6db32AD0D95D2] = true; // undefined issue
+        _excludedFromRevenue[10][0xC8388dD210810a71dffB537B7062E4Dbe7f97207] = true; // undefined issue
+
+        _excludedFromRevenue[146][0x543560d827Cb4e6F0B7E996E18a3A9FdD0e4DA1f] = true; // asset 0
+        _excludedFromRevenue[146][0x710a57873C679A8F88a718b0Eb0220719B41B6Cc] = true; // asset 0
     }
 
     // copied liquidity cap from Actions.withdrawFees (not getLiquidity())
@@ -180,8 +233,12 @@ contract WithdrawFees is CommonDeploy, StdAssertions {
         uint256 balanceBefore = IERC20(_asset).balanceOf(address(_silo));
 
         try _silo.withdrawFees() {
-            uint256 balanceAfter = IERC20(_asset).balanceOf(address(_silo));
-            revenueToWithdraw = balanceBefore - balanceAfter;
+            if (block.chainid == _INJECTIVE_CHAIN_ID) {
+                revenueToWithdraw = _INJECTIVE_PREVIEW_AMOUNT;
+            } else {
+                uint256 balanceAfter = IERC20(_asset).balanceOf(address(_silo));
+                revenueToWithdraw = balanceBefore - balanceAfter;
+            }
         } catch {
             revenueToWithdraw = 0;
         }

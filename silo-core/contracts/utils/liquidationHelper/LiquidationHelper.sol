@@ -19,9 +19,18 @@ import {DexSwap} from "./DexSwap.sol";
 import {TokenRescuer} from "../TokenRescuer.sol";
 import {IVersioned} from "../../interfaces/IVersioned.sol";
 import {AllowMeToLiquidate} from "./common/AllowMeToLiquidate.sol";
+import {Whitelist} from "../../hooks/_common/Whitelist.sol";
 
 /// @notice LiquidationHelper IS NOT PART OF THE PROTOCOL.
-contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap, TokenRescuer, AllowMeToLiquidate, IVersioned {
+contract LiquidationHelper is
+    ILiquidationHelper,
+    IERC3156FlashBorrower,
+    DexSwap,
+    TokenRescuer,
+    AllowMeToLiquidate,
+    Whitelist,
+    IVersioned
+{
     using Address for address payable;
     using SafeERC20 for IERC20;
 
@@ -37,14 +46,18 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
     uint256 private transient _withdrawCollateral;
     uint256 private transient _repayDebtAssets;
 
+    /// @dev Set in `executeLiquidation` to the flash-loan provider; cleared at the start of `onFlashLoan`.
+    address private transient _expectedFlashLoanProvider;
+
     error NoDebtToCover();
     error STokenNotSupported();
     error ZeroAddress();
+    error UnauthorizedFlashLoanCallback();
 
     /// @param _nativeToken address of wrapped native blockchain token eg. WETH on Ethereum
     /// @param _exchangeProxy exchange address, where to send swap data on liquidation
     /// @param _tokensReceiver all leftover tokens (debt and collateral) will be send to this address after liquidation
-    constructor (
+    constructor(
         address _nativeToken,
         address _exchangeProxy,
         address payable _tokensReceiver
@@ -56,6 +69,8 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
         NATIVE_TOKEN = _nativeToken;
         EXCHANGE_PROXY = _exchangeProxy;
         TOKENS_RECEIVER = _tokensReceiver;
+
+        __Whitelist_init(msg.sender);
     }
 
     receive() external payable {}
@@ -76,11 +91,18 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
         uint256 _maxDebtToCover,
         LiquidationData calldata _liquidation,
         DexSwapInput[] calldata _swapsInputs0x
-    ) external virtual returns (uint256 withdrawCollateral, uint256 repayDebtAssets) {
+    ) external virtual onlyAllowed returns (uint256 withdrawCollateral, uint256 repayDebtAssets) {
         require(_maxDebtToCover != 0, NoDebtToCover());
 
-        _flashLoanFrom.flashLoan(this, _debtAsset, _maxDebtToCover, abi.encode(_liquidation, _swapsInputs0x));
-        IERC20(_debtAsset).forceApprove(address(_flashLoanFrom), 0);
+        _expectedFlashLoanProvider = address(_flashLoanFrom);
+
+        _flashLoanFrom.flashLoan({
+            _receiver: this,
+            _token: _debtAsset,
+            _amount: _maxDebtToCover,
+            _data: abi.encode(_liquidation, _swapsInputs0x)
+        });
+        IERC20(_debtAsset).forceApprove({spender: address(_flashLoanFrom), value: 0});
 
         withdrawCollateral = _withdrawCollateral;
         repayDebtAssets = _repayDebtAssets;
@@ -98,14 +120,17 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
         virtual
         returns (bytes32)
     {
+        require(msg.sender == _expectedFlashLoanProvider, UnauthorizedFlashLoanCallback());
+        _expectedFlashLoanProvider = address(0);
+
         (
             LiquidationData memory _liquidation,
             DexSwapInput[] memory _swapInputs
         ) = abi.decode(_data, (LiquidationData, DexSwapInput[]));
 
-        IERC20(_debtAsset).forceApprove(address(_liquidation.hook), _maxDebtToCover);
+        IERC20(_debtAsset).forceApprove({spender: address(_liquidation.hook), value: _maxDebtToCover});
 
-        _turnOnLiquidation(_liquidation.hook, _liquidation.user);
+        _turnOnLiquidation({_hook: _liquidation.hook, _user: _liquidation.user});
 
         (
             _withdrawCollateral, _repayDebtAssets
@@ -117,7 +142,7 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
             _receiveSToken: false
         });
 
-        IERC20(_debtAsset).forceApprove(address(_liquidation.hook), 0);
+        IERC20(_debtAsset).forceApprove({spender: address(_liquidation.hook), value: 0});
         uint256 flashLoanWithFee = _maxDebtToCover + _fee;
 
         if (_liquidation.collateralAsset == _debtAsset) {
@@ -125,7 +150,10 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
             require(flashLoanWithFee <= balance, UnableToRepayFlashloan());
 
             // bad debt is not supported, we will get underflow on bad debt
-            _transferToReceiver(_liquidation.collateralAsset, balance - flashLoanWithFee);
+            _transferToReceiver({
+                _asset: _liquidation.collateralAsset,
+                _amount: balance - flashLoanWithFee
+            });
         } else {
             // swap all collateral for debt
             // most likely there will be dust left in collateral tokens, this dust will be "recovered"
@@ -137,24 +165,28 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
             if (flashLoanWithFee < debtBalance) {
                 unchecked {
                     // safe because of `if (flashLoanWithFee < debtBalance)`
-                    _transferToReceiver(_debtAsset, debtBalance - flashLoanWithFee);
+                    _transferToReceiver({_asset: _debtAsset, _amount: debtBalance - flashLoanWithFee});
                 }
             } else if (flashLoanWithFee != debtBalance) {
                 revert UnableToRepayFlashloan();
             }
         }
 
-        IERC20(_debtAsset).forceApprove(msg.sender, flashLoanWithFee);
+        IERC20(_debtAsset).forceApprove({spender: msg.sender, value: flashLoanWithFee});
         return _FLASHLOAN_CALLBACK;
     }
 
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "LiquidationHelper 4.16.0";
+        return "LiquidationHelper 4.17.0";
     }
 
     function _executeSwap(DexSwapInput[] memory _swapInputs) internal virtual {
         for (uint256 i; i < _swapInputs.length; i++) {
-            fillQuote(_swapInputs[i].sellToken, _swapInputs[i].allowanceTarget, _swapInputs[i].swapCallData);
+            fillQuote({
+                _sellToken: _swapInputs[i].sellToken,
+                _spender: _swapInputs[i].allowanceTarget,
+                _swapCallData: _swapInputs[i].swapCallData
+            });
         }
     }
 
@@ -164,7 +196,7 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
         if (_asset == NATIVE_TOKEN) {
             _transferNative(_amount);
         } else {
-            IERC20(_asset).safeTransfer(TOKENS_RECEIVER, _amount);
+            IERC20(_asset).safeTransfer({to: TOKENS_RECEIVER, value: _amount});
         }
     }
 
@@ -175,9 +207,16 @@ contract LiquidationHelper is ILiquidationHelper, IERC3156FlashBorrower, DexSwap
     }
 
     function _turnOnLiquidation(IPartialLiquidation _hook, address _user) internal virtual {
-        (ISiloConfig.ConfigData memory collateralConfig,) = IHookReceiver(address(_hook)).siloConfig().getConfigsForSolvency(_user);
+        (ISiloConfig.ConfigData memory collateralConfig,) =
+            IHookReceiver(address(_hook)).siloConfig().getConfigsForSolvency(_user);
 
-        _allowMeToLiquidate(address(_hook), IShareToken(collateralConfig.collateralShareToken));
-        _allowMeToLiquidate(address(_hook), IShareToken(collateralConfig.protectedShareToken));
+        _allowMeToLiquidate({
+            _hookReceiver: address(_hook),
+            _shareToken: IShareToken(collateralConfig.collateralShareToken)
+        });
+        _allowMeToLiquidate({
+            _hookReceiver: address(_hook),
+            _shareToken: IShareToken(collateralConfig.protectedShareToken)
+        });
     }
 }

@@ -476,6 +476,7 @@ interface IErrors {
     error TransitionProtectedCollateralNotAllowed();
     error TwoWayMarketNotAllowed();
     error UnableToRepayFlashloan();
+    error UnauthorizedFlashLoanCallback();
     error UnauthorizedMarket(address);
     error UnderlyingMarketDoesNotHaveIncentives();
     error UnexpectedCollateralToken();

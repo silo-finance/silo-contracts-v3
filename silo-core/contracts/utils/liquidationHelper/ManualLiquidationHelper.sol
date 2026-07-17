@@ -74,7 +74,6 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, Whitelist,
     function executeLiquidation(ISilo _siloWithDebt, address _borrower, uint256 _maxDebtToCover, bool _receiveSToken)
         external
         virtual
-        onlyAllowed
     {
         _executeLiquidation({
             _siloWithDebt: _siloWithDebt,
@@ -86,7 +85,7 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, Whitelist,
     }
 
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "ManualLiquidationHelper 4.17.0";
+        return "ManualLiquidationHelper 4.25.0";
     }
 
     // solhint-disable-next-line function-max-lines
@@ -108,10 +107,12 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, Whitelist,
         ) = _siloWithDebt.config().getConfigsForSolvency(_borrower);
 
         IPartialLiquidation liquidation = IPartialLiquidation(debtConfig.hookReceiver);
+
         _allowMeToLiquidate({
             _hookReceiver: debtConfig.hookReceiver,
             _shareToken: IShareToken(collateralConfig.collateralShareToken)
         });
+
         _allowMeToLiquidate({
             _hookReceiver: debtConfig.hookReceiver,
             _shareToken: IShareToken(collateralConfig.protectedShareToken)
@@ -132,6 +133,16 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, Whitelist,
             _user: _borrower,
             _maxDebtToCover: Math.min(debtToRepay, _maxDebtToCover),
             _receiveSToken: _receiveSToken
+        });
+
+        _disallowLiquidation({
+            _hookReceiver: debtConfig.hookReceiver,
+            _shareToken: IShareToken(collateralConfig.collateralShareToken)
+        });
+
+        _disallowLiquidation({
+            _hookReceiver: debtConfig.hookReceiver,
+            _shareToken: IShareToken(collateralConfig.protectedShareToken)
         });
 
         debtAsset.forceApprove({spender: debtConfig.hookReceiver, value: 0});

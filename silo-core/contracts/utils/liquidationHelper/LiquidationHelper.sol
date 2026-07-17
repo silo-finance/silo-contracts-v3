@@ -130,7 +130,9 @@ contract LiquidationHelper is
 
         IERC20(_debtAsset).forceApprove({spender: address(_liquidation.hook), value: _maxDebtToCover});
 
-        _turnOnLiquidation({_hook: _liquidation.hook, _user: _liquidation.user});
+        (
+            address collateralShareToken, address protectedShareToken
+        ) = _turnOnLiquidation({_hook: _liquidation.hook, _user: _liquidation.user});
 
         (
             _withdrawCollateral, _repayDebtAssets
@@ -140,6 +142,12 @@ contract LiquidationHelper is
             _user: _liquidation.user,
             _maxDebtToCover: _maxDebtToCover,
             _receiveSToken: false
+        });
+
+        _turnOffLiquidation({
+            _hook: _liquidation.hook, 
+            _collateralShareToken: collateralShareToken, 
+            _protectedShareToken: protectedShareToken
         });
 
         IERC20(_debtAsset).forceApprove({spender: address(_liquidation.hook), value: 0});
@@ -177,7 +185,7 @@ contract LiquidationHelper is
     }
 
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "LiquidationHelper 4.17.0";
+        return "LiquidationHelper 4.25.0";
     }
 
     function _executeSwap(DexSwapInput[] memory _swapInputs) internal virtual {
@@ -206,17 +214,40 @@ contract LiquidationHelper is
         TOKENS_RECEIVER.sendValue(_amount);
     }
 
-    function _turnOnLiquidation(IPartialLiquidation _hook, address _user) internal virtual {
+    function _turnOnLiquidation(IPartialLiquidation _hook, address _user) 
+        internal 
+        virtual
+        returns(address collateralShareToken, address protectedShareToken) 
+    {
         (ISiloConfig.ConfigData memory collateralConfig,) =
             IHookReceiver(address(_hook)).siloConfig().getConfigsForSolvency(_user);
+
+        collateralShareToken = collateralConfig.collateralShareToken;
+        protectedShareToken = collateralConfig.protectedShareToken;
 
         _allowMeToLiquidate({
             _hookReceiver: address(_hook),
             _shareToken: IShareToken(collateralConfig.collateralShareToken)
         });
+
         _allowMeToLiquidate({
             _hookReceiver: address(_hook),
             _shareToken: IShareToken(collateralConfig.protectedShareToken)
+        });
+    }
+
+    function _turnOffLiquidation(address _hook, address _collateralShareToken, address _protectedShareToken) 
+        internal 
+        virtual
+    {
+        _disallowLiquidation({
+            _hookReceiver: _hook,
+            _shareToken: IShareToken(_collateralShareToken)
+        });
+
+        _disallowLiquidation({
+            _hookReceiver: address(_hook),
+            _shareToken: IShareToken(_protectedShareToken)
         });
     }
 }

@@ -85,4 +85,18 @@ contract LiquidationHelperAccessTest is Test {
             _borrower: makeAddr("borrower")
         });
     }
+
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_manualExecuteLiquidation_fullArgs_onlyAllowed
+    */
+    function test_manualExecuteLiquidation_fullArgs_onlyAllowed() public {
+        vm.prank(attacker);
+        vm.expectRevert(Whitelist.OnlyAllowedRole.selector);
+        manualLiquidationHelper.executeLiquidation({
+            _siloWithDebt: ISilo(makeAddr("silo")),
+            _borrower: makeAddr("borrower"),
+            _maxDebtToCover: 1,
+            _receiveSToken: false
+        });
+    }
 }

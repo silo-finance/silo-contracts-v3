@@ -75,6 +75,11 @@ contract PermissionedLiquidationController is
     }
 
     /// @inheritdoc IPermissionedLiquidationController
+    function disallowLiquidation() external virtual onlyAllowed {
+        _liquidationAllowed = false;
+    }
+
+    /// @inheritdoc IPermissionedLiquidationController
     function permisionedData() external view returns (PermisionedData memory data) {
         data = _permisionedData;
     }
@@ -94,7 +99,7 @@ contract PermissionedLiquidationController is
     }
 
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "PermissionedLiquidationController 4.17.0";
+        return "PermissionedLiquidationController 4.25.0";
     }
 
     function afterTokenTransfer(

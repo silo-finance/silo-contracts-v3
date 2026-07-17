@@ -34,6 +34,7 @@ import {
     PermissionedLiquidationController
 } from "silo-core/contracts/incentives/functional/PermissionedLiquidationController.sol";
 import {IPartialLiquidationByDefaulting} from "silo-core/contracts/interfaces/IPartialLiquidationByDefaulting.sol";
+import {Whitelist} from "silo-core/contracts/hooks/_common/Whitelist.sol";
 
 import {ProxyAdmin} from "openzeppelin5/proxy/transparent/ProxyAdmin.sol";
 import {ITransparentUpgradeableProxy} from "openzeppelin5/proxy/transparent/TransparentUpgradeableProxy.sol";
@@ -102,6 +103,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         siloLens = new SiloLens();
         manualLiquidation = new ManualLiquidationHelper(makeAddr("WETH"), payable(address(this)));
+        manualLiquidation.grantRole({role: manualLiquidation.ALLOWED_ROLE(), account: address(this)});
 
         (siloWeth, siloUsdc) = silo0.asset() == address(weth) ? (silo0, silo1) : (silo1, silo0);
 
@@ -131,6 +133,18 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         vm.stopPrank();
 
         assertFalse(controllerC.permisionedData().enabled, "we set false above");
+    }
+
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_permisioned_liquidation_disallowLiquidation_onlyAllowed
+    */
+    function test_permisioned_liquidation_disallowLiquidation_onlyAllowed() public {
+        vm.expectRevert(Whitelist.OnlyAllowedRole.selector);
+        controllerC.disallowLiquidation();
+
+        _grantAllowedRole(address(this));
+        controllerC.allowMeToLiquidate();
+        controllerC.disallowLiquidation();
     }
 
     /*
@@ -241,6 +255,7 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         _printBorrowerLTV();
 
         LiquidationHelper helper = new LiquidationHelper(makeAddr("WETH"), makeAddr("ExchangeProxy"), payable(address(this)));
+        helper.grantRole({role: helper.ALLOWED_ROLE(), account: address(this)});
 
         uint256 maxDebtToCover = silo1.maxRepay(borrower);
         usdc.mint(address(silo1), maxDebtToCover * 2);

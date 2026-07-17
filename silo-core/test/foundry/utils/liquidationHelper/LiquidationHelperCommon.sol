@@ -31,6 +31,7 @@ abstract contract LiquidationHelperCommon is SiloLittleHelper, Test {
 
     constructor() {
         LIQUIDATION_HELPER = new LiquidationHelper(makeAddr("nativeToken"), makeAddr("DEXSWAP"), TOKENS_RECEIVER);
+        LIQUIDATION_HELPER.grantRole({role: LIQUIDATION_HELPER.ALLOWED_ROLE(), account: address(this)});
     }
 
     function _executeLiquidation(uint256 _maxDebtToCover)

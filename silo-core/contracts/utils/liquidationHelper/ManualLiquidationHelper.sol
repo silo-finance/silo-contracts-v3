@@ -54,7 +54,7 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, Whitelist,
     /// liquidated collateral will be transfer to `TOKENS_RECEIVER`. Bad Debt is supported.
     /// @param _siloWithDebt silo address where user has debt
     /// @param _borrower user to liquidate
-    function executeLiquidation(ISilo _siloWithDebt, address _borrower) external virtual onlyAllowed {
+    function executeLiquidation(ISilo _siloWithDebt, address _borrower) external virtual {
         _executeLiquidation({
             _siloWithDebt: _siloWithDebt,
             _borrower: _borrower,
@@ -98,6 +98,7 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, Whitelist,
     )
         internal
         virtual
+        onlyAllowed
     {
         require(_maxDebtToCover != 0, MaxDebtToCoverZero());
 

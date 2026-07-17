@@ -236,12 +236,12 @@ contract LiquidationHelper is
         });
     }
 
-    function _turnOffLiquidation(address _hook, address _collateralShareToken, address _protectedShareToken) 
+    function _turnOffLiquidation(IPartialLiquidation _hook, address _collateralShareToken, address _protectedShareToken) 
         internal 
         virtual
     {
         _disallowLiquidation({
-            _hookReceiver: _hook,
+            _hookReceiver: address(_hook),
             _shareToken: IShareToken(_collateralShareToken)
         });
 

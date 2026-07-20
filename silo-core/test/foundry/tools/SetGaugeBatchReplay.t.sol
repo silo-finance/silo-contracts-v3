@@ -7,10 +7,13 @@ import {stdJson} from "forge-std/StdJson.sol";
 /*
 How to use:
 
-1) Point to any Safe batch JSON (Set Gauge / whitelist / etc):
+1) Point to any Safe batch JSON (Set Gauge / whitelist / migrate helpers / etc):
+   SET_GAUGE_BATCH_JSON="scripts/tasks/migrate-liquidation-helpers/out/Migrate Liquidation Helpers - mainnet - 0xe8e8....json"
+
+   or legacy:
    SET_GAUGE_BATCH_JSON="scripts/tasks/set-permissioned-liquidation/out/Set Gauge for Current Markets - bnb.json"
 
-2) Run on a fork of the target chain:
+2) Run on a fork of the target chain (set matching RPC_* env):
    FOUNDRY_PROFILE=core_test forge test \
      --match-contract SetGaugeBatchReplayTest \
      -vvv

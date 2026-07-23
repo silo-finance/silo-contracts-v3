@@ -16,7 +16,7 @@ contract DualOracleISiloOracleWithOracleTest is DualOracleISiloOracleTestBase {
 
     function _createDualOracle() internal override returns (ISiloOracle) {
         return ISiloOracle(address(
-            factory.create(ISiloOracle(address(oracleMock)), owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0))
+            factory.create(ISiloOracle(address(oracleMock)), owner, address(0), TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0))
         ));
     }
 }

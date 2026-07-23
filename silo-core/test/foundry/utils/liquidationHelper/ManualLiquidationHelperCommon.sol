@@ -27,6 +27,7 @@ abstract contract ManualLiquidationHelperCommon is SiloLittleHelper, Test {
 
     constructor() {
         LIQUIDATION_HELPER = new ManualLiquidationHelper(makeAddr("nativeToken"), _tokenReceiver());
+        LIQUIDATION_HELPER.grantRole({role: LIQUIDATION_HELPER.ALLOWED_ROLE(), account: address(this)});
     }
 
     function _executeLiquidation() internal virtual {

@@ -16,10 +16,11 @@ import {IWrappedNativeToken} from "../../interfaces/IWrappedNativeToken.sol";
 import {TokenRescuer} from "../TokenRescuer.sol";
 import {IVersioned} from "../../interfaces/IVersioned.sol";
 import {AllowMeToLiquidate} from "./common/AllowMeToLiquidate.sol";
+import {Whitelist} from "../../hooks/_common/Whitelist.sol";
 
 /// @notice ManualLiquidationHelper is a utility contract that can be changed and replaced at any point.
 /// It is not considered a part of Silo protocol. Use at your own risk.
-contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, IVersioned {
+contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, Whitelist, IVersioned {
     using Address for address payable;
     using SafeERC20 for IERC20;
 
@@ -34,12 +35,11 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, IVersioned
 
     /// @param _nativeToken address of wrapped native blockchain token eg. WETH on Ethereum
     /// @param _tokensReceiver all leftover tokens (debt and collateral) will be send to this address after liquidation
-    constructor (
-        address _nativeToken,
-        address payable _tokensReceiver
-    ) {
+    constructor(address _nativeToken, address payable _tokensReceiver) {
         NATIVE_TOKEN = _nativeToken;
         TOKENS_RECEIVER = _tokensReceiver;
+
+        __Whitelist_init(msg.sender);
     }
 
     receive() external payable {}
@@ -55,7 +55,13 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, IVersioned
     /// @param _siloWithDebt silo address where user has debt
     /// @param _borrower user to liquidate
     function executeLiquidation(ISilo _siloWithDebt, address _borrower) external virtual {
-        _executeLiquidation(_siloWithDebt, _borrower, type(uint256).max, false, TOKENS_RECEIVER);
+        _executeLiquidation({
+            _siloWithDebt: _siloWithDebt,
+            _borrower: _borrower,
+            _maxDebtToCover: type(uint256).max,
+            _receiveSToken: false,
+            _receiver: TOKENS_RECEIVER
+        });
     }
 
     /// @dev entry point for manual liquidation
@@ -69,11 +75,17 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, IVersioned
         external
         virtual
     {
-        _executeLiquidation(_siloWithDebt, _borrower, _maxDebtToCover, _receiveSToken, TOKENS_RECEIVER);
+        _executeLiquidation({
+            _siloWithDebt: _siloWithDebt,
+            _borrower: _borrower,
+            _maxDebtToCover: _maxDebtToCover,
+            _receiveSToken: _receiveSToken,
+            _receiver: TOKENS_RECEIVER
+        });
     }
 
     function VERSION() external pure virtual returns (string memory) { // solhint-disable-line func-name-mixedcase
-        return "ManualLiquidationHelper 4.16.0";
+        return "ManualLiquidationHelper 4.25.0";
     }
 
     // solhint-disable-next-line function-max-lines
@@ -86,6 +98,7 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, IVersioned
     )
         internal
         virtual
+        onlyAllowed
     {
         require(_maxDebtToCover != 0, MaxDebtToCoverZero());
 
@@ -95,17 +108,25 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, IVersioned
         ) = _siloWithDebt.config().getConfigsForSolvency(_borrower);
 
         IPartialLiquidation liquidation = IPartialLiquidation(debtConfig.hookReceiver);
-        _allowMeToLiquidate(debtConfig.hookReceiver, IShareToken(collateralConfig.collateralShareToken));
-        _allowMeToLiquidate(debtConfig.hookReceiver, IShareToken(collateralConfig.protectedShareToken));
+
+        _allowMeToLiquidate({
+            _hookReceiver: debtConfig.hookReceiver,
+            _shareToken: IShareToken(collateralConfig.collateralShareToken)
+        });
+
+        _allowMeToLiquidate({
+            _hookReceiver: debtConfig.hookReceiver,
+            _shareToken: IShareToken(collateralConfig.protectedShareToken)
+        });
 
         IERC20 debtAsset = IERC20(debtConfig.token);
 
         (, uint256 debtToRepay,) = liquidation.maxLiquidation(_borrower);
         require(debtToRepay != 0, UserSolvent());
 
-        debtAsset.safeTransferFrom(msg.sender, address(this), debtToRepay);
+        debtAsset.safeTransferFrom({from: msg.sender, to: address(this), value: debtToRepay});
 
-        debtAsset.forceApprove(debtConfig.hookReceiver, debtToRepay);
+        debtAsset.forceApprove({spender: debtConfig.hookReceiver, value: debtToRepay});
 
         liquidation.liquidationCall({
             _collateralAsset: collateralConfig.token,
@@ -115,21 +136,35 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, IVersioned
             _receiveSToken: _receiveSToken
         });
 
-        debtAsset.forceApprove(debtConfig.hookReceiver, 0);
+        _disallowLiquidation({
+            _hookReceiver: debtConfig.hookReceiver,
+            _shareToken: IShareToken(collateralConfig.collateralShareToken)
+        });
+
+        _disallowLiquidation({
+            _hookReceiver: debtConfig.hookReceiver,
+            _shareToken: IShareToken(collateralConfig.protectedShareToken)
+        });
+
+        debtAsset.forceApprove({spender: debtConfig.hookReceiver, value: 0});
 
         if (_receiveSToken) {
-            _transferToken(
-                _receiver,
-                collateralConfig.protectedShareToken,
-                IERC20(collateralConfig.protectedShareToken).balanceOf(address(this))
-            );
-            _transferToken(
-                _receiver,
-                collateralConfig.collateralShareToken,
-                IERC20(collateralConfig.collateralShareToken).balanceOf(address(this))
-            );
+            _transferToken({
+                _receiver: _receiver,
+                _asset: collateralConfig.protectedShareToken,
+                _amount: IERC20(collateralConfig.protectedShareToken).balanceOf(address(this))
+            });
+            _transferToken({
+                _receiver: _receiver,
+                _asset: collateralConfig.collateralShareToken,
+                _amount: IERC20(collateralConfig.collateralShareToken).balanceOf(address(this))
+            });
         } else {
-            _transferToken(_receiver, collateralConfig.token, IERC20(collateralConfig.token).balanceOf(address(this)));
+            _transferToken({
+                _receiver: _receiver,
+                _asset: collateralConfig.token,
+                _amount: IERC20(collateralConfig.token).balanceOf(address(this))
+            });
         }
     }
 
@@ -137,9 +172,9 @@ contract ManualLiquidationHelper is TokenRescuer, AllowMeToLiquidate, IVersioned
         if (_amount == 0) return;
 
         if (_asset == NATIVE_TOKEN) {
-            _transferNative(_receiver, _amount);
+            _transferNative({_receiver: _receiver, _amount: _amount});
         } else {
-            IERC20(_asset).safeTransfer(_receiver, _amount);
+            IERC20(_asset).safeTransfer({to: _receiver, value: _amount});
         }
     }
 

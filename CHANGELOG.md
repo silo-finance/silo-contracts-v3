@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.25.0] - 2026-07-23
+### Added
+- fix liquidatior helper (#1958)
+- fix withdraw revenue (#1957)
+- silo factory list and description ([cb6b813c7](https://github.com/silo-finance/silo-contracts-v3/commit/cb6b813c70fff2d56ebe00edc195a0a9307ef921))
+- DualOracle certora audit (#1951)
+- Add new static configuration (#1948)
+- DualOracle Fixes (#1949)
+- RescueVaultBalance (#1941)
+
+### Markets
+- new market: savUSD / USDC on Avalanche C-Chain (#1955)
+- silo-market: USDC / wsrUSD on XDC Network (#1947)
+
+
 ## [4.24.0] - 2026-06-24
 ### Added
 - new IRM config "static-5-20"

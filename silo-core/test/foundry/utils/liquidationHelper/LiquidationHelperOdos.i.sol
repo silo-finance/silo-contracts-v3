@@ -60,6 +60,7 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
         liquidationHelper = new LiquidationHelper(
             AddrLib.getAddress(AddrKey.wS), AddrLib.getAddress(AddrKey.ODOS_ROUTER), REWARD_COLLECTOR
         );
+        liquidationHelper.grantRole({role: liquidationHelper.ALLOWED_ROLE(), account: address(this)});
 
         lens = new SiloLens();
 

@@ -32,6 +32,9 @@ interface IPermissionedLiquidationController is ISiloIncentivesController, IAcce
     /// also, liquidation method in approved contract should be protected, otherwise, this flag can be abused.
     function allowMeToLiquidate() external;
 
+    /// @dev Lowers the transient liquidation flag. Callable by approved addresses (`ALLOWED_ROLE`).
+    function disallowLiquidation() external;
+
     function hookReceiver() external view returns (address);
 
     function owner() external view returns (address);

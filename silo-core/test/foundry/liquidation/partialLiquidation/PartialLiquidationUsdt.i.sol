@@ -62,6 +62,7 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
 
         siloLens = new SiloLens();
         manualLiquidation = new ManualLiquidationHelper(AddrLib.getAddress("WETH"), payable(address(this)));
+        manualLiquidation.grantRole({role: manualLiquidation.ALLOWED_ROLE(), account: address(this)});
 
         (siloUsdc, siloUsdt) = silo0.asset() == address(usdt) ? (silo1, silo0) : (silo0, silo1);
     }

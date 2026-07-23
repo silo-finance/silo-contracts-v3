@@ -11,7 +11,7 @@ import {DualOracle} from "silo-oracles/contracts/dualOracle/DualOracle.sol";
 
 /// @title DualOracleFactory
 /// @notice Deploys DualOracle minimal-proxy clones via CREATE2.
-///         Each clone is independent — ownable, pausable, and configured with its own
+///         Each clone is independent — access-controlled, pausable, and configured with its own
 ///         primary oracle, timelock, and price bounds.
 ///
 ///         Two creation paths are supported:
@@ -40,15 +40,22 @@ contract DualOracleFactory is Create2Factory, IDualOracleFactory {
         address _underlyingOracleFactory,
         bytes calldata _underlyingOracleInitData,
         address _owner,
+        address _priceSetter,
         uint32 _timelock,
         uint256 _lowerPriceBound,
         uint256 _upperPriceBound,
         bytes32 _externalSalt
     ) external returns (IDualOracle dualOracle) {
         address underlyingOracle = _deployUnderlyingOracle(_underlyingOracleFactory, _underlyingOracleInitData);
-        dualOracle = create(
-            ISiloOracle(underlyingOracle), _owner, _timelock, _lowerPriceBound, _upperPriceBound, _externalSalt
-        );
+        dualOracle = create({
+            _oracle: ISiloOracle(underlyingOracle),
+            _owner: _owner,
+            _priceSetter: _priceSetter,
+            _timelock: _timelock,
+            _lowerPriceBound: _lowerPriceBound,
+            _upperPriceBound: _upperPriceBound,
+            _externalSalt: _externalSalt
+        });
     }
 
     /// @inheritdoc IDualOracleFactory
@@ -67,13 +74,21 @@ contract DualOracleFactory is Create2Factory, IDualOracleFactory {
     function create(
         ISiloOracle _oracle,
         address _owner,
+        address _priceSetter,
         uint32 _timelock,
         uint256 _lowerPriceBound,
         uint256 _upperPriceBound,
         bytes32 _externalSalt
     ) public returns (IDualOracle dualOracle) {
         dualOracle = _deployOracle(_externalSalt);
-        DualOracle(address(dualOracle)).initialize(_oracle, _owner, _timelock, _lowerPriceBound, _upperPriceBound);
+        DualOracle(address(dualOracle)).initialize({
+            _oracle: _oracle,
+            _owner: _owner,
+            _priceSetter: _priceSetter,
+            _timelock: _timelock,
+            _lowerPriceBound: _lowerPriceBound,
+            _upperPriceBound: _upperPriceBound
+        });
     }
 
     /// @dev Calls the underlying oracle factory with arbitrary calldata and decodes the returned address.

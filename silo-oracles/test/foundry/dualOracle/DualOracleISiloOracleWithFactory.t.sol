@@ -20,7 +20,7 @@ contract DualOracleISiloOracleWithFactoryTest is DualOracleISiloOracleTestBase {
         bytes memory initData = abi.encodeWithSelector(MockOracleFactory.create.selector, address(oracleMock));
 
         return ISiloOracle(address(
-            factory.create(address(mockFactory), initData, owner, TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0))
+            factory.create(address(mockFactory), initData, owner, address(0), TIMELOCK, LOWER_BOUND, UPPER_BOUND, bytes32(0))
         ));
     }
 }

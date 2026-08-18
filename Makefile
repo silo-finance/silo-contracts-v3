@@ -29,6 +29,12 @@ echidna-assert:
 echidna-explore:
 	echidna silo-core/test/invariants/Tester.t.sol --contract Tester --test-mode exploration --config ./silo-core/test/invariants/_config/echidna_config.yaml --corpus-dir ./silo-core/test/invariants/_corpus/echidna/default/_data/corpus
 
+echidna-dkink-irm:
+	echidna silo-core/test/echidna-dkink-irm/DynamicKinkModelTester.t.sol --contract DynamicKinkModelTester --config silo-core/test/echidna-dkink-irm/_config/echidna_config.yaml
+
+echidna-dkink-irm-assert:
+	echidna silo-core/test/echidna-dkink-irm/DynamicKinkModelTester.t.sol --contract DynamicKinkModelTester --test-mode assertion --config silo-core/test/echidna-dkink-irm/_config/echidna_config.yaml
+
 
 # Medusa
 medusa:

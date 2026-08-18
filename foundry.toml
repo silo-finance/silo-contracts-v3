@@ -14,6 +14,7 @@ via_ir = false
 allow_internal_expect_revert = true
 always_use_create_2_factory = true
 ignored_warnings_from = ['gitmodules']
+solc = '0.8.28'
 
 [profile.core]
 src = 'silo-core/contracts'
@@ -57,6 +58,12 @@ fs_permissions = [
     { access = "read", path = "./silo-core/test/foundry/data/"},
     { access = "read", path = "./silo-core/deploy/input/"}
 ]
+
+[profile.echidna_dkink]
+src = 'silo-core/contracts'
+test = 'silo-core/test/echidna-dkink-irm'
+out = 'cache/foundry/out/silo-core'
+broadcast = 'silo-core/broadcast'
 
 [profile.echidna_leverage]
 src = 'silo-core/contracts'

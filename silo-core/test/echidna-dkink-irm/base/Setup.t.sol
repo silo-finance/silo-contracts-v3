@@ -30,6 +30,7 @@ abstract contract Setup is Hooks {
 
         IInterestRateModel deployed = _factory.create({
             _config: config,
+            _immutableArgs: _defaultImmutableArgs(),
             _initialOwner: address(this),
             _silo: address(_siloMock),
             _externalSalt: bytes32(0)

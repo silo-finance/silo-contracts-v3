@@ -11,7 +11,7 @@ import {IDynamicKinkModel} from "silo-core/contracts/interfaces/IDynamicKinkMode
 abstract contract UtilizationInvariants is DynamicKinkModelHandlers {
     /// @dev Utilization thresholds are properly ordered Invariant: 0 ≤ ulow ≤ u1 ≤ u2 ≤ ucrit ≤ 100%
     function assert_utilization_parameters_ordering() public view {
-        (, IDynamicKinkModel.Config memory config) = _irm.getModelStateAndConfig();
+        (, IDynamicKinkModel.Config memory config,) = _irm.getModelStateAndConfig(false);
 
         assert(0 <= config.ulow
             && config.ulow <= config.u1

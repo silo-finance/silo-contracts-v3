@@ -51,7 +51,8 @@ abstract contract Hooks is Storage {
             return;
         }
 
-        (_state.modelState, _state.config) = IDynamicKinkModel(address(_irm)).getModelStateAndConfig();
+        (_state.modelState, _state.config,) =
+            IDynamicKinkModel(address(_irm)).getModelStateAndConfig(false);
 
         _state.u = _calculateUtiliation();
         _state.irmConfig = address(IDynamicKinkModel(address(_irm)).irmConfig());
@@ -86,8 +87,8 @@ abstract contract Hooks is Storage {
     }
 
     function _printIrmConfig() internal view {
-        (IDynamicKinkModel.ModelState memory modelState, IDynamicKinkModel.Config memory config) =
-            IDynamicKinkModel(address(_irm)).getModelStateAndConfig();
+        (IDynamicKinkModel.ModelState memory modelState, IDynamicKinkModel.Config memory config,) =
+            IDynamicKinkModel(address(_irm)).getModelStateAndConfig(false);
 
         console2.log("IRM Config:");
         console2.log("  ulow:  ", config.ulow);

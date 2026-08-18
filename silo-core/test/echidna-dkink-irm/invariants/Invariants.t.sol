@@ -16,7 +16,7 @@ contract Invariants is RcurInvariants, RcompInvariants, UtilizationInvariants {
     /// dmax ≥ c2
     /// 0 ≤ kmin ≤ kmax
     function assets_coefficient_non_negative() public view {
-        IDynamicKinkModel.Config memory config = _irm.irmConfig().getConfig();
+        (IDynamicKinkModel.Config memory config,) = _irm.irmConfig().getConfig();
 
         assert(config.c1 >= 0 
             && config.c2 >= 0 
@@ -34,9 +34,9 @@ contract Invariants is RcurInvariants, RcompInvariants, UtilizationInvariants {
     function assert_silo_never_changes() public view {
         if (address(_irm.irmConfig()) == address(0)) return;
 
-        (, address silo) = _irm.modelState();
+        IDynamicKinkModel.ModelState memory state = _irm.modelState();
 
-        assert(silo == address(_siloMock));
+        assert(state.silo == address(_siloMock));
     }
 
     /// @notice Silo never changes

@@ -105,7 +105,7 @@ abstract contract RcompInvariants is DynamicKinkModelHandlers {
     }
 
     function _pullKandUtilization() internal view returns (int256 k, int256 u) {
-        (IDynamicKinkModel.ModelState memory modelState, ) = _irm.getModelStateAndConfig();
+        (IDynamicKinkModel.ModelState memory modelState,,) = _irm.getModelStateAndConfig(false);
         k = modelState.k;
         u = _calculateUtiliation();
     }

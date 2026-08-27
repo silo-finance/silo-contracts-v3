@@ -4,6 +4,8 @@ pragma solidity ^0.8.28;
 
 // solhint-disable ordering
 
+import {console2} from "forge-std/console2.sol";
+
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
@@ -475,15 +477,28 @@ library SiloLendingLib {
         uint256 integralInterest;
         uint256 integralRevenue;
 
+        console2.log("[applyFractions] _totalDebtAssets", _totalDebtAssets);
+        console2.log("[applyFractions] _rcomp", _rcomp);
+        console2.log("[applyFractions] fractions.interest", fractions.interest);
+
         (
             integralInterest, fractions.interest
         ) = SiloMathLib.calculateFraction(_totalDebtAssets, _rcomp, fractions.interest);
 
+        console2.log("[applyFractions] integralInterest", integralInterest);
+        console2.log("[applyFractions] fractions.interest", fractions.interest);
+
         accruedInterest = _accruedInterest + integralInterest;
+
+        console2.log("[applyFractions] accruedInterest (with integral)", accruedInterest);
+        console2.log("[applyFractions] fractions.revenue", fractions.revenue);
 
         (
             integralRevenue, fractions.revenue
         ) = SiloMathLib.calculateFraction(accruedInterest, _fees, fractions.revenue);
+
+        console2.log("[applyFractions] integralRevenue", integralRevenue);
+        console2.log("[applyFractions] fractions.revenue", fractions.revenue);
 
         totalFees = _totalFees + integralRevenue;
 

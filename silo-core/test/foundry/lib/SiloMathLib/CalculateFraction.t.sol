@@ -17,7 +17,7 @@ contract CalculateFractionTest is Test {
     }
 
     /*
-    forge test --mt test_calculateFraction_pass -vv
+    FOUNDRY_PROFILE=core_test forge test --mt test_calculateFraction_pass -vv
     */
     function test_calculateFraction_pass() public pure {
         _calculateFraction_check({
@@ -63,6 +63,33 @@ contract CalculateFractionTest is Test {
             _integral: 1,
             _fraction: 228900000000000000,
             _msg: "#5" // (123456789 * 0.0001e18 + 0.55e18)  % 1e18
+        });
+
+        _calculateFraction_check({
+            _total: 10,
+            _percent: 0.1e18,
+            _currentFraction: 0,
+            _integral: 0,
+            _fraction: 0,
+            _msg: "#6"
+        });
+
+        _calculateFraction_check({
+            _total: 100,
+            _percent: 0.1e18,
+            _currentFraction: 0,
+            _integral: 0,
+            _fraction: 0,
+            _msg: "#7"
+        });
+
+        _calculateFraction_check({
+            _total: 9,
+            _percent: 0.1e18,
+            _currentFraction: 0,
+            _integral: 0,
+            _fraction: 0.9e18,
+            _msg: "#8"
         });
     }
 

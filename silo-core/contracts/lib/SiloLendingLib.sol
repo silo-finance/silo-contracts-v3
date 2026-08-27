@@ -475,7 +475,7 @@ library SiloLendingLib {
         ISilo.Fractions memory fractions = $.fractions;
 
         uint256 integralInterest;
-        uint256 integralRevenue;
+        // uint256 integralRevenue;
 
         console2.log("[applyFractions] _totalDebtAssets", _totalDebtAssets);
         console2.log("[applyFractions] _rcomp", _rcomp);
@@ -493,17 +493,25 @@ library SiloLendingLib {
         console2.log("[applyFractions] accruedInterest (with integral)", accruedInterest);
         console2.log("[applyFractions] fractions.revenue", fractions.revenue);
 
+        uint256 integralRevenue1;
+        uint256 integralRevenue2;
         (
-            integralRevenue, fractions.revenue
-        ) = SiloMathLib.calculateFraction(accruedInterest, _fees, fractions.revenue);
+            integralRevenue1, fractions.revenue
+        ) = SiloMathLib.calculateFraction(_accruedInterest, _fees, fractions.revenue);
+        
+        (
+            integralRevenue2, fractions.revenue
+        ) = SiloMathLib.calculateFraction(integralInterest, _fees, fractions.revenue);
 
-        console2.log("[applyFractions] integralRevenue", integralRevenue);
+        console2.log("[applyFractions] integralRevenue1", integralRevenue1);
+        console2.log("[applyFractions] integralRevenue2", integralRevenue2);
         console2.log("[applyFractions] fractions.revenue", fractions.revenue);
 
-        totalFees = _totalFees + integralRevenue;
+        totalFees = _totalFees + integralRevenue1 + integralRevenue2;
+        console2.log("[applyFractions] totalFees", totalFees);
 
         $.fractions = fractions;
         $.totalAssets[ISilo.AssetType.Debt] += integralInterest;
-        $.totalAssets[ISilo.AssetType.Collateral] = totalCollateralAssets + integralInterest - integralRevenue;
+        $.totalAssets[ISilo.AssetType.Collateral] = totalCollateralAssets + integralInterest - integralRevenue1 - integralRevenue2;
     }
 }

@@ -493,6 +493,9 @@ library SiloLendingLib {
         console2.log("[applyFractions] accruedInterest (with integral)", accruedInterest);
         console2.log("[applyFractions] fractions.revenue", fractions.revenue);
 
+        // Integer fees were computed on `_accruedInterest`. Apply the leftover of that same product first,
+        // then the leftover of `integralInterest`, so a fee integer-boundary cross is captured as
+        // fraction overflow (+0/+1) instead of recalculating `totalFees`.
         (
             integralRevenue, fractions.revenue
         ) = SiloMathLib.calculateFraction(accruedInterest, _fees, fractions.revenue);
@@ -500,6 +503,16 @@ library SiloLendingLib {
         console2.log("[applyFractions] integralRevenue", integralRevenue);
         console2.log("[applyFractions] fractions.revenue", fractions.revenue);
 
+        uint256 revenueOnIntegralInterest;
+        (
+            revenueOnIntegralInterest, fractions.revenue
+        ) = SiloMathLib.calculateFraction({
+            _total: integralInterest,
+            _percent: _fees,
+            _currentFraction: fractions.revenue
+        });
+
+        integralRevenue += revenueOnIntegralInterest;
         totalFees = _totalFees + integralRevenue;
 
         $.fractions = fractions;

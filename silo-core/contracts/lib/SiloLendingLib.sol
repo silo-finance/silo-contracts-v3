@@ -477,7 +477,7 @@ library SiloLendingLib {
 
         (
             integralInterest, fractions.interest
-         = SiloMathLib.calculateFraction(_totalDebtAssets, _rcomp, fractions.interest);
+        ) = SiloMathLib.calculateFraction(_totalDebtAssets, _rcomp, fractions.interest);
 
         accruedInterest = _accruedInterest + integralInterest;
 

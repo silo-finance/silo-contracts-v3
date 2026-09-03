@@ -4,8 +4,6 @@ pragma solidity ^0.8.28;
 
 // solhint-disable ordering
 
-import {console2} from "forge-std/console2.sol";
-
 import {SafeERC20} from "openzeppelin5/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "openzeppelin5/token/ERC20/IERC20.sol";
 import {Math} from "openzeppelin5/utils/math/Math.sol";
@@ -475,43 +473,42 @@ library SiloLendingLib {
         ISilo.Fractions memory fractions = $.fractions;
 
         uint256 integralInterest;
-        // uint256 integralRevenue;
-
-        console2.log("[applyFractions] _totalDebtAssets", _totalDebtAssets);
-        console2.log("[applyFractions] _rcomp", _rcomp);
-        console2.log("[applyFractions] fractions.interest", fractions.interest);
+        uint256 integralRevenue;
 
         (
             integralInterest, fractions.interest
-        ) = SiloMathLib.calculateFraction(_totalDebtAssets, _rcomp, fractions.interest);
-
-        console2.log("[applyFractions] integralInterest", integralInterest);
-        console2.log("[applyFractions] fractions.interest", fractions.interest);
+        ) = SiloMathLib.calculateFraction({
+            _total: _totalDebtAssets,
+            _percent: _rcomp,
+            _currentFraction: fractions.interest
+        });
 
         accruedInterest = _accruedInterest + integralInterest;
 
-        console2.log("[applyFractions] accruedInterest (with integral)", accruedInterest);
-        console2.log("[applyFractions] fractions.revenue", fractions.revenue);
-
-        uint256 integralRevenue1;
-        uint256 integralRevenue2;
+        // Integer fees were computed on `_accruedInterest`. Apply that leftover first, then the leftover of
+        // `integralInterest`, so a fee integer-boundary cross is captured as fraction overflow.
         (
-            integralRevenue1, fractions.revenue
-        ) = SiloMathLib.calculateFraction(_accruedInterest, _fees, fractions.revenue);
-        
+            integralRevenue, fractions.revenue
+        ) = SiloMathLib.calculateFraction({
+            _total: _accruedInterest,
+            _percent: _fees,
+            _currentFraction: fractions.revenue
+        });
+
+        uint256 revenueOnIntegralInterest;
         (
-            integralRevenue2, fractions.revenue
-        ) = SiloMathLib.calculateFraction(integralInterest, _fees, fractions.revenue);
+            revenueOnIntegralInterest, fractions.revenue
+        ) = SiloMathLib.calculateFraction({
+            _total: integralInterest,
+            _percent: _fees,
+            _currentFraction: fractions.revenue
+        });
 
-        console2.log("[applyFractions] integralRevenue1", integralRevenue1);
-        console2.log("[applyFractions] integralRevenue2", integralRevenue2);
-        console2.log("[applyFractions] fractions.revenue", fractions.revenue);
-
-        totalFees = _totalFees + integralRevenue1 + integralRevenue2;
-        console2.log("[applyFractions] totalFees", totalFees);
+        integralRevenue += revenueOnIntegralInterest;
+        totalFees = _totalFees + integralRevenue;
 
         $.fractions = fractions;
         $.totalAssets[ISilo.AssetType.Debt] += integralInterest;
-        $.totalAssets[ISilo.AssetType.Collateral] = totalCollateralAssets + integralInterest - integralRevenue1 - integralRevenue2;
+        $.totalAssets[ISilo.AssetType.Collateral] = totalCollateralAssets + integralInterest - integralRevenue;
     }
 }

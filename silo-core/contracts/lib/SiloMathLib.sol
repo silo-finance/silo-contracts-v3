@@ -3,8 +3,6 @@ pragma solidity ^0.8.28;
 
 // solhint-disable ordering
 
-import {console2} from "forge-std/console2.sol";
-
 import {Math} from "openzeppelin5/utils/math/Math.sol";
 import {Rounding} from "../lib/Rounding.sol";
 import {ISilo} from "../interfaces/ISilo.sol";
@@ -64,10 +62,6 @@ library SiloMathLib {
         unchecked { fees = _daoFee + _deployerFee; }
 
         daoAndDeployerRevenue = mulDivOverflow(accruedInterest, fees, _PRECISION_DECIMALS);
-
-        console2.log("[getCollateralAmountsWithInterest] fees", fees);
-        console2.log("[getCollateralAmountsWithInterest] accruedInterest", accruedInterest);
-        console2.log("[getCollateralAmountsWithInterest] daoAndDeployerRevenue", daoAndDeployerRevenue);
 
         // we will not underflow because daoAndDeployerRevenue is chunk of accruedInterest
         uint256 collateralInterest = accruedInterest - daoAndDeployerRevenue;

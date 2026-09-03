@@ -131,6 +131,8 @@ contract AccrueInterestForAssetTest is Test {
         $.totalAssets[ISilo.AssetType.Collateral] = 1_000;
         $.totalAssets[ISilo.AssetType.Debt] = debt;
         $.interestRateTimestamp = 111;
+        // $.daoAndDeployerRevenue = 3;
+        // $.fractions.revenue = uint64(DECIMAL_POINTS - 2);
 
         // Accrual #1: integer interest is 0, remainder fills fractions.interest to 1e18 - 1.
         irm.getCompoundInterestRateAndUpdateMock(rcomp1);

@@ -485,26 +485,14 @@ library SiloLendingLib {
 
         accruedInterest = _accruedInterest + integralInterest;
 
-        // Integer fees were computed on `_accruedInterest`. Apply that leftover first, then the leftover of
-        // `integralInterest`, so a fee integer-boundary cross is captured as fraction overflow.
         (
             integralRevenue, fractions.revenue
         ) = SiloMathLib.calculateFraction({
-            _total: _accruedInterest,
+            _total: accruedInterest,
             _percent: _fees,
             _currentFraction: fractions.revenue
         });
 
-        uint256 revenueOnIntegralInterest;
-        (
-            revenueOnIntegralInterest, fractions.revenue
-        ) = SiloMathLib.calculateFraction({
-            _total: integralInterest,
-            _percent: _fees,
-            _currentFraction: fractions.revenue
-        });
-
-        integralRevenue += revenueOnIntegralInterest;
         totalFees = _totalFees + integralRevenue;
 
         $.fractions = fractions;

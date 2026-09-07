@@ -345,10 +345,14 @@ def multicall_eth_calls(
     calls: list[tuple[str, str]],
     *,
     timeout: int = 120,
+    block_tag: str = "latest",
 ) -> tuple[list[tuple[str | None, str | None]], str | None]:
     """
     Execute many eth_call operations via Multicall3 aggregate3 in one request.
     Returns [(result_hex_or_none, error_or_none), ...], global_error.
+
+    `block_tag` may be "latest" (default) or a 0x-prefixed hex block number to pin
+    the call at a historical block (requires an archive node).
     """
     if not calls:
         return [], None
@@ -359,7 +363,7 @@ def multicall_eth_calls(
     body, req_err = rpc_request(
         rpc_url,
         "eth_call",
-        [{"to": mc_addr, "data": calldata}, "latest"],
+        [{"to": mc_addr, "data": calldata}, block_tag],
         timeout=timeout,
         chain=chain,
     )

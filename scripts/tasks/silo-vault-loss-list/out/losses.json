@@ -1,0 +1,4060 @@
+{
+  "meta": {
+    "description": "SiloVault market-removal loss list. Authoritative per-depositor loss is `loss_previewdiff` (assets).",
+    "chain": "arbitrum",
+    "chain_id": 42161,
+    "vault": "0xd8c989ab5f5b2abdc76a8d3acec165300bf30ecd",
+    "removal_block": 454834665,
+    "block_before": 454834664,
+    "block_after": 454834665,
+    "deploy_block": 370175911,
+    "asset": {
+      "address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "decimals": 18,
+      "symbol": "WETH"
+    },
+    "fee": "0",
+    "denominator": "4000037628158178007435539135",
+    "denominator_source": "totalSupply + 1e6 (fee == 0)",
+    "total_supply_before": "4000037628158178007434539135",
+    "total_supply_after": "4000037628158178007434539135",
+    "total_supply_unchanged": true,
+    "total_assets_before": "4036576468960231692938",
+    "total_assets_after": "1726343936874760025458",
+    "total_assets_drop": "2310232532085471667480",
+    "removed_markets": [
+      {
+        "address": "0xb77ff64638a2cab0a102b3c7964514cb50d577ca",
+        "vault_shares": "2295339894285269787263854",
+        "assets": "2310232532085471667480",
+        "config_enabled_before": true,
+        "config_enabled_after": false
+      }
+    ],
+    "L_total_lost": "2310232532085471667480",
+    "holders_count": 502,
+    "shares_sum": "4000037628158178007434539135",
+    "shares_sum_equals_total_supply": true,
+    "sum_loss_previewdiff": "2310232532085471667472",
+    "reconciliation_dust": "8",
+    "max_abs_previewdiff_minus_analytic": "1"
+  },
+  "depositors": [
+    {
+      "address": "0x102b555161062ffddabdab1e4fe8d1e36482e383",
+      "shares": "3998625338675177475617386882",
+      "value_before": "4035151278743442431240",
+      "value_after": "1725734418262003229378",
+      "loss_previewdiff": "2309416860481439201862",
+      "loss_analytic": "2309416860481439201861"
+    },
+    {
+      "address": "0xe5072b3a0db4bc62fd5fb951e9b4c7effca780fd",
+      "shares": "333480512577211860034971",
+      "value_before": "336526731761219036",
+      "value_after": "143924161338112095",
+      "loss_previewdiff": "192602570423106941",
+      "loss_analytic": "192602570423106941"
+    },
+    {
+      "address": "0xd443437880957010d574025c80f113c002595f8c",
+      "shares": "179294763181506637455752",
+      "value_before": "180932553476881310",
+      "value_after": "77380378912663085",
+      "loss_previewdiff": "103552174564218225",
+      "loss_analytic": "103552174564218224"
+    },
+    {
+      "address": "0x279be517145a7b0990e55ba3e0a380c6d7a04ad9",
+      "shares": "150334280606698074853815",
+      "value_before": "151707527775052509",
+      "value_after": "64881558114067622",
+      "loss_previewdiff": "86825969660984887",
+      "loss_analytic": "86825969660984887"
+    },
+    {
+      "address": "0xe83d579ccfd323aeafc2b03405dfedff43960fa8",
+      "shares": "111916345407153210892749",
+      "value_before": "112938659172202102",
+      "value_after": "48301071712613443",
+      "loss_previewdiff": "64637587459588659",
+      "loss_analytic": "64637587459588658"
+    },
+    {
+      "address": "0x0a9dafaed64f012ce737c5b807c653293397b117",
+      "shares": "111026742122858069811031",
+      "value_before": "112040929696154907",
+      "value_after": "47917135015304439",
+      "loss_previewdiff": "64123794680850468",
+      "loss_analytic": "64123794680850467"
+    },
+    {
+      "address": "0x5f37550493dcb36c659598bf0ececadad8a714f7",
+      "shares": "108478269020595560745916",
+      "value_before": "109469177249639138",
+      "value_after": "46817260089776534",
+      "loss_previewdiff": "62651917159862604",
+      "loss_analytic": "62651917159862603"
+    },
+    {
+      "address": "0x0f27001a4c0b885b08abb61f9c470aee9c933a2a",
+      "shares": "30930264887614180210000",
+      "value_before": "31212801235957049",
+      "value_after": "13348943239628822",
+      "loss_previewdiff": "17863857996328227",
+      "loss_analytic": "17863857996328227"
+    },
+    {
+      "address": "0xaba35edf7ba2756930cb8b03fdc7294933875922",
+      "shares": "25011184642512033046475",
+      "value_before": "25239652416787525",
+      "value_after": "10794375197299600",
+      "loss_previewdiff": "14445277219487925",
+      "loss_analytic": "14445277219487924"
+    },
+    {
+      "address": "0x4159f5df51fab9b89335990fffaf1eb66008a4b1",
+      "shares": "19874715879081320192090",
+      "value_before": "20056263941124471",
+      "value_after": "8577568124217598",
+      "loss_previewdiff": "11478695816906873",
+      "loss_analytic": "11478695816906873"
+    },
+    {
+      "address": "0xd0c7a59e3ce5a289b553ebf7659f5c3316ecfbb9",
+      "shares": "17492120723940723460982",
+      "value_before": "17651904674452375",
+      "value_after": "7549283122309237",
+      "loss_previewdiff": "10102621552143138",
+      "loss_analytic": "10102621552143138"
+    },
+    {
+      "address": "0xc76dffdddcc823b4cfbd61cfdf507db6b5b5fcf1",
+      "shares": "15067005093447684634271",
+      "value_before": "15204636523861680",
+      "value_after": "6502647051825673",
+      "loss_previewdiff": "8701989472036007",
+      "loss_analytic": "8701989472036006"
+    },
+    {
+      "address": "0xbe5b1afae3d69e0b193e18ba75ea27e45af9d681",
+      "shares": "14823867477003707157486",
+      "value_before": "14959277936645403",
+      "value_after": "6397713251448523",
+      "loss_previewdiff": "8561564685196880",
+      "loss_analytic": "8561564685196880"
+    },
+    {
+      "address": "0x4d6e078e9c953f0eb1c3db41a0ae019ffa9bd857",
+      "shares": "14584262750663653967082",
+      "value_before": "14717484511156740",
+      "value_after": "6294304182580801",
+      "loss_previewdiff": "8423180328575939",
+      "loss_analytic": "8423180328575938"
+    },
+    {
+      "address": "0xe15cd9d5aab921453dbe895d9249225405f3f1d2",
+      "shares": "14012579768989465944110",
+      "value_before": "14140579420242980",
+      "value_after": "6047576141254313",
+      "loss_previewdiff": "8093003278988667",
+      "loss_analytic": "8093003278988667"
+    },
+    {
+      "address": "0x65bd15774f34c3a7e09df262c447c5fb1c91a8d9",
+      "shares": "12296993507796013089220",
+      "value_before": "12409321923149479",
+      "value_after": "5307160121327853",
+      "loss_previewdiff": "7102161801821626",
+      "loss_analytic": "7102161801821626"
+    },
+    {
+      "address": "0x410073594c00d2a764fc17a423c36d94bada8477",
+      "shares": "9922702288957739944088",
+      "value_before": "10013342446117797",
+      "value_after": "4282458948228200",
+      "loss_previewdiff": "5730883497889597",
+      "loss_analytic": "5730883497889596"
+    },
+    {
+      "address": "0xa3283feb23e1fc3912f5c65a1e9a5449bc2e1b94",
+      "shares": "7858268322179258605233",
+      "value_before": "7930050650721037",
+      "value_after": "3391486564234064",
+      "loss_previewdiff": "4538564086486973",
+      "loss_analytic": "4538564086486973"
+    },
+    {
+      "address": "0x4cb75146e98562c9d79b31649c6c739e4dcb7cd5",
+      "shares": "7707985502140462212375",
+      "value_before": "7778395053586839",
+      "value_after": "3326627215570918",
+      "loss_previewdiff": "4451767838015921",
+      "loss_analytic": "4451767838015921"
+    },
+    {
+      "address": "0xb4903033c1179191df4658670fe0fe6302fef2e0",
+      "shares": "6993108092630473294048",
+      "value_before": "7056987507541335",
+      "value_after": "3018099047528519",
+      "loss_previewdiff": "4038888460012816",
+      "loss_analytic": "4038888460012816"
+    },
+    {
+      "address": "0x6c3233082f18fb73fea0779808d09167af10cf02",
+      "shares": "5099967469015313406951",
+      "value_before": "5146553755637773",
+      "value_after": "2201053774198382",
+      "loss_previewdiff": "2945499981439391",
+      "loss_analytic": "2945499981439391"
+    },
+    {
+      "address": "0xdf16b92dedf10aa5d961c52e4b06766ba1649786",
+      "shares": "4993269068979198894467",
+      "value_before": "5038880705807040",
+      "value_after": "2155004673389948",
+      "loss_previewdiff": "2883876032417092",
+      "loss_analytic": "2883876032417091"
+    },
+    {
+      "address": "0xa87e7535e6aa294c69b4ddb85ad5d0d743ab0afd",
+      "shares": "4976311254260431649965",
+      "value_before": "5021767987822363",
+      "value_after": "2147685987081522",
+      "loss_previewdiff": "2874082000740841",
+      "loss_analytic": "2874082000740841"
+    },
+    {
+      "address": "0x7776421dd146dfd6ea947cbf29b69c519807d259",
+      "shares": "4963703815507249709444",
+      "value_before": "5009045384853155",
+      "value_after": "2142244844403797",
+      "loss_previewdiff": "2866800540449358",
+      "loss_analytic": "2866800540449357"
+    },
+    {
+      "address": "0xafad92a267e871a90a3bb0bb0e46dcba65f34357",
+      "shares": "4946435131774724382671",
+      "value_before": "4991618958183083",
+      "value_after": "2134791992648205",
+      "loss_previewdiff": "2856826965534878",
+      "loss_analytic": "2856826965534877"
+    },
+    {
+      "address": "0x9d5765595a92c560c8759d2a9c375c66123765a5",
+      "shares": "4550122817163258854797",
+      "value_before": "4591686479483773",
+      "value_after": "1963750761280256",
+      "loss_previewdiff": "2627935718203517",
+      "loss_analytic": "2627935718203517"
+    },
+    {
+      "address": "0x2bef3ae8fb4c192b105ff7c14d3dc962547be80c",
+      "shares": "4294657334520474955610",
+      "value_before": "4333887415642904",
+      "value_after": "1853496476686383",
+      "loss_previewdiff": "2480390938956521",
+      "loss_analytic": "2480390938956521"
+    },
+    {
+      "address": "0x360e68faccca8ca495c1b759fd9eee466db9fb32",
+      "shares": "4165632918752888345377",
+      "value_before": "4203684410315528",
+      "value_after": "1797811871046375",
+      "loss_previewdiff": "2405872539269153",
+      "loss_analytic": "2405872539269153"
+    },
+    {
+      "address": "0x4a57583c38e84a27c4a397d49dc7cdc8cfffec92",
+      "shares": "3978580893045129381993",
+      "value_before": "4014923734633848",
+      "value_after": "1717083597845250",
+      "loss_previewdiff": "2297840136788598",
+      "loss_analytic": "2297840136788597"
+    },
+    {
+      "address": "0x42125778903390bb64db3ca0be70a8fae77da872",
+      "shares": "3370482362506455271478",
+      "value_before": "3401270452499113",
+      "value_after": "1454639263865005",
+      "loss_previewdiff": "1946631188634108",
+      "loss_analytic": "1946631188634107"
+    },
+    {
+      "address": "0x61fa67d3b9e978588cad4fdf5572bfbfb0d02c12",
+      "shares": "3019620021309428679826",
+      "value_before": "3047203115644499",
+      "value_after": "1303213419483119",
+      "loss_previewdiff": "1743989696161380",
+      "loss_analytic": "1743989696161379"
+    },
+    {
+      "address": "0x919eb87df4271688297c808ce68cce0317c50c7d",
+      "shares": "2993059016975652377924",
+      "value_before": "3020399486515880",
+      "value_after": "1291750170121129",
+      "loss_previewdiff": "1728649316394751",
+      "loss_analytic": "1728649316394750"
+    },
+    {
+      "address": "0xa6f64a650f10ad4f731bea9e69c864aa482a1ca4",
+      "shares": "2969252035862595725763",
+      "value_before": "2996375037575335",
+      "value_after": "1281475507400333",
+      "loss_previewdiff": "1714899530175002",
+      "loss_analytic": "1714899530175001"
+    },
+    {
+      "address": "0xb4e876a98c1655aef3e2a368bd7b22b24a9792cb",
+      "shares": "2927818193289135002872",
+      "value_before": "2954562712417872",
+      "value_after": "1263593409890903",
+      "loss_previewdiff": "1690969302526969",
+      "loss_analytic": "1690969302526969"
+    },
+    {
+      "address": "0xffec90fad1f7fbca154a5248d329dd9764e03fd4",
+      "shares": "2704733416040498008098",
+      "value_before": "2729440139548547",
+      "value_after": "1167314052441565",
+      "loss_previewdiff": "1562126087106982",
+      "loss_analytic": "1562126087106981"
+    },
+    {
+      "address": "0x22df8f85ad9850151582f89e37237bf0517f87dd",
+      "shares": "2696858572200664199979",
+      "value_before": "2721493361969046",
+      "value_after": "1163915412183525",
+      "loss_previewdiff": "1557577949785521",
+      "loss_analytic": "1557577949785520"
+    },
+    {
+      "address": "0x5a61dd9a663a868144660f5fb7dc8db68f0500fb",
+      "shares": "2659218163624911335814",
+      "value_before": "2683509122403556",
+      "value_after": "1147670492218570",
+      "loss_previewdiff": "1535838630184986",
+      "loss_analytic": "1535838630184986"
+    },
+    {
+      "address": "0x6b145300d4e4912f4cc6866268d7e169b0ad8e2a",
+      "shares": "2584562922377726642078",
+      "value_before": "2608171933577737",
+      "value_after": "1115450639541248",
+      "loss_previewdiff": "1492721294036489",
+      "loss_analytic": "1492721294036488"
+    },
+    {
+      "address": "0x18c449e8be17bd57e4d20dbc936ca1cd2554e56d",
+      "shares": "2518901526814126049830",
+      "value_before": "2541910745836570",
+      "value_after": "1087112368090999",
+      "loss_previewdiff": "1454798377745571",
+      "loss_analytic": "1454798377745571"
+    },
+    {
+      "address": "0x72a262df73723b4e779157423103e8f2bbca149a",
+      "shares": "2496492379153258553227",
+      "value_before": "2519296899031593",
+      "value_after": "1077440985021365",
+      "loss_previewdiff": "1441855914010228",
+      "loss_analytic": "1441855914010228"
+    },
+    {
+      "address": "0xeab804590011d0650fcb6c4da1870c6e9ca062d1",
+      "shares": "2480698566662984196136",
+      "value_before": "2503358815998417",
+      "value_after": "1070624661034613",
+      "loss_previewdiff": "1432734154963804",
+      "loss_analytic": "1432734154963804"
+    },
+    {
+      "address": "0x5367109b8ab57a5b5fc4d3021a769bc2688ce573",
+      "shares": "2448964220085022822735",
+      "value_before": "2471334588087989",
+      "value_after": "1056928690671762",
+      "loss_previewdiff": "1414405897416227",
+      "loss_analytic": "1414405897416227"
+    },
+    {
+      "address": "0xcfd13532d19a03565db223977ddd9feb421c4ee7",
+      "shares": "2410394950638322779247",
+      "value_before": "2432413002856496",
+      "value_after": "1040282891144706",
+      "loss_previewdiff": "1392130111711790",
+      "loss_analytic": "1392130111711790"
+    },
+    {
+      "address": "0xeeecdf9946583e1624244df5fc399121dfb4604e",
+      "shares": "2282193121857234961289",
+      "value_before": "2303040098538671",
+      "value_after": "984953299179244",
+      "loss_previewdiff": "1318086799359427",
+      "loss_analytic": "1318086799359427"
+    },
+    {
+      "address": "0x62a4a8f9f5f3aae9ee9cee780285a0d501c12d09",
+      "shares": "2190741978794038000000",
+      "value_before": "2210753583644462",
+      "value_after": "945484638875638",
+      "loss_previewdiff": "1265268944768824",
+      "loss_analytic": "1265268944768823"
+    },
+    {
+      "address": "0x5eb839f70636d02fec2dbcc4fd1a104fb5f4e383",
+      "shares": "2103459707753538866474",
+      "value_before": "2122674021852511",
+      "value_after": "907815188381792",
+      "loss_previewdiff": "1214858833470719",
+      "loss_analytic": "1214858833470718"
+    },
+    {
+      "address": "0x7e59ae9104968c4800040124be5f2189cd1b900a",
+      "shares": "2070352815546518536776",
+      "value_before": "2089264710624408",
+      "value_after": "893526852135148",
+      "loss_previewdiff": "1195737858489260",
+      "loss_analytic": "1195737858489260"
+    },
+    {
+      "address": "0x5f0895edc43ce1e76f52c9f5f8baf8f2c01cb1a1",
+      "shares": "1987241538696219866620",
+      "value_before": "2005394243487420",
+      "value_after": "857657527340196",
+      "loss_previewdiff": "1147736716147224",
+      "loss_analytic": "1147736716147223"
+    },
+    {
+      "address": "0xb7696dca94a198b4e3a10fb37c37101f02d42613",
+      "shares": "1984557564834117911980",
+      "value_before": "2002685752532535",
+      "value_after": "856499172735991",
+      "loss_previewdiff": "1146186579796544",
+      "loss_analytic": "1146186579796543"
+    },
+    {
+      "address": "0xd8e256e94669ebc7f5b26197be4c0b153f33f2c4",
+      "shares": "1983356073393325453326",
+      "value_before": "2001473285918867",
+      "value_after": "855980630747931",
+      "loss_previewdiff": "1145492655170936",
+      "loss_analytic": "1145492655170935"
+    },
+    {
+      "address": "0x9dc552a659d48c4479e2231e56a9f93161483ee8",
+      "shares": "1979054304182567014985",
+      "value_before": "1997132221662668",
+      "value_after": "854124064914013",
+      "loss_previewdiff": "1143008156748655",
+      "loss_analytic": "1143008156748655"
+    },
+    {
+      "address": "0x555cce49bbbcd0143e14a44cc7cc6fbc6c761679",
+      "shares": "1965099422016704233740",
+      "value_before": "1983049866891478",
+      "value_after": "848101390015344",
+      "loss_previewdiff": "1134948476876134",
+      "loss_analytic": "1134948476876133"
+    },
+    {
+      "address": "0xff7f1d257e57608d7c10f4da7652f43a5a93d389",
+      "shares": "1856903973741469353129",
+      "value_before": "1873866093848444",
+      "value_after": "801406190247085",
+      "loss_previewdiff": "1072459903601359",
+      "loss_analytic": "1072459903601359"
+    },
+    {
+      "address": "0xff2420a08b4cba07a79953bbdf131788cb36f859",
+      "shares": "1795053512058493322532",
+      "value_before": "1811450651437022",
+      "value_after": "774712648974456",
+      "loss_previewdiff": "1036738002462566",
+      "loss_analytic": "1036738002462566"
+    },
+    {
+      "address": "0xd9a0a16e5a634bf5a02962b667f17c65bae14086",
+      "shares": "1791910003821526464131",
+      "value_before": "1808278428433419",
+      "value_after": "773355967640460",
+      "loss_previewdiff": "1034922460792959",
+      "loss_analytic": "1034922460792958"
+    },
+    {
+      "address": "0x18f6ce899abb6c1e2e1a06d890e8b3d462074072",
+      "shares": "1786258550553912290713",
+      "value_before": "1802575351263621",
+      "value_after": "770916902564072",
+      "loss_previewdiff": "1031658448699549",
+      "loss_analytic": "1031658448699548"
+    },
+    {
+      "address": "0x8f32fcf79be6efe7a8353447e2756806e2ca87e2",
+      "shares": "1741830377399945452545",
+      "value_before": "1757741343440858",
+      "value_after": "751742506100685",
+      "loss_previewdiff": "1005998837340173",
+      "loss_analytic": "1005998837340172"
+    },
+    {
+      "address": "0x431b5ddb0ace97ebc3d936403ea25831bad832b6",
+      "shares": "1688919769639837876072",
+      "value_before": "1704347417158925",
+      "value_after": "728907244187142",
+      "loss_previewdiff": "975440172971783",
+      "loss_analytic": "975440172971783"
+    },
+    {
+      "address": "0x14fe3f2889cd05977ad4e2508e44cb0f3d7f56bb",
+      "shares": "1598783026136876369513",
+      "value_before": "1613387308371076",
+      "value_after": "690005854975055",
+      "loss_previewdiff": "923381453396021",
+      "loss_analytic": "923381453396020"
+    },
+    {
+      "address": "0x350dedcc07acc2b3a430037435451b8d17fe3248",
+      "shares": "1489840690105874795432",
+      "value_before": "1503449825033254",
+      "value_after": "642988311951919",
+      "loss_previewdiff": "860461513081335",
+      "loss_analytic": "860461513081335"
+    },
+    {
+      "address": "0xea9493c12b1edbacd8eb06fc502cc56354979ada",
+      "shares": "1478004831010512002346",
+      "value_before": "1491505849812134",
+      "value_after": "637880169107674",
+      "loss_previewdiff": "853625680704460",
+      "loss_analytic": "853625680704459"
+    },
+    {
+      "address": "0x2d5afce86989a860ace230db8c06f0af49df4d99",
+      "shares": "1474186403224216930299",
+      "value_before": "1487652542122706",
+      "value_after": "636232204695825",
+      "loss_previewdiff": "851420337426881",
+      "loss_analytic": "851420337426881"
+    },
+    {
+      "address": "0x421b0d8cce6f38fc8c4344a29e643da6cb85e4ef",
+      "shares": "1319553943092847498109",
+      "value_before": "1331607572567976",
+      "value_after": "569495629991468",
+      "loss_previewdiff": "762111942576508",
+      "loss_analytic": "762111942576508"
+    },
+    {
+      "address": "0x8659e896bd1d7a32e2efc9ddc097f66a330d8f6d",
+      "shares": "1313737138087177711200",
+      "value_before": "1325737633234123",
+      "value_after": "566985202093782",
+      "loss_previewdiff": "758752431140341",
+      "loss_analytic": "758752431140341"
+    },
+    {
+      "address": "0x28261747a227106b94f901a5b7d0992eecfaa378",
+      "shares": "1223716290590146097773",
+      "value_before": "1234894479118672",
+      "value_after": "528133831502954",
+      "loss_previewdiff": "706760647615718",
+      "loss_analytic": "706760647615717"
+    },
+    {
+      "address": "0xdd24aa358280b0f2532342166191225f67a0f2b2",
+      "shares": "1168028467719271487089",
+      "value_before": "1178697968909417",
+      "value_after": "504099973747682",
+      "loss_previewdiff": "674597995161735",
+      "loss_analytic": "674597995161734"
+    },
+    {
+      "address": "0x880fbd553bc80c8489801ece89472f7cb76997a1",
+      "shares": "1090268455588648001560",
+      "value_before": "1100227648284692",
+      "value_after": "470540158077943",
+      "loss_previewdiff": "629687490206749",
+      "loss_analytic": "629687490206748"
+    },
+    {
+      "address": "0x8b773f2e3aa7f9d64cb93a95a0b42829d6bad7e3",
+      "shares": "1080361835582409017887",
+      "value_before": "1090230535026903",
+      "value_after": "466264639952238",
+      "loss_previewdiff": "623965895074665",
+      "loss_analytic": "623965895074664"
+    },
+    {
+      "address": "0xee83ae872f88554a00fc9fae7052823cb4c07f80",
+      "shares": "1066259004829874464954",
+      "value_before": "1075998880214290",
+      "value_after": "460178113117834",
+      "loss_previewdiff": "615820767096456",
+      "loss_analytic": "615820767096455"
+    },
+    {
+      "address": "0x9d915ceb820b5243d4a609f149799b540ecd5c67",
+      "shares": "1045530351121383815186",
+      "value_before": "1055080878042534",
+      "value_after": "451232000861959",
+      "loss_previewdiff": "603848877180575",
+      "loss_analytic": "603848877180575"
+    },
+    {
+      "address": "0xf801a1c2f1be24a0278dd3a8c0b3ff3d965d9d21",
+      "shares": "1044172310152423056368",
+      "value_before": "1053710431879577",
+      "value_after": "450645894927282",
+      "loss_previewdiff": "603064536952295",
+      "loss_analytic": "603064536952295"
+    },
+    {
+      "address": "0x382fbd06b103f8adf2ca3d402efbe18f214313d0",
+      "shares": "1041768885132702719850",
+      "value_before": "1051285052475339",
+      "value_after": "449608620132335",
+      "loss_previewdiff": "601676432343004",
+      "loss_analytic": "601676432343003"
+    },
+    {
+      "address": "0xa2e82aa014ba758214768278f9c72cbedcfc6e53",
+      "shares": "1036597483361416606216",
+      "value_before": "1046066411891919",
+      "value_after": "447376736604501",
+      "loss_previewdiff": "598689675287418",
+      "loss_analytic": "598689675287417"
+    },
+    {
+      "address": "0x16b4c671bc4f70e75beb0c6280309e42161dc8a7",
+      "shares": "1022535713883780159657",
+      "value_before": "1031876193433523",
+      "value_after": "441307931074133",
+      "loss_previewdiff": "590568262359390",
+      "loss_analytic": "590568262359389"
+    },
+    {
+      "address": "0x88dd10a5bcecba71f2493cb261b181f57943040d",
+      "shares": "1005116170721576961749",
+      "value_before": "1014297529289565",
+      "value_after": "433789971115580",
+      "loss_previewdiff": "580507558173985",
+      "loss_analytic": "580507558173984"
+    },
+    {
+      "address": "0x1f367e135c820b3ed88c16edb30ef2d508ad1191",
+      "shares": "1002854304123086678915",
+      "value_before": "1012015001389547",
+      "value_after": "432813790376470",
+      "loss_previewdiff": "579201211013077",
+      "loss_analytic": "579201211013076"
+    },
+    {
+      "address": "0xf473de0df183cb762dd4817489d9357b0beb15fc",
+      "shares": "998507109305619618025",
+      "value_before": "1007628096580790",
+      "value_after": "430937619671795",
+      "loss_previewdiff": "576690476908995",
+      "loss_analytic": "576690476908995"
+    },
+    {
+      "address": "0xc60a0aa6d6901716905738c592fcd50b12a86710",
+      "shares": "997181576711042707688",
+      "value_before": "1006290455744003",
+      "value_after": "430365543763891",
+      "loss_previewdiff": "575924911980112",
+      "loss_analytic": "575924911980112"
+    },
+    {
+      "address": "0xca63a21562dae4472bb15351aee25522e0a14d75",
+      "shares": "995955361141741187133",
+      "value_before": "1005053039156201",
+      "value_after": "429836331288873",
+      "loss_previewdiff": "575216707867328",
+      "loss_analytic": "575216707867328"
+    },
+    {
+      "address": "0x8c0f33dacfa40e225c7ada0de2e3ee4d07d0751d",
+      "shares": "995292279895700451361",
+      "value_before": "1004383900912117",
+      "value_after": "429550157408732",
+      "loss_previewdiff": "574833743503385",
+      "loss_analytic": "574833743503384"
+    },
+    {
+      "address": "0xabfc07de04d41297569b054ebcbd2795b6156c8b",
+      "shares": "995251477011836352133",
+      "value_before": "1004342725309240",
+      "value_after": "429532547621597",
+      "loss_previewdiff": "574810177687643",
+      "loss_analytic": "574810177687642"
+    },
+    {
+      "address": "0x486a6b458c2ca7402e3cbeafe073044f53dd7e6d",
+      "shares": "995248115084915398483",
+      "value_before": "1004339332672379",
+      "value_after": "429531096674707",
+      "loss_previewdiff": "574808235997672",
+      "loss_analytic": "574808235997672"
+    },
+    {
+      "address": "0xc1eccb200494a359aafc05873b51d295f1525078",
+      "shares": "995239585568519623244",
+      "value_before": "1004330725242056",
+      "value_after": "429527415489607",
+      "loss_previewdiff": "574803309752449",
+      "loss_analytic": "574803309752448"
+    },
+    {
+      "address": "0x994cf01f34c51426bcb12bd30ff7079e280e1140",
+      "shares": "995237494341290696299",
+      "value_before": "1004328614912252",
+      "value_after": "429526512953736",
+      "loss_previewdiff": "574802101958516",
+      "loss_analytic": "574802101958516"
+    },
+    {
+      "address": "0x37431c16b36e278c0bbf8c0eadf31208b2a38430",
+      "shares": "995217523661125102576",
+      "value_before": "1004308461807427",
+      "value_after": "429517893969160",
+      "loss_previewdiff": "574790567838267",
+      "loss_analytic": "574790567838267"
+    },
+    {
+      "address": "0xbbd9111ff9d0ad76d2d1681adc6b88c392a794f4",
+      "shares": "995017532832033105355",
+      "value_before": "1004106644137254",
+      "value_after": "429431581542296",
+      "loss_previewdiff": "574675062594958",
+      "loss_analytic": "574675062594957"
+    },
+    {
+      "address": "0x64931189b070fc7c8c80839c8a2d9a10b83082ab",
+      "shares": "995002655429525479280",
+      "value_before": "1004091630835264",
+      "value_after": "429425160724293",
+      "loss_previewdiff": "574666470110971",
+      "loss_analytic": "574666470110970"
+    },
+    {
+      "address": "0x85b3f50e9d3e902123fa6d3469511029be7c51f2",
+      "shares": "994967472934471424466",
+      "value_before": "1004056126961337",
+      "value_after": "429409976595376",
+      "loss_previewdiff": "574646150365961",
+      "loss_analytic": "574646150365961"
+    },
+    {
+      "address": "0xc7bdd6ab5e7cc8ec6d095921ef6a23a11c3f6db6",
+      "shares": "993584862759571315518",
+      "value_before": "1002660887161976",
+      "value_after": "428813267035521",
+      "loss_previewdiff": "573847620126455",
+      "loss_analytic": "573847620126455"
+    },
+    {
+      "address": "0x9830d6b37fe7488707cc4ad7f8b481d75eb2a8c2",
+      "shares": "992278456423358919979",
+      "value_before": "1001342547294737",
+      "value_after": "428249445675007",
+      "loss_previewdiff": "573093101619730",
+      "loss_analytic": "573093101619730"
+    },
+    {
+      "address": "0x35226e78809a5dae4562b0b1fc4cf96cdb6a01a8",
+      "shares": "992277674221636664318",
+      "value_before": "1001341757947896",
+      "value_after": "428249108090882",
+      "loss_previewdiff": "573092649857014",
+      "loss_analytic": "573092649857013"
+    },
+    {
+      "address": "0x134e00aa558c6552f88144845e9ad6b45f4e7dd2",
+      "shares": "992276547815933451916",
+      "value_before": "1001340621252900",
+      "value_after": "428248621954542",
+      "loss_previewdiff": "573091999298358",
+      "loss_analytic": "573091999298358"
+    },
+    {
+      "address": "0xe9a830ab84558da8fbb7995306bdeda3f1f6d1de",
+      "shares": "992276443552904674210",
+      "value_before": "1001340516037468",
+      "value_after": "428248576956503",
+      "loss_previewdiff": "573091939080965",
+      "loss_analytic": "573091939080964"
+    },
+    {
+      "address": "0x5732fd69ededa743ac78d2f3a1d1ea30ff67d82d",
+      "shares": "992275989621866630054",
+      "value_before": "1001340057959940",
+      "value_after": "428248381048072",
+      "loss_previewdiff": "573091676911868",
+      "loss_analytic": "573091676911868"
+    },
+    {
+      "address": "0xa54d6fd8143af647f49d57f98db806376040868a",
+      "shares": "992271895673148792938",
+      "value_before": "1001335926614539",
+      "value_after": "428246614173806",
+      "loss_previewdiff": "573089312440733",
+      "loss_analytic": "573089312440732"
+    },
+    {
+      "address": "0x51d2bf026fde1ce087c178d9ce3f91fdebf054e6",
+      "shares": "992270984203768143247",
+      "value_before": "1001335006819228",
+      "value_after": "428246220800097",
+      "loss_previewdiff": "573088786019131",
+      "loss_analytic": "573088786019130"
+    },
+    {
+      "address": "0xd152926beefd40caef59040a2144980e481a59e3",
+      "shares": "992266719159456453087",
+      "value_before": "1001330702815339",
+      "value_after": "428244380084066",
+      "loss_previewdiff": "573086322731273",
+      "loss_analytic": "573086322731273"
+    },
+    {
+      "address": "0x288a4e70eba5d4f92e28f8ccc561e9fc947304a1",
+      "shares": "992264114065423480095",
+      "value_before": "1001328073924751",
+      "value_after": "428243255772570",
+      "loss_previewdiff": "573084818152181",
+      "loss_analytic": "573084818152180"
+    },
+    {
+      "address": "0xf3489ee15313a4c5c78b3ca46f2939e366619a0e",
+      "shares": "991742494795843189829",
+      "value_before": "1000801689859131",
+      "value_after": "428018134324447",
+      "loss_previewdiff": "572783555534684",
+      "loss_analytic": "572783555534683"
+    },
+    {
+      "address": "0x35205135f0883e6a59af9cb64310c53003433122",
+      "shares": "991627518753125068073",
+      "value_before": "1000685663553462",
+      "value_after": "427968512742681",
+      "loss_previewdiff": "572717150810781",
+      "loss_analytic": "572717150810780"
+    },
+    {
+      "address": "0xb991175200a225f124c7bb820751411144d03552",
+      "shares": "991572108838755990807",
+      "value_before": "1000629747490345",
+      "value_after": "427944598825212",
+      "loss_previewdiff": "572685148665133",
+      "loss_analytic": "572685148665132"
+    },
+    {
+      "address": "0xc4130e106837730560b534d64d488a502096fded",
+      "shares": "985678870066774116256",
+      "value_before": "994682676196443",
+      "value_after": "425401183495579",
+      "loss_previewdiff": "569281492700864",
+      "loss_analytic": "569281492700863"
+    },
+    {
+      "address": "0xde79fa44e6a37f437b2dc74e81e3958abe9f000f",
+      "shares": "980754672000053962240",
+      "value_before": "989713497430548",
+      "value_after": "423275988618258",
+      "loss_previewdiff": "566437508812290",
+      "loss_analytic": "566437508812290"
+    },
+    {
+      "address": "0xb300aa30dd33e1ae849cb69fa23d6ddaf90a69bc",
+      "shares": "949175965304416140730",
+      "value_before": "957846331114290",
+      "value_after": "409647189615319",
+      "loss_previewdiff": "548199141498971",
+      "loss_analytic": "548199141498970"
+    },
+    {
+      "address": "0xb0131f9775be0d4ed66cc475b3c515a7e1f5d26a",
+      "shares": "945376887082685580395",
+      "value_before": "954012549740429",
+      "value_after": "408007576125779",
+      "loss_previewdiff": "546004973614650",
+      "loss_analytic": "546004973614650"
+    },
+    {
+      "address": "0xcd088e347ac400327ed62494fa274d5e69359fea",
+      "shares": "851026711977586292391",
+      "value_before": "858800521235866",
+      "value_after": "367287745994891",
+      "loss_previewdiff": "491512775240975",
+      "loss_analytic": "491512775240974"
+    },
+    {
+      "address": "0x74a13587e4549b5f717f1db32960247e5ec538c7",
+      "shares": "844458699720981612146",
+      "value_before": "852172512655091",
+      "value_after": "364453110626291",
+      "loss_previewdiff": "487719402028800",
+      "loss_analytic": "487719402028800"
+    },
+    {
+      "address": "0xd00226b73bab097e97c6df416dc031df7c4b5af1",
+      "shares": "821900503806878430794",
+      "value_before": "829408256097087",
+      "value_after": "354717401024710",
+      "loss_previewdiff": "474690855072377",
+      "loss_analytic": "474690855072377"
+    },
+    {
+      "address": "0xe2c2bbac29a8991c21d50cfb76d56ef455d85157",
+      "shares": "796812852185279913558",
+      "value_before": "804091438204090",
+      "value_after": "343890024061430",
+      "loss_previewdiff": "460201414142660",
+      "loss_analytic": "460201414142660"
+    },
+    {
+      "address": "0x0c74d9e478ec897af92e57911cd985978a3597d4",
+      "shares": "796530503739726572058",
+      "value_before": "803806510611573",
+      "value_after": "343768167575972",
+      "loss_previewdiff": "460038343035601",
+      "loss_analytic": "460038343035601"
+    },
+    {
+      "address": "0xb459834334602829bb1d18610339df29e3a0a7cf",
+      "shares": "795934683742040643572",
+      "value_before": "803205248022075",
+      "value_after": "343511022434828",
+      "loss_previewdiff": "459694225587247",
+      "loss_analytic": "459694225587247"
+    },
+    {
+      "address": "0x1caadd7bbad2eedb593bb808db4af1a678af560b",
+      "shares": "794673902861713168576",
+      "value_before": "801932950382118",
+      "value_after": "342966892196362",
+      "loss_previewdiff": "458966058185756",
+      "loss_analytic": "458966058185756"
+    },
+    {
+      "address": "0x0bba9956e4daf62b142228c631af56a59946291a",
+      "shares": "785237171699845913507",
+      "value_before": "792410018226743",
+      "value_after": "338894169602323",
+      "loss_previewdiff": "453515848624420",
+      "loss_analytic": "453515848624420"
+    },
+    {
+      "address": "0x9ca53d2679f8a5f1f863b0a620d3d100b21e063a",
+      "shares": "745747898246529517749",
+      "value_before": "752560025097706",
+      "value_after": "321851312975719",
+      "loss_previewdiff": "430708712121987",
+      "loss_analytic": "430708712121987"
+    },
+    {
+      "address": "0x87941a73f2ea8e05dfa2854561e307a786c5e8e3",
+      "shares": "737691304045084023874",
+      "value_before": "744429836935329",
+      "value_after": "318374232546870",
+      "loss_previewdiff": "426055604388459",
+      "loss_analytic": "426055604388458"
+    },
+    {
+      "address": "0x6d3a6fda22aa10822326efdd4501c0efd8958148",
+      "shares": "725874889595883759060",
+      "value_before": "732505483979908",
+      "value_after": "313274481660435",
+      "loss_previewdiff": "419231002319473",
+      "loss_analytic": "419231002319473"
+    },
+    {
+      "address": "0x3d124f86a603b9ec52e797e3c50a83ecae6fbc54",
+      "shares": "676958012467664081730",
+      "value_before": "683141769558624",
+      "value_after": "292162841698179",
+      "loss_previewdiff": "390978927860445",
+      "loss_analytic": "390978927860444"
+    },
+    {
+      "address": "0x6f58f37e1a6cdc2cdf1ba85c706923b9d5f8efb0",
+      "shares": "668763548331645307052",
+      "value_before": "674872452071622",
+      "value_after": "288626259097663",
+      "loss_previewdiff": "386246192973959",
+      "loss_analytic": "386246192973959"
+    },
+    {
+      "address": "0x5f40516e04001d25622d1f8d959dad0a12b4601a",
+      "shares": "658729082344183620757",
+      "value_before": "664746325007608",
+      "value_after": "284295564957367",
+      "loss_previewdiff": "380450760050241",
+      "loss_analytic": "380450760050241"
+    },
+    {
+      "address": "0x21d90e6f18f3848d9e45f34bdb4dfdde3fa09d1a",
+      "shares": "649784411283077662539",
+      "value_before": "655719947737133",
+      "value_after": "280435206608490",
+      "loss_previewdiff": "375284741128643",
+      "loss_analytic": "375284741128642"
+    },
+    {
+      "address": "0xe5c74069f2c2938e5584fd8f57b1ada5846f4769",
+      "shares": "598907095596735309864",
+      "value_before": "604377886888092",
+      "value_after": "258477476800828",
+      "loss_previewdiff": "345900410087264",
+      "loss_analytic": "345900410087264"
+    },
+    {
+      "address": "0xcad821825487226c7bab24c386912568c89c2f46",
+      "shares": "596544824489238266353",
+      "value_before": "601994037321602",
+      "value_after": "257457963290511",
+      "loss_previewdiff": "344536074031091",
+      "loss_analytic": "344536074031091"
+    },
+    {
+      "address": "0x43258f6452d0e839b8aa8e3296b763192e3f308b",
+      "shares": "595323420681618970463",
+      "value_before": "600761476449118",
+      "value_after": "256930827484859",
+      "loss_previewdiff": "343830648964259",
+      "loss_analytic": "343830648964258"
+    },
+    {
+      "address": "0x230d2f7d07d6d7f0326b49c6364e1174aa515015",
+      "shares": "592397575096874495076",
+      "value_before": "597808904364282",
+      "value_after": "255668085417160",
+      "loss_previewdiff": "342140818947122",
+      "loss_analytic": "342140818947122"
+    },
+    {
+      "address": "0x34f9c0b11e67d72ad65c41ff90a6989846f28c22",
+      "shares": "578718715242002673925",
+      "value_before": "584005093264184",
+      "value_after": "249764536758621",
+      "loss_previewdiff": "334240556505563",
+      "loss_analytic": "334240556505563"
+    },
+    {
+      "address": "0x9a254e8c6c910108fbff99923c37b95efe034270",
+      "shares": "578522958689127856161",
+      "value_before": "583807548548750",
+      "value_after": "249680051768835",
+      "loss_previewdiff": "334127496779915",
+      "loss_analytic": "334127496779915"
+    },
+    {
+      "address": "0xd4bc689aca0a4a0a80f6c144f0030378c2652621",
+      "shares": "570667708214774057856",
+      "value_before": "575880543312761",
+      "value_after": "246289867653173",
+      "loss_previewdiff": "329590675659588",
+      "loss_analytic": "329590675659588"
+    },
+    {
+      "address": "0x04d1c2bc25288a8f062687404250a423af15937c",
+      "shares": "570088872912460290032",
+      "value_before": "575296420567446",
+      "value_after": "246040052799541",
+      "loss_previewdiff": "329256367767905",
+      "loss_analytic": "329256367767904"
+    },
+    {
+      "address": "0x1548600f1f56db8d97c14c423ca267f4162a4eda",
+      "shares": "569856535829754545655",
+      "value_before": "575061961172785",
+      "value_after": "245939780314298",
+      "loss_previewdiff": "329122180858487",
+      "loss_analytic": "329122180858486"
+    },
+    {
+      "address": "0x97a1ca841b4792068932d4224681f6f6fa22c549",
+      "shares": "524826946456747857389",
+      "value_before": "529621043419790",
+      "value_after": "226505823481786",
+      "loss_previewdiff": "303115219938004",
+      "loss_analytic": "303115219938004"
+    },
+    {
+      "address": "0x1e8cd608e37fbfede9721ff1b94bd5e5b149c911",
+      "shares": "520638200274940516231",
+      "value_before": "525394034615447",
+      "value_after": "224698036344194",
+      "loss_previewdiff": "300695998271253",
+      "loss_analytic": "300695998271253"
+    },
+    {
+      "address": "0x42a9cf494df977bbb90a1a45233df6d3794a4894",
+      "shares": "513962678724304519235",
+      "value_before": "518657534683634",
+      "value_after": "221817001907594",
+      "loss_previewdiff": "296840532776040",
+      "loss_analytic": "296840532776040"
+    },
+    {
+      "address": "0x2515659c48369592d0a47d32135aa87782051ba4",
+      "shares": "506893264834331785394",
+      "value_before": "511523544353962",
+      "value_after": "218765970657213",
+      "loss_previewdiff": "292757573696749",
+      "loss_analytic": "292757573696749"
+    },
+    {
+      "address": "0xd923de646d3f0bb9eb7f9169f259c79c3ede2188",
+      "shares": "497715504650397284646",
+      "value_before": "502261948779101",
+      "value_after": "214805015256170",
+      "loss_previewdiff": "287456933522931",
+      "loss_analytic": "287456933522930"
+    },
+    {
+      "address": "0xa31e8272f5ebc398bd01368e1bc91076068dfe2f",
+      "shares": "497617574860232733541",
+      "value_before": "502163124437098",
+      "value_after": "214762750528884",
+      "loss_previewdiff": "287400373908214",
+      "loss_analytic": "287400373908214"
+    },
+    {
+      "address": "0x22192c574f1a68ac85a532620f55d2d7aa9ddfac",
+      "shares": "497614248167007352944",
+      "value_before": "502159767355780",
+      "value_after": "214761314788220",
+      "loss_previewdiff": "287398452567560",
+      "loss_analytic": "287398452567560"
+    },
+    {
+      "address": "0xce355a1bb38240450c09333ee60902bca1521f2d",
+      "shares": "497596790364957164673",
+      "value_before": "502142150083268",
+      "value_after": "214753780316417",
+      "loss_previewdiff": "287388369766851",
+      "loss_analytic": "287388369766850"
+    },
+    {
+      "address": "0xa92f4a523d8ae3c37e4716b89d05bf57862cf998",
+      "shares": "497303906372160499061",
+      "value_before": "501846590705242",
+      "value_after": "214627376879206",
+      "loss_previewdiff": "287219213826036",
+      "loss_analytic": "287219213826035"
+    },
+    {
+      "address": "0xadad7ec70ac6b2599360efc99089b575e4bc376d",
+      "shares": "497231590376345636453",
+      "value_before": "501773614129976",
+      "value_after": "214596166602574",
+      "loss_previewdiff": "287177447527402",
+      "loss_analytic": "287177447527402"
+    },
+    {
+      "address": "0xa2608e76d835d0b3db2bbcbd4bd1f78d47208353",
+      "shares": "496137955427767596883",
+      "value_before": "500669989237054",
+      "value_after": "214124173526973",
+      "loss_previewdiff": "286545815710081",
+      "loss_analytic": "286545815710080"
+    },
+    {
+      "address": "0xf88c303d383ac9053841531fb64720cf92a8d8d6",
+      "shares": "496137179831530023466",
+      "value_before": "500669206556036",
+      "value_after": "214123838793657",
+      "loss_previewdiff": "286545367762379",
+      "loss_analytic": "286545367762379"
+    },
+    {
+      "address": "0x0057be07beef5d9b4beb9e2d147906e83d1915c8",
+      "shares": "496076978528494568104",
+      "value_before": "500608455336717",
+      "value_after": "214097856999447",
+      "loss_previewdiff": "286510598337270",
+      "loss_analytic": "286510598337270"
+    },
+    {
+      "address": "0xee172e131977ff8928958769c284fc87b85eb4af",
+      "shares": "492012928670796570813",
+      "value_before": "496507281910551",
+      "value_after": "212343886541368",
+      "loss_previewdiff": "284163395369183",
+      "loss_analytic": "284163395369183"
+    },
+    {
+      "address": "0xda286b33234235ed92160f71b98c98e5a6b01493",
+      "shares": "491513713552462807287",
+      "value_before": "496003506649681",
+      "value_after": "212128434319952",
+      "loss_previewdiff": "283875072329729",
+      "loss_analytic": "283875072329728"
+    },
+    {
+      "address": "0x10495e143d79296d5222497b7245294dc9e2d596",
+      "shares": "490052158575935053773",
+      "value_before": "494528600917592",
+      "value_after": "211497653610697",
+      "loss_previewdiff": "283030947306895",
+      "loss_analytic": "283030947306894"
+    },
+    {
+      "address": "0x4afc6fafbe1cd2b4c074107b86d2fb95c4c76abf",
+      "shares": "469241647946752148047",
+      "value_before": "473527994092929",
+      "value_after": "202516213387471",
+      "loss_previewdiff": "271011780705458",
+      "loss_analytic": "271011780705458"
+    },
+    {
+      "address": "0x7eb9563ca3b5b4e8f138a8a4fa983bc65293211b",
+      "shares": "466549397837095081421",
+      "value_before": "470811151290077",
+      "value_after": "201354286904420",
+      "loss_previewdiff": "269456864385657",
+      "loss_analytic": "269456864385657"
+    },
+    {
+      "address": "0x65ee472fa8a76555a1cb72510e3d1da5f1662214",
+      "shares": "456447521333390522187",
+      "value_before": "460616997940082",
+      "value_after": "196994499603805",
+      "loss_previewdiff": "263622498336277",
+      "loss_analytic": "263622498336277"
+    },
+    {
+      "address": "0x3cf282cd2df98d8589598fde938eecd1dac9671f",
+      "shares": "453738266831738642680",
+      "value_before": "457882995416504",
+      "value_after": "195825234332535",
+      "loss_previewdiff": "262057761083969",
+      "loss_analytic": "262057761083968"
+    },
+    {
+      "address": "0x31738dac34244088ce78284db1074e03db6f1743",
+      "shares": "452950247245332814372",
+      "value_before": "457087777567258",
+      "value_after": "195485139323039",
+      "loss_previewdiff": "261602638244219",
+      "loss_analytic": "261602638244218"
+    },
+    {
+      "address": "0x624310638b9901933fab5f5b0deb2b33e13c87cc",
+      "shares": "443230105864902806165",
+      "value_before": "447278846347459",
+      "value_after": "191290102001504",
+      "loss_previewdiff": "255988744345955",
+      "loss_analytic": "255988744345955"
+    },
+    {
+      "address": "0x70d628288d3b2244b9c2fe12b8c987162380c642",
+      "shares": "442144951960365014935",
+      "value_before": "446183779969728",
+      "value_after": "190821769191210",
+      "loss_previewdiff": "255362010778518",
+      "loss_analytic": "255362010778517"
+    },
+    {
+      "address": "0x81f61bac5da8b0e445b3ed7164ac89bb72b9d7f8",
+      "shares": "439470526081690784481",
+      "value_before": "443484924215512",
+      "value_after": "189667535324066",
+      "loss_previewdiff": "253817388891446",
+      "loss_analytic": "253817388891445"
+    },
+    {
+      "address": "0x830bc5551e429ddbc4e9ac78436f8bf13eca8434",
+      "shares": "437618467579668674043",
+      "value_before": "441615947854946",
+      "value_after": "188868220351828",
+      "loss_previewdiff": "252747727503118",
+      "loss_analytic": "252747727503118"
+    },
+    {
+      "address": "0x1e5773301a43304d645341bce9af9d0cf6a0d1f0",
+      "shares": "432709626833301469306",
+      "value_before": "436662266692756",
+      "value_after": "186749653416377",
+      "loss_previewdiff": "249912613276379",
+      "loss_analytic": "249912613276378"
+    },
+    {
+      "address": "0x952d3cfdeddb345a3dae3cd137368dedd9ea1dec",
+      "shares": "427663619700927638120",
+      "value_before": "431570166181160",
+      "value_after": "184571887948103",
+      "loss_previewdiff": "246998278233057",
+      "loss_analytic": "246998278233057"
+    },
+    {
+      "address": "0x5a9b86708b7aa08e4a73f792f156d8a96e163136",
+      "shares": "427654591998817096085",
+      "value_before": "431561056014383",
+      "value_after": "184567991755054",
+      "loss_previewdiff": "246993064259329",
+      "loss_analytic": "246993064259328"
+    },
+    {
+      "address": "0x1565f3be9881c204f470796ad29d7eeae8ab7086",
+      "shares": "427642792288523244511",
+      "value_before": "431549148518169",
+      "value_after": "184562899213379",
+      "loss_previewdiff": "246986249304790",
+      "loss_analytic": "246986249304789"
+    },
+    {
+      "address": "0xe991c733b74ac6eabc06ed50a7ffb2be5b221874",
+      "shares": "420404607758157809639",
+      "value_before": "424244845891717",
+      "value_after": "181439029605250",
+      "loss_previewdiff": "242805816286467",
+      "loss_analytic": "242805816286466"
+    },
+    {
+      "address": "0xf5b1ae5b41bec4ac1b6485df24f972db899f600b",
+      "shares": "419828920918086457292",
+      "value_before": "423663900368664",
+      "value_after": "181190573571012",
+      "loss_previewdiff": "242473326797652",
+      "loss_analytic": "242473326797651"
+    },
+    {
+      "address": "0x155a53d0c1b8b4aa0ae77116f968bca8c8e7230d",
+      "shares": "407848002587380338223",
+      "value_before": "411573540850588",
+      "value_after": "176019825782839",
+      "loss_previewdiff": "235553715067749",
+      "loss_analytic": "235553715067748"
+    },
+    {
+      "address": "0x800417f1244bffb037f177f9fc8fe1ca822425ba",
+      "shares": "399816490140810649203",
+      "value_before": "403468663555493",
+      "value_after": "172553570186025",
+      "loss_previewdiff": "230915093369468",
+      "loss_analytic": "230915093369468"
+    },
+    {
+      "address": "0x8f791c0592db171d84167d10baa70fd6dd26705c",
+      "shares": "398098355677714472709",
+      "value_before": "401734834579630",
+      "value_after": "171812054408218",
+      "loss_previewdiff": "229922780171412",
+      "loss_analytic": "229922780171411"
+    },
+    {
+      "address": "0xae605a4e79d7df7f8215ad703847b85a42f42bbe",
+      "shares": "398060812080324194212",
+      "value_before": "401696948035584",
+      "value_after": "171795851270211",
+      "loss_previewdiff": "229901096765373",
+      "loss_analytic": "229901096765373"
+    },
+    {
+      "address": "0x880e9659a0bcdcf76380f52b3b4beefd988f8946",
+      "shares": "397943707103341986143",
+      "value_before": "401578773348637",
+      "value_after": "171745310878898",
+      "loss_previewdiff": "229833462469739",
+      "loss_analytic": "229833462469738"
+    },
+    {
+      "address": "0x4fd556e95f3901e11a63f8d49d35a12db577ed4b",
+      "shares": "397942941424180240924",
+      "value_before": "401578000675283",
+      "value_after": "171744980425612",
+      "loss_previewdiff": "229833020249671",
+      "loss_analytic": "229833020249670"
+    },
+    {
+      "address": "0xf24c2aacdd817b9dc752880b0fc52f78619bf9b8",
+      "shares": "397899440851112895447",
+      "value_before": "401534102740826",
+      "value_after": "171726206364579",
+      "loss_previewdiff": "229807896376247",
+      "loss_analytic": "229807896376246"
+    },
+    {
+      "address": "0x33e921d9ee1821e174a4f9d786dc067fee0b6275",
+      "shares": "397864906745100737833",
+      "value_before": "401499253178730",
+      "value_after": "171711302068652",
+      "loss_previewdiff": "229787951110078",
+      "loss_analytic": "229787951110078"
+    },
+    {
+      "address": "0x9451b29befbe06f89ac4b64e0b57a208b53cca7d",
+      "shares": "393429492912450141749",
+      "value_before": "397023323507233",
+      "value_after": "169797057631644",
+      "loss_previewdiff": "227226265875589",
+      "loss_analytic": "227226265875589"
+    },
+    {
+      "address": "0x12b581d51c95ad0bb8824e31ce588df0429a5c0c",
+      "shares": "391577613288427560731",
+      "value_before": "395154527658651",
+      "value_after": "168997819859917",
+      "loss_previewdiff": "226156707798734",
+      "loss_analytic": "226156707798733"
+    },
+    {
+      "address": "0xdbe31c0185ccd7b90c0c850d18de699924848e7d",
+      "shares": "389319454698128831841",
+      "value_before": "392875741638086",
+      "value_after": "168023239430117",
+      "loss_previewdiff": "224852502207969",
+      "loss_analytic": "224852502207968"
+    },
+    {
+      "address": "0xc8e487f2d8626cb3909a5da2914259e4c7aaa7f0",
+      "shares": "384853012092768932362",
+      "value_before": "388368499757699",
+      "value_after": "166095603535674",
+      "loss_previewdiff": "222272896222025",
+      "loss_analytic": "222272896222025"
+    },
+    {
+      "address": "0x1155cc370ee5a0246ad60d6a2dda5350ef38d775",
+      "shares": "381191923565282460436",
+      "value_before": "384673968562092",
+      "value_after": "164515543903910",
+      "loss_previewdiff": "220158424658182",
+      "loss_analytic": "220158424658181"
+    },
+    {
+      "address": "0x5050e029fc142add49023ada888d2fc9d4a8701e",
+      "shares": "377262397202074276846",
+      "value_before": "380708547451994",
+      "value_after": "162819631354448",
+      "loss_previewdiff": "217888916097546",
+      "loss_analytic": "217888916097545"
+    },
+    {
+      "address": "0xa2ac5662c353ea53dcb43c491076ba500a0dd5e6",
+      "shares": "367332832596980300473",
+      "value_before": "370688280005060",
+      "value_after": "158534210754617",
+      "loss_previewdiff": "212154069250443",
+      "loss_analytic": "212154069250443"
+    },
+    {
+      "address": "0x29fa5247183ff403c2ba19a435f401c5707f2d3c",
+      "shares": "363805397696165826951",
+      "value_before": "367128623311788",
+      "value_after": "157011833612243",
+      "loss_previewdiff": "210116789699545",
+      "loss_analytic": "210116789699544"
+    },
+    {
+      "address": "0x5f684067496855ab417c83d3e673ac4f958afa12",
+      "shares": "363158356565308104374",
+      "value_before": "366475671703312",
+      "value_after": "156732582355880",
+      "loss_previewdiff": "209743089347432",
+      "loss_analytic": "209743089347431"
+    },
+    {
+      "address": "0xdc49838921c8690e1ebfb4f17568caf7b1ad566c",
+      "shares": "358044110006041237749",
+      "value_before": "361314708423298",
+      "value_after": "154525365984433",
+      "loss_previewdiff": "206789342438865",
+      "loss_analytic": "206789342438864"
+    },
+    {
+      "address": "0x9300583051ce99b0e7dc9bafe76b3c508750e944",
+      "shares": "349322618677823486742",
+      "value_before": "352513549548716",
+      "value_after": "150761327974144",
+      "loss_previewdiff": "201752221574572",
+      "loss_analytic": "201752221574572"
+    },
+    {
+      "address": "0x278a2d5b5c8696882d1d2002ce107efc74704ecf",
+      "shares": "348525429246812152629",
+      "value_before": "351709078091780",
+      "value_after": "150417275425468",
+      "loss_previewdiff": "201291802666312",
+      "loss_analytic": "201291802666312"
+    },
+    {
+      "address": "0x61d8e97f68feae22ca735e681c0dbd0ed17fa2e8",
+      "shares": "348457264997472514280",
+      "value_before": "351640291187634",
+      "value_after": "150387856967569",
+      "loss_previewdiff": "201252434220065",
+      "loss_analytic": "201252434220065"
+    },
+    {
+      "address": "0x8b961a604d1d06264431d2807d40db880d47905d",
+      "shares": "348357568490050973045",
+      "value_before": "351539683990076",
+      "value_after": "150344829757049",
+      "loss_previewdiff": "201194854233027",
+      "loss_analytic": "201194854233027"
+    },
+    {
+      "address": "0x286438884aadabd18058eda12efe3fdff840eff3",
+      "shares": "348159848906684480881",
+      "value_before": "351340158312605",
+      "value_after": "150259497558786",
+      "loss_previewdiff": "201080660753819",
+      "loss_analytic": "201080660753818"
+    },
+    {
+      "address": "0xdc02781bd75fa9102e00440a7e6176985430074d",
+      "shares": "348122378369328834516",
+      "value_before": "351302345495969",
+      "value_after": "150243325952169",
+      "loss_previewdiff": "201059019543800",
+      "loss_analytic": "201059019543800"
+    },
+    {
+      "address": "0xbcae65851d4d372a066bb9f377bd8efece6dffd6",
+      "shares": "347132604820386862873",
+      "value_before": "350303530737544",
+      "value_after": "149816157579285",
+      "loss_previewdiff": "200487373158259",
+      "loss_analytic": "200487373158259"
+    },
+    {
+      "address": "0xe7132cf69bfcc561514da2dd9a5f7af60f0e5a62",
+      "shares": "338385443550282432673",
+      "value_before": "341476467435802",
+      "value_after": "146041040886079",
+      "loss_previewdiff": "195435426549723",
+      "loss_analytic": "195435426549722"
+    },
+    {
+      "address": "0x8e5dd554117dd930c8de99dda5f0b41d318cd312",
+      "shares": "338384549879793799541",
+      "value_before": "341475565601969",
+      "value_after": "146040655194050",
+      "loss_previewdiff": "195434910407919",
+      "loss_analytic": "195434910407919"
+    },
+    {
+      "address": "0xbc9694f255256c005056f0e21c7083881a293ecd",
+      "shares": "338379865068005899793",
+      "value_before": "341470837996186",
+      "value_after": "146038633313964",
+      "loss_previewdiff": "195432204682222",
+      "loss_analytic": "195432204682222"
+    },
+    {
+      "address": "0xd773cb3589bc24df725bd129e0ccf4f6b13b6d4f",
+      "shares": "338350942785247909829",
+      "value_before": "341441651519242",
+      "value_after": "146026150979516",
+      "loss_previewdiff": "195415500539726",
+      "loss_analytic": "195415500539726"
+    },
+    {
+      "address": "0x188697f39e2ec9e6e3c5fd5cbb36b8c01c81a53f",
+      "shares": "338218584416204051089",
+      "value_before": "341308084106228",
+      "value_after": "145969027499905",
+      "loss_previewdiff": "195339056606323",
+      "loss_analytic": "195339056606322"
+    },
+    {
+      "address": "0x929cd0b5b03df44200a2f77291b886ae40cb9c63",
+      "shares": "333901465614898305945",
+      "value_before": "336951530046740",
+      "value_after": "144105837060161",
+      "loss_previewdiff": "192845692986579",
+      "loss_analytic": "192845692986579"
+    },
+    {
+      "address": "0x22d2c9e7c66178e33898febf14ab4b33135d0abc",
+      "shares": "329430145493194065330",
+      "value_before": "332439366095730",
+      "value_after": "142176096117827",
+      "loss_previewdiff": "190263269977903",
+      "loss_analytic": "190263269977902"
+    },
+    {
+      "address": "0x52b1ff9d3f19eacb32181b0e4c5bfc7c10d2ad6b",
+      "shares": "328458587366361164123",
+      "value_before": "331458933150451",
+      "value_after": "141756789191869",
+      "loss_previewdiff": "189702143958582",
+      "loss_analytic": "189702143958581"
+    },
+    {
+      "address": "0xb1a9182427fa79e81e9de68bc27c885dc24d12ca",
+      "shares": "328457631725357071869",
+      "value_before": "331457968780025",
+      "value_after": "141756376754486",
+      "loss_previewdiff": "189701592025539",
+      "loss_analytic": "189701592025539"
+    },
+    {
+      "address": "0xed30ce568c87ed1fccb7215e9eed416274af2481",
+      "shares": "328437980264059016307",
+      "value_before": "331438137810012",
+      "value_after": "141747895539003",
+      "loss_previewdiff": "189690242271009",
+      "loss_analytic": "189690242271008"
+    },
+    {
+      "address": "0xf1d9236cf239c58384405cd79ba8775a242b420d",
+      "shares": "328437654411037837114",
+      "value_before": "331437808980446",
+      "value_after": "141747754906729",
+      "loss_previewdiff": "189690054073717",
+      "loss_analytic": "189690054073716"
+    },
+    {
+      "address": "0xa5a30ad9a9a05ac8e3ba920dadd3f05820d50a36",
+      "shares": "328437630650947964661",
+      "value_before": "331437785003317",
+      "value_after": "141747744652304",
+      "loss_previewdiff": "189690040351013",
+      "loss_analytic": "189690040351012"
+    },
+    {
+      "address": "0xf46d36a35eca074dac347bab4f70d969e8cbce59",
+      "shares": "328429921511593126574",
+      "value_before": "331430005443870",
+      "value_after": "141744417527107",
+      "loss_previewdiff": "189685587916763",
+      "loss_analytic": "189685587916763"
+    },
+    {
+      "address": "0x362afefe31af31f3ba13949aa59911fa3b98a21b",
+      "shares": "328429039786684103664",
+      "value_before": "331429115664735",
+      "value_after": "141744036990574",
+      "loss_previewdiff": "189685078674161",
+      "loss_analytic": "189685078674161"
+    },
+    {
+      "address": "0x723d93df6881fba4a8ebeb1368132c4b210d6723",
+      "shares": "328427236536321562873",
+      "value_before": "331427295942358",
+      "value_after": "141743258740312",
+      "loss_previewdiff": "189684037202046",
+      "loss_analytic": "189684037202046"
+    },
+    {
+      "address": "0xaa19a18e60b52ba4bb09bfb406eedafd78b127e3",
+      "shares": "328422627389585628104",
+      "value_before": "331422644692799",
+      "value_after": "141741269515894",
+      "loss_previewdiff": "189681375176905",
+      "loss_analytic": "189681375176904"
+    },
+    {
+      "address": "0x9c12e2863b83f0dcd65950e29e49e92e0eaa0666",
+      "shares": "324753142361708006255",
+      "value_before": "327719640297924",
+      "value_after": "140157586106335",
+      "loss_previewdiff": "187562054191589",
+      "loss_analytic": "187562054191589"
+    },
+    {
+      "address": "0x910fabaebc56e12ee0f05c5d9023040c9be2bb86",
+      "shares": "324451642100683021845",
+      "value_before": "327415385945297",
+      "value_after": "140027464043501",
+      "loss_previewdiff": "187387921901796",
+      "loss_analytic": "187387921901796"
+    },
+    {
+      "address": "0x2c6d438d7780618946d5473bddbf251b716f223e",
+      "shares": "323130607406147061503",
+      "value_before": "326082284095178",
+      "value_after": "139457329347953",
+      "loss_previewdiff": "186624954747225",
+      "loss_analytic": "186624954747225"
+    },
+    {
+      "address": "0x6c568b173c88421d7a888049e8bb7b076f8d2265",
+      "shares": "323116835453095990350",
+      "value_before": "326068386340511",
+      "value_after": "139451385621953",
+      "loss_previewdiff": "186617000718558",
+      "loss_analytic": "186617000718557"
+    },
+    {
+      "address": "0xaf1c383ce06debbf9f3c91349fd03cf651221121",
+      "shares": "322416164644400818008",
+      "value_before": "325361315167241",
+      "value_after": "139148988766029",
+      "loss_previewdiff": "186212326401212",
+      "loss_analytic": "186212326401211"
+    },
+    {
+      "address": "0xdf8979cce6f1534df0a042543a187aaafbdcb671",
+      "shares": "322070720742731364867",
+      "value_before": "325012715765323",
+      "value_after": "138999901422205",
+      "loss_previewdiff": "186012814343118",
+      "loss_analytic": "186012814343117"
+    },
+    {
+      "address": "0x6b020dc9a5371b8e5421bdfb8aa0d6f52d0abc4a",
+      "shares": "320462177055441279725",
+      "value_before": "323389478635826",
+      "value_after": "138305683042307",
+      "loss_previewdiff": "185083795593519",
+      "loss_analytic": "185083795593519"
+    },
+    {
+      "address": "0x98da2cd731dc53a611cda8edc10520d1d7125ef0",
+      "shares": "318774315615074471165",
+      "value_before": "321686199215380",
+      "value_after": "137577232553904",
+      "loss_previewdiff": "184108966661476",
+      "loss_analytic": "184108966661476"
+    },
+    {
+      "address": "0xf6dd849a1c72e4fbd9c8c1d06de5660c0af3e67e",
+      "shares": "318351594493627674919",
+      "value_before": "321259616695318",
+      "value_after": "137394793758863",
+      "loss_previewdiff": "183864822936455",
+      "loss_analytic": "183864822936454"
+    },
+    {
+      "address": "0x6e4aaf7ab038512ee29989b3d1fc6ad8efc36f17",
+      "shares": "315752804403434591448",
+      "value_before": "318637087634092",
+      "value_after": "136273202930859",
+      "loss_previewdiff": "182363884703233",
+      "loss_analytic": "182363884703233"
+    },
+    {
+      "address": "0x6e2f1d7ee2aa23007448810bd21bbccce07ff21c",
+      "shares": "299454237852389166716",
+      "value_before": "302189639801452",
+      "value_after": "129239036215256",
+      "loss_previewdiff": "172950603586196",
+      "loss_analytic": "172950603586195"
+    },
+    {
+      "address": "0xf4cc5a237de073aee546137ae6532d206f02a470",
+      "shares": "299376414829330057655",
+      "value_before": "302111105894317",
+      "value_after": "129205449205209",
+      "loss_previewdiff": "172905656689108",
+      "loss_analytic": "172905656689108"
+    },
+    {
+      "address": "0x2c58f853b21becbf9abb59995c7ae33a6750bd0b",
+      "shares": "298519784508228443513",
+      "value_before": "301246650577093",
+      "value_after": "128835743042805",
+      "loss_previewdiff": "172410907534288",
+      "loss_analytic": "172410907534288"
+    },
+    {
+      "address": "0xc90ac6de237a9a8854b753121f1f0932a8598161",
+      "shares": "298421323986066275999",
+      "value_before": "301147290655056",
+      "value_after": "128793249261182",
+      "loss_previewdiff": "172354041393874",
+      "loss_analytic": "172354041393874"
+    },
+    {
+      "address": "0x9d3714cceff1e57d9653158c877def1e74bd6f20",
+      "shares": "297676598041037040522",
+      "value_before": "300395761918334",
+      "value_after": "128471839004742",
+      "loss_previewdiff": "171923922913592",
+      "loss_analytic": "171923922913592"
+    },
+    {
+      "address": "0xf19d2c58a0b8ec01c415e39d499f3c51628b06c8",
+      "shares": "296832287083489602287",
+      "value_before": "299543738497422",
+      "value_after": "128107449656967",
+      "loss_previewdiff": "171436288840455",
+      "loss_analytic": "171436288840454"
+    },
+    {
+      "address": "0xe0393b7aac6f32b1c039ade3bf7d1a8dad0506c8",
+      "shares": "279315049087289024082",
+      "value_before": "281866487113865",
+      "value_after": "120547326373963",
+      "loss_previewdiff": "161319160739902",
+      "loss_analytic": "161319160739902"
+    },
+    {
+      "address": "0x48f7d45fa696dc89ff4f2233b25490455ae19dc2",
+      "shares": "277654328327947052058",
+      "value_before": "280190596294367",
+      "value_after": "119830589312904",
+      "loss_previewdiff": "160360006981463",
+      "loss_analytic": "160360006981463"
+    },
+    {
+      "address": "0x594c9ad8d38fd59daeae8520ab1e31b2a866c4f2",
+      "shares": "259741268546473439409",
+      "value_before": "262113907442251",
+      "value_after": "112099636502127",
+      "loss_previewdiff": "150014270940124",
+      "loss_analytic": "150014270940123"
+    },
+    {
+      "address": "0x0eb0ddfb4350bae7435acd27504926204235a9de",
+      "shares": "249816184618973436423",
+      "value_before": "252098161602217",
+      "value_after": "107816149681754",
+      "loss_previewdiff": "144282011920463",
+      "loss_analytic": "144282011920463"
+    },
+    {
+      "address": "0x62074709dd75fc1f1699022e768fc0910065816c",
+      "shares": "249729705428982758086",
+      "value_before": "252010892457319",
+      "value_after": "107778826826525",
+      "loss_previewdiff": "144232065630794",
+      "loss_analytic": "144232065630794"
+    },
+    {
+      "address": "0x415da9425974e0de25456093dfef24ce36bae64b",
+      "shares": "249716892825099093678",
+      "value_before": "251997962815113",
+      "value_after": "107773297138285",
+      "loss_previewdiff": "144224665676828",
+      "loss_analytic": "144224665676827"
+    },
+    {
+      "address": "0x8566879bf3c413c60de555072467723d6f79bb85",
+      "shares": "248060458366636554580",
+      "value_before": "250326397450243",
+      "value_after": "107058409967208",
+      "loss_previewdiff": "143267987483035",
+      "loss_analytic": "143267987483035"
+    },
+    {
+      "address": "0x9ce5ca66e5ff700295f4d89f9dd5816d31b34477",
+      "shares": "226957925021893140322",
+      "value_before": "229031100392235",
+      "value_after": "97950938018458",
+      "loss_previewdiff": "131080162373777",
+      "loss_analytic": "131080162373777"
+    },
+    {
+      "address": "0x1aa4d39d43825635e22d3af97acca25cb04b3439",
+      "shares": "205503606895757352286",
+      "value_before": "207380805131032",
+      "value_after": "88691642116811",
+      "loss_previewdiff": "118689163014221",
+      "loss_analytic": "118689163014220"
+    },
+    {
+      "address": "0x79bdda65c706cbda69c0ad4c8da1d3e91724f48d",
+      "shares": "198453632660036749621",
+      "value_before": "200266432029549",
+      "value_after": "85649000669820",
+      "loss_previewdiff": "114617431359729",
+      "loss_analytic": "114617431359729"
+    },
+    {
+      "address": "0x83bbe9cfcc205bb8e53cba0b51d6db9386ce58b5",
+      "shares": "198453611626200199524",
+      "value_before": "200266410803577",
+      "value_after": "85648991591996",
+      "loss_previewdiff": "114617419211581",
+      "loss_analytic": "114617419211580"
+    },
+    {
+      "address": "0xd12461948a7e2dd2ad3f18861e9f42e53310d8d6",
+      "shares": "198433624300345873536",
+      "value_before": "200246240901011",
+      "value_after": "85640365423442",
+      "loss_previewdiff": "114605875477569",
+      "loss_analytic": "114605875477568"
+    },
+    {
+      "address": "0x47b8c706596aa7e95751aa5292e7936518b1e4ab",
+      "shares": "197971280850267678205",
+      "value_before": "199779674117232",
+      "value_after": "85440826347565",
+      "loss_previewdiff": "114338847769667",
+      "loss_analytic": "114338847769667"
+    },
+    {
+      "address": "0xddda78690198398ea24c32faba940ed9582d3681",
+      "shares": "197728995892812506826",
+      "value_before": "199535175977724",
+      "value_after": "85336260539395",
+      "loss_previewdiff": "114198915438329",
+      "loss_analytic": "114198915438329"
+    },
+    {
+      "address": "0x5e0de38c0e5633d66ccf54b13c6cedba5a4197b6",
+      "shares": "177537796036896564780",
+      "value_before": "179159537097549",
+      "value_after": "76622103651442",
+      "loss_previewdiff": "102537433446107",
+      "loss_analytic": "102537433446107"
+    },
+    {
+      "address": "0xbbf5a035239183918839094ec012c69eefe67836",
+      "shares": "174926477506955756231",
+      "value_before": "176524365153986",
+      "value_after": "75495105775302",
+      "loss_previewdiff": "101029259378684",
+      "loss_analytic": "101029259378683"
+    },
+    {
+      "address": "0x45d993393f7b3fe781935e1155118c7f830d4415",
+      "shares": "158752630062177341082",
+      "value_before": "160202775689787",
+      "value_after": "68514765571581",
+      "loss_previewdiff": "91688010118206",
+      "loss_analytic": "91688010118206"
+    },
+    {
+      "address": "0x72292f8183dad15dae55377321d29f1053d1603f",
+      "shares": "153558000442954392206",
+      "value_before": "154960695080767",
+      "value_after": "66272857324436",
+      "loss_previewdiff": "88687837756331",
+      "loss_analytic": "88687837756330"
+    },
+    {
+      "address": "0xd589fc3ca2bb34c78eafab14743bf51b19f19841",
+      "shares": "146310097039199187686",
+      "value_before": "147646584802668",
+      "value_after": "63144793226227",
+      "loss_previewdiff": "84501791576441",
+      "loss_analytic": "84501791576440"
+    },
+    {
+      "address": "0x77f75363faeaae05aa54aae33e19a0c901147c11",
+      "shares": "137461178028760509223",
+      "value_before": "138716834241866",
+      "value_after": "59325759731635",
+      "loss_previewdiff": "79391074510231",
+      "loss_analytic": "79391074510231"
+    },
+    {
+      "address": "0xcbdcb14d4963a045d6517a89aab07a097230c9bc",
+      "shares": "137408132537146729544",
+      "value_before": "138663304199617",
+      "value_after": "59302866256288",
+      "loss_previewdiff": "79360437943329",
+      "loss_analytic": "79360437943329"
+    },
+    {
+      "address": "0x59bd359db4bea32f5cc03f8689d7f72aa088d39b",
+      "shares": "137035283303756601543",
+      "value_before": "138287049128571",
+      "value_after": "59141951266664",
+      "loss_previewdiff": "79145097861907",
+      "loss_analytic": "79145097861906"
+    },
+    {
+      "address": "0x71ddf9acf07d4b10d6e6318a913f2f9ea4a0353e",
+      "shares": "134378146819392282182",
+      "value_before": "135605640700785",
+      "value_after": "57995179189587",
+      "loss_previewdiff": "77610461511198",
+      "loss_analytic": "77610461511198"
+    },
+    {
+      "address": "0x2b6343feea1502f4f7a6e9c807f1893ce6bcc15e",
+      "shares": "117085748211727485816",
+      "value_before": "118155282529100",
+      "value_after": "50532092522547",
+      "loss_previewdiff": "67623190006553",
+      "loss_analytic": "67623190006552"
+    },
+    {
+      "address": "0x3e12c5830ff80167b5aa9e85f364176125fcd75f",
+      "shares": "115367051396473985586",
+      "value_before": "116420886064204",
+      "value_after": "49790334043714",
+      "loss_previewdiff": "66630552020490",
+      "loss_analytic": "66630552020489"
+    },
+    {
+      "address": "0x38f9e664bae85f8bebb42bfdc9bb929ec1ae1a70",
+      "shares": "109148520716946414515",
+      "value_before": "110145551443402",
+      "value_after": "47106528606659",
+      "loss_previewdiff": "63039022836743",
+      "loss_analytic": "63039022836742"
+    },
+    {
+      "address": "0xd94956899b614342d11fbb64249f451ab80cf1ef",
+      "shares": "101018481107242673693",
+      "value_before": "101941246976558",
+      "value_after": "43597750467183",
+      "loss_previewdiff": "58343496509375",
+      "loss_analytic": "58343496509374"
+    },
+    {
+      "address": "0xb1e613ca77a746994a5105ae7ad7f37322571d05",
+      "shares": "99227787409738087082",
+      "value_before": "100134195964943",
+      "value_after": "42824919435364",
+      "loss_previewdiff": "57309276529579",
+      "loss_analytic": "57309276529578"
+    },
+    {
+      "address": "0xd5e089906d0c759f27403f3db7ae76007ca09dad",
+      "shares": "99227601147611606964",
+      "value_before": "100134008001382",
+      "value_after": "42824839047997",
+      "loss_previewdiff": "57309168953385",
+      "loss_analytic": "57309168953384"
+    },
+    {
+      "address": "0x6b74039b8823752c47e12117c96eeb44fb0aa94e",
+      "shares": "99227574558286035089",
+      "value_before": "100133981169172",
+      "value_after": "42824827572524",
+      "loss_previewdiff": "57309153596648",
+      "loss_analytic": "57309153596648"
+    },
+    {
+      "address": "0xa2c0905a8a1e66cc1633d2031ee21b18d4a42fa6",
+      "shares": "99227569595553157596",
+      "value_before": "100133976161107",
+      "value_after": "42824825430699",
+      "loss_previewdiff": "57309150730408",
+      "loss_analytic": "57309150730408"
+    },
+    {
+      "address": "0x3929a03b762bb15f1afc1608df887323f6552e25",
+      "shares": "99227500982420949674",
+      "value_before": "100133906921220",
+      "value_after": "42824795818511",
+      "loss_previewdiff": "57309111102709",
+      "loss_analytic": "57309111102708"
+    },
+    {
+      "address": "0x8717a864e8d69066ea50dc0b6ff4040edcaacf2a",
+      "shares": "99227497795352436368",
+      "value_before": "100133903705038",
+      "value_after": "42824794443030",
+      "loss_previewdiff": "57309109262008",
+      "loss_analytic": "57309109262008"
+    },
+    {
+      "address": "0xe3e6d2a6218d653a506defa39e26496ab94e7f6d",
+      "shares": "99227486731672428437",
+      "value_before": "100133892540296",
+      "value_after": "42824789668145",
+      "loss_previewdiff": "57309102872151",
+      "loss_analytic": "57309102872150"
+    },
+    {
+      "address": "0x746bfefcbcaa164966f9d6992686c17be438cedb",
+      "shares": "99227483772252020672",
+      "value_before": "100133889553842",
+      "value_after": "42824788390913",
+      "loss_previewdiff": "57309101162929",
+      "loss_analytic": "57309101162929"
+    },
+    {
+      "address": "0xb3467880204d2a2d5dbff08ee67584cde9035253",
+      "shares": "99227343542925024077",
+      "value_before": "100133748043573",
+      "value_after": "42824727870470",
+      "loss_previewdiff": "57309020173103",
+      "loss_analytic": "57309020173102"
+    },
+    {
+      "address": "0x77a59a1dd80a1b89b6db958f9476844fd7fb7802",
+      "shares": "99226781683378543099",
+      "value_before": "100133181051651",
+      "value_after": "42824485382046",
+      "loss_previewdiff": "57308695669605",
+      "loss_analytic": "57308695669604"
+    },
+    {
+      "address": "0xa716c2ef62b60cf82b8119947030ea7e26a39908",
+      "shares": "99226772395712490042",
+      "value_before": "100133171679145",
+      "value_after": "42824481373657",
+      "loss_previewdiff": "57308690305488",
+      "loss_analytic": "57308690305487"
+    },
+    {
+      "address": "0xd4357cf9b5466fe61778baa2c463fcfba84cce19",
+      "shares": "99226456069134413949",
+      "value_before": "100132852463043",
+      "value_after": "42824344852824",
+      "loss_previewdiff": "57308507610219",
+      "loss_analytic": "57308507610218"
+    },
+    {
+      "address": "0xe4e75d7df7fe0cfdfac5fa0c1e4eb184d5ef614c",
+      "shares": "99226054151554408442",
+      "value_before": "100132446874097",
+      "value_after": "42824171392461",
+      "loss_previewdiff": "57308275481636",
+      "loss_analytic": "57308275481635"
+    },
+    {
+      "address": "0x37a9cdef34a0d59ddc6e2302e273e42feadccb13",
+      "shares": "99225996286093657274",
+      "value_before": "100132388480057",
+      "value_after": "42824146418774",
+      "loss_previewdiff": "57308242061283",
+      "loss_analytic": "57308242061282"
+    },
+    {
+      "address": "0x148cfd96dac75963a29d55f29ceece4111201244",
+      "shares": "99225961047812562672",
+      "value_before": "100132352919887",
+      "value_after": "42824131210569",
+      "loss_previewdiff": "57308221709318",
+      "loss_analytic": "57308221709317"
+    },
+    {
+      "address": "0x46510603609b7ff098bf8245fe7d7e0cf395dddf",
+      "shares": "99225587813958634847",
+      "value_before": "100131976276682",
+      "value_after": "42823970129584",
+      "loss_previewdiff": "57308006147098",
+      "loss_analytic": "57308006147097"
+    },
+    {
+      "address": "0x2f927703d66375ded4916e3aecac586faca50c96",
+      "shares": "99225470353427593611",
+      "value_before": "100131857743193",
+      "value_after": "42823919435742",
+      "loss_previewdiff": "57307938307451",
+      "loss_analytic": "57307938307450"
+    },
+    {
+      "address": "0x1b4c75a5397c983c38c987d872b4f407c1d97f50",
+      "shares": "99224783758580468635",
+      "value_before": "100131164876560",
+      "value_after": "42823623113817",
+      "loss_previewdiff": "57307541762743",
+      "loss_analytic": "57307541762743"
+    },
+    {
+      "address": "0x764aab74fc908dc9f21884275581f83ae7575fee",
+      "shares": "99224393727289829963",
+      "value_before": "100130771282480",
+      "value_after": "42823454783362",
+      "loss_previewdiff": "57307316499118",
+      "loss_analytic": "57307316499118"
+    },
+    {
+      "address": "0xe507efaf7c2f73cbb486e9e1c690b225b265dfb9",
+      "shares": "99222772791436848727",
+      "value_before": "100129135539987",
+      "value_after": "42822755216747",
+      "loss_previewdiff": "57306380323240",
+      "loss_analytic": "57306380323239"
+    },
+    {
+      "address": "0xafb23451763d6be8e3b5d8494a1acfeed2c9f40b",
+      "shares": "99218576374077277166",
+      "value_before": "100124900789932",
+      "value_after": "42820944118868",
+      "loss_previewdiff": "57303956671064",
+      "loss_analytic": "57303956671063"
+    },
+    {
+      "address": "0x7f07d465d1f706314ea62e7256d4407182610b0a",
+      "shares": "99218354251821461263",
+      "value_before": "100124676638673",
+      "value_after": "42820848254918",
+      "loss_previewdiff": "57303828383755",
+      "loss_analytic": "57303828383755"
+    },
+    {
+      "address": "0x97d7846316efe4581a5a1ef3de3e88814ba75e25",
+      "shares": "99218277949989601169",
+      "value_before": "100124599639852",
+      "value_after": "42820815324426",
+      "loss_previewdiff": "57303784315426",
+      "loss_analytic": "57303784315426"
+    },
+    {
+      "address": "0x909d80adfd0da1be9600775d091659873da0728a",
+      "shares": "99213640048176072426",
+      "value_before": "100119919372548",
+      "value_after": "42818813689837",
+      "loss_previewdiff": "57301105682711",
+      "loss_analytic": "57301105682711"
+    },
+    {
+      "address": "0xe20c54bae4826173346a50e48b78c60fa141d333",
+      "shares": "99208639892479168005",
+      "value_before": "100114873542308",
+      "value_after": "42816655713019",
+      "loss_previewdiff": "57298217829289",
+      "loss_analytic": "57298217829288"
+    },
+    {
+      "address": "0x3ca7e46c70412ce4898292f258d6dff7d15b6262",
+      "shares": "99205975812693500940",
+      "value_before": "100112185127154",
+      "value_after": "42815505944339",
+      "loss_previewdiff": "57296679182815",
+      "loss_analytic": "57296679182815"
+    },
+    {
+      "address": "0x8fa3aca9c712f3f582c8c6053e465c3f4db3cb83",
+      "shares": "99195153317461694259",
+      "value_before": "100101263772495",
+      "value_after": "42810835151021",
+      "loss_previewdiff": "57290428621474",
+      "loss_analytic": "57290428621473"
+    },
+    {
+      "address": "0xda91110b8ae4d3893e599ec38735e4a1662bbafe",
+      "shares": "99184661067701170269",
+      "value_before": "100090675679975",
+      "value_after": "42806306885679",
+      "loss_previewdiff": "57284368794296",
+      "loss_analytic": "57284368794296"
+    },
+    {
+      "address": "0x9d97b7fee9308caa5a892fa916f79504929aa8bf",
+      "shares": "99184490946706985326",
+      "value_before": "100090504004989",
+      "value_after": "42806233464533",
+      "loss_previewdiff": "57284270540456",
+      "loss_analytic": "57284270540456"
+    },
+    {
+      "address": "0xf1a3262e48eff92d41c1cb8708fc2c5f592d9e76",
+      "shares": "99184296282200660864",
+      "value_before": "100090307562296",
+      "value_after": "42806149450851",
+      "loss_previewdiff": "57284158111445",
+      "loss_analytic": "57284158111445"
+    },
+    {
+      "address": "0x93c8b86e36fae2a53a5c688a6e426b9d14425ede",
+      "shares": "99170277625803712828",
+      "value_before": "100076160850740",
+      "value_after": "42800099252147",
+      "loss_previewdiff": "57276061598593",
+      "loss_analytic": "57276061598593"
+    },
+    {
+      "address": "0xa1d5d2d931b532a0503e97f540f65ed256f374e6",
+      "shares": "94951275571541761252",
+      "value_before": "95818619797915",
+      "value_after": "40979254226898",
+      "loss_previewdiff": "54839365571017",
+      "loss_analytic": "54839365571016"
+    },
+    {
+      "address": "0x7c657b4594c0547840c3f790aaccb23db8c07317",
+      "shares": "63329965305389620614",
+      "value_before": "63908460743533",
+      "value_after": "27332068293014",
+      "loss_previewdiff": "36576392450519",
+      "loss_analytic": "36576392450518"
+    },
+    {
+      "address": "0x12924049e2d21664e35387c69429c98e9891a820",
+      "shares": "62604413590993639425",
+      "value_before": "63176281386837",
+      "value_after": "27018933287929",
+      "loss_previewdiff": "36157348098908",
+      "loss_analytic": "36157348098908"
+    },
+    {
+      "address": "0xfb43d81e71cb6310bed2e1af3ae597fb0d1b0ae7",
+      "shares": "53317501438868481138",
+      "value_before": "53804536781567",
+      "value_after": "23010869870412",
+      "loss_previewdiff": "30793666911155",
+      "loss_analytic": "30793666911154"
+    },
+    {
+      "address": "0x525132158d6966ad6ba7b729295a73616a8a06a8",
+      "shares": "52800956526825075340",
+      "value_before": "53283273425833",
+      "value_after": "22787938423280",
+      "loss_previewdiff": "30495335002553",
+      "loss_analytic": "30495335002553"
+    },
+    {
+      "address": "0xed80d5a03e833d05bf190e116f22e5e447b8e39a",
+      "shares": "50525975482767531113",
+      "value_before": "50987511284715",
+      "value_after": "21806097726516",
+      "loss_previewdiff": "29181413558199",
+      "loss_analytic": "29181413558199"
+    },
+    {
+      "address": "0x6a52f2b1ea5082bfadbe90ffc83cbd813cfdc0ef",
+      "shares": "49857996163269643778",
+      "value_before": "50313430225113",
+      "value_after": "21517809926407",
+      "loss_previewdiff": "28795620298706",
+      "loss_analytic": "28795620298705"
+    },
+    {
+      "address": "0x50b8c1e6e250a070200155544f34b8cb352be3e4",
+      "shares": "49613980370951609775",
+      "value_before": "50067185440216",
+      "value_after": "21412497121196",
+      "loss_previewdiff": "28654688319020",
+      "loss_analytic": "28654688319019"
+    },
+    {
+      "address": "0xb955bccc2d0db2785e1bb9668723024a123fe0d1",
+      "shares": "49613860764085442796",
+      "value_before": "50067064740786",
+      "value_after": "21412445501035",
+      "loss_previewdiff": "28654619239751",
+      "loss_analytic": "28654619239750"
+    },
+    {
+      "address": "0x47ad6569ea3fd2bca39bc1f96bd115c113e8f833",
+      "shares": "49613831761649684963",
+      "value_before": "50067035473424",
+      "value_after": "21412432984108",
+      "loss_previewdiff": "28654602489316",
+      "loss_analytic": "28654602489315"
+    },
+    {
+      "address": "0x86d7933192b1faccb62db1e893dfe25d1e2104a7",
+      "shares": "49613595421048895272",
+      "value_before": "50066796973940",
+      "value_after": "21412330983776",
+      "loss_previewdiff": "28654465990164",
+      "loss_analytic": "28654465990163"
+    },
+    {
+      "address": "0xe8f24002e23125c741f11253585a627877e50ce9",
+      "shares": "49613488248368715324",
+      "value_before": "50066688822278",
+      "value_after": "21412284729985",
+      "loss_previewdiff": "28654404092293",
+      "loss_analytic": "28654404092292"
+    },
+    {
+      "address": "0x5b9828975e88c40fbb601b53107d96985bbd2701",
+      "shares": "49613408756870427269",
+      "value_before": "50066608604655",
+      "value_after": "21412250422891",
+      "loss_previewdiff": "28654358181764",
+      "loss_analytic": "28654358181763"
+    },
+    {
+      "address": "0x7173cf57fadc23bc57911100aad1a5e0152a0038",
+      "shares": "48496570364344385938",
+      "value_before": "48939568313042",
+      "value_after": "20930243160301",
+      "loss_previewdiff": "28009325152741",
+      "loss_analytic": "28009325152740"
+    },
+    {
+      "address": "0x5592a99e64c24ef08c09c40aede9f8503db7a1a6",
+      "shares": "47397598691098350688",
+      "value_before": "47830557946476",
+      "value_after": "20455946850799",
+      "loss_previewdiff": "27374611095677",
+      "loss_analytic": "27374611095677"
+    },
+    {
+      "address": "0xc910b529819ce57c545e9fd506a4d169009a4fa0",
+      "shares": "46915003991304985507",
+      "value_before": "47343554925425",
+      "value_after": "20247667701600",
+      "loss_previewdiff": "27095887223825",
+      "loss_analytic": "27095887223825"
+    },
+    {
+      "address": "0x3021a59f56cae360183c40965d7059a4a73a7ba7",
+      "shares": "46709851198990802701",
+      "value_before": "47136528139435",
+      "value_after": "20159127464715",
+      "loss_previewdiff": "26977400674720",
+      "loss_analytic": "26977400674720"
+    },
+    {
+      "address": "0xc96f4de58ad0d92c523623d19001b0f3b244156a",
+      "shares": "46158832389463720939",
+      "value_before": "46580475980117",
+      "value_after": "19921317706568",
+      "loss_previewdiff": "26659158273549",
+      "loss_analytic": "26659158273548"
+    },
+    {
+      "address": "0x901f6bb33600e0507c9f859af07d2fee20e0b4d0",
+      "shares": "45698372355823831749",
+      "value_before": "46115809817078",
+      "value_after": "19722591479182",
+      "loss_previewdiff": "26393218337896",
+      "loss_analytic": "26393218337896"
+    },
+    {
+      "address": "0xec5f0ddf07b89b659fb1b578fefeb4a8d335826a",
+      "shares": "45486299718418071353",
+      "value_before": "45901799975812",
+      "value_after": "19631064762237",
+      "loss_previewdiff": "26270735213575",
+      "loss_analytic": "26270735213574"
+    },
+    {
+      "address": "0x0ce4b16411b408bc9f06d456175db3cc79b25299",
+      "shares": "38895434181982155878",
+      "value_before": "39250729359081",
+      "value_after": "16786566331150",
+      "loss_previewdiff": "22464163027931",
+      "loss_analytic": "22464163027931"
+    },
+    {
+      "address": "0xa6f77292ea6706af5fc413423e05008fde97bb1c",
+      "shares": "34421279225741209012",
+      "value_before": "34735704678386",
+      "value_after": "14855601925473",
+      "loss_previewdiff": "19880102752913",
+      "loss_analytic": "19880102752913"
+    },
+    {
+      "address": "0xc09453d6b920186f0a638c0cd1cac2ef338424ca",
+      "shares": "29767237330397185496",
+      "value_before": "30039149858988",
+      "value_after": "12847001568459",
+      "loss_previewdiff": "17192148290529",
+      "loss_analytic": "17192148290529"
+    },
+    {
+      "address": "0xe477b24601ff4e23b13eccd9ce80ea73ac8e9d71",
+      "shares": "29766707222322872504",
+      "value_before": "30038614908575",
+      "value_after": "12846772783396",
+      "loss_previewdiff": "17191842125179",
+      "loss_analytic": "17191842125179"
+    },
+    {
+      "address": "0x5573a7b65ac109d7d6335800154fa99b816d430a",
+      "shares": "29766222975496289032",
+      "value_before": "30038126238336",
+      "value_after": "12846563791218",
+      "loss_previewdiff": "17191562447118",
+      "loss_analytic": "17191562447117"
+    },
+    {
+      "address": "0x38c2d9a73bfb23972c91af9c9f91e6d20f58ca18",
+      "shares": "29753657261025550181",
+      "value_before": "30025445740785",
+      "value_after": "12841140655987",
+      "loss_previewdiff": "17184305084798",
+      "loss_analytic": "17184305084798"
+    },
+    {
+      "address": "0x5419d329d96a5c839d8edf0473c88198c02d1f7d",
+      "shares": "24806848906879443898",
+      "value_before": "25033450150984",
+      "value_after": "10706187587309",
+      "loss_previewdiff": "14327262563675",
+      "loss_analytic": "14327262563674"
+    },
+    {
+      "address": "0xe8c583ecaa8aaac7b1243bb9c45bebd38457e682",
+      "shares": "23079398454284813903",
+      "value_before": "23290220087559",
+      "value_after": "9960651196828",
+      "loss_previewdiff": "13329568890731",
+      "loss_analytic": "13329568890731"
+    },
+    {
+      "address": "0xa409674ec64085b579203e5f21e078f7d6ab7dd7",
+      "shares": "22045049810807457204",
+      "value_before": "22246423057858",
+      "value_after": "9514245018868",
+      "loss_previewdiff": "12732178038990",
+      "loss_analytic": "12732178038990"
+    },
+    {
+      "address": "0xd8f81e6814b939e1113f16e29286715c6460d9b8",
+      "shares": "21829849992853609252",
+      "value_before": "22029257470424",
+      "value_after": "9421368667324",
+      "loss_previewdiff": "12607888803100",
+      "loss_analytic": "12607888803100"
+    },
+    {
+      "address": "0x41d0240f2ff5ca91efe863f0ab409e33b8d6be20",
+      "shares": "21829097091940614265",
+      "value_before": "22028497692045",
+      "value_after": "9421043728899",
+      "loss_previewdiff": "12607453963146",
+      "loss_analytic": "12607453963145"
+    },
+    {
+      "address": "0x79b4aded3f376c60cc4392b2641404402003213d",
+      "shares": "19845498721326796865",
+      "value_before": "20026779895611",
+      "value_after": "8564958527051",
+      "loss_previewdiff": "11461821368560",
+      "loss_analytic": "11461821368560"
+    },
+    {
+      "address": "0xfdd8ed499de6f6629d3c7d64b1cce6e352816412",
+      "shares": "19845456998789243530",
+      "value_before": "20026737791954",
+      "value_after": "8564940520357",
+      "loss_previewdiff": "11461797271597",
+      "loss_analytic": "11461797271596"
+    },
+    {
+      "address": "0x428517fb3b546d03013af4dd9f1c69fa9e076921",
+      "shares": "19845305527728072937",
+      "value_before": "20026584937261",
+      "value_after": "8564875148185",
+      "loss_previewdiff": "11461709789076",
+      "loss_analytic": "11461709789076"
+    },
+    {
+      "address": "0x46b0d1eda56b236639e4f1d082d54dadbf2b4a27",
+      "shares": "19844922670049085955",
+      "value_before": "20026198582321",
+      "value_after": "8564709913732",
+      "loss_previewdiff": "11461488668589",
+      "loss_analytic": "11461488668589"
+    },
+    {
+      "address": "0x7f2814ff3eab6ba5489f54e5b0b034b0d8463a5c",
+      "shares": "19844404984747395265",
+      "value_before": "20025676168159",
+      "value_after": "8564486490113",
+      "loss_previewdiff": "11461189678046",
+      "loss_analytic": "11461189678046"
+    },
+    {
+      "address": "0x3be7815f8865e3a279bfb303d1f53f6c60cd82f9",
+      "shares": "15081326893038105145",
+      "value_before": "15219089147710",
+      "value_after": "6508828081652",
+      "loss_previewdiff": "8710261066058",
+      "loss_analytic": "8710261066057"
+    },
+    {
+      "address": "0x6c0f2d1474fe1c591eb9a286b36ebdbd37434899",
+      "shares": "14884159772683589335",
+      "value_before": "15020120979792",
+      "value_after": "6423734316439",
+      "loss_previewdiff": "8596386663353",
+      "loss_analytic": "8596386663353"
+    },
+    {
+      "address": "0x91f684d70ced2d9789b1aa89f996b55eaf05ee8a",
+      "shares": "14703457878427425151",
+      "value_before": "14837768441627",
+      "value_after": "6345746645189",
+      "loss_previewdiff": "8492021796438",
+      "loss_analytic": "8492021796438"
+    },
+    {
+      "address": "0x1a795b47b01c5c459286284e0a8550aa7747a27e",
+      "shares": "13059891814535026435",
+      "value_before": "13179189019277",
+      "value_after": "5636413240603",
+      "loss_previewdiff": "7542775778674",
+      "loss_analytic": "7542775778673"
+    },
+    {
+      "address": "0xced7b72c9d1a326889e7395fb2cb2d4a325a722d",
+      "shares": "12181154573004018898",
+      "value_before": "12292424843212",
+      "value_after": "5257166130940",
+      "loss_previewdiff": "7035258712272",
+      "loss_analytic": "7035258712271"
+    },
+    {
+      "address": "0x91873da1097fbf2e404855e78bdfe38ddfc2d292",
+      "shares": "12004451004972682160",
+      "value_before": "12114107154479",
+      "value_after": "5180904065016",
+      "loss_previewdiff": "6933203089463",
+      "loss_analytic": "6933203089462"
+    },
+    {
+      "address": "0x23f0d08797a87e63f55637b02ef25361290d52e4",
+      "shares": "11690083131319980992",
+      "value_before": "11796867648418",
+      "value_after": "5045228573164",
+      "loss_previewdiff": "6751639075254",
+      "loss_analytic": "6751639075253"
+    },
+    {
+      "address": "0x8c0b7c8b995151995b40e6c00d495fddbd34cb65",
+      "shares": "10914952485628719210",
+      "value_before": "11014656475517",
+      "value_after": "4710696197504",
+      "loss_previewdiff": "6303960278013",
+      "loss_analytic": "6303960278013"
+    },
+    {
+      "address": "0x9e1b1db13feb454927adca2a97a09ca2423d2aab",
+      "shares": "10914907112701276870",
+      "value_before": "11014610688125",
+      "value_after": "4710676615369",
+      "loss_previewdiff": "6303934072756",
+      "loss_analytic": "6303934072756"
+    },
+    {
+      "address": "0x95aef6e26450def53b7c8c85a39a1fef07974b29",
+      "shares": "10429895494000290703",
+      "value_before": "10525168670521",
+      "value_after": "4501354367657",
+      "loss_previewdiff": "6023814302864",
+      "loss_analytic": "6023814302863"
+    },
+    {
+      "address": "0x71db4acb731236ba67482bee3268a80b9cff2943",
+      "shares": "9922794986024756205",
+      "value_before": "10013435989937",
+      "value_after": "4282498954606",
+      "loss_previewdiff": "5730937035331",
+      "loss_analytic": "5730937035330"
+    },
+    {
+      "address": "0xe4775ec96b072f77d613b6a9442dbba98237bc5b",
+      "shares": "9922793556385379969",
+      "value_before": "10013434547239",
+      "value_after": "4282498337600",
+      "loss_previewdiff": "5730936209639",
+      "loss_analytic": "5730936209638"
+    },
+    {
+      "address": "0xe3dd67e7a2579e0369ae0d449ef7e4a396000752",
+      "shares": "9922790091559918891",
+      "value_before": "10013431050763",
+      "value_after": "4282496842244",
+      "loss_previewdiff": "5730934208519",
+      "loss_analytic": "5730934208519"
+    },
+    {
+      "address": "0x4475e2a824a1e38d17a5dce389b9ab5df3de186f",
+      "shares": "9922788416059368914",
+      "value_before": "10013429359958",
+      "value_after": "4282496119128",
+      "loss_previewdiff": "5730933240830",
+      "loss_analytic": "5730933240829"
+    },
+    {
+      "address": "0x060165d9f472e872102736cab548812368997e4d",
+      "shares": "9922786508356673343",
+      "value_before": "10013427434829",
+      "value_after": "4282495295798",
+      "loss_previewdiff": "5730932139031",
+      "loss_analytic": "5730932139030"
+    },
+    {
+      "address": "0x97df3180b6ac60608ceec289362e834d530b51ad",
+      "shares": "9922777156537346819",
+      "value_before": "10013417997584",
+      "value_after": "4282491259722",
+      "loss_previewdiff": "5730926737862",
+      "loss_analytic": "5730926737862"
+    },
+    {
+      "address": "0x2cf3bc994c63df03e3438226cc2e52ffa980aee7",
+      "shares": "9922776915229514047",
+      "value_before": "10013417754072",
+      "value_after": "4282491155578",
+      "loss_previewdiff": "5730926598494",
+      "loss_analytic": "5730926598494"
+    },
+    {
+      "address": "0xd2deffe956c02635452c2d56ba4fd0a063186e00",
+      "shares": "9922775412747175107",
+      "value_before": "10013416237865",
+      "value_after": "4282490507133",
+      "loss_previewdiff": "5730925730732",
+      "loss_analytic": "5730925730731"
+    },
+    {
+      "address": "0x1633090139689acf26bc44c7dc9c5f2d4e320526",
+      "shares": "9922775294369794891",
+      "value_before": "10013416118406",
+      "value_after": "4282490456044",
+      "loss_previewdiff": "5730925662362",
+      "loss_analytic": "5730925662362"
+    },
+    {
+      "address": "0x2bcd8898a678050efa5f41f4c6012045dee1b5c3",
+      "shares": "9922774552234703839",
+      "value_before": "10013415369492",
+      "value_after": "4282490135752",
+      "loss_previewdiff": "5730925233740",
+      "loss_analytic": "5730925233740"
+    },
+    {
+      "address": "0xa77bbfb273df52fcf779ed8fa6844f2ef91f416c",
+      "shares": "9922773532368168904",
+      "value_before": "10013414340310",
+      "value_after": "4282489695596",
+      "loss_previewdiff": "5730924644714",
+      "loss_analytic": "5730924644713"
+    },
+    {
+      "address": "0x20b278b9a6715fce84f39bb58382c956cb5c391d",
+      "shares": "9922763893725633300",
+      "value_before": "10013404613622",
+      "value_after": "4282485535732",
+      "loss_previewdiff": "5730919077890",
+      "loss_analytic": "5730919077889"
+    },
+    {
+      "address": "0x10add9a6e6ec07e86b3d136d57ce85b6ed4570c2",
+      "shares": "9922763037767347293",
+      "value_before": "10013403749844",
+      "value_after": "4282485166316",
+      "loss_previewdiff": "5730918583528",
+      "loss_analytic": "5730918583528"
+    },
+    {
+      "address": "0x6252f402228afe8d18622419b89a1db77ab1fc93",
+      "shares": "9922763005896560142",
+      "value_before": "10013403717683",
+      "value_after": "4282485152561",
+      "loss_previewdiff": "5730918565122",
+      "loss_analytic": "5730918565121"
+    },
+    {
+      "address": "0x777846637c9e417290ead1be4b19922c1fca6b47",
+      "shares": "9922762291080349798",
+      "value_before": "10013402996337",
+      "value_after": "4282484844059",
+      "loss_previewdiff": "5730918152278",
+      "loss_analytic": "5730918152277"
+    },
+    {
+      "address": "0x699babd3a456e1fc94d30b6f9a607d96932c3147",
+      "shares": "9922748695932015800",
+      "value_before": "10013389277002",
+      "value_after": "4282478976639",
+      "loss_previewdiff": "5730910300363",
+      "loss_analytic": "5730910300362"
+    },
+    {
+      "address": "0x9df9f088eae2f0c4aabccf34eb437659baef01ad",
+      "shares": "9922741980343469521",
+      "value_before": "10013382500069",
+      "value_after": "4282476078312",
+      "loss_previewdiff": "5730906421757",
+      "loss_analytic": "5730906421756"
+    },
+    {
+      "address": "0x02f13757bd45618e37a4f6a1689c33b250f288aa",
+      "shares": "9922738042089704859",
+      "value_before": "10013378525841",
+      "value_after": "4282474378633",
+      "loss_previewdiff": "5730904147208",
+      "loss_analytic": "5730904147207"
+    },
+    {
+      "address": "0x98e997a08a568ff27b98857e854bd6ce275f64e2",
+      "shares": "9922736157201188206",
+      "value_before": "10013376623734",
+      "value_after": "4282473565149",
+      "loss_previewdiff": "5730903058585",
+      "loss_analytic": "5730903058585"
+    },
+    {
+      "address": "0x3a27adfdde1d917984a9169d25e832eadcb5b996",
+      "shares": "9922736002405971380",
+      "value_before": "10013376467525",
+      "value_after": "4282473498343",
+      "loss_previewdiff": "5730902969182",
+      "loss_analytic": "5730902969182"
+    },
+    {
+      "address": "0x9bacaec9626e537072882077386d41a0c01fea25",
+      "shares": "9922734408926083774",
+      "value_before": "10013374859489",
+      "value_after": "4282472810625",
+      "loss_previewdiff": "5730902048864",
+      "loss_analytic": "5730902048864"
+    },
+    {
+      "address": "0x97e6c4f426c83aa5b3609ab95c6f42be700330cc",
+      "shares": "9922730001817848132",
+      "value_before": "10013370412124",
+      "value_after": "4282470908597",
+      "loss_previewdiff": "5730899503527",
+      "loss_analytic": "5730899503526"
+    },
+    {
+      "address": "0xd0b811b909affd5b7f3e1201d450da173796b7fb",
+      "shares": "9922719011365041119",
+      "value_before": "10013359321278",
+      "value_after": "4282466165316",
+      "loss_previewdiff": "5730893155962",
+      "loss_analytic": "5730893155961"
+    },
+    {
+      "address": "0x0c2a4d63096d78c43cdc31a3312a22d1875be87b",
+      "shares": "9922715191570178113",
+      "value_before": "10013355466590",
+      "value_after": "4282464516762",
+      "loss_previewdiff": "5730890949828",
+      "loss_analytic": "5730890949828"
+    },
+    {
+      "address": "0x4bdc3b5d5004a1409dd62b23a744cfeab3a0ce91",
+      "shares": "9922708699286953302",
+      "value_before": "10013348915002",
+      "value_after": "4282461714810",
+      "loss_previewdiff": "5730887200192",
+      "loss_analytic": "5730887200192"
+    },
+    {
+      "address": "0x4ecf18b838e9af3451c3e0f6b45becbe95a9794d",
+      "shares": "9922706095090440237",
+      "value_before": "10013346287018",
+      "value_after": "4282460590886",
+      "loss_previewdiff": "5730885696132",
+      "loss_analytic": "5730885696131"
+    },
+    {
+      "address": "0xd3e8515e8ac7941ae6608e1158b7a2312afb84bc",
+      "shares": "9922698733235558893",
+      "value_before": "10013338857915",
+      "value_after": "4282457413642",
+      "loss_previewdiff": "5730881444273",
+      "loss_analytic": "5730881444272"
+    },
+    {
+      "address": "0xdf8b5592d213046b7b756513dc1529dcf1ddea13",
+      "shares": "9922695314097352210",
+      "value_before": "10013335407544",
+      "value_after": "4282455938004",
+      "loss_previewdiff": "5730879469540",
+      "loss_analytic": "5730879469540"
+    },
+    {
+      "address": "0xa976c4b1a11e91f88dae32ed22e48699f2c5f3da",
+      "shares": "9922691161964096418",
+      "value_before": "10013331217483",
+      "value_after": "4282454146018",
+      "loss_previewdiff": "5730877071465",
+      "loss_analytic": "5730877071464"
+    },
+    {
+      "address": "0xb31d6b9b580903c07e3896dd7937a48bf95a191e",
+      "shares": "9922685935377287546",
+      "value_before": "10013325943153",
+      "value_after": "4282451890318",
+      "loss_previewdiff": "5730874052835",
+      "loss_analytic": "5730874052835"
+    },
+    {
+      "address": "0x178df84ac16e7a37ba92b102b285155f796d98d8",
+      "shares": "9922684273613788663",
+      "value_before": "10013324266210",
+      "value_after": "4282451173131",
+      "loss_previewdiff": "5730873093079",
+      "loss_analytic": "5730873093079"
+    },
+    {
+      "address": "0xd78d0cc81356b39bbe04377e4a6060de410b7ce0",
+      "shares": "9922684082397069195",
+      "value_before": "10013324073247",
+      "value_after": "4282451090605",
+      "loss_previewdiff": "5730872982642",
+      "loss_analytic": "5730872982641"
+    },
+    {
+      "address": "0xbef11302091aac60ba686d0ad6c639cabdfe95d6",
+      "shares": "9922673497188490702",
+      "value_before": "10013313391346",
+      "value_after": "4282446522221",
+      "loss_previewdiff": "5730866869125",
+      "loss_analytic": "5730866869125"
+    },
+    {
+      "address": "0xb388233fc7f3391c41392545bccf0909e5cf4b41",
+      "shares": "9922671038689331122",
+      "value_before": "10013310910389",
+      "value_after": "4282445461177",
+      "loss_previewdiff": "5730865449212",
+      "loss_analytic": "5730865449212"
+    },
+    {
+      "address": "0x492b30e7b576ac749f2a398bc31f08d8436ba504",
+      "shares": "9922671029583779236",
+      "value_before": "10013310901201",
+      "value_after": "4282445457247",
+      "loss_previewdiff": "5730865443954",
+      "loss_analytic": "5730865443953"
+    },
+    {
+      "address": "0x4804a2c8216250c84a04e20a71dd64ba60b489ae",
+      "shares": "9922665948687650710",
+      "value_before": "10013305773892",
+      "value_after": "4282443264424",
+      "loss_previewdiff": "5730862509468",
+      "loss_analytic": "5730862509468"
+    },
+    {
+      "address": "0xcc53b91c8473279018eb5baa5826efee2f94500a",
+      "shares": "9922605060040816636",
+      "value_before": "10013244329051",
+      "value_after": "4282416985985",
+      "loss_previewdiff": "5730827343066",
+      "loss_analytic": "5730827343066"
+    },
+    {
+      "address": "0x4d5f77ad1610f267152a1c9ed8a413ce1217b939",
+      "shares": "9922599382760871070",
+      "value_before": "10013238599911",
+      "value_after": "4282414535773",
+      "loss_previewdiff": "5730824064138",
+      "loss_analytic": "5730824064137"
+    },
+    {
+      "address": "0xccc031e01043467ed9ddc86d930a2f5b021b1736",
+      "shares": "9922556996723825370",
+      "value_before": "10013195826693",
+      "value_after": "4282396242726",
+      "loss_previewdiff": "5730799583967",
+      "loss_analytic": "5730799583967"
+    },
+    {
+      "address": "0xa68176387a8a58814b780529df1d164d0904c9ec",
+      "shares": "9922554761331263997",
+      "value_before": "10013193570881",
+      "value_after": "4282395277971",
+      "loss_previewdiff": "5730798292910",
+      "loss_analytic": "5730798292910"
+    },
+    {
+      "address": "0x88f659b4b6d5614b991c6404b34f821e10390ec0",
+      "shares": "9922549175127175036",
+      "value_before": "10013187933649",
+      "value_after": "4282392867066",
+      "loss_previewdiff": "5730795066583",
+      "loss_analytic": "5730795066583"
+    },
+    {
+      "address": "0x79cbed42d632d00a0e990ee4859ac4b3c70e68bc",
+      "shares": "9922545678349748618",
+      "value_before": "10013184404930",
+      "value_after": "4282391357920",
+      "loss_previewdiff": "5730793047010",
+      "loss_analytic": "5730793047010"
+    },
+    {
+      "address": "0x8b69288becd1210e7bd1ceb9a92b4fefc1ca4bd0",
+      "shares": "9922500265356906709",
+      "value_before": "10013138577107",
+      "value_after": "4282371758493",
+      "loss_previewdiff": "5730766818614",
+      "loss_analytic": "5730766818613"
+    },
+    {
+      "address": "0x7e4371ca3fecc8ee1edefd9c7bb9d65405a9d88d",
+      "shares": "9922482072669552950",
+      "value_before": "10013120218236",
+      "value_after": "4282363906858",
+      "loss_previewdiff": "5730756311378",
+      "loss_analytic": "5730756311377"
+    },
+    {
+      "address": "0xa4fdcc5442bb5ad69d9db54cde1d41df61e5e69c",
+      "shares": "9922460278794270317",
+      "value_before": "10013098225282",
+      "value_after": "4282354501016",
+      "loss_previewdiff": "5730743724266",
+      "loss_analytic": "5730743724266"
+    },
+    {
+      "address": "0xd365bfc9a5991727790685074624c23c8fad455c",
+      "shares": "9922459991973128500",
+      "value_before": "10013097935841",
+      "value_after": "4282354377229",
+      "loss_previewdiff": "5730743558612",
+      "loss_analytic": "5730743558611"
+    },
+    {
+      "address": "0x390d9a55eef37581f183afff7b0d4f8ebb8d23fd",
+      "shares": "9922419709582682568",
+      "value_before": "10013057285486",
+      "value_after": "4282336992077",
+      "loss_previewdiff": "5730720293409",
+      "loss_analytic": "5730720293408"
+    },
+    {
+      "address": "0x1dbe67c11c718b4f0d4c22def41ba35fc3f6cf18",
+      "shares": "9922413777407799735",
+      "value_before": "10013051299123",
+      "value_after": "4282334431858",
+      "loss_previewdiff": "5730716867265",
+      "loss_analytic": "5730716867264"
+    },
+    {
+      "address": "0x3383820dfc906cc59b989ff7e87e68f0aca78c77",
+      "shares": "9922408764882000555",
+      "value_before": "10013046240809",
+      "value_after": "4282332268542",
+      "loss_previewdiff": "5730713972267",
+      "loss_analytic": "5730713972267"
+    },
+    {
+      "address": "0x44857ce47b5cbc67276cdc0f561d8b8fb77a929b",
+      "shares": "9922379418263457023",
+      "value_before": "10013016626121",
+      "value_after": "4282319603072",
+      "loss_previewdiff": "5730697023049",
+      "loss_analytic": "5730697023048"
+    },
+    {
+      "address": "0x22ef68d1e65bfc9c3e2a3dcc2dbbcd14037f0a88",
+      "shares": "9922229822246798307",
+      "value_before": "10012865663600",
+      "value_after": "4282255040135",
+      "loss_previewdiff": "5730610623465",
+      "loss_analytic": "5730610623465"
+    },
+    {
+      "address": "0xa37dd7c67c5c985aa56f7cf362b29d83c3f36816",
+      "shares": "9922206872071060580",
+      "value_before": "10012842503784",
+      "value_after": "4282245135254",
+      "loss_previewdiff": "5730597368530",
+      "loss_analytic": "5730597368529"
+    },
+    {
+      "address": "0x685c99e8780e5a7f158617cc2e9acc0e45a66120",
+      "shares": "9922116869927793424",
+      "value_before": "10012751679504",
+      "value_after": "4282206291956",
+      "loss_previewdiff": "5730545387548",
+      "loss_analytic": "5730545387548"
+    },
+    {
+      "address": "0x00d5be1832300f59a914c78e25acba7fe0568a91",
+      "shares": "9921998933063312266",
+      "value_before": "10012632665331",
+      "value_after": "4282155392537",
+      "loss_previewdiff": "5730477272794",
+      "loss_analytic": "5730477272793"
+    },
+    {
+      "address": "0x6b671cfa2619790c861fd3b4b3cb3ae5a78ee3fc",
+      "shares": "9921904201669205662",
+      "value_before": "10012537068601",
+      "value_after": "4282114508180",
+      "loss_previewdiff": "5730422560421",
+      "loss_analytic": "5730422560421"
+    },
+    {
+      "address": "0x82e5b6ad650fe2741bfca6a095d493cf97ead16b",
+      "shares": "9921890757753071219",
+      "value_before": "10012523501880",
+      "value_after": "4282108706029",
+      "loss_previewdiff": "5730414795851",
+      "loss_analytic": "5730414795851"
+    },
+    {
+      "address": "0xc0ea3afeb9a83ef8f83a5df7c563a3b7c4a5fae4",
+      "shares": "9921803087975641194",
+      "value_before": "10012435031272",
+      "value_after": "4282070869338",
+      "loss_previewdiff": "5730364161934",
+      "loss_analytic": "5730364161934"
+    },
+    {
+      "address": "0x60d442cdb97175d9220b2bb9b6d4efbfe6d8cb3f",
+      "shares": "9921782309879012335",
+      "value_before": "10012414063375",
+      "value_after": "4282061901887",
+      "loss_previewdiff": "5730352161488",
+      "loss_analytic": "5730352161488"
+    },
+    {
+      "address": "0xdd6c3b5fde786a21299faeacf00a10edc2e8e7da",
+      "shares": "9921402560502483435",
+      "value_before": "10012030845131",
+      "value_after": "4281898008920",
+      "loss_previewdiff": "5730132836211",
+      "loss_analytic": "5730132836211"
+    },
+    {
+      "address": "0x17f43f532b3f91c1628ff513290e730446cb9355",
+      "shares": "9921076931315978006",
+      "value_before": "10011702241444",
+      "value_after": "4281757473249",
+      "loss_previewdiff": "5729944768195",
+      "loss_analytic": "5729944768195"
+    },
+    {
+      "address": "0x05f6875132b910976ee165171b78d7965e0fbf5c",
+      "shares": "9920751284452706038",
+      "value_before": "10011373619919",
+      "value_after": "4281616929949",
+      "loss_previewdiff": "5729756689970",
+      "loss_analytic": "5729756689970"
+    },
+    {
+      "address": "0x7e7e11515eee3f90876706f73a16040903ab6599",
+      "shares": "9920702045414728548",
+      "value_before": "10011323931101",
+      "value_after": "4281595679270",
+      "loss_previewdiff": "5729728251831",
+      "loss_analytic": "5729728251830"
+    },
+    {
+      "address": "0x4b710d3ed4b1822658cb4498b485277bbf537d23",
+      "shares": "9920372703138848819",
+      "value_before": "10010991580407",
+      "value_after": "4281453541097",
+      "loss_previewdiff": "5729538039310",
+      "loss_analytic": "5729538039310"
+    },
+    {
+      "address": "0x09f52e6ae1649551a7aad0e089e04ac0d622d486",
+      "shares": "9919870607118321637",
+      "value_before": "10010484897928",
+      "value_after": "4281236845530",
+      "loss_previewdiff": "5729248052398",
+      "loss_analytic": "5729248052397"
+    },
+    {
+      "address": "0x86582e18c3bfe5204dd142085462973c28f1dac9",
+      "shares": "9918764653589172014",
+      "value_before": "10009368841929",
+      "value_after": "4280759535978",
+      "loss_previewdiff": "5728609305951",
+      "loss_analytic": "5728609305951"
+    },
+    {
+      "address": "0x1a46e2fd9aa89fb20c45add8152350554932efce",
+      "shares": "9918712186866961913",
+      "value_before": "10009315895943",
+      "value_after": "4280736892289",
+      "loss_previewdiff": "5728579003654",
+      "loss_analytic": "5728579003653"
+    },
+    {
+      "address": "0xca7a6a53d5576102765a0281c723f863d881dc96",
+      "shares": "9918129341722392541",
+      "value_before": "10008727726727",
+      "value_after": "4280485346860",
+      "loss_previewdiff": "5728242379867",
+      "loss_analytic": "5728242379867"
+    },
+    {
+      "address": "0x7dc3e945238fdb44936eebe654422a83bdf5d9ff",
+      "shares": "9917314939082655566",
+      "value_before": "10007905884825",
+      "value_after": "4280133865402",
+      "loss_previewdiff": "5727772019423",
+      "loss_analytic": "5727772019423"
+    },
+    {
+      "address": "0x04738a5218560e7c8aa8fcef38c2b18dab4a95dd",
+      "shares": "9915927296299617947",
+      "value_before": "10006505566447",
+      "value_after": "4279534983859",
+      "loss_previewdiff": "5726970582588",
+      "loss_analytic": "5726970582587"
+    },
+    {
+      "address": "0x01766aca86ceff106ed12decc2cb655f8bf87e7d",
+      "shares": "9869394789543877547",
+      "value_before": "9959548002725",
+      "value_after": "4259452395050",
+      "loss_previewdiff": "5700095607675",
+      "loss_analytic": "5700095607674"
+    },
+    {
+      "address": "0xa2e01883a00e07eea2883152d5cd19f48f092a20",
+      "shares": "9179018242355494317",
+      "value_before": "9262865125173",
+      "value_after": "3961498356316",
+      "loss_previewdiff": "5301366768857",
+      "loss_analytic": "5301366768857"
+    },
+    {
+      "address": "0xa8a9f7a1895e4fc509825968738f3fcf28e58aa3",
+      "shares": "8724224746099835463",
+      "value_before": "8803917261208",
+      "value_after": "3765217704038",
+      "loss_previewdiff": "5038699557170",
+      "loss_analytic": "5038699557170"
+    },
+    {
+      "address": "0x33f916a3d066f761f489997a2f35b721bd747bed",
+      "shares": "7683465018438260990",
+      "value_before": "7753650584479",
+      "value_after": "3316044618029",
+      "loss_previewdiff": "4437605966450",
+      "loss_analytic": "4437605966449"
+    },
+    {
+      "address": "0xa7547faeabbdfe5d805133622fbe3c7d473c188b",
+      "shares": "7052607827664231731",
+      "value_before": "7117030750298",
+      "value_after": "3043778057670",
+      "loss_previewdiff": "4073252692628",
+      "loss_analytic": "4073252692628"
+    },
+    {
+      "address": "0x0922b44805cb5d90f35f3b9781aff83b47d722d3",
+      "shares": "5964395338199042952",
+      "value_before": "6018877848615",
+      "value_after": "2574125217408",
+      "loss_previewdiff": "3444752631207",
+      "loss_analytic": "3444752631207"
+    },
+    {
+      "address": "0xec48ec785b6bb8f298fe4f4a7868ac4f679e4c39",
+      "shares": "5298661795841018655",
+      "value_before": "5347063080483",
+      "value_after": "2286806654119",
+      "loss_previewdiff": "3060256426364",
+      "loss_analytic": "3060256426364"
+    },
+    {
+      "address": "0xa7f053d0a4df46577428b84fb3a59e98775ee698",
+      "shares": "5074454445840976905",
+      "value_before": "5120807680582",
+      "value_after": "2190042814561",
+      "loss_previewdiff": "2930764866021",
+      "loss_analytic": "2930764866020"
+    },
+    {
+      "address": "0xc1a59841dfd2ba17e4d6526d0a0b35edb6159163",
+      "shares": "5060620780246770245",
+      "value_before": "5106847649651",
+      "value_after": "2184072454544",
+      "loss_previewdiff": "2922775195107",
+      "loss_analytic": "2922775195106"
+    },
+    {
+      "address": "0xd2602c7bdfc9f413974e944280bbfae275d1b1b6",
+      "shares": "5060485943730908002",
+      "value_before": "5106711581454",
+      "value_after": "2184014261541",
+      "loss_previewdiff": "2922697319913",
+      "loss_analytic": "2922697319912"
+    },
+    {
+      "address": "0x6b92e0af611039a8983ef648f83ca4ee46869e7d",
+      "shares": "4967654293475534635",
+      "value_before": "5013031948953",
+      "value_after": "2143949799287",
+      "loss_previewdiff": "2869082149666",
+      "loss_analytic": "2869082149666"
+    },
+    {
+      "address": "0x57d3017db560ea906e67ceef0250348793c05053",
+      "shares": "4961396810063623465",
+      "value_before": "5006717305781",
+      "value_after": "2141249182555",
+      "loss_previewdiff": "2865468123226",
+      "loss_analytic": "2865468123226"
+    },
+    {
+      "address": "0x90c38b5b7cc04e647ca2985069f2dbba906eb619",
+      "shares": "4961347611520872564",
+      "value_before": "5006667657828",
+      "value_after": "2141227949353",
+      "loss_previewdiff": "2865439708475",
+      "loss_analytic": "2865439708475"
+    },
+    {
+      "address": "0x3cd19b965212aa1abd650c64444c4a06ea645f1a",
+      "shares": "4961268546088927447",
+      "value_before": "5006587870163",
+      "value_after": "2141193826142",
+      "loss_previewdiff": "2865394044021",
+      "loss_analytic": "2865394044021"
+    },
+    {
+      "address": "0x0da0bde2ccf8dee7633e1b7931797d2e84a5616e",
+      "shares": "4872085097301687226",
+      "value_before": "4916589764080",
+      "value_after": "2102703861697",
+      "loss_previewdiff": "2813885902383",
+      "loss_analytic": "2813885902382"
+    },
+    {
+      "address": "0xcf92c29cd74ac91027c88d6290697953e0489087",
+      "shares": "4762931686728384547",
+      "value_before": "4806439278113",
+      "value_after": "2055595222717",
+      "loss_previewdiff": "2750844055396",
+      "loss_analytic": "2750844055396"
+    },
+    {
+      "address": "0x5fb452fc780868a59965b2469bf603bb5fcc75e8",
+      "shares": "4762929743883396708",
+      "value_before": "4806437317521",
+      "value_after": "2055594384220",
+      "loss_previewdiff": "2750842933301",
+      "loss_analytic": "2750842933300"
+    },
+    {
+      "address": "0xcd6b980029e6e6e0733ac8ec3e02be9410d09799",
+      "shares": "3795366383627437870",
+      "value_before": "3830035629511",
+      "value_after": "1638011527309",
+      "loss_previewdiff": "2192024102202",
+      "loss_analytic": "2192024102202"
+    },
+    {
+      "address": "0xe51540f72f9bcd25559d7438fd91296f560d8ec4",
+      "shares": "3251960977685896745",
+      "value_before": "3281666419360",
+      "value_after": "1403487576532",
+      "loss_previewdiff": "1878178842828",
+      "loss_analytic": "1878178842827"
+    },
+    {
+      "address": "0xbc71063446773b718a8f07e091d7e1522653f89e",
+      "shares": "2480689390136705904",
+      "value_before": "2503349555648",
+      "value_after": "1070620700611",
+      "loss_previewdiff": "1432728855037",
+      "loss_analytic": "1432728855036"
+    },
+    {
+      "address": "0x947b181e5e531863f3adfa73c738998ce0caf863",
+      "shares": "2480664905083720075",
+      "value_before": "2503324846933",
+      "value_after": "1070610133305",
+      "loss_previewdiff": "1432714713628",
+      "loss_analytic": "1432714713627"
+    },
+    {
+      "address": "0x286c6d822e33862f5b673f2ba126b76ccabdd088",
+      "shares": "2282236989875706207",
+      "value_before": "2303084367275",
+      "value_after": "984972231823",
+      "loss_previewdiff": "1318112135452",
+      "loss_analytic": "1318112135451"
+    },
+    {
+      "address": "0x8a0c098e896fa309828a35ce714403d23cbbcf3a",
+      "shares": "1984559271293832402",
+      "value_before": "2002687474580",
+      "value_after": "856499909213",
+      "loss_previewdiff": "1146187565367",
+      "loss_analytic": "1146187565366"
+    },
+    {
+      "address": "0xc33deb68fd1fb05dfbc892581f0b88799d91af2c",
+      "shares": "1984559201179081520",
+      "value_before": "2002687403824",
+      "value_after": "856499878952",
+      "loss_previewdiff": "1146187524872",
+      "loss_analytic": "1146187524871"
+    },
+    {
+      "address": "0x9b459850fb94df8b678a1882eac1e8967290897f",
+      "shares": "1984548118341181468",
+      "value_before": "2002676219749",
+      "value_after": "856495095800",
+      "loss_previewdiff": "1146181123949",
+      "loss_analytic": "1146181123949"
+    },
+    {
+      "address": "0x0403ee15e9257c4fc1063060f1cc46b044e66f66",
+      "shares": "1984483998370093619",
+      "value_before": "2002611514066",
+      "value_after": "856467422779",
+      "loss_previewdiff": "1146144091287",
+      "loss_analytic": "1146144091286"
+    },
+    {
+      "address": "0x38ce8d007f1f7431664bfdc526b30e52ec1f53ca",
+      "shares": "1887182808753798312",
+      "value_before": "1904421514641",
+      "value_after": "814473988127",
+      "loss_previewdiff": "1089947526514",
+      "loss_analytic": "1089947526514"
+    },
+    {
+      "address": "0x4a51f8cb54edc4f3bd201607f5d7c91bd3986593",
+      "shares": "1756689191668013537",
+      "value_before": "1772735887394",
+      "value_after": "758155301755",
+      "loss_previewdiff": "1014580585639",
+      "loss_analytic": "1014580585638"
+    },
+    {
+      "address": "0x7e8787ace247c651a6645b9923c5408b4d9f0638",
+      "shares": "1753416692926466122",
+      "value_before": "1769433495606",
+      "value_after": "756742950451",
+      "loss_previewdiff": "1012690545155",
+      "loss_analytic": "1012690545155"
+    },
+    {
+      "address": "0xa35ad5122e51d7827b531908a089f8ba2c8c7709",
+      "shares": "1639897498775650709",
+      "value_before": "1654877346269",
+      "value_after": "707750118193",
+      "loss_previewdiff": "947127228076",
+      "loss_analytic": "947127228075"
+    },
+    {
+      "address": "0x62548bae0ee0851a92a3933cab5ececabe38d779",
+      "shares": "1190733640688299913",
+      "value_before": "1201610545102",
+      "value_after": "513899115989",
+      "loss_previewdiff": "687711429113",
+      "loss_analytic": "687711429113"
+    },
+    {
+      "address": "0x2764a735b32b1df4287fb5d7b556f8004d82abb0",
+      "shares": "1145090538234764366",
+      "value_before": "1155550510057",
+      "value_after": "494200378001",
+      "loss_previewdiff": "661350132056",
+      "loss_analytic": "661350132056"
+    },
+    {
+      "address": "0x54d2e6e361d72655e25a0892e6b847d643ac1d5b",
+      "shares": "1111325629991710504",
+      "value_before": "1121477172064",
+      "value_after": "479628053927",
+      "loss_previewdiff": "641849118137",
+      "loss_analytic": "641849118136"
+    },
+    {
+      "address": "0x5a19c6b67c45adadc6a521b8cb775a279009b723",
+      "shares": "1091505296403844022",
+      "value_before": "1101475787176",
+      "value_after": "471073956217",
+      "loss_previewdiff": "630401830959",
+      "loss_analytic": "630401830958"
+    },
+    {
+      "address": "0x38a372e98101708911675801225554ac6d524b2f",
+      "shares": "1091499228972242284",
+      "value_before": "1101469664320",
+      "value_after": "471071337623",
+      "loss_previewdiff": "630398326697",
+      "loss_analytic": "630398326697"
+    },
+    {
+      "address": "0x0a278898cfe1326a514a723944408ccc1e372c60",
+      "shares": "1091464115788195508",
+      "value_before": "1101434230390",
+      "value_after": "471056183407",
+      "loss_previewdiff": "630378046983",
+      "loss_analytic": "630378046983"
+    },
+    {
+      "address": "0x32babb97811735400dd1e2fab0b7d93b069c3f40",
+      "shares": "1090730465816990198",
+      "value_before": "1100693878802",
+      "value_after": "470739553341",
+      "loss_previewdiff": "629954325461",
+      "loss_analytic": "629954325461"
+    },
+    {
+      "address": "0x3c0ed9ab1a12ba804900da2807c09b8afec10f67",
+      "shares": "1035729308892790729",
+      "value_before": "1045190306975",
+      "value_after": "447002048196",
+      "loss_previewdiff": "598188258779",
+      "loss_analytic": "598188258779"
+    },
+    {
+      "address": "0x2d6c3aaaa53be2989f8c0a49cd143bbae8a3aeac",
+      "shares": "992279419380408647",
+      "value_before": "1001343519048",
+      "value_after": "428249861269",
+      "loss_previewdiff": "573093657779",
+      "loss_analytic": "573093657778"
+    },
+    {
+      "address": "0xfa93c9a95727268b88ff77b5396ed3b8b59a1ba1",
+      "shares": "992278725504694371",
+      "value_before": "1001342818834",
+      "value_after": "428249561805",
+      "loss_previewdiff": "573093257029",
+      "loss_analytic": "573093257028"
+    },
+    {
+      "address": "0xf21cc639a67d689b844a6dd644ffa7b4c4a039ed",
+      "shares": "992278587093900370",
+      "value_before": "1001342679158",
+      "value_after": "428249502070",
+      "loss_previewdiff": "573093177088",
+      "loss_analytic": "573093177088"
+    },
+    {
+      "address": "0x0616302b63596cd0155c8c6fd2ce98e8f9881967",
+      "shares": "992278549304159002",
+      "value_before": "1001342641023",
+      "value_after": "428249485760",
+      "loss_previewdiff": "573093155263",
+      "loss_analytic": "573093155263"
+    },
+    {
+      "address": "0x08a1d63589a52455e90ca1ec01c8d48c54a84ed0",
+      "shares": "992278178691635364",
+      "value_before": "1001342267026",
+      "value_after": "428249325811",
+      "loss_previewdiff": "573092941215",
+      "loss_analytic": "573092941215"
+    },
+    {
+      "address": "0xc1550345956bfd866051982b3e42d72cf2c6aea6",
+      "shares": "992278158203232428",
+      "value_before": "1001342246350",
+      "value_after": "428249316968",
+      "loss_previewdiff": "573092929382",
+      "loss_analytic": "573092929381"
+    },
+    {
+      "address": "0x0c610dc0321d77fb25a155ec3bfb0ba5b028ef78",
+      "shares": "992277765281200567",
+      "value_before": "1001341849839",
+      "value_after": "428249147390",
+      "loss_previewdiff": "573092702449",
+      "loss_analytic": "573092702448"
+    },
+    {
+      "address": "0xc83ed7bb86b1d68369ffb2f9c2facd65ad5acc19",
+      "shares": "992276960770520494",
+      "value_before": "1001341037979",
+      "value_after": "428248800178",
+      "loss_previewdiff": "573092237801",
+      "loss_analytic": "573092237801"
+    },
+    {
+      "address": "0xe961066d859d4922b51269801cd26a2351c4f1e3",
+      "shares": "992276581052627589",
+      "value_before": "1001340654793",
+      "value_after": "428248636298",
+      "loss_previewdiff": "573092018495",
+      "loss_analytic": "573092018494"
+    },
+    {
+      "address": "0xe62f3215e1d8c166da3632cd75d47f1fcfd947e0",
+      "shares": "992275894464856049",
+      "value_before": "1001339961933",
+      "value_after": "428248339980",
+      "loss_previewdiff": "573091621953",
+      "loss_analytic": "573091621953"
+    },
+    {
+      "address": "0xca575908473bc7c73ecdb45c6779d82497cfdcd7",
+      "shares": "992274852291974467",
+      "value_before": "1001338910240",
+      "value_after": "428247890197",
+      "loss_previewdiff": "573091020043",
+      "loss_analytic": "573091020043"
+    },
+    {
+      "address": "0x1f8231ef50e99d361b5252a24ec2ec44285367e1",
+      "shares": "992273171822247388",
+      "value_before": "1001337214420",
+      "value_after": "428247164936",
+      "loss_previewdiff": "573090049484",
+      "loss_analytic": "573090049484"
+    },
+    {
+      "address": "0x15e9af27556a405de918504a83c307d194c71b39",
+      "shares": "992272141524154968",
+      "value_before": "1001336174711",
+      "value_after": "428246720278",
+      "loss_previewdiff": "573089454433",
+      "loss_analytic": "573089454432"
+    },
+    {
+      "address": "0xcf92621890bfd4a4d37eb38d262ced75c34210cc",
+      "shares": "992270495689277942",
+      "value_before": "1001334513842",
+      "value_after": "428246009966",
+      "loss_previewdiff": "573088503876",
+      "loss_analytic": "573088503876"
+    },
+    {
+      "address": "0x8a3bbc238f6126fe7498388fc11271818da0020b",
+      "shares": "992270289447881352",
+      "value_before": "1001334305717",
+      "value_after": "428245920956",
+      "loss_previewdiff": "573088384761",
+      "loss_analytic": "573088384760"
+    },
+    {
+      "address": "0x8f573620cf975ce0f85589af46ed31696d16a9cd",
+      "shares": "992269816413795634",
+      "value_before": "1001333828361",
+      "value_after": "428245716803",
+      "loss_previewdiff": "573088111558",
+      "loss_analytic": "573088111558"
+    },
+    {
+      "address": "0x54ff471928afa616a7150c3c7dbbd37ec9d10c1b",
+      "shares": "992268876720375680",
+      "value_before": "1001332880084",
+      "value_after": "428245311248",
+      "loss_previewdiff": "573087568836",
+      "loss_analytic": "573087568836"
+    },
+    {
+      "address": "0x53a4d82284fa3bdb8fee4fc771b37760bf024742",
+      "shares": "992267127088090590",
+      "value_before": "1001331114470",
+      "value_after": "428244556138",
+      "loss_previewdiff": "573086558332",
+      "loss_analytic": "573086558331"
+    },
+    {
+      "address": "0xd563e6a26a1d097da7d980bbe076c567f7fea62b",
+      "shares": "992264954960983745",
+      "value_before": "1001328922501",
+      "value_after": "428243618687",
+      "loss_previewdiff": "573085303814",
+      "loss_analytic": "573085303813"
+    },
+    {
+      "address": "0x3bcdce2397a79417164e0ed5a3aa4c3e7ad8c413",
+      "shares": "992263783535047735",
+      "value_before": "1001327740375",
+      "value_after": "428243113121",
+      "loss_previewdiff": "573084627254",
+      "loss_analytic": "573084627253"
+    },
+    {
+      "address": "0x3382fb8856a22f0d328b328245a2065235bca1b7",
+      "shares": "992262916233964350",
+      "value_before": "1001326865151",
+      "value_after": "428242738810",
+      "loss_previewdiff": "573084126341",
+      "loss_analytic": "573084126341"
+    },
+    {
+      "address": "0x330769bb18f0d8ac01f7812166729161ed4d6015",
+      "shares": "992261693362628686",
+      "value_before": "1001325631109",
+      "value_after": "428242211041",
+      "loss_previewdiff": "573083420068",
+      "loss_analytic": "573083420068"
+    },
+    {
+      "address": "0x301a932d3faba362fd5fe592039f74658dc0945a",
+      "shares": "992261580909522911",
+      "value_before": "1001325517629",
+      "value_after": "428242162508",
+      "loss_previewdiff": "573083355121",
+      "loss_analytic": "573083355121"
+    },
+    {
+      "address": "0xba3b454a0c8a645c627b78b974e9c6e18b9ae696",
+      "shares": "992256600658720397",
+      "value_before": "1001320491885",
+      "value_after": "428240013122",
+      "loss_previewdiff": "573080478763",
+      "loss_analytic": "573080478763"
+    },
+    {
+      "address": "0x6fe7e6cb4f4568d86a1f5c7e3737d24fb286a71b",
+      "shares": "992253827133492159",
+      "value_before": "1001317693025",
+      "value_after": "428238816118",
+      "loss_previewdiff": "573078876907",
+      "loss_analytic": "573078876906"
+    },
+    {
+      "address": "0xbf4250e7b310e2cd4c1854ae60447145a9f48806",
+      "shares": "992251017208546499",
+      "value_before": "1001314857433",
+      "value_after": "428237603405",
+      "loss_previewdiff": "573077254028",
+      "loss_analytic": "573077254027"
+    },
+    {
+      "address": "0x3f6e473d9457452952026c6a77ea79a469d8bdd3",
+      "shares": "992249265775641463",
+      "value_before": "1001313090001",
+      "value_after": "428236847519",
+      "loss_previewdiff": "573076242482",
+      "loss_analytic": "573076242482"
+    },
+    {
+      "address": "0x01fc87b0bbce9e591f4a0c49457b75cd9d1f56f0",
+      "shares": "992245775203679938",
+      "value_before": "1001309567544",
+      "value_after": "428235341051",
+      "loss_previewdiff": "573074226493",
+      "loss_analytic": "573074226493"
+    },
+    {
+      "address": "0x829cecfe65bd215f15c7d57a261126913e0f8f95",
+      "shares": "992241474713372243",
+      "value_before": "1001305227770",
+      "value_after": "428233485037",
+      "loss_previewdiff": "573071742733",
+      "loss_analytic": "573071742733"
+    },
+    {
+      "address": "0xb1658bd148f54c1e59d85f7fda511b558533b0ca",
+      "shares": "992233780680329320",
+      "value_before": "1001297463455",
+      "value_after": "428230164431",
+      "loss_previewdiff": "573067299024",
+      "loss_analytic": "573067299023"
+    },
+    {
+      "address": "0x7be9f74e73f1d1ace72d0e234202b9d079309db3",
+      "shares": "992229695572150165",
+      "value_before": "1001293341031",
+      "value_after": "428228401373",
+      "loss_previewdiff": "573064939658",
+      "loss_analytic": "573064939658"
+    },
+    {
+      "address": "0x5000715dc45b5581b1871c72c5aa30d8853977f7",
+      "shares": "992228564691668115",
+      "value_before": "1001292199820",
+      "value_after": "428227913305",
+      "loss_previewdiff": "573064286515",
+      "loss_analytic": "573064286515"
+    },
+    {
+      "address": "0x237c6bd2c383bfd1b91574bf79517471a3106c9a",
+      "shares": "992221698362122914",
+      "value_before": "1001285270769",
+      "value_after": "428224949921",
+      "loss_previewdiff": "573060320848",
+      "loss_analytic": "573060320848"
+    },
+    {
+      "address": "0xaf1176de769470ab9f9db691b0a9389a300e06ed",
+      "shares": "992216608446807080",
+      "value_before": "1001280134360",
+      "value_after": "428222753206",
+      "loss_previewdiff": "573057381154",
+      "loss_analytic": "573057381153"
+    },
+    {
+      "address": "0x18613c7c626d793edc94f145bca9fd6ccd9566df",
+      "shares": "992209570907627073",
+      "value_before": "1001273032535",
+      "value_after": "428219715931",
+      "loss_previewdiff": "573053316604",
+      "loss_analytic": "573053316604"
+    },
+    {
+      "address": "0x2d0af6b7e9202358ead703a35709f55eb2dd4350",
+      "shares": "992203921043753616",
+      "value_before": "1001267331062",
+      "value_after": "428217277552",
+      "loss_previewdiff": "573050053510",
+      "loss_analytic": "573050053509"
+    },
+    {
+      "address": "0x90003304d8ebd4aad7981bcf84e76cbee5d6f393",
+      "shares": "992157468481288421",
+      "value_before": "1001220454173",
+      "value_after": "428197229466",
+      "loss_previewdiff": "573023224707",
+      "loss_analytic": "573023224707"
+    },
+    {
+      "address": "0x79926c541d1f28f9a0abc9c84592e31743cd1997",
+      "shares": "992083009171224255",
+      "value_before": "1001145314705",
+      "value_after": "428165094173",
+      "loss_previewdiff": "572980220532",
+      "loss_analytic": "572980220531"
+    },
+    {
+      "address": "0xac817b3c5577d104420b3fe01b4ac1b7126cb000",
+      "shares": "991968966144486876",
+      "value_before": "1001030229938",
+      "value_after": "428115875264",
+      "loss_previewdiff": "572914354674",
+      "loss_analytic": "572914354673"
+    },
+    {
+      "address": "0x2fa70dab248f3521f2e904420acb23623b256fce",
+      "shares": "991615896088275469",
+      "value_before": "1000673934719",
+      "value_after": "427963496610",
+      "loss_previewdiff": "572710438109",
+      "loss_analytic": "572710438109"
+    },
+    {
+      "address": "0xcc6a99b3cea642acc1907c9beb30195c3e85cc52",
+      "shares": "921490361625539466",
+      "value_before": "929907829848",
+      "value_after": "397698583503",
+      "loss_previewdiff": "532209246345",
+      "loss_analytic": "532209246344"
+    },
+    {
+      "address": "0xf36ccab924910bfceddce38377ca9e764b86c272",
+      "shares": "738896884028600791",
+      "value_before": "745646429439",
+      "value_after": "318894539076",
+      "loss_previewdiff": "426751890363",
+      "loss_analytic": "426751890362"
+    },
+    {
+      "address": "0x0b5f6a4c654e08a7ad6bf3a1c31aa4a135e7ae64",
+      "shares": "505123470769870574",
+      "value_before": "509737583885",
+      "value_after": "218002159529",
+      "loss_previewdiff": "291735424356",
+      "loss_analytic": "291735424356"
+    },
+    {
+      "address": "0x7c65e372bdb53a4710b2ec0a6c5bf6950fe49bcc",
+      "shares": "496132613152976252",
+      "value_before": "500664598162",
+      "value_after": "214121867897",
+      "loss_previewdiff": "286542730265",
+      "loss_analytic": "286542730264"
+    },
+    {
+      "address": "0x216f92ac691a73347467bd6c487f5774081fc587",
+      "shares": "495060273644714934",
+      "value_before": "499582463235",
+      "value_after": "213659065549",
+      "loss_previewdiff": "285923397686",
+      "loss_analytic": "285923397686"
+    },
+    {
+      "address": "0xb8d61b1fe18209fe522d6c0daf0900bfd7f20f15",
+      "shares": "469276880031847614",
+      "value_before": "473563548009",
+      "value_after": "202531418918",
+      "loss_previewdiff": "271032129091",
+      "loss_analytic": "271032129091"
+    },
+    {
+      "address": "0xef8acdceee68227988cc980a7c9216c4f328c23d",
+      "shares": "408269881669426629",
+      "value_before": "411999273639",
+      "value_after": "176201901168",
+      "loss_previewdiff": "235797372471",
+      "loss_analytic": "235797372470"
+    },
+    {
+      "address": "0x5b8b87331e484afb35138da956aa30be26c1f22f",
+      "shares": "384988966726374229",
+      "value_before": "388505696285",
+      "value_after": "166154279098",
+      "loss_previewdiff": "222351417187",
+      "loss_analytic": "222351417187"
+    },
+    {
+      "address": "0xdd65c5e9d1d4124a4730a9bad9ba5784f9b1d1ec",
+      "shares": "198455688735003308",
+      "value_before": "200268506885",
+      "value_after": "85649888034",
+      "loss_previewdiff": "114618618851",
+      "loss_analytic": "114618618851"
+    },
+    {
+      "address": "0xbf37a2f4f1eafe152e8336465cfaad1fda44b588",
+      "shares": "178610294996750568",
+      "value_before": "180241832932",
+      "value_after": "77084974816",
+      "loss_previewdiff": "103156858116",
+      "loss_analytic": "103156858116"
+    },
+    {
+      "address": "0x094da4a75c31995b325311f6986109256fb62234",
+      "shares": "100219668848046042",
+      "value_before": "101135137867",
+      "value_after": "43252997535",
+      "loss_previewdiff": "57882140332",
+      "loss_analytic": "57882140332"
+    },
+    {
+      "address": "0x84f0cee6916d7bdceb696ff8d8dd6f1ef0d18e9f",
+      "shares": "99227853473462091",
+      "value_before": "100134262632",
+      "value_after": "42824947947",
+      "loss_previewdiff": "57309314685",
+      "loss_analytic": "57309314684"
+    },
+    {
+      "address": "0x62ae74fb56545bf7befed4c9e644ff973a6af3ab",
+      "shares": "99226843828804864",
+      "value_before": "100133243764",
+      "value_after": "42824512202",
+      "loss_previewdiff": "57308731562",
+      "loss_analytic": "57308731561"
+    },
+    {
+      "address": "0xacd54246eda0c5638a247c4717a8782c21497eb6",
+      "shares": "99226663174622217",
+      "value_before": "100133061460",
+      "value_after": "42824434235",
+      "loss_previewdiff": "57308627225",
+      "loss_analytic": "57308627224"
+    },
+    {
+      "address": "0x1518fcd87d333b632c28596f2dda8b8fa20c5f75",
+      "shares": "99226449331039741",
+      "value_before": "100132845663",
+      "value_after": "42824341944",
+      "loss_previewdiff": "57308503719",
+      "loss_analytic": "57308503718"
+    },
+    {
+      "address": "0x9f30498209c4601e0adf275201a382d569cd97c9",
+      "shares": "99223838525746822",
+      "value_before": "100130211009",
+      "value_after": "42823215168",
+      "loss_previewdiff": "57306995841",
+      "loss_analytic": "57306995840"
+    },
+    {
+      "address": "0xe99284ca6742f3d539da5e7407997744059bd620",
+      "shares": "99223463521680106",
+      "value_before": "100129832579",
+      "value_after": "42823053323",
+      "loss_previewdiff": "57306779256",
+      "loss_analytic": "57306779256"
+    },
+    {
+      "address": "0x5aafc1f252d544f744d17a4e734afd6efc47ede4",
+      "shares": "77610757762002636",
+      "value_before": "78319702873",
+      "value_after": "33495400182",
+      "loss_previewdiff": "44824302691",
+      "loss_analytic": "44824302691"
+    },
+    {
+      "address": "0x25e58696fbc8eb88301ee06a57f77d9f0715ec97",
+      "shares": "55253777166947428",
+      "value_before": "55758499660",
+      "value_after": "23846531475",
+      "loss_previewdiff": "31911968185",
+      "loss_analytic": "31911968185"
+    },
+    {
+      "address": "0x53b07d5874d4ec3aaa6cf60daf1bd47bac27b12c",
+      "shares": "21165724867892808",
+      "value_before": "21359065811",
+      "value_after": "9134744267",
+      "loss_previewdiff": "12224321544",
+      "loss_analytic": "12224321544"
+    },
+    {
+      "address": "0x5e2cb33af78c69d4a35e7948455e2c2c09d76d2e",
+      "shares": "10319648094092853",
+      "value_before": "10413914202",
+      "value_after": "4453773582",
+      "loss_previewdiff": "5960140620",
+      "loss_analytic": "5960140619"
+    },
+    {
+      "address": "0xdfeef4a58683105b55ee3170e6c4c7c2e8c921ed",
+      "shares": "10121191019660908",
+      "value_before": "10213644296",
+      "value_after": "4368123096",
+      "loss_previewdiff": "5845521200",
+      "loss_analytic": "5845521200"
+    },
+    {
+      "address": "0x02caaa46b77ae1fd7246cd6bda0e41c67398fecd",
+      "shares": "9922770368051670",
+      "value_before": "10013411147",
+      "value_after": "4282488329",
+      "loss_previewdiff": "5730922818",
+      "loss_analytic": "5730922817"
+    },
+    {
+      "address": "0xf5f155dfc740a89ffaa17c4f6459aec7d7206413",
+      "shares": "9922179970181690",
+      "value_before": "10012815356",
+      "value_after": "4282233524",
+      "loss_previewdiff": "5730581832",
+      "loss_analytic": "5730581831"
+    },
+    {
+      "address": "0x7b281d3741f881f43a49bbfb12d85f4a1d6ac893",
+      "shares": "9915387418174508",
+      "value_before": "10005960756",
+      "value_after": "4279301982",
+      "loss_previewdiff": "5726658774",
+      "loss_analytic": "5726658774"
+    },
+    {
+      "address": "0x338f866332615606f2db818bc68f9b9adb4691c3",
+      "shares": "1022041612700525",
+      "value_before": "1031377578",
+      "value_after": "441094685",
+      "loss_previewdiff": "590282893",
+      "loss_analytic": "590282892"
+    },
+    {
+      "address": "0x6e9497fad34b9c554a7926989051b20d681abce2",
+      "shares": "992276964868195",
+      "value_before": "1001341042",
+      "value_after": "428248801",
+      "loss_previewdiff": "573092241",
+      "loss_analytic": "573092240"
+    },
+    {
+      "address": "0xa6381e2a61a76e9ad197ba1d626815297779297a",
+      "shares": "104188742223346",
+      "value_before": "105140467",
+      "value_after": "44965977",
+      "loss_previewdiff": "60174490",
+      "loss_analytic": "60174489"
+    },
+    {
+      "address": "0x4b47052498d469ac9521606a67d6f02afeb0985a",
+      "shares": "99227075929586",
+      "value_before": "100133477",
+      "value_after": "42824612",
+      "loss_previewdiff": "57308865",
+      "loss_analytic": "57308865"
+    },
+    {
+      "address": "0x74449ab85bcb2707feec8fc51ec6b9b355d6ed0c",
+      "shares": "99224720521267",
+      "value_before": "100131101",
+      "value_after": "42823595",
+      "loss_previewdiff": "57307506",
+      "loss_analytic": "57307505"
+    },
+    {
+      "address": "0x2c5a43a8bfddbba58a839dba32301c8dfea8841f",
+      "shares": "1785918548308",
+      "value_before": "1802232",
+      "value_after": "770770",
+      "loss_previewdiff": "1031462",
+      "loss_analytic": "1031462"
+    },
+    {
+      "address": "0x99cb34e4291e16bc625b14332d45edfb475abb60",
+      "shares": "99226414456",
+      "value_before": "100132",
+      "value_after": "42824",
+      "loss_previewdiff": "57308",
+      "loss_analytic": "57308"
+    },
+    {
+      "address": "0x922164bbbd36acf9e854acbbf32facc949fcaeef",
+      "shares": "1741812",
+      "value_before": "1",
+      "value_after": "0",
+      "loss_previewdiff": "1",
+      "loss_analytic": "1"
+    },
+    {
+      "address": "0xe9fbe0a03d07e13f9ecddc737e756590bc3db442",
+      "shares": "6172",
+      "value_before": "0",
+      "value_after": "0",
+      "loss_previewdiff": "0",
+      "loss_analytic": "0"
+    }
+  ]
+}

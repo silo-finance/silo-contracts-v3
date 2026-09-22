@@ -45,6 +45,7 @@ SECTION_ORDER = [
     "mantle",
     "megaeth etherscan",
     "megaeth blockscout",
+    "pharos",
 ]
 
 # Block explorer address URL (append address). summary_key -> base URL.
@@ -64,6 +65,7 @@ EXPLORER_ADDRESS_URL: dict[str, str] = {
     "mantle": "https://mantlescan.xyz/address/",
     "megaeth etherscan": "https://mega.etherscan.io/address/",
     "megaeth blockscout": "https://megaeth.blockscout.com/address/",
+    "pharos": "https://pharos.socialscan.io/address/",
 }
 
 # Backward-compat mapping for sections parsed from existing PR comments.
@@ -84,6 +86,7 @@ DISPLAY_LABEL_TO_SUMMARY_KEY: dict[str, str] = {
     "Mantle": "mantle",
     "MegaETH (etherscan)": "megaeth etherscan",
     "MegaETH (blockscout)": "megaeth blockscout",
+    "Pharos": "pharos",
 }
 
 

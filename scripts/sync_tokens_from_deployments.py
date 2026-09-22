@@ -14,7 +14,7 @@ Usage:
 
 Environment:
   RPC_MAINNET, RPC_ARBITRUM_ONE, RPC_AVALANCHE, RPC_BASE, RPC_BNB, RPC_INJECTIVE,
-  RPC_OPTIMISM, RPC_OKX, RPC_SONIC, RPC_INK, RPC_XDC, RPC_MANTLE, RPC_MEGAETH
+  RPC_OPTIMISM, RPC_OKX, RPC_SONIC, RPC_INK, RPC_XDC, RPC_MANTLE, RPC_MEGAETH, RPC_PHAROS
   (same mapping as verify-silo workflow)
 """
 
@@ -42,6 +42,7 @@ CHAIN_RPC_SUFFIX = {
     "xdc": "XDC",
     "mantle": "MANTLE",
     "megaeth": "MEGAETH",
+    "pharos": "PHAROS",
 }
 
 SILO_DEPLOYMENTS_JSON = "silo-core/deploy/silo/_siloDeployments.json"

@@ -12,7 +12,8 @@ import {CommonDeploy} from "./_CommonDeploy.sol";
 /*
     FOUNDRY_PROFILE=core \
     forge script silo-core/deploy/TowerDeploy.s.sol:TowerDeploy \
-    --ffi --rpc-url $RPC_XDC --broadcast --verify
+    --ffi --rpc-url $RPC_PHAROS --broadcast --verify \
+    --verifier-url $VERIFIER_URL_PHAROS --verifier blockscout
 
     in case verification fail, set `ETHERSCAN_API_KEY` in env and run:
     FOUNDRY_PROFILE=core \

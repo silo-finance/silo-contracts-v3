@@ -4,10 +4,10 @@ Monorepo for Silo protocol v3
 
 ## Development setup
 
-see:
+fsee:
 
-- https://yarnpkg.com/getting-started/install
-- https://classic.yarnpkg.com/lang/en/docs/workspaces/
+- [https://yarnpkg.com/getting-started/install](https://yarnpkg.com/getting-started/install)
+- [https://classic.yarnpkg.com/lang/en/docs/workspaces/](https://classic.yarnpkg.com/lang/en/docs/workspaces/)
 
 ```shell
 # from root dir
@@ -57,6 +57,7 @@ forge-std/=gitmodules/forge-std/src/
 this will make forge visible for imports eg: `import "forge-std/Test.sol"`.
 
 ### Build Silo Foundry Utils
+
 ```bash
 cd gitmodules/silo-foundry-utils
 git checkout main
@@ -84,15 +85,21 @@ rm -rf .git/modules/gitmodules/silo-foundry-utils
 rm -rf .git/modules/gitmodules/silo-foundry-utils
 ```
 
+
+
 ### Update submodule
+
 ```shell
 git submodule update --remote gitmodules/<submodule>
 ```
 
 If you want to update to specific commit:
+
 1. cd `gitmodules/<module>`
 2. `git checkout <commit>`
 3. commit changes (optionally update `branch` section in `.gitmodules`, however this make no difference)
+
+
 
 ## Adding new working space
 
@@ -102,6 +109,8 @@ If you want to update to specific commit:
 - add new workspace in `package.json` `workspaces` section
 - run `yarn reinstall`
 
+
+
 ## Cloning external code
 
 - In `external/` create subdirectory for cloned code eg `uniswap-v3-core/`
@@ -110,6 +119,7 @@ If you want to update to specific commit:
 **NOTICE**: do not run `yarn install` directly from workspace directory. It will create separate `yarn.lock` and it will
 act like separate repo, not part of monorepo. It will cause issues when trying to access other workspaces eg as
 dependency.
+
 - you need to remove `./git` directories in order to commit cloned code
 - update `external/package.json#workspaces` with this new `uniswap-v3-core`
 - update `external/uniswap-v3-core/package.json#name` to match dir name, in our example `uniswap-v3-core`
@@ -122,8 +132,9 @@ example of running scripts for workspace:
 yarn workspace <workspaceName> <commandName> ...
 ```
 
-## Coverage Report
 
+
+## Coverage Report
 
 ```shell
 brew install lcov
@@ -147,14 +158,16 @@ cat coverage/silo-vaults.log | grep -i 'silo-vaults/contracts/' | grep -v -E '/(
 genhtml --ignore-errors inconsistent --ignore-errors range --exclude 'silo-core/*' --exclude 'silo-oracles/*' --exclude 'common/*' --exclude '*/mocks/*' --exclude '*/test/*' --exclude '*/deploy/*' -o coverage/silo-vaults/ lcov.info
 ```
 
+
+
 ## Rounding policy
 
 Check `Rounding.sol` for rounding policy.
 
 ## Setup Echidna
 
-- https://github.com/crytic/echidna
-- https://github.com/crytic/properties
+- [https://github.com/crytic/echidna](https://github.com/crytic/echidna)
+- [https://github.com/crytic/properties](https://github.com/crytic/properties)
 
 ```shell
 brew install echidna
@@ -167,6 +180,8 @@ git submodule add --name crytic-properties https://github.com/crytic/properties 
 ./silo-core/scripts/echidnaAfter.sh
 ```
 
+
+
 ## Gas
 
 ```shell
@@ -178,49 +193,68 @@ FOUNDRY_PROFILE=core_test forge snapshot --desc --check --no-match-test "_skip_"
 FOUNDRY_PROFILE=core_test forge snapshot --diff --desc --no-match-test "_skip_" --no-match-contract "SiloIntegrationTest" --ffi
 ```
 
-## Auditing tools 
+
+
+## Auditing tools
+
+
 
 ### Echidna
 
-https://github.com/crytic/echidna
+[https://github.com/crytic/echidna](https://github.com/crytic/echidna)
 
 ### Slither
 
-https://github.com/crytic/slither
+[https://github.com/crytic/slither](https://github.com/crytic/slither)
 
 - slither is installed by default with echidna
 - for `dot` preview use `brew install graphviz`
 - try different [print engines](https://github.com/crytic/slither/wiki/Printer-documentation) eg `slither ./silo-core/contracts/hooks/SiloHookV2.sol --print <printer>`
 - check `audits/scripts/generate_call_graphs.py`
 
+
+
 ## Deployment
 
+
+
 ### Silo Core
+
 1. set env variable `PRIVATE_KEY` then run
-1. some adjustment is needed for new blockchain, I will use `Injective` as example:
+2. some adjustment is needed for new blockchain, I will use `Injective` as example:
   - update silo utils to add new blockchain
   - create `common/addresses/injective.json` and add necessary addresses
   - add necessary keys `common/addresses/AddrKey.sol`
-1. run `silo-core/deploy/SiloFactoryDeploy.s.sol`
-1. run `silo-core/deploy/SiloImplementationDeploy.s.sol`
-1. run [MainnetDeploy.sol](silo-core/deploy/MainnetDeploy.s.sol) script
-1. update onchain registry `silo-core/deploy/TowerRegistration.s.sol`
-1. deploy any test market, to confirm everything is ok.
+5. run [MainnetDeploy.sol](silo-core/deploy/MainnetDeploy.s.sol) script
+  - if you not running liquidation bot, you can comment out lines with liquidation helper deployment
+6. update onchain registry `silo-core/deploy/TowerRegistration.s.sol`
+7. deploy any test market, to confirm everything is ok.
+
+
 
 #### New SiloDeployer with Silo, ProtectedShareToken, and DebtShareToken implementations
+
 SiloDeployer is deployed using `MainnetDeploy` script. In case you need to redeploy:
+
 - run `silo-core/deploy/SiloDeployerDeploy.s.sol` script
 - then deploy new market
 
+
+
 ### Silo Vaults
+
 1. run `silo-vaults/deploy/MainnetDeploy.s.sol`
 
+
+
 ### Oracles
+
 Choose oracle you want to deploy and ruch each deployer individually.
 
 ### Injective
 
 - we need custom build foundry from INJ repo
+
 ```
 git clone https://github.com/InjectiveLabs/foundry.git
 cd foundry
@@ -229,12 +263,13 @@ foundryup -p .
 
 It is recommended to use dedicated scripts instead of mainnet deploy for injective.
 
-
 ## Flat Standard JSON script
 
 We have a Flat Standard JSON download script: `scripts/get_standard_json.py` (internally referred to as `script-get-standard-json`), created for OKX blockchain needs. It lets us fetch Standard JSON from Arbitrum and use it to verify the contract on another chain.
 
 Example:
+
 ```bash
 python3 scripts/get_standard_json.py --network arbitrum_one --address 0xA8C5eb9ae9c7a8fab4116d1e9c1FCfc8A478b390
 ```
+

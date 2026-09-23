@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.27.0] - 2026-09-23
+
+### Added
+- new IRM config 6% - 11% ([048af623](https://github.com/silo-finance/silo-contracts-v3/commit/048af62311d89c003e80e57a48b65d4c26eca6f4))
+- pharos blockchain deployment (#1968)
+- Document fee-boundary dust as a known issue (no protocol upgrade) (#1966)
+
+### Updated
+- Bump js-yaml from 4.1.0 to 4.3.1 (#1964)
+- Bump brace-expansion from 2.0.1 to 2.1.4 (#1963)
+- Bump semver from 6.3.0 to 6.3.1 (#1962)
+- Bump ajv from 6.12.6 to 6.15.0 (#1939)
+- Bump lodash from 4.17.21 to 4.18.1 (#1937)
+- Bump minimatch from 5.1.6 to 5.1.9 (#1935)
+- silo-core: Echidna tests for dynamic kink irm (#1573)
+
 ## [4.26.0] - 2026-07-27
 ### Added
 - new IRM config `static-8-16`

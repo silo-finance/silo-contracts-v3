@@ -217,6 +217,7 @@ injective = "${RPC_INJECTIVE}"
 xdc = "${RPC_XDC}"
 mantle = "${RPC_MANTLE}"
 megaeth = "${RPC_MEGAETH}"
+pharos = "${RPC_PHAROS}"
 
 [etherscan]
 mainnet = { key = "${ETHERSCAN_API_KEY}", chain = 1, url = "${VERIFIER_URL_MAINNET}" }
@@ -236,6 +237,7 @@ mantle = { key = "${ETHERSCAN_API_KEY}", chain = 5000, url = "${VERIFIER_URL_MAN
 # On deployment, we need to disable the below line, and on verification, enable it.
 megaeth = { key = "${ETHERSCAN_API_KEY}", chain = 4326, url = "https://api.etherscan.io/v2/api?chainid=4326" }
 # megaeth_scout = { key = "", chain = 4326, url = "${VERIFIER_URL_MEGAETH_SCOUT}", verifier = "blockscout" }
+pharos = { key = "${ETHERSCAN_API_KEY}", chain = 1672, url = "${VERIFIER_URL_PHAROS}", verifier = "blockscout"}
 
 [lint]
 exclude_lints = [

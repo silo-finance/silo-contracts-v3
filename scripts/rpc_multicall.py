@@ -22,6 +22,9 @@ INTERNAL_FALLBACK_RPCS_BY_CHAIN: dict[str, list[str]] = {
         "https://rpc-megaeth-mainnet.globalstake.io",
         "https://mainnet.megaeth.com/rpc",
     ],
+    "pharos": [
+        "https://rpc.pharos.xyz",
+    ],
 }
 
 

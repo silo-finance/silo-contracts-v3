@@ -32,6 +32,7 @@ env:
   RPC_XDC: ${{ secrets.RPC_XDC }}
   RPC_MANTLE: ${{ secrets.RPC_MANTLE }}
   RPC_MEGAETH: ${{ secrets.RPC_MEGAETH }}
+  RPC_PHAROS: ${{ secrets.RPC_PHAROS }}
 
 jobs:
   deploy-freshness-from-broadcast:
@@ -50,6 +51,7 @@ jobs:
           - megaeth
           - okx
           - optimism
+          - pharos
           - xdc
     steps:
       - uses: actions/checkout@v5

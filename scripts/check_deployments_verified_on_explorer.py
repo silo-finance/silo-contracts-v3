@@ -80,6 +80,7 @@ CHAIN_TO_CHAIN_ID: dict[str, str] = {
     "xdc": "50",
     "mantle": "5000",
     "megaeth": "4326",
+    "pharos": "1672",
 }
 
 # Defaults for etherscan-compatible endpoints.
@@ -111,6 +112,7 @@ CHAIN_EXPLORERS: dict[str, list[tuple[str, str]]] = {
         ("etherscan", "https://api.etherscan.io/v2/api?chainid=4326"),
         ("blockscout", "https://megaeth.blockscout.com/api"),
     ],
+    "pharos": [("default", "https://api.socialscan.io/pharos-mainnet/v1/explorer/command_api/contract")],
 }
 
 # Chains that have explorer config (for --chain all; excludes e.g. ink)
@@ -134,6 +136,7 @@ EXPLORER_ADDRESS_URL: dict[str, str] = {
     "mantle": "https://mantlescan.xyz/address/",
     "megaeth etherscan": "https://mega.etherscan.io/address/",
     "megaeth blockscout": "https://megaeth.blockscout.com/address/",
+    "pharos": "https://pharos.socialscan.io/address/",
 }
 
 # Display names for PR comment output
@@ -150,6 +153,7 @@ CHAIN_DISPLAY_NAMES: dict[str, str] = {
     "xdc": "XDC",
     "mantle": "Mantle",
     "megaeth": "MegaETH",
+    "pharos": "Pharos",
 }
 
 USER_AGENT = "Mozilla/5.0 (compatible; explorer-api-verify-checker/1.0)"
@@ -264,6 +268,15 @@ def resolve_api_config(chain: str) -> tuple[list[tuple[str, str]], str]:
         return [
             ("etherscan", os.environ.get("VERIFIER_URL_MEGAETH") or "https://api.etherscan.io/v2/api?chainid=4326"),
             ("blockscout", os.environ.get("VERIFIER_URL_MEGAETH_SCOUT") or "https://megaeth.blockscout.com/api"),
+        ], api_key
+
+    if chain == "pharos":
+        return [
+            (
+                "default",
+                os.environ.get("VERIFIER_URL_PHAROS")
+                or "https://api.socialscan.io/pharos-mainnet/v1/explorer/command_api/contract",
+            ),
         ], api_key
 
     explorers = CHAIN_EXPLORERS.get(chain)

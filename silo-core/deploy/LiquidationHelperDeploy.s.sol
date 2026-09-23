@@ -43,6 +43,7 @@ contract LiquidationHelperDeploy is CommonDeploy {
     address payable constant GNOSIS_SAFE_BNB = GNOSIS_SAFE_MAINNET;
     address payable constant GNOSIS_SAFE_OKX = GNOSIS_SAFE_MAINNET;
     address payable constant GNOSIS_SAFE_BASE = GNOSIS_SAFE_MAINNET;
+    address payable constant GNOSIS_SAFE_PHAROS = GNOSIS_SAFE_MAINNET;
 
     function run() public virtual returns (address liquidationHelper) {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
@@ -133,6 +134,7 @@ contract LiquidationHelperDeploy is CommonDeploy {
         if (chainId == ChainsLib.XDC_APOTHEM_CHAIN_ID) return payable(AddrLib.getAddress(AddrKey.DAO));
         if (chainId == ChainsLib.MANTLE_CHAIN_ID) return payable(AddrLib.getAddress(AddrKey.DAO));
         if (chainId == ChainsLib.MEGAETH_CHAIN_ID) return payable(AddrLib.getAddress(AddrKey.DAO));
+        if (chainId == ChainsLib.PHAROS_CHAIN_ID) return GNOSIS_SAFE_PHAROS;
 
         revert(string.concat("[LiquidationHelperDeploy] tokenReceiver not set for ", ChainsLib.chainAlias()));
     }

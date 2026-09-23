@@ -136,5 +136,11 @@
             "implementation": "0x03e03B56BD24E0B3B206403596A40cF48fb54279",
             "description": "silo v3 implementation"
         }
+    ],
+    "pharos": [
+        {
+            "implementation": "0x95a7bC57c738C7f64103B93D04f49cbCa566afFD",
+            "description": "silo v3 implementation"
+        }
     ]
 }

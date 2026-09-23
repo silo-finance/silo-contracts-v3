@@ -51,6 +51,7 @@ contract CommonDeploy is Deployer {
         if (chainId == ChainsLib.XDC_APOTHEM_CHAIN_ID) return AddrLib.getAddress(AddrKey.TXDC);
         if (chainId == ChainsLib.MANTLE_CHAIN_ID) return AddrLib.getAddress(AddrKey.WMNT);
         if (chainId == ChainsLib.MEGAETH_CHAIN_ID) return AddrLib.getAddress(AddrKey.WETH);
+        if (chainId == ChainsLib.PHAROS_CHAIN_ID) return AddrLib.getAddress(AddrKey.WPHRS);
 
         revert(string.concat("can not find native token for ", ChainsLib.chainAlias()));
     }

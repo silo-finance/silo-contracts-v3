@@ -49,6 +49,7 @@ CHAIN_CONFIG: dict[str, tuple[str, str]] = {
     "xdc": ("XDC", "https://xdcscan.com/address/"),
     "mantle": ("Mantle", "https://mantlescan.xyz/address/"),
     "megaeth": ("MegaETH", "https://mega.etherscan.io/address/"),
+    "pharos": ("Pharos", "https://pharos.socialscan.io/address/"),
 }
 
 SILO_MARKET_CRAFTER_BASE = "https://silo-finance.github.io/silo-market-crafter/wizard/?step=13&address="
@@ -68,6 +69,7 @@ CHAIN_IDS: dict[str, int] = {
     "xdc": 50,
     "mantle": 5000,
     "megaeth": 4326,
+    "pharos": 1672,
 }
 
 SILO_DEPLOYMENTS_JSON = "silo-core/deploy/silo/_siloDeployments.json"

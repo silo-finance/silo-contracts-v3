@@ -32,7 +32,10 @@ import {
 /*
     FOUNDRY_PROFILE=core AGGREGATOR=1INCH \
         forge script silo-core/deploy/MainnetDeploy.s.sol \
-        --ffi --rpc-url $RPC_MEGAETH --broadcast --slow --gas-estimate-multiplier 5000
+        --ffi --rpc-url $RPC_PHAROS --broadcast --verify \
+        --verifier-url $VERIFIER_URL_PHAROS --verifier blockscout \
+        --slow \
+        --gas-estimate-multiplier 5000
 
     Resume verification:
     FOUNDRY_PROFILE=core \
@@ -55,6 +58,9 @@ import {
         --private-key $PRIVATE_KEY \
         --legacy \
         --resume
+
+    Pharos verification: https://thehemera.gitbook.io/explorer-api/verify-smart-contract/verify-smart-contract/verify-through-foundry
+    add: `--verifier-url $VERIFIER_URL_PHAROS --verifier blockscout` to the command
  */
 contract MainnetDeploy is CommonDeploy {
     function run() public {

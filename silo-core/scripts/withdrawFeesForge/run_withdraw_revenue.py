@@ -40,6 +40,7 @@ CHAIN_RPC_ENV: dict[str, str] = {
     "megaeth": "RPC_MEGAETH",
     "okx": "RPC_OKX",
     "optimism": "RPC_OPTIMISM",
+    "pharos": "RPC_PHAROS",
     "sonic": "RPC_SONIC",
     "xdc": "RPC_XDC",
 }

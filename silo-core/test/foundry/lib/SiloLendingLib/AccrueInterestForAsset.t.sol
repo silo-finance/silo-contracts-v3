@@ -112,6 +112,63 @@ contract AccrueInterestForAssetTest is Test {
         );
     }
 
+    /*
+    FOUNDRY_PROFILE=core_test forge test -vv --mt test_accrueInterestForAsset_knownFeeLossWhenIntegralInterestCrossesFeeBoundary
+
+    Known issue: see KnownIssues.md "Fee under-accrual at fraction integer boundary (dust)".
+    */
+    function test_accrueInterestForAsset_knownFeeLossWhenIntegralInterestCrossesFeeBoundary() public {
+        uint256 daoFee = 0.1e18;
+        uint256 deployerFee = 0;
+        uint256 debt = 1;
+        uint256 collateralBefore = 1_000;
+
+        InterestRateModelMock irm = new InterestRateModelMock();
+        ISilo.SiloStorage storage $ = _$();
+
+        $.totalAssets[ISilo.AssetType.Collateral] = collateralBefore;
+        $.totalAssets[ISilo.AssetType.Debt] = debt;
+        $.interestRateTimestamp = 111;
+
+        // Accrual #1: integer interest is 0, remainder fills fractions.interest to 1e18 - 1.
+        irm.getCompoundInterestRateAndUpdateMock(DECIMAL_POINTS - 1);
+        vm.warp(222);
+        uint256 accrued1 = SiloLendingLib.accrueInterestForAsset({
+            _interestRateModel: irm.ADDRESS(),
+            _daoFee: daoFee,
+            _deployerFee: deployerFee
+        });
+
+        uint64 interestFractionAfterFirst = $.fractions.interest;
+
+        // Accrual #2: integer interest A = 9, remainder 1 overflows the stored fraction → I = 1.
+        irm.getCompoundInterestRateAndUpdateMock(9 * DECIMAL_POINTS + 1);
+        vm.warp(333);
+        uint256 accrued2 = SiloLendingLib.accrueInterestForAsset({
+            _interestRateModel: irm.ADDRESS(),
+            _daoFee: daoFee,
+            _deployerFee: deployerFee
+        });
+
+        uint256 expectedFeesOnFullInterest = accrued2 * daoFee / DECIMAL_POINTS;
+
+        assertEq({left: accrued1, right: 0, err: "first accrual is fraction-only"});
+        assertEq({left: interestFractionAfterFirst, right: DECIMAL_POINTS - 1, err: "interest fraction primed"});
+        assertEq({left: accrued2, right: 10, err: "A=9 plus integralInterest=1"});
+        assertEq({left: expectedFeesOnFullInterest, right: 1, err: "10 * 10% is an exact 1 wei fee"});
+        assertEq({left: $.fractions.revenue, right: 0, err: "A+I remainder is 0 so nothing is stored"});
+        assertEq({
+            left: uint256($.daoAndDeployerRevenue),
+            right: 0,
+            err: "known issue: 1 wei fee is not credited"
+        });
+        assertEq({
+            left: $.totalAssets[ISilo.AssetType.Collateral] - collateralBefore + uint256($.daoAndDeployerRevenue),
+            right: $.totalAssets[ISilo.AssetType.Debt] - debt,
+            err: "deltaDebt = deltaColl + fees (lost wei stays in collateral)"
+        });
+    }
+
     function _$() internal pure returns (ISilo.SiloStorage storage $) {
         return SiloStorageLib.getSiloStorage();
     }

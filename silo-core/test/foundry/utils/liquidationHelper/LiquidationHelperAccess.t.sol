@@ -51,6 +51,9 @@ contract LiquidationHelperAccessTest is Test {
         uint256 _fee,
         bytes calldata _data
     ) public {
+        // `_expectedFlashLoanProvider` defaults to address(0); a prank from 0 would pass the callback check.
+        vm.assume(_caller != address(0));
+
         vm.prank(_caller);
         vm.expectRevert(LiquidationHelper.UnauthorizedFlashLoanCallback.selector);
         liquidationHelper.onFlashLoan(_initiator, _debtAsset, _maxDebtToCover, _fee, _data);

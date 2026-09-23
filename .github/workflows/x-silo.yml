@@ -14,6 +14,7 @@ env:
   RPC_XDC: ${{ secrets.RPC_XDC }}
   RPC_MANTLE: ${{ secrets.RPC_MANTLE }}
   RPC_MEGAETH: ${{ secrets.RPC_MEGAETH }}
+  RPC_PHAROS: ${{ secrets.RPC_PHAROS }}
   PRIVATE_KEY: ${{ secrets.ANVIL_PRIVATE_KEY }}
 
 on:

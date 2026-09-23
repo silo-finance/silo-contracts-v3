@@ -80,6 +80,12 @@ EXPLORER_CONFIG = {
         "api_key_envs": ["ETHERSCAN_API_KEY"],
         "chainid": 5000,
     },
+    "pharos": {
+        "api_url_default": "https://api.socialscan.io/pharos-mainnet/v1/explorer/command_api/contract",
+        "api_url_env": "VERIFIER_URL_PHAROS",
+        "api_key_envs": ["ETHERSCAN_API_KEY"],
+        "chainid": 1672,
+    },
 }
 
 

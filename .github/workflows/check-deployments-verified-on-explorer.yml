@@ -38,6 +38,7 @@ env:
   ETHERSCAN_API_KEY_OKX: ${{ secrets.ETHERSCAN_API_KEY_OKX }}
   VERIFIER_URL_MEGAETH: ${{ secrets.VERIFIER_URL_MEGAETH }}
   VERIFIER_URL_MEGAETH_SCOUT: ${{ secrets.VERIFIER_URL_MEGAETH_SCOUT }}
+  VERIFIER_URL_PHAROS: ${{ secrets.VERIFIER_URL_PHAROS }}
 
 jobs:
   verify-arbitrum_one:
@@ -267,9 +268,28 @@ jobs:
           name: verification-megaeth
           path: verification_megaeth.json
 
+  verify-pharos:
+    name: pharos
+    needs: [verify-megaeth]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: |
+          python3 scripts/check_deployments_verified_on_explorer.py --chain pharos --no-fail --output-json-file verification_pharos.json || true
+          test -f verification_pharos.json || echo '{"sections":[]}' > verification_pharos.json
+        continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-pharos
+          path: verification_pharos.json
+
   aggregate-and-comment:
     name: Aggregate and comment
-    needs: [verify-mantle, verify-megaeth, verify-injective, verify-okx]
+    needs: [verify-mantle, verify-megaeth, verify-pharos, verify-injective, verify-okx]
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:

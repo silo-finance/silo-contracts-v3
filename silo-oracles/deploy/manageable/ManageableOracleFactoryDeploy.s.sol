@@ -7,8 +7,9 @@ import {SiloOraclesFactoriesContracts} from "../SiloOraclesFactoriesContracts.so
 
 /*
 FOUNDRY_PROFILE=oracles \
-    forge script silo-oracles/deploy/manageable-oracle/ManageableOracleFactoryDeploy.s.sol \
-    --ffi --rpc-url $RPC_SONIC --broadcast --verify
+    forge script silo-oracles/deploy/manageable/ManageableOracleFactoryDeploy.s.sol \
+    --ffi --rpc-url $RPC_PHAROS --broadcast --verify \
+    --verifier-url $VERIFIER_URL_PHAROS --verifier blockscout \
  */
 contract ManageableOracleFactoryDeploy is CommonDeploy {
     function run() public returns (address factory) {

@@ -109,3 +109,48 @@ While current interest rate models do not consume enough gas for such attack to 
 implementing a new, more gas-expensive IRM may enable oportunity to forcefully revert the try
 block, due to OOG error, but carry on with the transaction, updating the interestRateTimestamp,
 without accruing interest.
+
+### Fee under-accrual at fraction integer boundary (dust)
+
+Integer protocol fees are computed on truncated interest `A` in `getCollateralAmountsWithInterest`.
+`applyFractions` then adds `integralInterest` (`I`, 0 or 1) and takes the fee remainder from `A+I`.
+
+If `I` pushes `fee * (A+I)` across an integer, that extra 1 wei is not in `_totalFees` and
+`calculateFraction` does not emit it (it only stores remainders). Protocol fee is 1 wei short;
+the wei stays in collateral.
+
+This runs only when `totalDebtAssets < 1e13` (`_ROUNDING_THRESHOLD`). Larger silos skip fractions.
+Impact is at most 1 wei per such accrual. Not worth a protocol upgrade.
+
+Remainder 0 (e.g. 10 wei interest at a 10% fee) is the obvious case. Other amounts and fee rates
+can hit the same integer bump (not unique to 10).
+
+`calculateFraction` is working as designed. Reproduction:
+`silo-core/test/foundry/lib/SiloLendingLib/AccrueInterestForAsset.t.sol`
+(`test_accrueInterestForAsset_knownFeeLossWhenIntegralInterestCrossesFeeBoundary`).
+
+Unused fix (not shipped): apply the fee leftover of `_accruedInterest` first, then the leftover of
+`integralInterest`. Keep `totalFees = _totalFees + integralRevenue`. Do not recompute
+`(A+I) * fees / 1e18`.
+
+```solidity
+(
+    integralRevenue, fractions.revenue
+) = SiloMathLib.calculateFraction({
+    _total: _accruedInterest,
+    _percent: _fees,
+    _currentFraction: fractions.revenue
+});
+
+uint256 revenueOnIntegralInterest;
+(
+    revenueOnIntegralInterest, fractions.revenue
+) = SiloMathLib.calculateFraction({
+    _total: integralInterest,
+    _percent: _fees,
+    _currentFraction: fractions.revenue
+});
+
+integralRevenue += revenueOnIntegralInterest;
+totalFees = _totalFees + integralRevenue;
+```

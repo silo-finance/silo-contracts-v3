@@ -27,11 +27,10 @@ on:
             - silo-vaults/**/*.js
             - silo-vaults/**/*.json
             - silo-core/contracts/incentives/**/*.sol
-            - package.json
-            - yarn.lock
             - gitmodules/*
             - .gitmodules
             - .github/workflows/silo-vaults.yml
+            - foundry.toml
 
     pull_request:
         paths:
@@ -41,11 +40,10 @@ on:
             - silo-vaults/**/*.js
             - silo-vaults/**/*.json
             - silo-core/contracts/incentives/**/*.sol
-            - package.json
-            - yarn.lock
             - gitmodules/*
             - .gitmodules
             - .github/workflows/silo-vaults.yml
+            - foundry.toml
 
 concurrency:
   group: ${{ github.event_name == 'pull_request' && format('{0}-pr-{1}', github.workflow, github.event.pull_request.number) || format('{0}-ref-{1}', github.workflow, github.ref) }}

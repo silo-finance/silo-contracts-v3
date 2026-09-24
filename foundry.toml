@@ -14,9 +14,9 @@ via_ir = false
 allow_internal_expect_revert = true
 always_use_create_2_factory = true
 ignored_warnings_from = ['gitmodules']
-solc = '0.8.28'
 
 [profile.core]
+solc = '0.8.28'
 src = 'silo-core/contracts'
 out = 'cache/foundry/out/silo-core'
 broadcast = 'silo-core/broadcast'
@@ -31,6 +31,7 @@ fs_permissions = [
 ]
 
 [profile.core_with_test]
+solc = '0.8.28'
 src = 'silo-core/contracts'
 test = 'silo-core/test/foundry'
 out = 'cache/foundry/out/silo-core'
@@ -47,6 +48,7 @@ fs_permissions = [
 ]
 
 [profile.core-with-invariants]
+solc = '0.8.28'
 src = 'silo-core/contracts'
 test = 'silo-core/test/invariants'
 out = 'cache/foundry/out/silo-core'
@@ -60,12 +62,14 @@ fs_permissions = [
 ]
 
 [profile.echidna_dkink]
+solc = '0.8.28'
 src = 'silo-core/contracts'
 test = 'silo-core/test/echidna-dkink-irm'
 out = 'cache/foundry/out/silo-core'
 broadcast = 'silo-core/broadcast'
 
 [profile.echidna_leverage]
+solc = '0.8.28'
 src = 'silo-core/contracts'
 test = 'silo-core/test/echidna-leverage'
 out = 'cache/foundry/out/echidna-leverage'
@@ -79,6 +83,7 @@ fs_permissions = [
 ]
 
 [profile.echidna_defaulting]
+solc = '0.8.28'
 src = 'silo-core/contracts'
 test = 'silo-core/test/echidna-defaulting/siloHookV2'
 out = 'cache/foundry/out/echidna-defaulting/siloHookV2'
@@ -86,6 +91,7 @@ broadcast = 'silo-core/echidna/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
 
 [profile.echidna_hookV3]
+solc = '0.8.28'
 src = 'silo-core/contracts'
 test = 'silo-core/test/echidna-defaulting/siloHookV3'
 out = 'cache/foundry/out/echidna-defaulting/siloHookV3'
@@ -94,6 +100,7 @@ ignored_error_codes = ['code-size', 'init-code-size']
 
 
 [profile.core_test]
+solc = '0.8.28'
 src = 'silo-core/test/foundry'
 out = 'cache/foundry/out/silo-core'
 broadcast = 'silo-core/broadcast'
@@ -126,6 +133,7 @@ quote_style = "double"
 number_underscore = "preserve"
 
 [profile.vaults]
+solc = '0.8.28'
 src = 'silo-vaults/contracts'
 out = 'cache/foundry/out/silo-vaults'
 broadcast = 'silo-vaults/broadcast'
@@ -137,6 +145,7 @@ fs_permissions = [
 ]
 
 [profile.vaults_tests]
+solc = '0.8.28'
 src = 'silo-vaults/test/foundry'
 out = 'cache/foundry/out/silo-vaults'
 broadcast = 'silo-vaults/broadcast'
@@ -149,6 +158,7 @@ fs_permissions = [
 ]
 
 [profile.vaults_with_tests]
+solc = '0.8.28'
 src = 'silo-vaults/contracts'
 test = 'silo-vaults/test/foundry'
 out = 'cache/foundry/out/silo-vaults'
@@ -162,6 +172,7 @@ fs_permissions = [
 ]
 
 [profile.x_silo]
+solc = '0.8.28'
 src = 'x-silo/contracts'
 test = 'x-silo/test/foundry'
 out = 'cache/foundry/out/x-silo'
@@ -169,12 +180,14 @@ broadcast = 'x-silo/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
 
 [profile.x_silo_tests]
+solc = '0.8.28'
 src = 'x-silo/test/foundry'
 out = 'cache/foundry/out/x-silo'
 broadcast = 'x-silo/broadcast'
 ignored_error_codes = ['code-size', 'init-code-size']
 
 [profile.x_silo_echidna]
+solc = '0.8.28'
 src = 'x-silo/contracts'
 test = 'x-silo/test/echidna'
 out = 'cache/foundry/out/x-silo'

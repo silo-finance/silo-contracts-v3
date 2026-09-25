@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.28.0] - 2026-09-25
+### Added
+- deploy ERC4626 oracles on pharos blockchain
+
 ## [4.27.1] - 2026-09-24
 ### Fixed
 - Keep `solc 0.8.28` on individual Foundry profiles and leave `oracles` on auto-detect, so Uniswap V3 oracles (`0.7.6`) compile again

@@ -28,6 +28,7 @@ on:
       - silo-oracles/**/*.json
       - silo-core/contracts/interfaces/ISiloOracle.sol
       - '.github/workflows/silo-oracles.yml'
+      - 'foundry.toml'
       - '.gitmodules'
       - 'gitmodules/**'
       - 'silo-core/deploy/input/anvil/**'
@@ -41,6 +42,7 @@ on:
       - silo-oracles/**/*.json
       - silo-core/contracts/interfaces/ISiloOracle.sol
       - '.github/workflows/silo-oracles.yml'
+      - 'foundry.toml'
       - '.gitmodules'
       - 'gitmodules/**'
       - 'silo-core/deploy/input/anvil/**'

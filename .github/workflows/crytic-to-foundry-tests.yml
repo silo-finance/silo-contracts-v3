@@ -6,6 +6,7 @@ on:
         paths:
             - '**/*.sol'
             - '.github/workflows/crytic-to-foundry-tests.yml'
+            - 'foundry.toml'
             - '.gitmodules'
             - 'gitmodules/**'
             - 'silo-core/deploy/input/anvil/**'
@@ -15,6 +16,7 @@ on:
         paths:
             - '**/*.sol'
             - '.github/workflows/crytic-to-foundry-tests.yml'
+            - 'foundry.toml'
             - '.gitmodules'
             - 'gitmodules/**'
             - 'silo-core/deploy/input/anvil/**'

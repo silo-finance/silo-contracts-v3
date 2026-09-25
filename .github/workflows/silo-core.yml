@@ -26,6 +26,7 @@ on:
         paths:
             - '**/*.sol'
             - '.github/workflows/silo-core.yml'
+            - 'foundry.toml'
             - '.gitmodules'
             - 'gitmodules/**'
             - 'silo-core/deploy/input/anvil/**'
@@ -35,6 +36,7 @@ on:
         paths:
             - '**/*.sol'
             - '.github/workflows/silo-core.yml'
+            - 'foundry.toml'
             - '.gitmodules'
             - 'gitmodules/**'
             - 'silo-core/deploy/input/anvil/**'

@@ -228,7 +228,29 @@ jobs:
         id: verify
         run: |
           echo "Running verify script for ${{ steps.extract.outputs.CONFIG_NAME }} (${{ steps.extract.outputs.CONFIG }}) on ${{ steps.extract.outputs.CHAIN }}"
-          
+
+          # Short diagnostics. Every line starts with "debug:" so it is easy to grep
+          # in the job log and in the PR comment. Do not print the RPC URL.
+          : > debug.txt
+          {
+            echo "debug: chain=${{ steps.extract.outputs.CHAIN }} config=${{ steps.extract.outputs.CONFIG }} name=${{ steps.extract.outputs.CONFIG_NAME }}"
+            echo "debug: commit=${{ github.sha }}"
+            echo "debug: FOUNDRY_PROFILE=core FOUNDRY_INJECTIVE=true verbosity=-vvvv"
+            echo "debug: forge_bin=$(command -v forge || echo missing)"
+            forge --version | sed 's/^/debug: /'
+            if [ -x ./silo-foundry-utils ]; then
+              ./silo-foundry-utils --version | sed 's/^/debug: silo-foundry-utils /'
+            else
+              echo "debug: silo-foundry-utils binary missing"
+            fi
+            RPC_FOR_DEBUG="${{ steps.extract.outputs.RPC_URL }}"
+            rpc_no_scheme="${RPC_FOR_DEBUG#*://}"
+            rpc_host="${rpc_no_scheme%%/*}"
+            rpc_host="${rpc_host##*@}"
+            rpc_host="${rpc_host%%:*}"
+            echo "debug: rpc_host=${rpc_host:-unset}"
+          } | tee debug.txt
+
           set +e  # capture exit code, do not exit on non-zero
           VERIFIER_API_KEY_SONIC=placeholder VERIFIER_URL_SONIC=https://api.sonicscan.org/api \
           FOUNDRY_PROFILE=core CONFIG=${{ steps.extract.outputs.CONFIG }} \
@@ -250,11 +272,31 @@ jobs:
             VERIFY_EXIT=1
           fi
 
+          {
+            echo "debug: verify_exit=${VERIFY_EXIT}"
+            echo "debug: output_bytes=$(wc -c < output.log | tr -d ' ') output_lines=$(wc -l < output.log | tr -d ' ')"
+            if grep -q '== Logs ==' output.log; then
+              echo "debug: forge_logs_section=present"
+            else
+              echo "debug: forge_logs_section=missing"
+            fi
+            if [ "$VERIFY_EXIT" != "0" ]; then
+              echo "debug: forge_error_excerpt_begin"
+              grep -E 'Error|Compiler run failed|server returned an error|Warning: Found unknown' output.log \
+                | head -n 20 \
+                | sed 's/^/debug: /'
+              echo "debug: forge_error_excerpt_end"
+            fi
+          } | tee -a debug.txt
+
           echo '```' > result.txt
           echo "Time: $(date -u '+%Y-%m-%d %H:%M:%S') UTC" >> result.txt
           echo "Commit: ${{ github.sha }}" >> result.txt
           echo "EXTERNAL_PRICE_0=${{ steps.price.outputs.EXTERNAL_PRICE_0 }}" >> result.txt
           echo "EXTERNAL_PRICE_1=${{ steps.price.outputs.EXTERNAL_PRICE_1 }}" >> result.txt
+          echo "" >> result.txt
+          cat debug.txt >> result.txt
+          echo "" >> result.txt
 
           # extract everything from `== Logs ==` to the end
           awk '/== Logs ==/ { print_flag = 1 } print_flag' output.log >> result.txt

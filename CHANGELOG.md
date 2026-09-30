@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [4.29.0] - 2026-09-30
+
+### Fixed
+- custom version of forge for pharos (#1972)
+
+### Markets
+- silo-market: pALPHA / USDC on Pacific Mainnet (#1973)
+- silo-market: APC3M / USDC on Pacific Mainnet (#1972)
+
+### Removed
+- remove invalid foundry config (#1975)
+
 ## [4.28.0] - 2026-09-25
 ### Added
 - deploy ERC4626 oracles on pharos blockchain

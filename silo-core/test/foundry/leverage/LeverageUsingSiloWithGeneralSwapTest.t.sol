@@ -72,7 +72,9 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         _deposit(1e18, address(1));
         _depositForBorrow(1e18, address(2));
 
+        // forge-lint: disable-next-line(unused-return)
         (protectedShareToken, collateralShareToken,) = cfg.getShareTokens(address(silo0));
+        // forge-lint: disable-next-line(unused-return)
         (,, debtShareToken) = cfg.getShareTokens(address(silo1));
 
         leverageRouter = _deployLeverage();
@@ -104,7 +106,9 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
     function _deployLeverage() internal returns (LeverageRouter) {
         AddrLib.init();
         AddrLib.setAddress(AddrKey.DAO, address(this));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("DAO is set to this test contract");
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("chain ID", block.chainid);
 
         LeverageRouterUsingSiloFlashloanWithGeneralSwapDeploy deployer =
@@ -123,6 +127,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         vm.prank(_caller);
         vm.expectRevert(ILeverageUsingSiloFlashloan.InvalidFlashloanLender.selector);
 
+        // forge-lint: disable-next-line(unused-return)
         siloLeverageImpl.onFlashLoan(address(0), address(0), 0, 0, "");
     }
 
@@ -139,6 +144,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
 
         vm.expectRevert(abi.encodeWithSelector(ILeverageUsingSiloFlashloan.UnknownAction.selector));
 
+        // forge-lint: disable-next-line(unused-return)
         harness.onFlashLoan(address(0), address(0), 0, 0, "Any data");
     }
 
@@ -189,6 +195,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         _openLeverageExample();
 
         vm.startPrank(user);
+        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(silo0.maxWithdraw(user), user, user);
 
         vm.warp(block.timestamp + 1000 days);
@@ -214,12 +221,15 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         overrides.token1 = address(token1);
         overrides.configName = "Silo_Local_noOracle";
 
+        // forge-lint: disable-next-line(unused-return)
         (,, ISilo siloFlashloan,,,) = siloFixture.deploy_local(overrides);
 
         vm.label(address(siloFlashloan), "siloFlashloan");
 
         token1.mint(address(this), 5e18);
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(siloFlashloan), 5e18);
+        // forge-lint: disable-next-line(unused-return)
         siloFlashloan.deposit(5e18, address(this));
 
         // OPEN
@@ -470,6 +480,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
 
         // emit log_named_decimal_uint("totalUserCollateral", totalUserCollateral, 18);
         // emit log_named_decimal_uint("leverage", totalUserCollateral * 100 / depositAmount, 2);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV", SILO_LENS.getUserLTV(silo0, user), 16);
 
         _assertThereIsNoDebtApprovals(user);
@@ -517,6 +528,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         );
 
         vm.expectRevert(ILeverageUsingSiloFlashloan.IncorrectNativeTokenAmount.selector);
+        // forge-lint: disable-next-item(arbitrary-send-eth)
         leverageRouter.openLeveragePosition{value: depositArgs.amount - 1}({
             _flashArgs: flashArgs,
             _swapArgs: abi.encode(swapArgs),
@@ -524,12 +536,14 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         });
 
         vm.expectRevert(ILeverageUsingSiloFlashloan.IncorrectNativeTokenAmount.selector);
+        // forge-lint: disable-next-item(arbitrary-send-eth)
         leverageRouter.openLeveragePosition{value: depositArgs.amount + 1}({
             _flashArgs: flashArgs,
             _swapArgs: abi.encode(swapArgs),
             _depositArgs: depositArgs
         });
 
+        // forge-lint: disable-next-item(arbitrary-send-eth)
         leverageRouter.openLeveragePosition{value: depositArgs.amount}({
             _flashArgs: flashArgs,
             _swapArgs: abi.encode(swapArgs),
@@ -603,6 +617,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         assertEq(SILO_LENS.getUserLTV(silo0, user), 0, "user has no position");
 
         vm.prank(user);
+        // forge-lint: disable-next-item(arbitrary-send-eth)
         leverageRouter.openLeveragePosition{value: depositArgs.amount}({
             _flashArgs: flashArgs,
             _swapArgs: abi.encode(swapArgs),
@@ -816,6 +831,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         address attacker = makeAddr("attacker");
 
         uint256 userBalanceBefore = token0.balanceOf(user);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("leverage", address(siloLeverage));
 
         address swapModule = address(
@@ -913,6 +929,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
 
         (uint256 totalDeposited,) = _openLeverage(user, flashArgs, depositArgs, swapArgs);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("totalDeposited", totalDeposited);
         uint256 finalMultiplier = totalDeposited * _PRECISION / depositArgs.amount;
 
@@ -995,6 +1012,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
 
             vm.expectEmit(leverageRouter.predictUserLeverageContract(_user));
 
+            // forge-lint: disable-next-item(reentrancy-events)
             emit ILeverageUsingSiloFlashloan.OpenLeverage({
                 totalBorrow: _flashArgs.amount + flashloanFee,
                 totalDeposit: totalUserDeposit,
@@ -1088,6 +1106,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
             // to deep
             vm.expectEmit(userLeverageContract);
 
+            // forge-lint: disable-next-item(reentrancy-events)
             emit ILeverageUsingSiloFlashloan.CloseLeverage({
                 depositWithdrawn: silo0.previewRedeem(
                     IERC20(shareCollateral).balanceOf(_user), _closeArgs.collateralType
@@ -1293,6 +1312,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
 
         if (expectSuccess) {
             vm.expectEmit(true, true, false, true, userLeverageContract);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit RescueModule.TokensRescued(address(token0), rescueAmount);
         } else {
             vm.expectRevert(RescueModule.OnlyLeverageUser.selector);
@@ -1348,6 +1368,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
 
         if (expectSuccess) {
             vm.expectEmit(true, true, false, true, userLeverageContract);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit RescueModule.TokensRescued(address(0), rescueAmount);
         } else {
             vm.expectRevert(RescueModule.OnlyLeverageUser.selector);
@@ -1429,6 +1450,7 @@ contract LeverageUsingSiloFlashloanWithGeneralSwapTest is SiloLittleHelper, Test
         vm.assume(_fee != leverageRouter.leverageFee());
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ILeverageRouter.LeverageFeeChanged(_fee);
         leverageRouter.setLeverageFee(_fee);
         assertEq(leverageRouter.leverageFee(), _fee, "Fee should be updated");

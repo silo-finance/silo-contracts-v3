@@ -45,6 +45,7 @@ contract FlashFeeTest is Test {
 
         for (uint256 index = 0; index < feeTestCasesIndex; index++) {
             if (feeTestCases[index].amount != 0) {
+                // forge-lint: disable-next-line(calls-loop)
                 SILO_CONFIG.getFeesWithAssetMock(address(this), 0, 0, feeTestCases[index].flashloanFee, _asset);
             }
 

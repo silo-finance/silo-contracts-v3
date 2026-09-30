@@ -71,6 +71,7 @@ contract KinkModalInternalTest is Test {
     */
     function test_kink_capK_InvalidKRange() public {
         vm.expectRevert(IDynamicKinkModel.InvalidKRange.selector);
+        // forge-lint: disable-next-line(unused-return)
         irm.capK(0, 1, 0);
     }
 

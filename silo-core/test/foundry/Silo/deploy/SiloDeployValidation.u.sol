@@ -20,6 +20,7 @@ contract SiloDeployValidation is IntegrationTest {
 
     function setUp() public {
         _siloDeploy = new SiloDeployWithDeployerOwner();
+        // forge-lint: disable-next-line(unused-return)
         _siloDeploy.useConfig(SiloConfigsNames.SILO_LOCAL_INVALID_CONTRACTS);
     }
 
@@ -29,6 +30,7 @@ contract SiloDeployValidation is IntegrationTest {
             abi.encodeWithSelector(SiloConfigData.DeployedContractNotFound.selector, _INVALID_HOOK_RECEIVER)
         );
 
+        // forge-lint: disable-next-line(unused-return)
         _siloDeploy.run();
     }
 
@@ -39,6 +41,7 @@ contract SiloDeployValidation is IntegrationTest {
 
         vm.expectRevert(abi.encodeWithSelector(SiloConfigData.DeployedContractNotFound.selector, _INVALID_IRM0));
 
+        // forge-lint: disable-next-line(unused-return)
         _siloDeploy.run();
 
         // mock the irm0 address to verify the irm1 (as we try first to resolve the irm0)
@@ -46,6 +49,7 @@ contract SiloDeployValidation is IntegrationTest {
 
         vm.expectRevert(abi.encodeWithSelector(SiloConfigData.DeployedContractNotFound.selector, _INVALID_IRM1));
 
+        // forge-lint: disable-next-line(unused-return)
         _siloDeploy.run();
     }
 }

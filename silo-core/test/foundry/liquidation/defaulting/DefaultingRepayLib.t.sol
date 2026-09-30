@@ -45,14 +45,17 @@ contract SiloAndConfigMock {
         return ISiloConfig(address(this));
     }
 
+    // forge-lint: disable-next-line(empty-block)
     function turnOnReentrancyProtection() external pure {}
 
+    // forge-lint: disable-next-line(empty-block)
     function turnOffReentrancyProtection() external pure {}
 
     function accrueInterestForSilo(
         address /* _silo */
     )
         external
+        // forge-lint: disable-next-line(empty-block)
         pure {}
 
     function getDebtShareTokenAndAsset(
@@ -85,6 +88,7 @@ contract LibImpl {
 
     function getDebtShareToken() public view returns (address debtShareToken) {
         IShareToken.ShareTokenStorage storage $ = ShareTokenLib.getShareTokenStorage();
+        // forge-lint: disable-next-line(unused-return)
         (debtShareToken,) = $.siloConfig.getDebtShareTokenAndAsset(address(this));
     }
 }

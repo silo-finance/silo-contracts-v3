@@ -53,6 +53,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
     event FailedToClaimIncentives(address _silo);
 
     function setUp() public virtual {
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_MAINNET"), _BLOCK_TO_FORK);
 
         // we need specyfic block for this test, but silo implementation might be changed (not available),
@@ -63,6 +64,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
 
         PendleRewardsClaimerDeploy pendleRewardsClaimerDeploy = new PendleRewardsClaimerDeploy();
         pendleRewardsClaimerDeploy.disableDeploymentsSync();
+        // forge-lint: disable-next-line(unused-return)
         pendleRewardsClaimerDeploy.run();
 
         _siloConfig = _setUpLocalFixtureNoOverrides(SiloConfigsNames.SILO_PENDLE_REWARDS_TEST);
@@ -75,6 +77,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
 
         _dao = AddrLib.getAddress(AddrKey.DAO);
 
+        // forge-lint: disable-next-line(unused-return)
         (address protected,,) = _siloConfig.getShareTokens(address(silo0));
 
         _incentivesController =
@@ -127,9 +130,11 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         uint256 amount = asset.balanceOf(_depositor);
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         asset.approve(address(silo0), amount);
         vm.prank(_depositor);
         vm.expectRevert(abi.encodeWithSelector(IPendleRewardsClaimer.CollateralDepositNotAllowed.selector));
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(amount, _depositor, ISilo.CollateralType.Collateral);
     }
 
@@ -137,6 +142,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
     function test_transitionCollateral_notPossible() public {
         _depositProtected();
 
+        // forge-lint: disable-next-line(unused-return)
         (address protected,,) = _siloConfig.getShareTokens(address(silo0));
         uint256 balance = IERC20(protected).balanceOf(_depositor);
 
@@ -145,6 +151,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         );
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(balance, _depositor, ISilo.CollateralType.Protected);
     }
 
@@ -155,10 +162,12 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
 
         _depositProtected();
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 2 days);
         vm.roll(vm.getBlockNumber() + 100);
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(amount, _depositor, _depositor, ISilo.CollateralType.Protected);
 
         string memory rewardTokenProgramName = "0x808507121b80c02388fad14726482e061b8da827";
@@ -174,6 +183,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
 
         // user claim rewards from the silo incentives controller
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         _incentivesController.claimRewards(_depositor);
 
         uint256 rewardsAfter = IERC20(_rewardToken).balanceOf(_depositor);
@@ -186,18 +196,26 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         _depositProtected();
 
         for (uint256 i = 0; i < 100; i++) {
+            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 1 seconds);
+            // forge-lint: disable-next-line(calls-loop)
             vm.roll(vm.getBlockNumber() + 1);
 
+            // forge-lint: disable-next-line(calls-loop)
             uint256 rewardsBefore = IERC20(_rewardToken).balanceOf(_depositor);
 
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             _hookReceiver.redeemRewards();
+            // forge-lint: disable-next-line(calls-loop)
             _hookReceiverHarness.resetTransientRewardsClaimed();
 
             // user claim rewards from the silo incentives controller
+            // forge-lint: disable-next-line(calls-loop)
             vm.prank(_depositor);
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             _incentivesController.claimRewards(_depositor);
 
+            // forge-lint: disable-next-line(calls-loop)
             uint256 rewardsAfter = IERC20(_rewardToken).balanceOf(_depositor);
 
             assertGt(rewardsAfter, rewardsBefore, "Depositor should have received rewards");
@@ -211,6 +229,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         vm.warp(block.timestamp + 1 seconds);
         vm.roll(vm.getBlockNumber() + 1);
 
+        // forge-lint: disable-next-line(unused-return)
         (address protected,,) = _siloConfig.getShareTokens(address(silo0));
 
         uint256 rewardsBefore = IERC20(_rewardToken).balanceOf(_depositor);
@@ -222,6 +241,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         require(IERC20(protected).transfer(address(this), amount), "transfer failed");
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         _incentivesController.claimRewards(_depositor);
 
         uint256 rewardsAfter = IERC20(_rewardToken).balanceOf(_depositor);
@@ -235,6 +255,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
 
         IERC20 asset = IERC20(silo0.asset());
 
+        // forge-lint: disable-next-line(unused-return)
         (address protected,,) = _siloConfig.getShareTokens(address(silo0));
 
         uint256 amount = IERC20(protected).balanceOf(_depositor);
@@ -246,9 +267,11 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         uint256 maxWithdrawAmount = silo0.maxWithdraw(_depositor, ISilo.CollateralType.Protected);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FailedToClaimIncentives(address(silo0));
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(maxWithdrawAmount, _depositor, _depositor, ISilo.CollateralType.Protected);
 
         amount = IERC20(protected).balanceOf(_depositor);
@@ -261,6 +284,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
 
         IERC20 asset = IERC20(silo0.asset());
 
+        // forge-lint: disable-next-line(unused-return)
         (address protected,,) = _siloConfig.getShareTokens(address(silo0));
 
         uint256 amount = IERC20(protected).balanceOf(_depositor);
@@ -272,9 +296,11 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         uint256 maxWithdrawAmount = silo0.maxWithdraw(_depositor, ISilo.CollateralType.Protected);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FailedToClaimIncentives(address(silo0));
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(maxWithdrawAmount, _depositor, _depositor, ISilo.CollateralType.Protected);
 
         amount = IERC20(protected).balanceOf(_depositor);
@@ -289,6 +315,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
 
         IERC20 asset = IERC20(silo0.asset());
 
+        // forge-lint: disable-next-line(unused-return)
         (address protected,,) = _siloConfig.getShareTokens(address(silo0));
 
         uint256 amount = IERC20(protected).balanceOf(_depositor);
@@ -321,6 +348,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
             abi.encode(rewards)
         );
 
+        // forge-lint: disable-next-line(unused-return)
         _hookReceiver.redeemRewards();
 
         assertEq(token.balanceOf(address(silo0)), 0, "Token should have no rewards");
@@ -330,6 +358,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         );
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         _incentivesController.claimRewards(_depositor);
 
         // -1wei because of the rounding error in the Silo incentives controller
@@ -379,6 +408,7 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         address[] memory receivedRewardTokens = IPendleMarketLike(address(asset)).getRewardTokens();
         assertEq(receivedRewardTokens[0], address(asset), "Reward token should be the silo asset");
 
+        // forge-lint: disable-next-line(unused-return)
         _hookReceiver.redeemRewards();
 
         uint256 siloBalanceAfter = asset.balanceOf(address(silo0));
@@ -389,12 +419,14 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
     function test_getIncentivesControllerSafe_reverts() public {
         _depositProtected(); // deposit without revert as incentives controller is configured
 
+        // forge-lint: disable-next-line(unused-return)
         (address protected,,) = _siloConfig.getShareTokens(address(silo0));
 
         vm.prank(_deployer);
         IGaugeHookReceiver(address(_hookReceiver)).removeGauge(IShareToken(protected));
 
         vm.expectRevert(IPendleRewardsClaimer.IncentivesControllerRequired.selector);
+        // forge-lint: disable-next-line(unused-return)
         _hookReceiver.redeemRewards();
     }
 
@@ -403,8 +435,10 @@ contract PendleRewardsClaimerTest is SiloLittleHelper, Test, TransferOwnership {
         uint256 amount = asset.balanceOf(_depositor);
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         asset.approve(address(silo0), amount);
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(amount, _depositor, ISilo.CollateralType.Protected);
 
         _hookReceiverHarness.resetTransientRewardsClaimed();

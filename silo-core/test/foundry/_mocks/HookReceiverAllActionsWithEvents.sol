@@ -163,6 +163,7 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation, Ownable1and2Ste
         _transferOwnership(abi.decode(_ownerData, (address)));
     }
 
+    // forge-lint: disable-next-item(empty-block)
     function setGauge(address, address) external pure {
         // do nothing
     }
@@ -225,10 +226,12 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation, Ownable1and2Ste
 
         if (_isBefore) {
             Hook.BeforeDepositInput memory input = Hook.beforeDepositDecode(_inputAndOutput);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit DepositBeforeHA(_silo, input.assets, input.shares, input.receiver, collateralType);
         } else {
             Hook.AfterDepositInput memory input = Hook.afterDepositDecode(_inputAndOutput);
 
+            // forge-lint: disable-next-item(reentrancy-events)
             emit DepositAfterHA(
                 _silo,
                 input.assets,
@@ -252,6 +255,7 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation, Ownable1and2Ste
         Hook.AfterTokenTransfer memory input = Hook.afterTokenTransferDecode(_inputAndOutput);
 
         if (_action.matchAction(Hook.shareTokenTransfer(Hook.COLLATERAL_TOKEN))) {
+            // forge-lint: disable-next-item(reentrancy-events)
             emit ShareTokenAfterHA(
                 _silo,
                 input.sender,
@@ -263,6 +267,7 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation, Ownable1and2Ste
                 ISilo.CollateralType.Collateral
             );
         } else if (_action.matchAction(Hook.shareTokenTransfer(Hook.PROTECTED_TOKEN))) {
+            // forge-lint: disable-next-item(reentrancy-events)
             emit ShareTokenAfterHA(
                 _silo,
                 input.sender,
@@ -274,6 +279,7 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation, Ownable1and2Ste
                 ISilo.CollateralType.Protected
             );
         } else if (_action.matchAction(Hook.shareTokenTransfer(Hook.DEBT_TOKEN))) {
+            // forge-lint: disable-next-item(reentrancy-events)
             emit DebtShareTokenAfterHA(
                 _silo,
                 input.sender,
@@ -299,12 +305,14 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation, Ownable1and2Ste
         if (_isBefore) {
             Hook.BeforeWithdrawInput memory input = Hook.beforeWithdrawDecode(_inputAndOutput);
 
+            // forge-lint: disable-next-item(reentrancy-events)
             emit WithdrawBeforeHA(
                 _silo, input.assets, input.shares, input.receiver, input.owner, input.spender, collateralType
             );
         } else {
             Hook.AfterWithdrawInput memory input = Hook.afterWithdrawDecode(_inputAndOutput);
 
+            // forge-lint: disable-next-item(reentrancy-events)
             emit WithdrawAfterHA(
                 _silo,
                 input.assets,
@@ -333,10 +341,12 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation, Ownable1and2Ste
         if (_isBefore) {
             Hook.BeforeBorrowInput memory input = Hook.beforeBorrowDecode(_inputAndOutput);
 
+            // forge-lint: disable-next-line(reentrancy-events)
             emit BorrowBeforeHA(_silo, input.assets, input.shares, input.borrower, input.receiver, input.spender);
         } else {
             Hook.AfterBorrowInput memory input = Hook.afterBorrowDecode(_inputAndOutput);
 
+            // forge-lint: disable-next-item(reentrancy-events)
             emit BorrowAfterHA(
                 _silo,
                 input.assets,
@@ -353,10 +363,12 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation, Ownable1and2Ste
     function _processRepay(address _silo, bytes calldata _inputAndOutput, bool _isBefore) internal {
         if (_isBefore) {
             Hook.BeforeRepayInput memory input = Hook.beforeRepayDecode(_inputAndOutput);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit RepayBeforeHA(_silo, input.assets, input.shares, input.borrower, input.repayer);
         } else {
             Hook.AfterRepayInput memory input = Hook.afterRepayDecode(_inputAndOutput);
 
+            // forge-lint: disable-next-item(reentrancy-events)
             emit RepayAfterHA(
                 _silo,
                 input.assets,
@@ -372,9 +384,11 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation, Ownable1and2Ste
     function _processFlashLoan(address _silo, bytes calldata _inputAndOutput, bool _isBefore) internal {
         if (_isBefore) {
             Hook.BeforeFlashLoanInput memory input = Hook.beforeFlashLoanDecode(_inputAndOutput);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit FlashLoanBeforeHA(_silo, input.receiver, input.token, input.amount);
         } else {
             Hook.AfterFlashLoanInput memory input = Hook.afterFlashLoanDecode(_inputAndOutput);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit FlashLoanAfterHA(_silo, input.receiver, input.token, input.amount, input.fee);
         }
     }
@@ -383,9 +397,11 @@ contract HookReceiverAllActionsWithEvents is PartialLiquidation, Ownable1and2Ste
         if (_isBefore) {
             Hook.BeforeTransitionCollateralInput memory input =
                 Hook.beforeTransitionCollateralDecode(_inputAndOutput);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit TransitionCollateralHA(_silo, input.shares, input.owner, 0, _isBefore);
         } else {
             Hook.AfterTransitionCollateralInput memory input = Hook.afterTransitionCollateralDecode(_inputAndOutput);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit TransitionCollateralHA(_silo, input.shares, input.owner, input.assets, _isBefore);
         }
     }

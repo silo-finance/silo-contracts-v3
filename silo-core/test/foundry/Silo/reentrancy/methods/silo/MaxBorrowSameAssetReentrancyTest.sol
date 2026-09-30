@@ -21,7 +21,9 @@ contract MaxBorrowSameAssetReentrancyTest is MethodReentrancyTest {
     function _ensureItWillNotRevert() internal {
         address anyAddr = makeAddr("Any address");
 
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().maxBorrowSameAsset(anyAddr);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().maxBorrowSameAsset(anyAddr);
     }
 }

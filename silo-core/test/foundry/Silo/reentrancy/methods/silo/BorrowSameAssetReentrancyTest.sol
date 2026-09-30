@@ -10,6 +10,7 @@ contract BorrowSameAssetReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
 
         vm.expectRevert(ISilo.Deprecated.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.borrowSameAsset(0, address(0), address(0));
     }
 
@@ -17,11 +18,13 @@ contract BorrowSameAssetReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
 
         vm.expectRevert(ISilo.Deprecated.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.borrowSameAsset(1000, address(0), address(0));
 
         ISilo silo1 = TestStateLib.silo1();
 
         vm.expectRevert(ISilo.Deprecated.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo1.borrowSameAsset(1000, address(0), address(0));
     }
 

@@ -26,6 +26,7 @@ contract FlashLoanReceiverMock is IERC3156FlashBorrower {
     uint256 public lastBalanceOf;
     uint256 public lastFee;
 
+    // forge-lint: disable-next-line(missing-zero-check)
     function onFlashLoan(address _initiator, address _token, uint256 _amount, uint256 _fee, bytes calldata)
         external
         returns (bytes32)
@@ -40,6 +41,7 @@ contract FlashLoanReceiverMock is IERC3156FlashBorrower {
         lastBalanceOf = IERC20(_token).balanceOf(address(this));
         lastFee = _fee;
 
+        // forge-lint: disable-next-line(unused-return)
         IERC20(_token).approve({spender: msg.sender, value: _amount + _fee});
         return FLASHLOAN_CALLBACK;
     }
@@ -54,6 +56,7 @@ contract AaveFlashloanTest is Test {
     FlashLoanReceiverMock receiver;
 
     function setUp() public {
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), 71073457);
 
         AaveFlashloanDeploy aaveFlashloanDeploy = new AaveFlashloanDeploy();

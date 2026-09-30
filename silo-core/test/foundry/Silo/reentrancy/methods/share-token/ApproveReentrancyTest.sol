@@ -20,11 +20,13 @@ contract ApproveReentrancyTest is ShareTokenMethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert(address _token) internal {
+        // forge-lint: disable-next-line(unused-return)
         ShareToken(_token).approve(address(this), 100);
     }
 
     function _ensureItWillRevert(address _token) internal {
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(unused-return)
         ShareToken(_token).approve(address(this), 100);
     }
 }

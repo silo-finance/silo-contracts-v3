@@ -26,7 +26,9 @@ contract ApproveReentrancyTest is MethodReentrancyTest {
 
         address anyAddr = makeAddr("Any address");
 
+        // forge-lint: disable-next-line(unused-return)
         silo0.approve(anyAddr, 1e18);
+        // forge-lint: disable-next-line(unused-return)
         silo1.approve(anyAddr, 1e18);
     }
 
@@ -35,9 +37,11 @@ contract ApproveReentrancyTest is MethodReentrancyTest {
         ISilo silo1 = TestStateLib.silo1();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.approve(address(0), 1e18);
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo1.approve(address(0), 1e18);
     }
 }

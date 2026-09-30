@@ -19,6 +19,7 @@ contract NameReentrancyTest is ShareTokenMethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert(address _token) internal view {
+        // forge-lint: disable-next-line(unused-return)
         ShareToken(_token).name();
     }
 }

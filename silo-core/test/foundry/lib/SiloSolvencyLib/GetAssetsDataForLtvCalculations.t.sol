@@ -62,29 +62,33 @@ contract GetAssetsDataForLtvCalculationsTest is Test {
 
             // forge-lint: disable-next-line(unsafe-typecast)
             if (address(uint160(scenario.input.debtConfig.maxLtvOracle)) != address(0)) {
-                // forge-lint: disable-next-line(unsafe-typecast)
+                // forge-lint: disable-next-line(calls-loop, unsafe-typecast)
                 OracleMock om = new OracleMock(address(uint160(scenario.input.debtConfig.maxLtvOracle)));
+                // forge-lint: disable-next-line(calls-loop)
                 om.quoteTokenMock(makeAddr("quoteToken"));
             }
 
             // forge-lint: disable-next-line(unsafe-typecast)
             if (address(uint160(scenario.input.debtConfig.solvencyOracle)) != address(0)) {
-                // forge-lint: disable-next-line(unsafe-typecast)
+                // forge-lint: disable-next-line(calls-loop, unsafe-typecast)
                 OracleMock om = new OracleMock(address(uint160(scenario.input.debtConfig.solvencyOracle)));
+                // forge-lint: disable-next-line(calls-loop)
                 om.quoteTokenMock(makeAddr("quoteToken"));
             }
 
             // forge-lint: disable-next-line(unsafe-typecast)
             if (address(uint160(scenario.input.collateralConfig.maxLtvOracle)) != address(0)) {
-                // forge-lint: disable-next-line(unsafe-typecast)
+                // forge-lint: disable-next-line(calls-loop, unsafe-typecast)
                 OracleMock om = new OracleMock(address(uint160(scenario.input.collateralConfig.maxLtvOracle)));
+                // forge-lint: disable-next-line(calls-loop)
                 om.quoteTokenMock(makeAddr("quoteToken"));
             }
 
             // forge-lint: disable-next-line(unsafe-typecast)
             if (address(uint160(scenario.input.collateralConfig.solvencyOracle)) != address(0)) {
-                // forge-lint: disable-next-line(unsafe-typecast)
+                // forge-lint: disable-next-line(calls-loop, unsafe-typecast)
                 OracleMock om = new OracleMock(address(uint160(scenario.input.collateralConfig.solvencyOracle)));
+                // forge-lint: disable-next-line(calls-loop)
                 om.quoteTokenMock(makeAddr("quoteToken"));
             }
 
@@ -92,6 +96,7 @@ contract GetAssetsDataForLtvCalculationsTest is Test {
             initData.maxLtvOracle0 = address(uint160(scenario.input.collateralConfig.maxLtvOracle));
             // forge-lint: disable-next-line(unsafe-typecast)
             initData.solvencyOracle0 = address(uint160(scenario.input.collateralConfig.solvencyOracle));
+            // forge-lint: disable-next-line(calls-loop)
             initData.interestRateModel0 = interestRateModelMock.ADDRESS();
             initData.deployerFee = scenario.input.collateralConfig.deployerFee;
 
@@ -99,6 +104,7 @@ contract GetAssetsDataForLtvCalculationsTest is Test {
             initData.maxLtvOracle1 = address(uint160(scenario.input.debtConfig.maxLtvOracle));
             // forge-lint: disable-next-line(unsafe-typecast)
             initData.solvencyOracle1 = address(uint160(scenario.input.debtConfig.solvencyOracle));
+            // forge-lint: disable-next-line(calls-loop)
             initData.interestRateModel1 = interestRateModelMock.ADDRESS();
 
             (collateralConfig, debtConfig) = Views.copySiloConfig({
@@ -129,16 +135,20 @@ contract GetAssetsDataForLtvCalculationsTest is Test {
             ? ISilo.OracleType.Solvency
             : ISilo.OracleType.MaxLtv;
 
+        // forge-lint: disable-next-line(calls-loop)
         TokenMock protectedShareTokenMock = new TokenMock(protectedShareToken);
 
+        // forge-lint: disable-next-item(calls-loop)
         protectedShareTokenMock.balanceOfAndTotalSupplyMock(
             borrowerAddr,
             scenario.input.collateralConfig.protectedShareBalanceOf,
             scenario.input.collateralConfig.protectedShareTotalSupply
         );
 
+        // forge-lint: disable-next-line(calls-loop)
         TokenMock collateralShareTokenMock = new TokenMock(collateralShareToken);
 
+        // forge-lint: disable-next-item(calls-loop)
         collateralShareTokenMock.balanceOfAndTotalSupplyMock(
             borrowerAddr,
             scenario.input.collateralConfig.collateralShareBalanceOf,
@@ -146,17 +156,21 @@ contract GetAssetsDataForLtvCalculationsTest is Test {
         );
 
         if (scenario.input.accrueInMemory) {
+            // forge-lint: disable-next-item(calls-loop)
             interestRateModelMock.getCompoundInterestRateMock(
                 silo0, block.timestamp, scenario.input.collateralConfig.compoundInterestRate
             );
         }
 
+        // forge-lint: disable-next-line(calls-loop)
         TokenMock debtShareTokenMock = new TokenMock(debtShareToken);
 
         if (scenario.input.debtConfig.cachedBalance) {
             cachedShareDebtBalance = scenario.input.debtConfig.debtShareBalanceOf;
+            // forge-lint: disable-next-line(calls-loop)
             debtShareTokenMock.totalSupplyMock(scenario.input.debtConfig.debtShareTotalSupply);
         } else {
+            // forge-lint: disable-next-item(calls-loop)
             debtShareTokenMock.balanceOfAndTotalSupplyMock(
                 borrowerAddr,
                 scenario.input.debtConfig.debtShareBalanceOf,
@@ -164,24 +178,30 @@ contract GetAssetsDataForLtvCalculationsTest is Test {
             );
         }
 
+        // forge-lint: disable-next-line(calls-loop)
         SiloMock siloMock0 = new SiloMock(silo0);
 
         if (scenario.input.accrueInMemory) {
+            // forge-lint: disable-next-item(calls-loop)
             siloMock0.getCollateralAndDebtAssetsMock(
                 scenario.input.collateralConfig.totalCollateralAssets,
                 scenario.input.collateralConfig.totalDebtAssets
             );
         }
 
+        // forge-lint: disable-next-item(calls-loop)
         siloMock0.getCollateralAndProtectedAssetsMock(
             scenario.input.collateralConfig.totalCollateralAssets,
             scenario.input.collateralConfig.totalProtectedAssets
         );
 
+        // forge-lint: disable-next-line(calls-loop)
         SiloMock siloMock1 = new SiloMock(silo1);
+        // forge-lint: disable-next-line(calls-loop)
         siloMock1.totalMock(ISilo.AssetType.Debt, scenario.input.debtConfig.totalDebtAssets);
 
         if (scenario.input.accrueInMemory) {
+            // forge-lint: disable-next-item(calls-loop)
             interestRateModelMock.getCompoundInterestRateMock(
                 silo1, block.timestamp, scenario.input.debtConfig.compoundInterestRate
             );

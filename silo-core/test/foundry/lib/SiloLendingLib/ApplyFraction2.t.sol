@@ -46,6 +46,7 @@ contract ApplyFraction2 is Test {
         uint64 lastTimestamp = $.interestRateTimestamp;
 
         // Interest has already been accrued this block
+        // forge-lint: disable-next-line(block-timestamp)
         if (lastTimestamp == block.timestamp) {
             revert("we need test with time");
         }

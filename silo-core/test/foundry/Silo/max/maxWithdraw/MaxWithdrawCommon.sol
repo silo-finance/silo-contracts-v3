@@ -35,11 +35,16 @@ contract MaxWithdrawCommon is SiloLittleHelper, Test {
         uint256 assets = _toBorrow > maxBorrow ? maxBorrow : _toBorrow;
         _borrow(assets, BORROWER);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[_createDebtSilo1] _collateral", _collateral);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[_createDebtSilo1] maxBorrow", maxBorrow);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[_createDebtSilo1] _toBorrow", _toBorrow);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[_createDebtSilo1] borrowed", assets);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[_createDebtSilo1] LTV after borrow", silo1.getLtv(BORROWER), 16);
         assertEq(silo0.getLtv(BORROWER), silo1.getLtv(BORROWER), "LTV should be the same on both silos");
 
@@ -59,13 +64,19 @@ contract MaxWithdrawCommon is SiloLittleHelper, Test {
 
         uint256 assets = _toBorrow > maxBorrow ? maxBorrow : _toBorrow;
         vm.prank(otherBorrower);
+        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(assets, otherBorrower, otherBorrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[_createDebtSilo0] _collateral", _collateral);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[_createDebtSilo0] maxBorrow", maxBorrow);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[_createDebtSilo0] _toBorrow", _toBorrow);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[_createDebtSilo0] borrowed", assets);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[_createDebtSilo0] LTV after borrow", silo0.getLtv(otherBorrower), 16);
         assertEq(silo0.getLtv(otherBorrower), silo1.getLtv(otherBorrower), "LTV should be the same on both silos");
 
@@ -73,6 +84,7 @@ contract MaxWithdrawCommon is SiloLittleHelper, Test {
     }
 
     function _ensureBorrowerHasDebt(ISilo _silo, address _borrower) internal view {
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = _silo.config().getShareTokens(address(_silo));
 
         assertGt(_silo.maxRepayShares(_borrower), 0, "expect debt");

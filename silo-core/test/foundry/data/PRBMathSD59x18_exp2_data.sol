@@ -8,6 +8,7 @@ contract PRBMathSD59x18_exp2_data {
             expected = new int256[](70);
             uint256 i;
 
+            // forge-lint: disable-next-line(uninitialized-local)
             inputs[i] = 0e18;
             expected[i] = 1e18;
             i++;
@@ -227,6 +228,7 @@ contract PRBMathSD59x18_exp2_data {
             expected = new int256[](199);
             uint256 i;
 
+            // forge-lint: disable-next-line(uninitialized-local)
             inputs[i] = 10000000000000000;
             expected[i] = 1006955550056718884;
             i++;

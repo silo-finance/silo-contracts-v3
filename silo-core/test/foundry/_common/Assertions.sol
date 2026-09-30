@@ -16,6 +16,7 @@ contract Assertions is Test {
             uint256 au = uint256(a < 0 ? -a : a);
             // forge-lint: disable-next-line(unsafe-typecast)
             uint256 bu = uint256(b < 0 ? -b : b);
+            // forge-lint: disable-next-line(encode-packed-collision, reentrancy-events)
             emit log(string(abi.encodePacked("expect ", au.toString(), " to be close to ", bu.toString())));
         }
 
@@ -39,7 +40,9 @@ contract Assertions is Test {
         if (relativeDiff > percent) {
             // forge-lint: disable-next-line(unsafe-typecast)
             uint256 au = uint256(a < 0 ? -a : a);
+            // forge-lint: disable-next-line(encode-packed-collision, reentrancy-events)
             emit log(string(abi.encodePacked("expect ", au.toString(), " to be close to ", bu.toString())));
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log(string(abi.encodePacked("abs difference ", absDiff.toString())));
         }
 

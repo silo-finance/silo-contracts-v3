@@ -22,6 +22,7 @@ contract SiloDeployerIntegrationTest is Test {
     SiloDeployer siloDeployer;
 
     function setUp() public {
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_URL"));
 
         AddrLib.init();

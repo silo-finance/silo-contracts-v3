@@ -181,8 +181,11 @@ contract GetTotalAssetsAndTotalSharesWithInterestTest is Test {
         uint256 totalShares;
 
         for (uint256 index = 0; index < debtTestCasesIndex; index++) {
+            // forge-lint: disable-next-line(calls-loop)
             SILO.totalMock(ISilo.AssetType.Debt, debtTestCases[index].debtAssets);
+            // forge-lint: disable-next-line(calls-loop)
             DEBT_SHARE_TOKEN.totalSupplyMock(_totalSupply);
+            // forge-lint: disable-next-line(calls-loop)
             INTEREST_RATE_MODEL.getCompoundInterestRateMock(silo, block.timestamp, debtTestCases[index].rcomp);
 
             (totalAssets, totalShares) =
@@ -266,10 +269,13 @@ contract GetTotalAssetsAndTotalSharesWithInterestTest is Test {
         uint256 totalShares;
 
         for (uint256 index = 0; index < collateralTestCasesIndex; index++) {
+            // forge-lint: disable-next-item(calls-loop)
             SILO.getCollateralAndDebtAssetsMock(
                 collateralTestCases[index].collateralAssets, collateralTestCases[index].debtAssets
             );
+            // forge-lint: disable-next-line(calls-loop)
             COLLATERAL_SHARE_TOKEN.totalSupplyMock(_totalSupply);
+            // forge-lint: disable-next-line(calls-loop)
             INTEREST_RATE_MODEL.getCompoundInterestRateMock(silo, block.timestamp, collateralTestCases[index].rcomp);
             daoFee = collateralTestCases[index].daoFee;
             deployerFee = collateralTestCases[index].deployerFee;
@@ -283,10 +289,15 @@ contract GetTotalAssetsAndTotalSharesWithInterestTest is Test {
     }
 
     function _config() internal view returns (ISiloConfig.ConfigData memory configData) {
+        // forge-lint: disable-next-line(calls-loop)
         configData.silo = SILO.ADDRESS();
+        // forge-lint: disable-next-line(calls-loop)
         configData.collateralShareToken = COLLATERAL_SHARE_TOKEN.ADDRESS();
+        // forge-lint: disable-next-line(calls-loop)
         configData.protectedShareToken = PROTECTED_SHARE_TOKEN.ADDRESS();
+        // forge-lint: disable-next-line(calls-loop)
         configData.debtShareToken = DEBT_SHARE_TOKEN.ADDRESS();
+        // forge-lint: disable-next-line(calls-loop)
         configData.interestRateModel = INTEREST_RATE_MODEL.ADDRESS();
         configData.daoFee = daoFee;
         configData.deployerFee = deployerFee;

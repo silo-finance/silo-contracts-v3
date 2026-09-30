@@ -39,6 +39,7 @@ contract LiquidationHelperDebug20250127 is Test {
 
     function setUp() public {
         uint256 blockToFork = 5597197 - 1;
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), blockToFork);
 
         lens = new SiloLens();
@@ -64,16 +65,24 @@ contract LiquidationHelperDebug20250127 is Test {
 
         vm.label(address(liquidationHelper), "LiquidationHelper");
         ISiloConfig siloConfig = liquidation.siloConfig();
+        // forge-lint: disable-next-line(unused-return)
         (, ISiloConfig.ConfigData memory debtConfig) = siloConfig.getConfigsForSolvency(borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("solvent?", ISilo(debtConfig.silo).isSolvent(borrower) ? "yes" : "NO");
         uint256 ltv = lens.getLtv(ISilo(debtConfig.silo), borrower);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("getLtv", ltv, 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("user", borrower);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("silo", address(debtConfig.silo));
 
+        // forge-lint: disable-next-line(unused-return)
         (uint256 collateral, uint256 debtToRepay,) = liquidation.maxLiquidation(borrower);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("collateral", collateral, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("debtToRepay", debtToRepay, 6);
 
         assertGt(ltv, 1e18, "expect bad debt scenario");
@@ -115,6 +124,7 @@ contract LiquidationHelperDebug20250127 is Test {
             vm.label(liquidationData.collateralAsset, "collateralAsset");
             uint256 debtToCover = debtToRepay * 0.95e18 / ltv;
 
+            // forge-lint: disable-next-item(unused-return)
             liquidationHelper.executeLiquidation(
                 flashLoanFrom, debtToken, debtToCover, liquidationData, swapsInputs0x
             );

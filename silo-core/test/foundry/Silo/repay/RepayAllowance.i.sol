@@ -40,6 +40,7 @@ contract RepayAllowanceTest is SiloLittleHelper, Test {
     function test_repay_WithoutAllowance() public {
         _setUp();
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(address(silo1));
 
         assertEq(IShareToken(debtShareToken).balanceOf(BORROWER), ASSETS, "BORROWER debt before");
@@ -47,7 +48,9 @@ contract RepayAllowanceTest is SiloLittleHelper, Test {
         uint256 toRepay = ASSETS / 2;
 
         token1.mint(address(this), toRepay);
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), toRepay);
+        // forge-lint: disable-next-line(unused-return)
         silo1.repay(toRepay, BORROWER);
 
         assertEq(IShareToken(debtShareToken).balanceOf(BORROWER), ASSETS - toRepay, "BORROWER debt after reduced");

@@ -61,11 +61,14 @@ contract MaxLiquidationLTV100FullTest is MaxLiquidationCommon {
         (uint256 collateralToLiquidate, uint256 debtToRepay, bool sTokenRequired) =
             partialLiquidation.maxLiquidation(BORROWER);
 
+        // forge-lint: disable-next-line(unused-return)
         (,,, bool fullLiquidation) = SILO_LENS.maxLiquidation(silo1, partialLiquidation, BORROWER);
         assertTrue(fullLiquidation, "[100FULL] fullLiquidation flag is UP when LTV is 100%");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[100FULL] collateralToLiquidate", collateralToLiquidate);
         uint256 ltv = silo0.getLtv(BORROWER);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[100FULL] ltv before", ltv, 16);
 
         if (collateralToLiquidate == 0) {
@@ -79,7 +82,9 @@ contract MaxLiquidationLTV100FullTest is MaxLiquidationCommon {
             address(token0), address(token1), BORROWER, maxDebtToCover, _receiveSToken
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[100FULL] ltv after", silo0.getLtv(BORROWER), 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[100FULL] collateralToLiquidate", collateralToLiquidate, 18);
 
         assertEq(debtToRepay, repayDebtAssets, "[100FULL] debt: maxLiquidation == result");

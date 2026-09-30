@@ -198,6 +198,7 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
 
             uint256 totalProtectedRewards = 0.499512389292466912131e21; // hardcoded based on logs
 
+            // forge-lint: disable-next-line(unused-return)
             (address protectedShareToken,,) = siloConfig.getShareTokens(address(collateralSilo));
 
             assertEq(collateralSilo.balanceOf(address(gauge)), totalGaugeRewards, "gauge shares/rewards");
@@ -232,6 +233,7 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
             );
 
             vm.prank(lpProvider);
+            // forge-lint: disable-next-line(unused-return)
             gauge.claimRewards(lpProvider);
 
             assertEq(collateralSilo.balanceOf(lpProvider), totalGaugeRewards, "[lpProvider] rewards claimed");
@@ -282,6 +284,7 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
         {
             if (_withOtherBorrower) {
                 token0.setOnDemand(true);
+                // forge-lint: disable-next-line(unused-return)
                 debtSilo.repayShares(debtSilo.maxRepayShares(makeAddr("otherBorrower")), makeAddr("otherBorrower"));
                 token0.setOnDemand(false);
             }
@@ -292,6 +295,7 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
 
             // this case is partial liquidation, so we need to repay the debt to exit
             token0.setOnDemand(true);
+            // forge-lint: disable-next-line(unused-return)
             debtSilo.repayShares(borrowerDebtAfter.debtShares, borrower);
             token0.setOnDemand(false);
 
@@ -359,7 +363,9 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
         );
 
         vm.startPrank(makeAddr("lpProvider1"));
+        // forge-lint: disable-next-line(unused-return)
         gauge2.claimRewards(makeAddr("lpProvider1"));
+        // forge-lint: disable-next-line(unused-return)
         gauge3.claimRewards(makeAddr("lpProvider1"));
         vm.stopPrank();
 
@@ -376,7 +382,9 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
         );
 
         vm.startPrank(makeAddr("lpProvider2"));
+        // forge-lint: disable-next-line(unused-return)
         gauge2.claimRewards(makeAddr("lpProvider2"));
+        // forge-lint: disable-next-line(unused-return)
         gauge3.claimRewards(makeAddr("lpProvider2"));
         vm.stopPrank();
 
@@ -456,7 +464,9 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
         );
 
         vm.startPrank(makeAddr("lpProvider1"));
+        // forge-lint: disable-next-line(unused-return)
         gauge2.claimRewards(makeAddr("lpProvider1"));
+        // forge-lint: disable-next-line(unused-return)
         gauge3.claimRewards(makeAddr("lpProvider1"));
         vm.stopPrank();
 
@@ -473,7 +483,9 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
         );
 
         vm.startPrank(makeAddr("lpProvider2"));
+        // forge-lint: disable-next-line(unused-return)
         gauge2.claimRewards(makeAddr("lpProvider2"));
+        // forge-lint: disable-next-line(unused-return)
         gauge3.claimRewards(makeAddr("lpProvider2"));
         vm.stopPrank();
 
@@ -528,6 +540,7 @@ contract DefaultingLiquidationBorrowable0Test is DefaultingLiquidationCommon {
         uint256 repayDebtAssets = 2.046343284218735174e18;
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-item(reentrancy-events)
         emit IPartialLiquidationByDefaulting.DefaultingLiquidationData({
             debtSilo: address(debtSilo),
             borrower: borrower,

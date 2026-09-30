@@ -43,10 +43,12 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
         siloConfig = _setUpLocalFixture();
 
         _depositForBorrow(COLLATERAL_FOR_BORROW, DEPOSITOR);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("COLLATERAL_FOR_BORROW", COLLATERAL_FOR_BORROW, 18);
 
         _deposit(COLLATERAL, BORROWER);
         _borrow(DEBT, BORROWER);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("DEBT", DEBT, 18);
         debtStart = block.timestamp;
 
@@ -73,8 +75,10 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
         assertGt(ltv, 1e18, "expect bad debt for this test");
 
         // price is 1:1 so we wil use collateral value as max debt to cover
+        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate,,) = partialLiquidation.maxLiquidation(BORROWER);
 
+        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token0), address(token1), BORROWER, collateralToLiquidate, false /* receiveSToken */
         );
@@ -83,6 +87,7 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
         assertEq(ltv, type(uint256).max, "expect ininite LTV after liquidation");
 
         vm.expectRevert(IPartialLiquidation.NoCollateralToLiquidate.selector);
+        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token0), address(token1), BORROWER, type(uint256).max, false /* receiveSToken */
         );
@@ -105,6 +110,7 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
     */
     function test_liquidationCall_999collateral() public {
         vm.startPrank(BORROWER);
+        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(silo0.balanceOf(BORROWER), BORROWER, ISilo.CollateralType.Collateral);
         vm.stopPrank();
 
@@ -120,8 +126,10 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
 
         _makeSharesNotWithdrawable(_generateDustForType);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrower other shares", otherShareToken.balanceOf(BORROWER), 18);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV before liquidation [%]", SILO_LENS.getLtv(silo0, BORROWER), 16);
 
         uint256 sharesBefore = shareToken.balanceOf(address(this));
@@ -135,11 +143,15 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
         _executeLiquidation();
 
         uint256 sharesBalanceAfter = shareToken.balanceOf(address(this));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("shares token", shareToken.symbol());
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("sharesBalanceAfter", sharesBalanceAfter);
 
         uint256 otherSharesBalanceAfter = otherShareToken.balanceOf(address(this));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("other shares token", otherShareToken.symbol());
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("otherSharesBalanceAfter", otherSharesBalanceAfter);
 
         assertGt(sharesBalanceAfter, 0, "liquidator should got dust shares");
@@ -153,6 +165,7 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
     }
 
     function _executeLiquidation() internal {
+        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token0), address(token1), BORROWER, type(uint256).max, false /* receiveSToken */
         );
@@ -166,16 +179,19 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
         _deposit(1e18, DEPOSITOR, _generateDustForType);
 
         uint256 borrowerShares = shareToken.balanceOf(BORROWER);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("borrower non witdrawable shares (1)", borrowerShares);
 
         vm.prank(address(silo0));
         shareToken.burn(DEPOSITOR, DEPOSITOR, 123456789);
 
         uint256 ratio = silo0.convertToShares(1, ISilo.AssetType(uint8(_generateDustForType)));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ratio", ratio);
         assertLt(ratio, 1e3, "for this test we expect ratio to be NOT 1:1");
 
         vm.prank(BORROWER);
+        // forge-lint: disable-next-line(unused-return)
         silo0.mint(ratio + 1, BORROWER, _generateDustForType);
 
         uint256 reduceCollateralValue = otherShareToken.balanceOf(BORROWER) / 2;
@@ -183,6 +199,7 @@ contract LiquidationCall999caseTest is SiloLittleHelper, Test {
         otherShareToken.forwardTransferFromNoChecks(BORROWER, makeAddr("random"), reduceCollateralValue);
 
         borrowerShares = shareToken.balanceOf(BORROWER);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("borrower non witdrawable shares (2)", borrowerShares);
 
         assertEq(

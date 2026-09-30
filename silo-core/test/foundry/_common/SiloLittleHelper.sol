@@ -51,6 +51,7 @@ abstract contract SiloLittleHelper is CommonBase {
 
     // we have permissioned liquidation controller set by default. For QA purposes, we can remove it.
     function _removePermissionedLiquidationController(ISiloConfig _siloConfig) internal {
+        // forge-lint: disable-next-line(unused-return)
         (address collateralShareToken, address protectedShareToken,) = _siloConfig.getShareTokens(address(silo0));
 
         address hook = IShareToken(collateralShareToken).hookReceiver();
@@ -66,6 +67,7 @@ abstract contract SiloLittleHelper is CommonBase {
             IGaugeHookReceiver(hook).removeGauge(IShareToken(protectedShareToken));
         }
 
+        // forge-lint: disable-next-line(unused-return)
         (collateralShareToken, protectedShareToken,) = _siloConfig.getShareTokens(address(silo1));
 
         if (address(IGaugeHookReceiver(hook).configuredGauges(IShareToken(collateralShareToken))) != address(0)) {
@@ -126,6 +128,7 @@ abstract contract SiloLittleHelper is CommonBase {
         view
         returns (address gaugeC, address gaugeP, address owner)
     {
+        // forge-lint: disable-next-line(unused-return)
         (address collateralShareToken, address protectedShareToken,) = _siloConfig.getShareTokens(address(silo0));
         address hook = IShareToken(collateralShareToken).hookReceiver();
 
@@ -144,6 +147,7 @@ abstract contract SiloLittleHelper is CommonBase {
         SiloFixture siloFixture = new SiloFixture();
 
         address hook;
+        // forge-lint: disable-next-line(unused-return)
         (siloConfig, silo0, silo1,,, hook) = siloFixture.deploy_local(_configName);
 
         partialLiquidation = IPartialLiquidation(hook);
@@ -175,9 +179,11 @@ abstract contract SiloLittleHelper is CommonBase {
         _mintTokens(token1, _assets, _depositor);
 
         vm.startPrank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), _assets);
 
         vm.expectRevert(_error);
+        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(_assets, _depositor, _type);
         vm.stopPrank();
     }
@@ -213,7 +219,9 @@ abstract contract SiloLittleHelper is CommonBase {
     }
 
     function _borrow(uint256 _amount, address _borrower) internal returns (uint256 shares) {
+        // forge-lint: disable-next-line(calls-loop)
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(calls-loop)
         shares = silo1.borrow(_amount, _borrower, _borrower);
     }
 
@@ -225,10 +233,14 @@ abstract contract SiloLittleHelper is CommonBase {
     function _repay(uint256 _amount, address _borrower) internal returns (uint256 shares) {
         _mintTokens(token1, _amount, _borrower);
 
+        // forge-lint: disable-next-line(calls-loop)
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(calls-loop, unused-return)
         token1.approve(address(silo1), _amount);
 
+        // forge-lint: disable-next-line(calls-loop)
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(calls-loop)
         shares = silo1.repay(_amount, _borrower);
     }
 
@@ -242,6 +254,7 @@ abstract contract SiloLittleHelper is CommonBase {
     {
         _mintTokens(token1, _approval, _borrower);
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), _approval);
         vm.prank(_borrower);
 
@@ -253,7 +266,9 @@ abstract contract SiloLittleHelper is CommonBase {
     }
 
     function _redeem(uint256 _amount, address _depositor) internal virtual returns (uint256 assets) {
+        // forge-lint: disable-next-line(calls-loop)
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(calls-loop)
         return silo0.redeem(_amount, _depositor, _depositor);
     }
 
@@ -263,7 +278,9 @@ abstract contract SiloLittleHelper is CommonBase {
     }
 
     function _withdrawFromBorrow(uint256 _amount, address _depositor) internal returns (uint256 shares) {
+        // forge-lint: disable-next-line(calls-loop)
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(calls-loop)
         return silo1.withdraw(_amount, _depositor, _depositor);
     }
 
@@ -284,9 +301,13 @@ abstract contract SiloLittleHelper is CommonBase {
     ) internal returns (uint256 shares) {
         _mintTokens(_token, _assets, _depositor);
 
+        // forge-lint: disable-next-line(calls-loop)
         vm.startPrank(_depositor);
+        // forge-lint: disable-next-line(calls-loop, unused-return)
         _token.approve(address(_silo), _assets);
+        // forge-lint: disable-next-line(calls-loop)
         shares = _silo.deposit(_assets, _depositor, _type);
+        // forge-lint: disable-next-line(calls-loop)
         vm.stopPrank();
     }
 
@@ -301,18 +322,22 @@ abstract contract SiloLittleHelper is CommonBase {
         _mintTokens(_token, _approve, _depositor);
 
         vm.startPrank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         _token.approve(address(_silo), _approve);
         assets = _silo.mint(_shares, _depositor, _type);
         vm.stopPrank();
     }
 
     function _mintTokens(MintableToken _token, uint256 _assets, address _user) internal {
+        // forge-lint: disable-next-line(calls-loop)
         uint256 cap = type(uint256).max - _token.totalSupply();
+        // forge-lint: disable-next-line(calls-loop)
         uint256 balanceOf = _token.balanceOf(_user);
 
         if (balanceOf < _assets) {
             uint256 toMint = _assets - balanceOf;
             if (toMint > cap) toMint = cap;
+            // forge-lint: disable-next-line(calls-loop)
             _token.mint(_user, toMint);
         }
     }
@@ -336,6 +361,7 @@ abstract contract SiloLittleHelper is CommonBase {
         overrides.configName = _configName;
 
         address hook;
+        // forge-lint: disable-next-line(unused-return)
         (siloConfig, silo0, silo1,,, hook) = _siloFixture.deploy_local(overrides);
 
         partialLiquidation = IPartialLiquidation(hook);

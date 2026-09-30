@@ -26,6 +26,7 @@ contract MaxBorrowValueToAssetsAndSharesTestData {
 
     MBVData[] allData;
 
+    // forge-lint: disable-next-line(missing-zero-check)
     constructor(address _debtToken) {
         DEBT_TOKEN = _debtToken;
     }
@@ -110,6 +111,7 @@ contract MaxBorrowValueToAssetsAndSharesTestData {
         i = allData.length;
         allData.push();
 
+        // forge-lint: disable-next-line(encode-packed-collision)
         allData[i].name = string(abi.encodePacked("#", toString(i), " ", _name));
 
         allData[i].input.debtToken = DEBT_TOKEN;

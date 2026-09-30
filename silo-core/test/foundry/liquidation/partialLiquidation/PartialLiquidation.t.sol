@@ -14,10 +14,13 @@ contract PartialLiquidationMock is PartialLiquidation {
         return _isToAssetsConvertionError(_error);
     }
 
+    // forge-lint: disable-next-line(empty-block)
     function afterAction(address, uint256, bytes calldata) external {}
 
+    // forge-lint: disable-next-line(empty-block)
     function beforeAction(address, uint256, bytes calldata) external {}
 
+    // forge-lint: disable-next-line(empty-block)
     function initialize(ISiloConfig, bytes calldata) external {}
 }
 

@@ -18,6 +18,7 @@ contract ConversionsTest is Test {
         Math.Rounding _rounding = Rounding.DOWN;
 
         uint256 shares =
+            // forge-lint: disable-next-line(uninitialized-local)
             SiloMathLib.convertToShares(_assets, _totalAssets, _totalShares, _rounding, ISilo.AssetType.Collateral);
         assertEq(shares, 1 * SiloMathLib._DECIMALS_OFFSET_POW, "#1");
 

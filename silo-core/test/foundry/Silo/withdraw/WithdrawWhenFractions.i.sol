@@ -43,11 +43,15 @@ contract WithdrawWhenFractionsTest is SiloLittleHelper, Test {
 
         address borrower = address(this);
 
+        // forge-lint: disable-next-line(unused-return)
         silo0.mint(632707868, borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo1.mint(632707868, borrower);
         _borrow(_borrowAmount / 2, borrower);
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 195346);
+        // forge-lint: disable-next-line(unused-return)
         silo1.accrueInterest();
         ISilo.Fractions memory fractions = silo1.getFractionsStorage();
         vm.assume(fractions.interest != 0);
@@ -56,9 +60,11 @@ contract WithdrawWhenFractionsTest is SiloLittleHelper, Test {
 
         if (_maxRedeem) {
             vm.assume(silo1.maxRedeem(borrower) != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo1.redeem(silo1.maxRedeem(borrower), borrower, borrower);
         } else {
             vm.assume(silo1.maxWithdraw(borrower) != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo1.withdraw(silo1.maxWithdraw(borrower), borrower, borrower);
         }
     }

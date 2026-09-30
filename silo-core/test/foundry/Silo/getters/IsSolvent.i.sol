@@ -41,7 +41,9 @@ contract IsSolventTest is SiloLittleHelper, Test {
 
         ISilo collateralSilo = silo0;
 
+        // forge-lint: disable-next-line(unused-return)
         (, address collateralShareToken,) = collateralSilo.config().getShareTokens(address(collateralSilo));
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = silo1.config().getShareTokens(address(silo1));
 
         vm.prank(recipient);
@@ -73,6 +75,7 @@ contract IsSolventTest is SiloLittleHelper, Test {
 
         _borrow(assets / 2, borrower);
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = silo1.config().getShareTokens(address(silo1));
 
         vm.prank(recipient);

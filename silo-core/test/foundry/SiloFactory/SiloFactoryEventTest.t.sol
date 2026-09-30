@@ -107,15 +107,19 @@ contract SiloFactoryEventTest is Test {
     */
     function test_siloFactory_events() public {
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloFactory.NewSiloShareTokens(protectedShareToken0, silo0, debtShareToken0);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloFactory.NewSiloHook(silo0, hookReceiver0);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloFactory.NewSiloShareTokens(protectedShareToken1, silo1, debtShareToken1);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloFactory.NewSiloHook(silo1, hookReceiver1);
 
         factoryMock.createSilo({

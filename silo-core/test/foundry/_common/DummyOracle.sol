@@ -12,6 +12,7 @@ contract DummyOracle is ISiloOracle {
     bool _expectBeforeQuote;
     bool _oracleBroken;
 
+    // forge-lint: disable-next-line(missing-zero-check)
     constructor(uint256 _price, address _quoteToken) {
         price = _price;
         quoteToken = _quoteToken;

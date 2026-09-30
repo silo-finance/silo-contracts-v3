@@ -89,14 +89,22 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         _rewardToken = new MintableToken(18);
         _anotherRewardToken = new MintableToken(18);
 
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(token0), "underlying0");
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(token1), "underlying1");
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(_rewardToken), "rewardToken");
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(_anotherRewardToken), "anotherRewardToken");
 
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         token0.setOnDemand(true);
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         token1.setOnDemand(true);
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         _rewardToken.setOnDemand(true);
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         _anotherRewardToken.setOnDemand(true);
 
         SiloFixture siloFixture = new SiloFixture();
@@ -106,6 +114,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         overrides.hookReceiverImplementation = address(hookImplementation);
 
         address hookReceiver;
+        // forge-lint: disable-next-line(reentrancy-no-eth, unused-return)
         (, silo0, silo1,,, hookReceiver) = siloFixture.deploy_local(overrides);
         hook = HookContract(hookReceiver);
 
@@ -139,6 +148,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
+                // forge-lint: disable-next-line(environment-read-across-mutation)
                 distributionEnd: (block.timestamp + 100).toUint40(),
                 emissionPerSecond: emissionPerSecond.toUint104()
             })
@@ -159,12 +169,15 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
 
         vm.expectCall(address(_controller), data);
 
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(100e18, user1);
 
         if (_user2Deposit) {
+            // forge-lint: disable-next-line(unused-return)
             silo0.deposit(100e18, user2);
         }
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 50);
 
         assertEq(
@@ -182,9 +195,11 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         assertEq(_rewardToken.balanceOf(user2), 0, "[user2] rewards before");
 
         vm.expectEmit(true, true, true, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit IDistributionManager.UserIndexUpdated(user1, _PROGRAM_NAME, 0);
 
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
 
         assertEq(
@@ -198,6 +213,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 7e7;
 
         vm.startPrank(address(hook));
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(address(_rewardToken), immediateDistribution);
         vm.stopPrank();
 
@@ -206,8 +222,10 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 expectedTotalRewards = emissionPerSecond * 100 + immediateDistribution;
 
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
         vm.prank(user2);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user2);
 
         assertEq(
@@ -246,6 +264,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
+                // forge-lint: disable-next-line(environment-read-across-mutation)
                 distributionEnd: (block.timestamp + 100).toUint40(),
                 emissionPerSecond: emissionPerSecond.toUint104() // it will not distribute less than 1e3, most likely because of offset
             })
@@ -254,12 +273,15 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         assertEq(_controller.getRewardsBalance(user1, _PROGRAM_NAME), 0, "[user1] no rewards without deposit");
         assertEq(_controller.getRewardsBalance(user2, _PROGRAM_NAME), 0, "[user2] no rewards without deposit");
 
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(user1Deposit, user1);
 
         if (user2Deposit > 0) {
+            // forge-lint: disable-next-line(unused-return)
             silo0.deposit(user2Deposit, user2);
         }
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 50);
 
         assertEq(
@@ -276,6 +298,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         assertEq(_rewardToken.balanceOf(user1), 0, "[user1] rewards before");
         assertEq(_rewardToken.balanceOf(user2), 0, "[user2] rewards before");
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
 
         assertEq(
@@ -287,6 +310,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 7e7;
 
         vm.startPrank(address(hook));
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(address(_rewardToken), immediateDistribution);
         vm.stopPrank();
 
@@ -324,6 +348,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         vm.warp(block.timestamp + 50);
 
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
 
         uint256 totalRewards = emissionPerSecond * 100 + immediateDistribution;
@@ -335,6 +360,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         );
 
         vm.prank(user2);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user2);
 
         assertEq(_rewardToken.balanceOf(user2), _user2Deposit ? totalRewards / 2 : 0, "[user2] rewards at the end");
@@ -363,6 +389,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
+                // forge-lint: disable-next-line(environment-read-across-mutation)
                 distributionEnd: (block.timestamp + 100).toUint40(),
                 emissionPerSecond: emissionPerSecond.toUint104() // it will not distribute less than 1e3, most likely because of offset
             })
@@ -371,12 +398,15 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         assertEq(_controller.getRewardsBalance(user1, _PROGRAM_NAME), 0, "[user1] no rewards without deposit");
         assertEq(_controller.getRewardsBalance(user2, _PROGRAM_NAME), 0, "[user2] no rewards without deposit");
 
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(user1Deposit, user1);
 
         if (user2Deposit > 0) {
+            // forge-lint: disable-next-line(unused-return)
             silo0.deposit(user2Deposit, user2);
         }
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 50);
 
         assertEq(
@@ -394,6 +424,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         assertEq(_rewardToken.balanceOf(user1), 0, "[user1] rewards before");
         assertEq(_rewardToken.balanceOf(user2), 0, "[user2] rewards before");
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
 
         assertEq(
@@ -406,6 +437,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         string memory immediateProgramName = Strings.toHexString(address(_anotherRewardToken));
 
         vm.startPrank(address(hook));
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(address(_anotherRewardToken), immediateDistribution);
         vm.stopPrank();
 
@@ -434,6 +466,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         vm.warp(block.timestamp + 50);
 
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
 
         assertEq(
@@ -449,6 +482,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         );
 
         vm.prank(user2);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user2);
 
         assertEq(
@@ -472,6 +506,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
+                // forge-lint: disable-next-line(environment-read-across-mutation)
                 distributionEnd: (block.timestamp + 100).toUint40(),
                 emissionPerSecond: uint104(0)
             })
@@ -479,15 +514,18 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
 
         assertEq(_controller.getRewardsBalance(user1, _PROGRAM_NAME), 0, "no rewards without deposit");
 
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(100e18, user1);
         assertEq(silo0.balanceOf(user1), 100_000e18, "expect deposit");
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 50);
 
         assertEq(_controller.getRewardsBalance(user1, _PROGRAM_NAME), 0, "NO rewards after 1/2 period of time");
 
         assertEq(_rewardToken.balanceOf(user1), 0, "rewards before");
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
 
         assertEq(_rewardToken.balanceOf(user1), 0, "rewards after");
@@ -495,6 +533,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
         uint256 immediateDistribution = 33e7;
 
         vm.startPrank(address(hook));
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(address(_rewardToken), immediateDistribution);
         vm.stopPrank();
 
@@ -506,6 +545,7 @@ contract SiloIncentivesControllerIntegrationTest is SiloLittleHelper, Test {
 
         vm.warp(block.timestamp + 50);
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
         assertEq(_rewardToken.balanceOf(user1), immediateDistribution, "rewards at the end");
     }

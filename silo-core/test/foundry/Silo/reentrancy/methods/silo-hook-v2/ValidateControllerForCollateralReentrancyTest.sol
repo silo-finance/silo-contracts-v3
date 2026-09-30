@@ -24,9 +24,11 @@ contract ValidateControllerForCollateralReentrancyTest is MethodReentrancyTest {
         IPartialLiquidationByDefaulting hook = _getHook();
 
         // silo0 is debt silo
+        // forge-lint: disable-next-line(unused-return)
         hook.validateControllerForCollateral(silo0);
 
         vm.expectRevert(IPartialLiquidationByDefaulting.NoControllerForCollateral.selector);
+        // forge-lint: disable-next-line(unused-return)
         hook.validateControllerForCollateral(silo1);
     }
 

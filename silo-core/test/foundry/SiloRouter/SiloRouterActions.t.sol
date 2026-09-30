@@ -51,6 +51,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
     address public routerOwner;
 
     function setUp() public {
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), _FORKING_BLOCK_NUMBER);
 
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
@@ -78,12 +79,15 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         require(IERC20(token0).transfer(borrower, _TOKEN0_AMOUNT), "transfer failed");
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token0).approve(address(router), type(uint256).max);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token1).approve(address(router), type(uint256).max);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token0).approve(address(router), type(uint256).max);
 
         vm.label(siloConfig, "siloConfig");
@@ -132,6 +136,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         data[1] = abi.encodeCall(SiloRouterV2Implementation.transfer, (nativeToken, receiver, _S_BALANCE));
 
         vm.prank(wsWhale);
+        // forge-lint: disable-next-line(arbitrary-send-eth, unused-return)
         router.multicall{value: _S_BALANCE}(data);
 
         assertEq(nativeToken.balanceOf(receiver), _S_BALANCE, "Receiver should have native tokens");
@@ -142,6 +147,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         assertEq(wsWhale.balance, 0, "Account should not have any native tokens");
 
         vm.prank(wsWhale);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(nativeToken).approve(address(router), _S_BALANCE);
 
         address receiver = makeAddr("Receiver");
@@ -155,6 +161,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         data[2] = abi.encodeCall(SiloRouterV2Implementation.sendValue, (payable(receiver), _S_BALANCE));
 
         vm.prank(wsWhale);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertEq(receiver.balance, _S_BALANCE, "Account should have native tokens");
@@ -178,6 +185,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         data[1] = abi.encodeCall(SiloRouterV2Implementation.sendValueAll, (payable(receiver)));
 
         vm.prank(wsWhale);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertEq(receiver.balance, someAmount, "Account should have native tokens");
@@ -193,6 +201,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         );
 
         vm.prank(wsWhale);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertEq(
@@ -216,6 +225,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
             abi.encodeCall(SiloRouterV2Implementation.transfer, (IERC20(nativeToken), address(this), _S_BALANCE));
 
         vm.prank(anyAddress);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertEq(nativeToken.balanceOf(address(this)), _S_BALANCE, "Account should have native tokens");
@@ -226,6 +236,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         assertEq(nativeToken.balanceOf(address(this)), 0, "Account should not have any native tokens");
 
         vm.prank(wsWhale);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(nativeToken).approve(address(router), _S_BALANCE);
 
         bytes[] memory data = new bytes[](1);
@@ -234,6 +245,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         );
 
         vm.prank(wsWhale);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertEq(nativeToken.balanceOf(address(this)), _S_BALANCE, "Account should have native tokens");
@@ -252,6 +264,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         );
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertNotEq(IERC20(collateralToken0).balanceOf(depositor), 0, "Account should have collateral tokens");
@@ -272,6 +285,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         );
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(arbitrary-send-eth, unused-return)
         router.multicall{value: _S_BALANCE}(data);
 
         assertNotEq(IERC20(collateralToken0).balanceOf(depositor), 0, "Account should have collateral tokens");
@@ -282,14 +296,17 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         uint256 depositorBalance = IERC20(token0).balanceOf(depositor);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token0).approve(address(silo0), _S_BALANCE);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo0).deposit(_S_BALANCE, depositor);
 
         assertNotEq(IERC20(collateralToken0).balanceOf(depositor), 0, "Account should have collateral tokens");
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(collateralToken0).approve(address(router), type(uint256).max);
 
         bytes[] memory data = new bytes[](1);
@@ -299,6 +316,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         );
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertEq(IERC20(collateralToken0).balanceOf(depositor), 999, "Account should not have deposit"); // rounding error
@@ -308,14 +326,17 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_siloRouterV2_withdrawNativeAndUnwrapFlow
     function test_siloRouterV2_withdrawNativeAndUnwrapFlow() public {
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token0).approve(address(silo0), _S_BALANCE);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo0).deposit(_S_BALANCE, depositor);
 
         assertNotEq(IERC20(collateralToken0).balanceOf(depositor), 0, "Account should have collateral tokens");
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(collateralToken0).approve(address(router), type(uint256).max);
 
         uint256 toWithdraw = _S_BALANCE - 1;
@@ -329,6 +350,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         data[2] = abi.encodeCall(SiloRouterV2Implementation.sendValue, (payable(depositor), toWithdraw));
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertEq(IERC20(collateralToken0).balanceOf(depositor), 999, "Account should not have deposit"); // rounding error
@@ -340,15 +362,18 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         uint256 depositorBalance = IERC20(token0).balanceOf(depositor);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token0).approve(address(silo0), _S_BALANCE);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo0).deposit(_S_BALANCE, depositor);
 
         assertEq(depositor.balance, 0, "Account should not have any native tokens");
         assertNotEq(IERC20(collateralToken0).balanceOf(depositor), 0, "Account should have collateral tokens");
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(collateralToken0).approve(address(router), type(uint256).max);
 
         bytes[] memory data = new bytes[](1);
@@ -357,6 +382,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         );
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertEq(IERC20(collateralToken0).balanceOf(depositor), 0, "Account should not have deposit");
@@ -366,15 +392,18 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_siloRouterV2_withdrawAllAndUnwrapFlow
     function test_siloRouterV2_withdrawAllAndUnwrapFlow() public {
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token0).approve(address(silo0), _S_BALANCE);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo0).deposit(_S_BALANCE, depositor);
 
         assertEq(depositor.balance, 0, "Account should not have any native tokens");
         assertNotEq(IERC20(collateralToken0).balanceOf(depositor), 0, "Account should have collateral tokens");
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(collateralToken0).approve(address(router), type(uint256).max);
 
         bytes[] memory data = new bytes[](3);
@@ -385,6 +414,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         data[2] = abi.encodeCall(SiloRouterV2Implementation.sendValueAll, (payable(depositor)));
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertEq(depositor.balance, _S_BALANCE - 1, "Account should have native tokens");
@@ -394,9 +424,11 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_siloRouterV2_borrowFlow
     function test_siloRouterV2_borrowFlow() public {
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token0).approve(address(silo0), _TOKEN0_AMOUNT);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo0).deposit(_TOKEN0_AMOUNT, borrower);
 
         uint256 borrowAmount = ISilo(silo1).maxBorrow(borrower);
@@ -404,12 +436,14 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         assertEq(IERC20(debtToken1).balanceOf(borrower), 0, "Account should not have any debt tokens");
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(debtToken1).approve(address(router), type(uint256).max);
 
         bytes[] memory data = new bytes[](1);
         data[0] = abi.encodeCall(SiloRouterV2Implementation.borrow, (ISilo(silo1), borrowAmount, address(borrower)));
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertNotEq(IERC20(debtToken1).balanceOf(borrower), 0, "Account should have debt tokens");
@@ -422,14 +456,17 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         require(IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT), "transfer failed");
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token1).approve(address(silo1), _TOKEN1_AMOUNT);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo1).deposit(_TOKEN1_AMOUNT, borrower);
 
         assertEq(IERC20(debtToken0).balanceOf(borrower), 0, "Account should not have any debt tokens");
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(debtToken0).approve(address(router), type(uint256).max);
 
         uint256 borrowAmount = ISilo(silo0).maxBorrow(borrower);
@@ -441,6 +478,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         data[2] = abi.encodeCall(SiloRouterV2Implementation.sendValue, (payable(borrower), borrowAmount));
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertNotEq(IERC20(debtToken0).balanceOf(borrower), 0, "Account should have debt tokens");
@@ -453,9 +491,11 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         require(IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT), "transfer failed");
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token1).approve(address(silo1), _TOKEN1_AMOUNT);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo1).deposit(_TOKEN1_AMOUNT, borrower);
 
         assertEq(IERC20(debtToken0).balanceOf(borrower), 0, "Account should not have any debt tokens");
@@ -463,6 +503,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         uint256 borrowAmount = ISilo(silo0).maxBorrow(borrower);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo0).borrow(borrowAmount, borrower, borrower);
 
         uint256 debtBalanceBefore = IERC20(debtToken0).balanceOf(borrower);
@@ -473,6 +514,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         uint256 repayAmount = ISilo(silo0).previewRepay(borrowAmount) / 2;
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token0).approve(address(router), type(uint256).max);
 
         bytes[] memory data = new bytes[](3);
@@ -483,6 +525,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         data[2] = abi.encodeCall(SiloRouterV2Implementation.repay, (ISilo(silo0), repayAmount));
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertLt(IERC20(debtToken0).balanceOf(borrower), debtBalanceBefore, "Account should have less debt tokens");
@@ -494,9 +537,11 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         require(IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT), "transfer failed");
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token1).approve(address(silo1), _TOKEN1_AMOUNT);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo1).deposit(_TOKEN1_AMOUNT, borrower);
 
         assertEq(IERC20(debtToken0).balanceOf(borrower), 0, "Account should not have any debt tokens");
@@ -504,6 +549,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         uint256 borrowAmount = ISilo(silo0).maxBorrow(borrower);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo0).borrow(borrowAmount, borrower, borrower);
 
         uint256 debtBalanceBefore = IERC20(debtToken0).balanceOf(borrower);
@@ -522,6 +568,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         data[2] = abi.encodeCall(SiloRouterV2Implementation.repay, (ISilo(silo0), repayAmount));
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(arbitrary-send-eth, unused-return)
         router.multicall{value: repayAmount}(data);
 
         assertLt(IERC20(debtToken0).balanceOf(borrower), debtBalanceBefore, "Account should have less debt tokens");
@@ -533,9 +580,11 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         require(IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT), "transfer failed");
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token1).approve(address(silo1), _TOKEN1_AMOUNT);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo1).deposit(_TOKEN1_AMOUNT, borrower);
 
         assertEq(IERC20(debtToken0).balanceOf(borrower), 0, "Account should not have any debt tokens");
@@ -543,6 +592,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         uint256 borrowAmount = ISilo(silo0).maxBorrow(borrower);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo0).borrow(borrowAmount, borrower, borrower);
 
         uint256 debtBalanceBefore = IERC20(debtToken0).balanceOf(borrower);
@@ -554,6 +604,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         data[0] = abi.encodeCall(SiloRouterV2Implementation.repayAll, (ISilo(silo0)));
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         assertEq(IERC20(debtToken0).balanceOf(borrower), 0, "Account should not have any debt tokens");
@@ -565,9 +616,11 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         require(IERC20(token1).transfer(borrower, _TOKEN1_AMOUNT), "transfer failed");
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(token1).approve(address(silo1), _TOKEN1_AMOUNT);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo1).deposit(_TOKEN1_AMOUNT, borrower);
 
         assertEq(IERC20(debtToken0).balanceOf(borrower), 0, "Account should not have any debt tokens");
@@ -575,6 +628,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         uint256 borrowAmount = ISilo(silo0).maxBorrow(borrower);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         ISilo(silo0).borrow(borrowAmount, borrower, borrower);
 
         uint256 debtBalanceBefore = IERC20(debtToken0).balanceOf(borrower);
@@ -589,6 +643,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         nativeToken.withdraw(repayAmount);
 
         vm.prank(wsWhale);
+        // forge-lint: disable-next-line(arbitrary-send-eth)
         payable(borrower).transfer(repayAmount);
 
         bytes[] memory data = new bytes[](2);
@@ -598,6 +653,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         data[1] = abi.encodeCall(SiloRouterV2Implementation.sendValueAll, (payable(borrower)));
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(arbitrary-send-eth, unused-return)
         router.multicall{value: repayAmount}(data);
 
         assertEq(IERC20(debtToken0).balanceOf(borrower), 0, "Account should not have any debt tokens");
@@ -615,15 +671,18 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         // testing multicall with pause with a few actions calls
         data[0] = abi.encodeCall(SiloRouterV2Implementation.wrap, (IWrappedNativeToken(nativeToken), 1));
         vm.expectRevert(abi.encodeWithSelector(Pausable.EnforcedPause.selector));
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         data[0] = abi.encodeCall(SiloRouterV2Implementation.unwrap, (IWrappedNativeToken(nativeToken), 1));
         vm.expectRevert(abi.encodeWithSelector(Pausable.EnforcedPause.selector));
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         // un existing action
         data[0] = abi.encodeCall(Ownable.owner, ());
         vm.expectRevert(abi.encodeWithSelector(Pausable.EnforcedPause.selector));
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
 
         vm.prank(wsWhale);
@@ -631,6 +690,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
 
         vm.expectRevert(abi.encodeWithSelector(Pausable.EnforcedPause.selector));
         vm.prank(wsWhale);
+        // forge-lint: disable-next-line(arbitrary-send-eth)
         payable(router).transfer(_S_BALANCE);
     }
 
@@ -639,6 +699,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         bytes[] memory data = new bytes[](1);
         // un existing action
         data[0] = abi.encodeCall(Ownable.owner, ());
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
     }
 
@@ -649,6 +710,7 @@ contract SiloRouterV2ActionsTest is IntegrationTest {
         // testing multicall with pause with a few actions calls
         data[0] = abi.encodeCall(SiloRouterV2Implementation.transfer, (IERC20(address(this)), address(0), 0));
         vm.expectRevert(abi.encodeWithSelector(ReentrancyGuardUpgradeable.ReentrancyGuardReentrantCall.selector));
+        // forge-lint: disable-next-line(unused-return)
         router.multicall(data);
     }
 }

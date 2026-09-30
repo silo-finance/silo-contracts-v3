@@ -26,6 +26,7 @@ contract DefaultingLiquidationInvalidConfigTest is Test {
     */
     function test_HookV2_version() public {
         ISiloConfig.ConfigData memory config;
+        // forge-lint: disable-next-line(unused-return)
         _cloneHook(config).VERSION();
     }
 

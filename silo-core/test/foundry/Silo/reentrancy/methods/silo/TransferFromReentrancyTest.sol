@@ -25,19 +25,24 @@ contract TransferFromReentrancyTest is MethodReentrancyTest {
         token.mint(depositor, amount);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         token.approve(address(silo), amount);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo.deposit(amount, depositor);
 
+        // forge-lint: disable-next-line(unused-return)
         (, address collateralToken,) = config.getShareTokens(address(silo));
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(collateralToken).approve(spender, amount);
 
         TestStateLib.enableReentrancy();
 
         vm.prank(spender);
+        // forge-lint: disable-next-line(arbitrary-send-erc20)
         require(silo.transferFrom(depositor, recepient, amount), "transfer failed 4");
     }
 
@@ -45,13 +50,13 @@ contract TransferFromReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        // forge-lint: disable-next-line(arbitrary-send-erc20, erc20-unchecked-transfer)
         silo0.transferFrom(address(0), address(0), 1000);
 
         ISilo silo1 = TestStateLib.silo1();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        // forge-lint: disable-next-line(arbitrary-send-erc20, erc20-unchecked-transfer)
         silo1.transferFrom(address(0), address(0), 1000);
     }
 

@@ -61,11 +61,13 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         ISilo collateralSilo = silo0;
         uint256 maxRedeem = collateralSilo.maxRedeem(BORROWER);
 
+        // forge-lint: disable-next-line(unused-return)
         (, address collateralShareToken,) = collateralSilo.config().getShareTokens(address(collateralSilo));
         assertLt(
             maxRedeem, IShareToken(collateralShareToken).balanceOf(BORROWER), "with debt you can not withdraw all"
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV", collateralSilo.getLtv(BORROWER), 16);
 
         _assertBorrowerCanNotRedeemMore(maxRedeem, 2);
@@ -83,11 +85,13 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         ISilo collateralSilo = silo0;
 
         uint256 maxRedeem = collateralSilo.maxRedeem(BORROWER);
+        // forge-lint: disable-next-line(unused-return)
         (, address collateralShareToken,) = collateralSilo.config().getShareTokens(address(collateralSilo));
         assertLt(
             maxRedeem, IShareToken(collateralShareToken).balanceOf(BORROWER), "with debt you can not withdraw all"
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV", collateralSilo.getLtv(BORROWER), 16);
 
         _assertBorrowerCanNotRedeemMore(maxRedeem, 2);
@@ -102,21 +106,25 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         _createDebtOnSilo0(_collateral, _toBorrow);
 
         vm.warp(block.timestamp + 100 days);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("----- time travel -------");
         ISilo collateralSilo = silo0;
 
         uint256 maxRedeem = collateralSilo.maxRedeem(BORROWER);
+        // forge-lint: disable-next-line(unused-return)
         (, address collateralShareToken,) = collateralSilo.config().getShareTokens(address(collateralSilo));
         assertLt(
             maxRedeem, IShareToken(collateralShareToken).balanceOf(BORROWER), "with debt you can not withdraw all"
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV", collateralSilo.getLtv(BORROWER), 16);
 
         _assertBorrowerCanNotRedeemMore(maxRedeem, 3);
     }
 
     function _assertBorrowerHasNothingToRedeem() internal view {
+        // forge-lint: disable-next-line(unused-return)
         (, address collateralShareToken,) = silo0.config().getShareTokens(address(silo0));
 
         assertEq(silo0.maxRedeem(BORROWER), 0, "expect maxRedeem to be 0");
@@ -131,6 +139,7 @@ contract MaxRedeemTest is MaxWithdrawCommon {
     }
 
     function _assertBorrowerCanNotRedeemMore(uint256 _maxRedeem, uint256 _underestimate) internal {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("------- QA: _assertBorrowerCanNotRedeemMore shares", _maxRedeem);
 
         assertGt(_underestimate, 0, "_underestimate must be at least 1");
@@ -139,7 +148,9 @@ contract MaxRedeemTest is MaxWithdrawCommon {
 
         if (_maxRedeem > 0) {
             vm.prank(BORROWER);
+            // forge-lint: disable-next-line(unused-return)
             collateralSilo.redeem(_maxRedeem, BORROWER, BORROWER);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("LTV after additional redeem", collateralSilo.getLtv(BORROWER), 16);
         }
 
@@ -150,10 +161,12 @@ contract MaxRedeemTest is MaxWithdrawCommon {
         }
 
         uint256 counterExample = isSolvent ? _underestimate : 1;
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("=========== [counterexample] testing counterexample for maxRedeem with", counterExample);
 
         vm.prank(BORROWER);
         vm.expectRevert();
+        // forge-lint: disable-next-line(unused-return)
         collateralSilo.redeem(counterExample, BORROWER, BORROWER);
     }
 

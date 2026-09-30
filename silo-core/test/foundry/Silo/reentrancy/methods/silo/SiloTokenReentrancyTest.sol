@@ -21,7 +21,9 @@ contract SiloTokenReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         IShareToken(address(TestStateLib.silo0())).silo();
+        // forge-lint: disable-next-line(unused-return)
         IShareToken(address(TestStateLib.silo1())).silo();
     }
 }

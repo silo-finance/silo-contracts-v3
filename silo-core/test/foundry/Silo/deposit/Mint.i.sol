@@ -32,7 +32,9 @@ contract MintTest is SiloLittleHelper, Test {
         token0.mint(depositor, previewMint);
 
         vm.startPrank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), previewMint);
+        // forge-lint: disable-next-line(unused-return)
         silo0.mint(shares, depositor);
 
         assertEq(silo0.getCollateralAssets(), previewMint, "previewMint should give us expected assets amount");

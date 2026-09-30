@@ -36,22 +36,31 @@ contract Hack1 {
         option = option % 10;
 
         if (option == 0) {
+            // forge-lint: disable-next-line(unused-return)
             Silo(payable(msg.sender)).withdraw(assets, receiver, _initiator);
         } else if (option == 1) {
+            // forge-lint: disable-next-line(unused-return)
             Silo(payable(msg.sender)).redeem(shares, receiver, _initiator);
         } else if (option == 2) {
+            // forge-lint: disable-next-line(unused-return)
             Silo(payable(msg.sender)).withdraw(assets, receiver, _initiator, ISilo.CollateralType.Collateral);
         } else if (option == 3) {
+            // forge-lint: disable-next-line(unused-return)
             Silo(payable(msg.sender)).redeem(shares, receiver, _initiator, ISilo.CollateralType.Collateral);
         } else if (option == 4) {
+            // forge-lint: disable-next-line(unused-return)
             Silo(payable(msg.sender)).transitionCollateral(shares, _initiator, ISilo.CollateralType.Collateral);
         } else if (option == 5) {
+            // forge-lint: disable-next-line(unused-return)
             Silo(payable(msg.sender)).borrow(assets, receiver, _initiator);
         } else if (option == 6) {
+            // forge-lint: disable-next-line(unused-return)
             Silo(payable(msg.sender)).borrowShares(shares, receiver, _initiator);
         } else if (option == 7) {
+            // forge-lint: disable-next-line(unused-return)
             Silo(payable(msg.sender)).repay(assets, _initiator);
         } else if (option == 8) {
+            // forge-lint: disable-next-line(unused-return)
             Silo(payable(msg.sender)).repayShares(shares, _initiator);
         }
 
@@ -83,6 +92,7 @@ contract FlashloanTest is SiloLittleHelper, Test, Gas {
     */
     function test_flashLoan_zeroAmount() public {
         vm.expectRevert(ISilo.ZeroAmount.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.flashLoan(IERC3156FlashBorrower(address(this)), address(token0), 0, "");
     }
 
@@ -101,9 +111,11 @@ contract FlashloanTest is SiloLittleHelper, Test, Gas {
     */
     function test_flashFee() public {
         vm.expectRevert(ISilo.UnsupportedFlashloanToken.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.flashFee(address(token1), 1e18);
 
         vm.expectRevert(ISilo.UnsupportedFlashloanToken.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo1.flashFee(address(token0), 1e18);
 
         assertEq(silo0.flashFee(address(token0), 0), 0);
@@ -121,6 +133,7 @@ contract FlashloanTest is SiloLittleHelper, Test, Gas {
         uint256 amount = 10e18 + 1;
 
         vm.expectRevert(Actions.FlashLoanNotPossible.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.flashLoan(receiver, address(token0), amount, _data);
     }
 
@@ -135,8 +148,10 @@ contract FlashloanTest is SiloLittleHelper, Test, Gas {
         token0.mint(address(receiver), fee);
 
         vm.prank(address(receiver));
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), amount + fee);
 
+        // forge-lint: disable-next-line(unused-return)
         (uint256 daoAndDeployerRevenueBefore,,,,) = silo0.getSiloStorage();
 
         bytes memory data = abi.encodeWithSelector(
@@ -161,6 +176,7 @@ contract FlashloanTest is SiloLittleHelper, Test, Gas {
             3000
         );
 
+        // forge-lint: disable-next-line(unused-return)
         (uint256 daoAndDeployerRevenueAfter,,,,) = silo0.getSiloStorage();
         assertEq(daoAndDeployerRevenueAfter, daoAndDeployerRevenueBefore + fee);
     }
@@ -174,6 +190,7 @@ contract FlashloanTest is SiloLittleHelper, Test, Gas {
         FlashLoanReceiverWithInvalidResponse receiver = new FlashLoanReceiverWithInvalidResponse();
 
         vm.expectRevert(ISilo.FlashloanFailed.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.flashLoan(IERC3156FlashBorrower(address(receiver)), address(token0), amount, data);
     }
 }

@@ -29,6 +29,7 @@ contract HackProtected is Test {
 
         assertEq(silo.maxWithdraw(address(this)), 1e18 - 1, "contract must have assets to withdraw (-1 for underestimation)");
 
+        // forge-lint: disable-next-line(unused-return)
         silo.withdraw(1, address(this), address(this));
 
         return FLASHLOAN_CALLBACK;
@@ -57,12 +58,15 @@ contract FlashloanProtectedTest is SiloLittleHelper, Test {
         _deposit(1e18, address(receiver));
 
         uint256 maxFlashloan = silo0.maxFlashLoan(address(token0));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxFlashloan", maxFlashloan, 18);
 
         vm.expectRevert(ISilo.ProtectedProtection.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.flashLoan(IERC3156FlashBorrower(address(receiver)), address(token0), maxFlashloan, "");
 
         // contr example, this flashloan should pass, because we flashloan 1 wei less
+        // forge-lint: disable-next-line(unused-return)
         silo0.flashLoan(IERC3156FlashBorrower(address(receiver)), address(token0), maxFlashloan - 1, "");
 
         assertEq(

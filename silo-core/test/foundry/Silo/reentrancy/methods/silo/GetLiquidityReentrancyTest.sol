@@ -19,7 +19,9 @@ contract GetLiquidityReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().getLiquidity();
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().getLiquidity();
     }
 }

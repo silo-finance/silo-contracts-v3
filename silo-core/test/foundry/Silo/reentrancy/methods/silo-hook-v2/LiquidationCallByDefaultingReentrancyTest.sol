@@ -51,6 +51,7 @@ contract LiquidationCallByDefaultingReentrancyTest is MethodReentrancyTest {
 
         IPartialLiquidation partialLiquidation = IPartialLiquidation(hookReceiver);
 
+        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(borrowerOnReentrancy);
 
         if (debtToRepay == 0) {
@@ -78,6 +79,7 @@ contract LiquidationCallByDefaultingReentrancyTest is MethodReentrancyTest {
         }
             
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCallByDefaulting(_borrower);
     }
 
@@ -98,17 +100,21 @@ contract LiquidationCallByDefaultingReentrancyTest is MethodReentrancyTest {
         token0.mint(_depositor, liquidityForBorrow);
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), liquidityForBorrow);
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(liquidityForBorrow, _depositor);
 
         token1.mint(_borrower, collateralAmount);
 
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), collateralAmount);
 
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(collateralAmount, _borrower);
 
         uint256 maxBorrow = silo0.maxBorrow(_borrower) / 2;
@@ -119,6 +125,7 @@ contract LiquidationCallByDefaultingReentrancyTest is MethodReentrancyTest {
         }
 
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(maxBorrow, _borrower, _borrower);
 
         _makeUserInsolvent(_borrower, _depositor);
@@ -132,6 +139,7 @@ contract LiquidationCallByDefaultingReentrancyTest is MethodReentrancyTest {
 
         if (maxWithdraw != 0) {
             vm.prank(_borrower);
+            // forge-lint: disable-next-line(unused-return)
             silo1.withdraw(maxWithdraw, _borrower, _borrower);
         }
 
@@ -139,13 +147,17 @@ contract LiquidationCallByDefaultingReentrancyTest is MethodReentrancyTest {
 
         if (maxWithdraw != 0) {
             vm.prank(_depositor);
+            // forge-lint: disable-next-line(unused-return)
             silo0.withdraw(maxWithdraw, _depositor, _depositor);
         }
 
         uint256 y;
 
+        // forge-lint: disable-next-line(calls-loop)
         while (silo0.isSolvent(_borrower)) {
+            // forge-lint: disable-next-line(uninitialized-local)
             y++;
+            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 365 days);
         }
 

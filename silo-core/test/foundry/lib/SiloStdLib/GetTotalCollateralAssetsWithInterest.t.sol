@@ -30,6 +30,7 @@ contract GetTotalAssetsWithInterestTest is Test {
 
         SILO.getCollateralAndDebtAssetsMock(0, 0);
         INTEREST_RATE_MODEL.getCompoundInterestRateMock(silo, block.timestamp, 0);
+        // forge-lint: disable-next-line(uninitialized-local)
         assertEq(SiloStdLib.getTotalCollateralAssetsWithInterest(silo, interestRateModel, daoFee, deployerFee), 0);
 
         INTEREST_RATE_MODEL.getCompoundInterestRateMock(silo, block.timestamp, 0.01e18);

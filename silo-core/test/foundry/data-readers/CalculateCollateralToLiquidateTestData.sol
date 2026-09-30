@@ -24,6 +24,7 @@ contract CalculateCollateralToLiquidateTestData {
         data = new CCTLData[](6);
         uint256 i;
 
+        // forge-lint: disable-next-line(uninitialized-local)
         data[i++] = CCTLData({
             input: Input({
                 debtValueToCover: 0,

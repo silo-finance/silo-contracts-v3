@@ -21,6 +21,7 @@ contract MaxLeverageFeeReentrancyTest is MethodReentrancyTest {
 
     function _ensureItWillNotRevert() internal view {
         RevenueModule leverage = _getLeverage();
+        // forge-lint: disable-next-line(unused-return)
         leverage.MAX_LEVERAGE_FEE();
     }
 

@@ -178,6 +178,7 @@ contract SiloIncentivesControllerTest is Test {
             _controller.incentivesProgram(_PROGRAM_NAME);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit IncentivesProgramCreated(_PROGRAM_NAME);
 
         vm.prank(_owner);
@@ -283,12 +284,13 @@ contract SiloIncentivesControllerTest is Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: _rewardToken,
-                // forge-lint: disable-next-line(unsafe-typecast)
+                // forge-lint: disable-next-line(environment-read-across-mutation, unsafe-typecast)
                 distributionEnd: uint40(block.timestamp),
                 emissionPerSecond: 1e18
             })
         );
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         uint256 clockStart = block.timestamp;
 
         // user1 deposit 100
@@ -311,6 +313,7 @@ contract SiloIncentivesControllerTest is Test {
 
         assertEq(_controller.getDistributionEnd(_PROGRAM_NAME), clockStart + 20, "invalid distributionEnd");
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 10);
 
         vm.prank(user1);
@@ -331,9 +334,11 @@ contract SiloIncentivesControllerTest is Test {
 
         // user1 claim rewards
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
         // user2 claim rewards
         vm.prank(user2);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user2);
 
         assertEq(ERC20Mock(_rewardToken).balanceOf(user1), 10e18, "invalid user1 balance");
@@ -347,7 +352,7 @@ contract SiloIncentivesControllerTest is Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: _rewardToken,
-                // forge-lint: disable-next-line(unsafe-typecast)
+                // forge-lint: disable-next-line(environment-read-across-mutation, unsafe-typecast)
                 distributionEnd: uint40(block.timestamp + 100),
                 emissionPerSecond: 1e18
             })
@@ -371,19 +376,23 @@ contract SiloIncentivesControllerTest is Test {
         IDistributionManager.IncentiveProgramDetails memory details = _controller.incentivesProgram(_PROGRAM_NAME);
 
         uint256 lastUpdateTimestamp = details.lastUpdateTimestamp;
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         assertEq(lastUpdateTimestamp, block.timestamp, "invalid lastUpdateTimestamp");
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 100);
 
         vm.prank(_owner);
-        // forge-lint: disable-next-line(unsafe-typecast)
+        // forge-lint: disable-next-line(environment-read-across-mutation, unsafe-typecast)
         _controller.setDistributionEnd(_PROGRAM_NAME, uint40(block.timestamp));
 
         details = _controller.incentivesProgram(_PROGRAM_NAME);
         uint256 indexBefore = details.index;
         details = _controller.incentivesProgram(_PROGRAM_NAME);
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         assertEq(details.lastUpdateTimestamp, block.timestamp, "invalid lastUpdateTimestamp");
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 100);
 
         vm.prank(_owner);
@@ -406,12 +415,13 @@ contract SiloIncentivesControllerTest is Test {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: _rewardToken,
-                // forge-lint: disable-next-line(unsafe-typecast)
+                // forge-lint: disable-next-line(environment-read-across-mutation, unsafe-typecast)
                 distributionEnd: uint40(block.timestamp),
                 emissionPerSecond: initialEmissionPerSecond
             })
         );
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         uint256 clockStart = block.timestamp;
 
         // user1 deposit 100
@@ -434,6 +444,7 @@ contract SiloIncentivesControllerTest is Test {
         vm.prank(_owner);
         _controller.setDistributionEnd(_PROGRAM_NAME, newDistributionEnd);
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 10);
 
         vm.prank(_owner);
@@ -470,8 +481,10 @@ contract SiloIncentivesControllerTest is Test {
         assertEq(rewards, expectedRewardsUser2, "invalid user2 rewards");
 
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
         vm.prank(user2);
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user2);
 
         assertEq(ERC20Mock(_rewardToken).balanceOf(user1), expectedRewardsUser1, "invalid user1 balance");
@@ -484,7 +497,7 @@ contract SiloIncentivesControllerTest is Test {
     function test_updateIncentivesProgram_Success() public {
         ERC20Mock(_notifier).mint(address(this), _TOTAL_SUPPLY);
 
-        // forge-lint: disable-next-line(unsafe-typecast)
+        // forge-lint: disable-next-line(environment-read-across-mutation, unsafe-typecast)
         uint40 distributionEnd = uint40(block.timestamp + 1000);
         uint104 emissionPerSecond = 1000e18;
 
@@ -504,6 +517,7 @@ contract SiloIncentivesControllerTest is Test {
         assertEq(detailsBefore.emissionPerSecond, emissionPerSecond, "invalid emissionPerSecond");
         assertEq(detailsBefore.distributionEnd, distributionEnd, "invalid distributionEnd");
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1000);
 
         // forge-lint: disable-next-line(unsafe-typecast)
@@ -511,6 +525,7 @@ contract SiloIncentivesControllerTest is Test {
         emissionPerSecond = 2000e18;
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit IncentivesProgramUpdated(_PROGRAM_NAME);
 
         vm.prank(_owner);
@@ -548,7 +563,7 @@ contract SiloIncentivesControllerTest is Test {
     function test_afterTokenTransfer_Success() public {
         ERC20Mock(_notifier).mint(address(this), _TOTAL_SUPPLY);
 
-        // forge-lint: disable-next-line(unsafe-typecast)
+        // forge-lint: disable-next-line(environment-read-across-mutation, unsafe-typecast)
         uint40 distributionEnd = uint40(block.timestamp + 30 days);
         uint104 emissionPerSecond = 100e18;
 
@@ -572,6 +587,7 @@ contract SiloIncentivesControllerTest is Test {
         uint256 userDataBefore = _controller.getUserData(recipient, _PROGRAM_NAME);
         assertEq(userDataBefore, 0);
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 days);
 
         vm.prank(_notifier);
@@ -583,12 +599,14 @@ contract SiloIncentivesControllerTest is Test {
         uint256 userDataAfter = _controller.getUserData(recipient, _PROGRAM_NAME);
 
         uint256 expectedIndex = detailsAfter.index
+            // forge-lint: disable-next-line(environment-read-across-mutation)
             + detailsAfter.emissionPerSecond * (block.timestamp - detailsAfter.lastUpdateTimestamp) * _PRECISION
                 / newTotalSupply;
 
         assertEq(expectedIndex, detailsAfter.index);
         assertEq(userDataAfter, expectedIndex);
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 10 days);
 
         uint256 rewards = _controller.getRewardsBalance(recipient, _PROGRAM_NAME);
@@ -607,6 +625,7 @@ contract SiloIncentivesControllerTest is Test {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_immediateDistribution_permissions
     function test_immediateDistribution_permissions() public {
         vm.expectRevert(abi.encodeWithSelector(IDistributionManager.OnlyNotifier.selector));
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(_rewardToken, 100e18);
     }
 
@@ -646,6 +665,7 @@ contract SiloIncentivesControllerTest is Test {
         });
 
         // move time 1 month
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 30 days);
 
         // distribute 1000
@@ -741,6 +761,7 @@ contract SiloIncentivesControllerTest is Test {
         string memory programName = Strings.toHexString(_rewardToken);
 
         vm.prank(_notifier);
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(_rewardToken, uint104(1));
 
         // user1 deposit 100
@@ -759,6 +780,7 @@ contract SiloIncentivesControllerTest is Test {
         });
 
         // move time 1 month
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 30 days);
 
         // distribute 1000
@@ -766,6 +788,7 @@ contract SiloIncentivesControllerTest is Test {
         ERC20Mock(_rewardToken).mint(address(_controller), toDistribute);
 
         vm.prank(_notifier);
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(_rewardToken, toDistribute);
 
         // user2 deposit 100
@@ -784,6 +807,7 @@ contract SiloIncentivesControllerTest is Test {
         });
 
         // move 100 days
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 100 days);
 
         // distribute 900
@@ -791,6 +815,7 @@ contract SiloIncentivesControllerTest is Test {
         ERC20Mock(_rewardToken).mint(address(_controller), toDistribute);
 
         vm.prank(_notifier);
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(_rewardToken, toDistribute);
 
         // user1 withdraw 100
@@ -817,6 +842,7 @@ contract SiloIncentivesControllerTest is Test {
         totalSupply = ERC20Mock(_notifier).totalSupply();
 
         vm.prank(_notifier);
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(_rewardToken, toDistribute);
 
         // user3 deposit 100
@@ -864,6 +890,7 @@ contract SiloIncentivesControllerTest is Test {
         string memory programName = Strings.toHexString(_rewardToken);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit IncentivesProgramCreated(programName);
 
         vm.prank(_notifier);
@@ -885,6 +912,7 @@ contract SiloIncentivesControllerTest is Test {
         vm.expectRevert(abi.encodeWithSelector(IDistributionManager.OnlyNotifier.selector));
 
         vm.prank(_owner);
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(_rewardToken, 1e18);
     }
 
@@ -915,6 +943,7 @@ contract SiloIncentivesControllerTest is Test {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_setClaimer_success
     function test_setClaimer_success() public {
         vm.expectEmit(address(_controller));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ClaimerSet(user1, address(this));
 
         vm.prank(_owner);
@@ -928,6 +957,7 @@ contract SiloIncentivesControllerTest is Test {
         string[] memory programsNames = new string[](1);
         programsNames[0] = "Some other program";
         vm.expectRevert(abi.encodeWithSelector(ISiloIncentivesController.IncentivesProgramNotFound.selector));
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1, programsNames);
     }
 
@@ -936,6 +966,7 @@ contract SiloIncentivesControllerTest is Test {
         string[] memory programsNames = new string[](1);
         programsNames[0] = _PROGRAM_NAME;
         vm.expectRevert(abi.encodeWithSelector(ISiloIncentivesController.ClaimerUnauthorized.selector));
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewardsOnBehalf(user1, user2, programsNames);
     }
 
@@ -947,6 +978,7 @@ contract SiloIncentivesControllerTest is Test {
         string[] memory programsNames = new string[](1);
         programsNames[0] = "Some other program";
         vm.expectRevert(abi.encodeWithSelector(ISiloIncentivesController.IncentivesProgramNotFound.selector));
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewardsOnBehalf(user1, user2, programsNames);
     }
 
@@ -963,6 +995,7 @@ contract SiloIncentivesControllerTest is Test {
         programsNames[0] = _PROGRAM_NAME;
 
         vm.expectRevert(abi.encodeWithSelector(ISiloIncentivesController.InvalidToAddress.selector));
+        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewardsOnBehalf(user1, address(0), programsNames);
     }
 
@@ -1011,9 +1044,11 @@ contract SiloIncentivesControllerTest is Test {
         ERC20Mock(_rewardToken).mint(address(_controller), toDistribute);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloIncentivesController.ImmediateDistribution(_rewardToken, bytes32(uint256(uint160(_rewardToken))), toDistribute);
 
         vm.prank(_notifier);
+        // forge-lint: disable-next-line(unused-return)
         _controller.immediateDistribution(_rewardToken, toDistribute);
 
         _claimRewards(user1, user2, programName);
@@ -1047,6 +1082,7 @@ contract SiloIncentivesControllerTest is Test {
         ERC20Mock(_rewardToken).mint(address(_controller), _toDistribute);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloIncentivesController.ImmediateDistribution(_rewardToken, bytes32(uint256(uint160(_rewardToken))), _toDistribute);
 
         vm.prank(_notifier);
@@ -1090,6 +1126,7 @@ contract SiloIncentivesControllerTest is Test {
         programsNames[1] = "Some other program";
 
         vm.expectRevert(abi.encodeWithSelector(ISiloIncentivesController.DifferentRewardsTokens.selector));
+        // forge-lint: disable-next-line(unused-return)
         _controller.getRewardsBalance(user1, programsNames);
     }
 
@@ -1182,15 +1219,18 @@ contract SiloIncentivesControllerTest is Test {
     // FOUNDRY_PROFILE=core-test forge test -vvv --ffi --mt test_getProgramId_InvalidIncentivesProgramName
     function test_getProgramId_InvalidIncentivesProgramName() public {
         vm.expectRevert(abi.encodeWithSelector(IDistributionManager.InvalidIncentivesProgramName.selector));
+        // forge-lint: disable-next-line(unused-return)
         _controller.getProgramId("");
 
         vm.expectRevert(abi.encodeWithSelector(IDistributionManager.InvalidIncentivesProgramName.selector));
+        // forge-lint: disable-next-line(unused-return)
         _controller.getProgramId("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
     }
 
     // FOUNDRY_PROFILE=core-test forge test -vvv --ffi --mt test_getProgramId_InvalidAddressString
     function test_getProgramId_InvalidAddressString() public {
         vm.expectRevert(abi.encodeWithSelector(AddressUtilsLib.InvalidAddressString.selector));
+        // forge-lint: disable-next-line(unused-return)
         _controller.getProgramId("0xxx34567890123456789012345678901234567890");
     }
 
@@ -1221,7 +1261,9 @@ contract SiloIncentivesControllerTest is Test {
 
         assertEq(programsNames[0], programName, "wrong conversion of programName");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("_rewardToken", _rewardToken);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("programsNames[0]", programsNames[0]);
     }
 
@@ -1274,6 +1316,7 @@ contract SiloIncentivesControllerTest is Test {
         vm.prank(_user);
         IDistributionManager.AccruedRewards[] memory accruedRewards1 = _controller.claimRewards(_to);
 
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshotId);
 
         string[] memory programsNames = new string[](1);

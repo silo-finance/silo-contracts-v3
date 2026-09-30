@@ -21,7 +21,9 @@ contract HookSetupReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         IShareToken(address(TestStateLib.silo0())).hookSetup();
+        // forge-lint: disable-next-line(unused-return)
         IShareToken(address(TestStateLib.silo1())).hookSetup();
     }
 }

@@ -51,6 +51,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         external
         returns (bytes32)
     {
+        // forge-lint: disable-next-line(unused-return)
         IERC20(_token).approve(msg.sender, _amount + _fee);
         return FLASHLOAN_CALLBACK;
     }
@@ -218,6 +219,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         uint256 borrowAmount = 1e18;
 
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowAmount, _borrower, _borrower);
 
         _siloRepayBeforeHook(silo0, token0, _borrower, _borrower, borrowAmount);
@@ -232,6 +234,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         _siloDepositWithoutHook(silo1, token1, _depositor, _depositor, collateralAmount, COLLATERAL);
 
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(borrowAmount, _borrower, _borrower);
 
         _siloRepayNoHooks(silo1, token1, _borrower, _borrower, borrowAmount);
@@ -254,6 +257,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         uint256 borrowAmount = 1e18;
 
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(borrowAmount, _borrower, _borrower);
 
         _siloRepayAllHooks(silo1, token1, _borrower, _borrower, borrowAmount);
@@ -280,11 +284,14 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         uint256 flashFee = silo1.flashFee(address(token1), flashLoanAmount);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FlashLoanBeforeHA(address(silo1), address(this), address(token1), flashLoanAmount);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FlashLoanAfterHA(address(silo1), address(this), address(token1), flashLoanAmount, flashFee);
 
+        // forge-lint: disable-next-line(unused-return)
         silo1.flashLoan(IERC3156FlashBorrower(address(this)), address(token1), flashLoanAmount, data);
     }
 
@@ -348,19 +355,23 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         _token.mint(_depositorAddr, _amount);
 
         vm.prank(_depositorAddr);
+        // forge-lint: disable-next-line(unused-return)
         _token.approve(address(_silo), _amount);
 
         vm.prank(_depositorAddr);
         vm.expectEmit(true, true, true, true);
 
         if (_expectBefore) {
+            // forge-lint: disable-next-line(reentrancy-events)
             emit DepositBeforeHA(address(_silo), _amount, SHARES_0, _receiver, _collateralType);
         } else {
+            // forge-lint: disable-next-item(reentrancy-events)
             emit DepositAfterHA(
                 address(_silo), _amount, SHARES_0, _amount, _amount.decimalsOffsetPow(), _receiver, _collateralType
             );
         }
 
+        // forge-lint: disable-next-line(unused-return)
         _silo.deposit(_amount, _depositor, _collateralType);
     }
 
@@ -375,17 +386,21 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         _token.mint(_depositorAddr, _amount);
 
         vm.prank(_depositorAddr);
+        // forge-lint: disable-next-line(unused-return)
         _token.approve(address(_silo), _amount);
 
         vm.prank(_depositorAddr);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit DepositBeforeHA(address(_silo), _amount, SHARES_0, _receiver, _collateralType);
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-item(reentrancy-events)
         emit DepositAfterHA(
             address(_silo), _amount, SHARES_0, _amount, _amount.decimalsOffsetPow(), _receiver, _collateralType
         );
 
+        // forge-lint: disable-next-line(unused-return)
         _silo.deposit(_amount, _depositorAddr, _collateralType);
     }
 
@@ -400,15 +415,18 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         _token.mint(_depositorAddr, _amount);
 
         vm.prank(_depositorAddr);
+        // forge-lint: disable-next-line(unused-return)
         _token.approve(address(_silo), _amount);
 
         vm.prank(_depositorAddr);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit DepositBeforeHA(address(_silo), _amount, SHARES_0, _receiver, _collateralType);
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit ShareTokenAfterHA(
             address(_silo),
             address(0), // because we mint tokens on deposit
@@ -421,10 +439,12 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         );
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-item(reentrancy-events)
         emit DepositAfterHA(
             address(_silo), _amount, SHARES_0, _amount, _amount.decimalsOffsetPow(), _receiver, _collateralType
         );
 
+        // forge-lint: disable-next-line(unused-return)
         _silo.deposit(_amount, _receiver, _collateralType);
     }
 
@@ -436,12 +456,17 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         uint256 _amount,
         ISilo.CollateralType _collateralType
     ) internal {
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         _token.mint(_depositorAddr, _amount);
 
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.prank(_depositorAddr);
+        // forge-lint: disable-next-line(reentrancy-no-eth, unused-return)
         _token.approve(address(_silo), _amount);
 
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.prank(_depositorAddr);
+        // forge-lint: disable-next-line(reentrancy-no-eth, unused-return)
         _silo.deposit(_amount, _receiver, _collateralType);
     }
 
@@ -457,8 +482,10 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         vm.expectEmit(true, true, true, true);
 
         if (_expectBefore) {
+            // forge-lint: disable-next-line(reentrancy-events)
             emit WithdrawBeforeHA(address(_silo), _amount, SHARES_0, _receiver, _owner, _spender, _collateralType);
         } else {
+            // forge-lint: disable-next-item(reentrancy-events)
             emit WithdrawAfterHA(
                 address(_silo),
                 _amount,
@@ -473,6 +500,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         }
 
         vm.prank(_spender);
+        // forge-lint: disable-next-line(unused-return)
         _silo.withdraw(_amount, _receiver, _owner, _collateralType);
     }
 
@@ -485,10 +513,12 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         ISilo.CollateralType _collateralType
     ) internal {
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit WithdrawBeforeHA(address(_silo), _amount, SHARES_0, _receiver, _owner, _spender, _collateralType);
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit WithdrawAfterHA(
             address(_silo),
             _amount,
@@ -502,6 +532,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         );
 
         vm.prank(_spender);
+        // forge-lint: disable-next-line(unused-return)
         _silo.withdraw(_amount, _receiver, _owner, _collateralType);
     }
 
@@ -514,10 +545,12 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         ISilo.CollateralType _collateralType
     ) internal {
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit WithdrawBeforeHA(address(_silo), _amount, SHARES_0, _receiver, _owner, _spender, _collateralType);
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit ShareTokenAfterHA(
             address(_silo),
             _receiver,
@@ -531,6 +564,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit WithdrawAfterHA(
             address(_silo),
             _amount,
@@ -544,6 +578,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         );
 
         vm.prank(_spender);
+        // forge-lint: disable-next-line(unused-return)
         _silo.withdraw(_amount, _receiver, _owner, _collateralType);
     }
 
@@ -556,6 +591,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         ISilo.CollateralType _collateralType
     ) internal {
         vm.prank(_spender);
+        // forge-lint: disable-next-line(unused-return)
         _silo.withdraw(_amount, _receiver, _owner, _collateralType);
     }
 
@@ -563,24 +599,29 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         internal
     {
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit BorrowBeforeHA(address(_silo), _amount, SHARES_0, _borrowerAddr, _receiver, _borrowerAddr);
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit BorrowAfterHA(
             address(_silo), _amount, SHARES_0, _borrowerAddr, _receiver, _borrowerAddr, _amount, _amount
         );
 
         vm.prank(_borrowerAddr);
+        // forge-lint: disable-next-line(unused-return)
         _silo.borrow(_amount, _borrowerAddr, _receiver);
     }
 
     function _siloBorrowAllHooks(ISilo _silo, address _borrowerAddr, address _receiver, uint256 _amount) internal {
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit BorrowBeforeHA(address(_silo), _amount, SHARES_0, _borrowerAddr, _receiver, _borrowerAddr);
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit DebtShareTokenAfterHA(
             address(_silo),
             address(0), // because we mint debt share tokens
@@ -593,11 +634,13 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit BorrowAfterHA(
             address(_silo), _amount, SHARES_0, _borrowerAddr, _receiver, _borrowerAddr, _amount, _amount
         );
 
         vm.prank(_borrowerAddr);
+        // forge-lint: disable-next-line(unused-return)
         _silo.borrow(_amount, _borrowerAddr, _receiver);
     }
 
@@ -609,12 +652,15 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         uint256 _amount
     ) internal {
         vm.prank(_repayer);
+        // forge-lint: disable-next-line(unused-return)
         _token.approve(address(_silo), _amount);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit RepayBeforeHA(address(_silo), _amount, SHARES_0, _borrowerAddr, _repayer);
 
         vm.prank(_repayer);
+        // forge-lint: disable-next-line(unused-return)
         _silo.repay(_amount, _borrowerAddr);
     }
 
@@ -626,13 +672,16 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         uint256 _amount
     ) internal {
         vm.prank(_repayer);
+        // forge-lint: disable-next-line(unused-return)
         _token.approve(address(_silo), _amount);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit RepayBeforeHA(address(_silo), _amount, SHARES_0, _borrowerAddr, _repayer);
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit DebtShareTokenAfterHA(
             address(_silo),
             _borrowerAddr,
@@ -644,6 +693,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         );
 
         vm.prank(_repayer);
+        // forge-lint: disable-next-line(unused-return)
         _silo.repay(_amount, _borrowerAddr);
     }
 
@@ -655,9 +705,11 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         uint256 _amount
     ) internal {
         vm.prank(_repayer);
+        // forge-lint: disable-next-line(unused-return)
         _token.approve(address(_silo), _amount);
 
         vm.prank(_repayer);
+        // forge-lint: disable-next-line(unused-return)
         _silo.repay(_amount, _borrowerAddr);
     }
 
@@ -684,10 +736,12 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit TransitionCollateralHA(address(_silo), sharesAmount, _depositorAddr, 0, _IS_BEFORE);
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit ShareTokenAfterHA(
             address(_silo),
             _depositorAddr,
@@ -701,6 +755,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit ShareTokenAfterHA(
             address(_silo),
             address(0), // because we mint tokens
@@ -714,15 +769,18 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit TransitionCollateralHA(address(_silo), sharesAmount, _depositorAddr, _depositAmount, _IS_AFTER);
 
         vm.prank(_depositorAddr);
+        // forge-lint: disable-next-line(unused-return)
         _silo.transitionCollateral(sharesAmount, _depositorAddr, _withdrawType);
     }
 
     function _liquidationTest(bool _receiveSToken) internal {
         uint256 beforeActions;
 
+        // forge-lint: disable-next-line(uninitialized-local)
         uint256 afterAction = beforeActions.addAction(Hook.shareTokenTransfer(Hook.PROTECTED_TOKEN)) // as we have protected deposit
             .addAction(Hook.shareTokenTransfer(Hook.DEBT_TOKEN));
 
@@ -734,6 +792,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         uint256 borrowAmount = 70e18;
 
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowAmount, _borrower, _borrower);
 
         // liquidation
@@ -749,6 +808,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         assertGt(collateralToLiquidate, 0, "expect collateralToLiquidate");
 
         token0.mint(address(this), debtToRepay);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(partialLiquidation), debtToRepay);
 
         _liquidationAllHooks(_borrower, debtToRepay, borrowAmount, _receiveSToken);
@@ -765,6 +825,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         if (_receiveSToken) {
             vm.expectEmit(true, true, true, true);
 
+            // forge-lint: disable-next-item(reentrancy-events)
             emit ShareTokenAfterHA(
                 address(silo1),
                 _borrowerAddr,
@@ -779,6 +840,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
 
         vm.expectEmit(true, true, true, true);
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit DebtShareTokenAfterHA(
             address(silo0),
             _borrowerAddr,
@@ -792,6 +854,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         if (!_receiveSToken) {
             vm.expectEmit(true, true, true, true);
 
+            // forge-lint: disable-next-item(reentrancy-events)
             emit ShareTokenAfterHA(
                 address(silo1),
                 address(partialLiquidation),
@@ -804,6 +867,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
             );
         }
 
+        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token1), address(token0), _borrower, _debtToRepay, _receiveSToken
         );
@@ -835,6 +899,7 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
         configOverride.configName = SiloConfigsNames.SILO_LOCAL_DEPLOYER;
 
         address hook;
+        // forge-lint: disable-next-line(reentrancy-no-eth, unused-return)
         (_config, silo0, silo1,,, hook) = _siloFixture.deploy_local(configOverride);
         partialLiquidation = IPartialLiquidation(hook);
 
@@ -844,9 +909,13 @@ contract SiloHooksActionsTest is SiloLittleHelper, Test, HookMock {
 
         _siloHookReceiver = HookMock(configData.hookReceiver);
 
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(silo0), "silo0");
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(silo1), "silo1");
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(configOverride.token0), "token0");
+        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(configOverride.token1), "token1");
     }
 }

@@ -46,6 +46,7 @@ contract DustPropagationLoopTest is SiloLittleHelper, Test {
             _deposit(_assets * i, user2);
 
             // withdraw 50%
+            // forge-lint: disable-next-line(calls-loop)
             _redeem(silo0.maxRedeem(user2, ISilo.CollateralType.Collateral) / 2, user2);
         }
 
@@ -92,6 +93,7 @@ contract DustPropagationLoopTest is SiloLittleHelper, Test {
             _borrow(_assets / b / 2, borrower);
 
             if (_moveForwardSec > 0) {
+                // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
                 vm.warp(block.timestamp + _moveForwardSec);
             }
         }
@@ -100,19 +102,27 @@ contract DustPropagationLoopTest is SiloLittleHelper, Test {
             address borrower = makeAddr(string.concat("borrower", b.toString()));
             address depositor = makeAddr(string.concat("depositor", b.toString()));
 
+            // forge-lint: disable-next-line(calls-loop)
             uint256 debt = silo1.maxRepay(borrower);
             _repay(debt, borrower);
 
             ISilo collateralSilo = silo0;
+            // forge-lint: disable-next-line(calls-loop)
             uint256 maxShares = collateralSilo.maxRedeem(borrower);
 
+            // forge-lint: disable-next-line(calls-loop)
             vm.prank(borrower);
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             collateralSilo.redeem(maxShares, borrower, borrower);
 
+            // forge-lint: disable-next-line(calls-loop)
             assertEq(collateralSilo.maxRepay(borrower), 0, string.concat("should be no debt", b.toString()));
 
+            // forge-lint: disable-next-line(calls-loop)
             uint256 shares = silo1.maxRedeem(depositor);
+            // forge-lint: disable-next-line(calls-loop)
             vm.prank(depositor);
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             silo1.redeem(shares, depositor, depositor);
         }
 

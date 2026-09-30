@@ -42,9 +42,11 @@ contract DepositTest is SiloLittleHelper, Test {
         address depositor = makeAddr("Depositor");
 
         vm.expectRevert(ISilo.InputZeroShares.selector);
+        // forge-lint: disable-next-line(uninitialized-local, unused-return)
         silo0.deposit(_assets, depositor);
 
         vm.expectRevert(ISilo.InputZeroShares.selector);
+        // forge-lint: disable-next-line(uninitialized-local, unused-return)
         silo0.deposit(_assets, depositor, _type);
     }
 
@@ -56,6 +58,7 @@ contract DepositTest is SiloLittleHelper, Test {
         address depositor = makeAddr("Depositor");
 
         vm.expectRevert();
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(_assets, depositor, ISilo.CollateralType(uint8(ISilo.AssetType.Debt)));
     }
 
@@ -138,10 +141,12 @@ contract DepositTest is SiloLittleHelper, Test {
         address depositor = makeAddr("Depositor");
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo0), assets);
 
         vm.expectRevert(abi.encodeWithSelector(IERC20Errors.ERC20InsufficientAllowance.selector, silo0, 0, assets));
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(assets, depositor, ISilo.CollateralType.Collateral);
     }
 
@@ -154,18 +159,23 @@ contract DepositTest is SiloLittleHelper, Test {
 
         token0.mint(depositor, assets * 2);
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), assets * 2);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Deposit(depositor, depositor, assets, assets.decimalsOffsetPow());
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(assets, depositor, ISilo.CollateralType.Collateral);
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit DepositProtected(depositor, depositor, assets, assets.decimalsOffsetPow());
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(assets, depositor, ISilo.CollateralType.Protected);
     }
 
@@ -178,6 +188,7 @@ contract DepositTest is SiloLittleHelper, Test {
 
         token0.mint(depositor, assets * 2);
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), assets * 2);
 
         uint8 invalidCollateralType = 3;
@@ -195,6 +206,7 @@ contract DepositTest is SiloLittleHelper, Test {
         uint8 collateralType = 1;
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Deposit(depositor, depositor, assets, assets.decimalsOffsetPow());
 
         vm.prank(depositor);

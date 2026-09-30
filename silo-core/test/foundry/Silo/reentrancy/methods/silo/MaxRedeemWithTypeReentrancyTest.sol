@@ -22,10 +22,14 @@ contract MaxRedeemWithTypeReentrancyTest is MethodReentrancyTest {
     function _ensureItWillNotRevert() internal {
         address anyAddr = makeAddr("Any address");
 
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().maxRedeem(anyAddr, ISilo.CollateralType.Collateral);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().maxRedeem(anyAddr, ISilo.CollateralType.Collateral);
 
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().maxRedeem(anyAddr, ISilo.CollateralType.Protected);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().maxRedeem(anyAddr, ISilo.CollateralType.Protected);
     }
 }

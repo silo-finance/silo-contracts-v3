@@ -20,13 +20,19 @@ contract GetTotalAssetsStorageReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().getTotalAssetsStorage(ISilo.AssetType.Collateral);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().getTotalAssetsStorage(ISilo.AssetType.Collateral);
 
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().getTotalAssetsStorage(ISilo.AssetType.Protected);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().getTotalAssetsStorage(ISilo.AssetType.Protected);
 
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().getTotalAssetsStorage(ISilo.AssetType.Debt);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().getTotalAssetsStorage(ISilo.AssetType.Debt);
     }
 }

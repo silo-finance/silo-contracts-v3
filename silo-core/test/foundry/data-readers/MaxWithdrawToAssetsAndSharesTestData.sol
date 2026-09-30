@@ -142,6 +142,7 @@ contract MaxWithdrawToAssetsAndSharesTestData {
         i = allData.length;
         allData.push();
 
+        // forge-lint: disable-next-line(encode-packed-collision)
         allData[i].name = string(abi.encodePacked("#", toString(i), " ", _name));
     }
 

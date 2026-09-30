@@ -28,6 +28,7 @@ contract LiquidationPreviewTestData {
         data = new CELAData[](13 + 80);
         uint256 i;
 
+        // forge-lint: disable-next-line(uninitialized-local)
         data[i++] = CELAData({ // #0
             input: Input({
                 lt: 1,

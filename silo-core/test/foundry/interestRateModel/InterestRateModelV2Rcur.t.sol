@@ -39,6 +39,7 @@ contract InterestRateModelV2RcurTest is RcurTestData, InterestRateModelConfigs {
             address silo = address(i.toUint160());
             InterestRateModelV2Impl IRMv2Impl = _createIRM(silo, testCase);
 
+            // forge-lint: disable-next-item(calls-loop)
             uint256 rcur = IRMv2Impl.calculateCurrentInterestRate(
                 cfg,
                 testCase.input.totalDeposits,
@@ -64,15 +65,20 @@ contract InterestRateModelV2RcurTest is RcurTestData, InterestRateModelConfigs {
                 uint64(testCase.input.lastTransactionTime)
             );
 
+            // forge-lint: disable-next-line(calls-loop)
             IRMv2Impl.mockSetup(silo, testCase.input.integratorState, testCase.input.Tcrit);
 
             bytes memory encodedData = abi.encodeWithSelector(ISilo.utilizationData.selector);
+            // forge-lint: disable-next-line(calls-loop)
             vm.mockCall(silo, encodedData, abi.encode(utilizationData));
+            // forge-lint: disable-next-line(calls-loop)
             vm.expectCall(silo, encodedData);
 
+            // forge-lint: disable-next-line(calls-loop)
             uint256 mockedRcur = IRMv2Impl.getCurrentInterestRate(silo, testCase.input.currentTime);
             assertEq(mockedRcur, rcur, _concatMsg(i, "getCurrentInterestRate()"));
 
+            // forge-lint: disable-next-line(calls-loop)
             bool overflow = IRMv2Impl.overflowDetected(silo, testCase.input.currentTime);
             assertEq(
                 overflow,
@@ -88,9 +94,12 @@ contract InterestRateModelV2RcurTest is RcurTestData, InterestRateModelConfigs {
     {
         IRMv2Impl = InterestRateModelV2Impl(Clones.clone(address(INTEREST_RATE_MODEL)));
 
+        // forge-lint: disable-next-line(calls-loop)
         IInterestRateModelV2Config configAddress = new InterestRateModelV2Config(_toConfigStruct(_testCase));
 
+        // forge-lint: disable-next-line(calls-loop)
         vm.prank(_silo);
+        // forge-lint: disable-next-line(calls-loop)
         IRMv2Impl.initialize(address(configAddress));
     }
 

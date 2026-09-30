@@ -70,12 +70,15 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
         bool redeem = false;
 
         _executeWithdrawScenario1(50, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario1(silo0.maxBorrow(borrower) / 2, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario1(0, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -88,12 +91,15 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
         bool redeem = true;
 
         _executeWithdrawScenario1(50, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario1(silo0.maxBorrow(borrower) / 2, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario1(0, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -109,6 +115,7 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
             }
 
             vm.assume(maxRedeem != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo0.redeem(maxRedeem, borrower, borrower);
         } else {
             uint256 maxWithdraw = silo0.maxWithdraw(borrower);
@@ -119,6 +126,7 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
             }
 
             vm.assume(maxWithdraw != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo0.withdraw(maxWithdraw, borrower, borrower);
         }
     }
@@ -132,12 +140,15 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
         bool redeem = false;
 
         _executeWithdrawScenario2(50, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario2(silo0.maxBorrow(borrower) / 2, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario2(0, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -150,12 +161,15 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
         bool redeem = true;
 
         _executeWithdrawScenario2(50, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario2(silo0.maxBorrow(borrower) / 2, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario2(0, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -166,11 +180,13 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
             _changeTotalsScenario2();
             uint256 maxRedeem = silo0.maxRedeem(borrower);
             vm.assume(maxRedeem != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo0.redeem(maxRedeem, borrower, borrower);
         } else {
             uint256 maxWithdraw = silo0.maxWithdraw(borrower);
             _changeTotalsScenario2();
             vm.assume(maxWithdraw != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo0.withdraw(maxWithdraw, borrower, borrower);
         }
     }
@@ -191,12 +207,15 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
         bool redeem = false;
 
         _executeWithdrawScenario3(50, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario3(silo0.maxBorrow(borrower) / 2, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario3(0, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -209,12 +228,15 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
         bool redeem = true;
 
         _executeWithdrawScenario3(50, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario3(silo0.maxBorrow(borrower) / 2, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeWithdrawScenario3(0, redeem);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -230,6 +252,7 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
             }
 
             vm.assume(maxRedeem != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo0.redeem(maxRedeem, borrower, borrower);
         } else {
             uint256 maxWithdraw = silo0.maxWithdraw(borrower);
@@ -240,23 +263,28 @@ contract MaxWithdrawAndFractionsTest is SiloLittleHelper, Test {
             }
 
             vm.assume(maxWithdraw != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo0.withdraw(maxWithdraw, borrower, borrower);
         }
     }
 
     function _doDeposit(uint256 _amount) internal {
+        // forge-lint: disable-next-line(unused-return)
         silo0.mint(_amount, borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(_amount, otherUser);
     }
 
     function _borrowAndUpdateSiloCode(uint256 _amount) internal returns (uint256 maxWithdraw) {
         if (_amount != 0) {
+            // forge-lint: disable-next-line(unused-return)
             silo1.borrow(_amount, borrower, borrower);
 
             uint256 otherUserBorrowAmount = _amount / 2;
 
             if (otherUserBorrowAmount != 0) {
                 vm.prank(otherUser);
+                // forge-lint: disable-next-line(unused-return)
                 silo0.borrow(otherUserBorrowAmount, otherUser, otherUser);
             }
         }

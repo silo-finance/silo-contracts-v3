@@ -35,10 +35,13 @@ contract MaxBorrowValueToAssetsAndSharesTest is Test {
         MaxBorrowValueToAssetsAndSharesTestData.MBVData[] memory testDatas = TESTS.getData();
 
         for (uint256 i; i < testDatas.length; i++) {
+            // forge-lint: disable-next-line(calls-loop)
             vm.clearMockedCalls();
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_string(testDatas[i].name);
 
             if (testDatas[i].input.oracleSet) {
+                // forge-lint: disable-next-line(calls-loop)
                 ORACLE.quoteMock(1e18, testDatas[i].input.debtToken, testDatas[i].input.debtOracleQuote);
             }
 

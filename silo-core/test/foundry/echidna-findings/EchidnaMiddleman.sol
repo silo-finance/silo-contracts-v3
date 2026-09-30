@@ -24,6 +24,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         ISilo silo = __chooseSilo(_siloZero);
 
         vm.prank(actor);
+        // forge-lint: disable-next-line(unused-return)
         silo.deposit(_amount, actor);
     }
 
@@ -34,6 +35,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         ISilo silo = __chooseSilo(_siloZero);
 
         vm.prank(actor);
+        // forge-lint: disable-next-line(unused-return)
         silo.borrow(_amount, actor, actor);
     }
 
@@ -41,6 +43,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         internal
         returns (uint256 shares)
     {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("    function", "__previewDeposit_doesNotReturnMoreThanDeposit");
 
         address actor = _chooseActor(_actor);
@@ -65,6 +68,7 @@ contract EchidnaMiddleman is EchidnaSetup {
     }
 
     function __maxBorrow_correctReturnValue(uint8 _actor) internal returns (uint256 maxAssets, uint256 shares) {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("    function", "__maxBorrow_correctReturnValue");
 
         address actor = _chooseActor(_actor);
@@ -75,12 +79,14 @@ contract EchidnaMiddleman is EchidnaSetup {
     }
 
     function __mint(uint8 _actor, bool _siloZero, uint256 _shares) internal {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("    function", "__mint");
 
         address actor = _chooseActor(_actor);
         ISilo silo = __chooseSilo(_siloZero);
 
         vm.prank(actor);
+        // forge-lint: disable-next-line(unused-return)
         silo.mint(_shares, actor);
     }
 
@@ -88,6 +94,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         internal
         returns (uint256 maxBorrow, uint256 shares)
     {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("    function", "__maxBorrowShares_correctReturnValue");
 
         address actor = _chooseActor(_actor);
@@ -117,6 +124,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         (bool isSolvent, ISilo siloWithDebt,) = _invariant_insolventHasDebt(actor);
         assertFalse(isSolvent, "expect not solvent user");
 
+        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(actor);
 
         (address collateral, address debt) = __liquidationTokens(address(siloWithDebt));
@@ -124,10 +132,12 @@ contract EchidnaMiddleman is EchidnaSetup {
         __prepareForLiquidationRepay(siloWithDebt, actor, debtToRepay);
 
         vm.prank(actor);
+        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(debt, collateral, actor, debtToRepay, false);
     }
 
     function __maxWithdraw_correctMax(uint8 _actor) internal {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("    function", "__maxWithdraw_correctMax");
 
         address actor = _chooseActor(_actor);
@@ -136,6 +146,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         _requireHealthySilo(_siloWithCollateral);
 
         uint256 maxAssets = _siloWithCollateral.maxWithdraw(actor);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxWithdraw", maxAssets, 18);
 
         if (maxAssets == 0) {
@@ -152,11 +163,17 @@ contract EchidnaMiddleman is EchidnaSetup {
             if (shareBalance == 0 || !isSolvent || vaultLiquidity == 0) {
                 // we good
             } else {
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log("[maxWithdraw_correctMax] maxAssets is zero for no reason");
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log(isSolvent ? "actor solvent" : "actor not solvent");
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_uint("shareBalance", shareBalance);
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_uint("debtShareBalance", debtShareBalance);
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_uint("vault.getLiquidity()", vaultLiquidity);
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_uint("ltv (is it close to LT?)", ltv);
 
                 assertTrue(false, "why max withdraw is 0?");
@@ -164,6 +181,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         }
 
         vm.prank(actor);
+        // forge-lint: disable-next-line(unused-return)
         _siloWithCollateral.withdraw(maxAssets, actor, actor);
     }
 
@@ -174,6 +192,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         ISilo silo = __chooseSilo(_siloZero);
 
         vm.prank(actor);
+        // forge-lint: disable-next-line(unused-return)
         silo.deposit(_amount, actor);
     }
 
@@ -190,6 +209,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         ISilo vault = __chooseSilo(_siloZero);
         _invariant_checkForInterest(vault);
 
+        // forge-lint: disable-next-line(unused-return)
         (address protected, address collateral,) = siloConfig.getShareTokens(address(vault));
 
         uint256 maxWithdrawSumBefore;
@@ -203,9 +223,13 @@ contract EchidnaMiddleman is EchidnaSetup {
             uint256 maxProtectedBefore = vault.maxWithdraw(address(actor), ISilo.CollateralType.Protected);
             maxWithdrawSumBefore = maxCollateralBefore + maxProtectedBefore;
 
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log("just before transitionCollateral (max should be with interest):");
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("maxRedeem maxCollateralBefore", maxCollateralBefore);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("maxRedeem  maxProtectedBefore", maxProtectedBefore);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("maxRedeem                     sum", maxWithdrawSumBefore);
         }
 
@@ -221,10 +245,15 @@ contract EchidnaMiddleman is EchidnaSetup {
             uint256 maxProtectedAfter = vault.maxWithdraw(address(actor), ISilo.CollateralType.Protected);
             uint256 maxAssetsSumAfter = maxCollateralAfter + maxProtectedAfter;
 
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("after transitionCollateral assets", transitionedAssets);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("maxRedeem maxCollateralAfter", maxCollateralAfter);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("maxRedeem  maxProtectedAfter", maxProtectedAfter);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("maxRedeem                    sum", maxAssetsSumAfter);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_int("assets diff", maxWithdrawSumBefore.toInt256() - maxAssetsSumAfter.toInt256());
 
             assertGe(
@@ -243,6 +272,7 @@ contract EchidnaMiddleman is EchidnaSetup {
             // transitionCollateral in one direction, and then in the opposite direction, and only check shares/assets
             // after the second transition.
 
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log("transition back");
 
             (uint256 sharesTransitioned, ISilo.CollateralType _withdrawType) = _type
@@ -250,6 +280,7 @@ contract EchidnaMiddleman is EchidnaSetup {
                 ? (protBalanceAfter - protBalanceBefore, ISilo.CollateralType.Protected)
                 : (collBalanceAfter - collBalanceBefore, ISilo.CollateralType.Collateral);
 
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("sharesTransitioned", sharesTransitioned);
 
             vm.prank(actor);
@@ -260,10 +291,15 @@ contract EchidnaMiddleman is EchidnaSetup {
                 uint256 maxProtectedBack = vault.maxWithdraw(address(actor), ISilo.CollateralType.Protected);
                 uint256 maxAssetsSumBack = maxCollateralBack + maxProtectedBack;
 
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_uint("after back transitionCollateral", transitionedAssets);
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_uint("maxWithdraw previewCollateralBack", maxCollateralBack);
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_uint("maxWithdraw  previewProtectedBack", maxProtectedBack);
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_uint("maxWithdraw                   sum", maxAssetsSumBack);
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_int("assets diff", maxWithdrawSumBefore.toInt256() - maxAssetsSumBack.toInt256());
 
                 assertGe(
@@ -278,7 +314,9 @@ contract EchidnaMiddleman is EchidnaSetup {
             protBalanceAfter = IShareToken(protected).balanceOf(address(actor));
             collBalanceAfter = IShareToken(collateral).balanceOf(address(actor));
 
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_int("collateral shares diff", collBalanceBefore.toInt256() - collBalanceAfter.toInt256());
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_int("protected shares diff", protBalanceBefore.toInt256() - protBalanceAfter.toInt256());
 
             assertLe(
@@ -296,6 +334,7 @@ contract EchidnaMiddleman is EchidnaSetup {
     }
 
     function __cannotPreventInsolventUserFromBeingLiquidated(uint8 _actor, bool _receiveShares) internal {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("    function", "__cannotPreventInsolventUserFromBeingLiquidated");
 
         address actor = _chooseActor(_actor);
@@ -303,22 +342,27 @@ contract EchidnaMiddleman is EchidnaSetup {
         (bool isSolvent, ISilo siloWithDebt,) = _invariant_insolventHasDebt(actor);
         assertFalse(isSolvent, "expect not solvent user");
 
+        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(actor);
         (address collateral, address debt) = __liquidationTokens(address(siloWithDebt));
 
         __prepareForLiquidationRepay(siloWithDebt, actor, debtToRepay);
 
         vm.prank(actor);
+        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(debt, collateral, actor, debtToRepay, _receiveShares);
     }
 
     function __debtSharesNeverLargerThanDebt() internal {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("    function", "__debtSharesNeverLargerThanDebt");
 
         uint256 debt0 = silo0.getDebtAssets();
         uint256 debt1 = silo1.getDebtAssets();
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken0) = siloConfig.getShareTokens(address(silo0));
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken1) = siloConfig.getShareTokens(address(silo1));
 
         uint256 debtShareBalance0 = IShareToken(debtShareToken0).totalSupply();
@@ -329,12 +373,14 @@ contract EchidnaMiddleman is EchidnaSetup {
     }
 
     function __borrowShares(uint8 _actorIndex, bool _siloZero, uint256 _shares) internal {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("    function", "__borrowShares");
 
         address actor = _chooseActor(_actorIndex);
         ISilo silo = __chooseSilo(_siloZero);
 
         vm.prank(actor);
+        // forge-lint: disable-next-line(unused-return)
         silo.borrowShares(_shares, actor, actor);
     }
 
@@ -350,9 +396,11 @@ contract EchidnaMiddleman is EchidnaSetup {
         uint256 maxShares = _siloWithCollateral.maxRedeem(address(actor));
         assertGt(maxShares, 0, "Zero shares to withdraw");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("Max Shares to redeem", maxShares, 18);
 
         vm.prank(actor);
+        // forge-lint: disable-next-line(unused-return)
         _siloWithCollateral.redeem(maxShares, actor, actor); // expect not to fail!
     }
 
@@ -378,6 +426,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         ISilo silo = __chooseSilo(_vaultZero);
 
         vm.prank(actor);
+        // forge-lint: disable-next-line(unused-return)
         silo.withdraw(_assets, actor, actor);
     }
 
@@ -393,6 +442,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         uint256 assets = silo.previewMint(maxShares);
         assertGt(assets, 0, "expect assets not to be 0");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("Max Shares to mint:", maxShares, 18);
 
         vm.prank(actor);
@@ -403,6 +453,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         emit log_named_string("    function", "__accrueInterest");
 
         ISilo silo = __chooseSilo(_vaultZero);
+        // forge-lint: disable-next-line(unused-return)
         silo.accrueInterest();
     }
 
@@ -410,6 +461,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         public
         returns (uint256 shares)
     {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("    function", "__depositAssetType");
 
         address actor = _chooseActor(_actorIndex);
@@ -429,10 +481,12 @@ contract EchidnaMiddleman is EchidnaSetup {
 
         assertFalse(isSolvent, "expect user to be solvent, not solvent should be ignored by echidna");
 
+        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(address(actor));
         (address collateral, address debt) = __liquidationTokens(address(siloWithDebt));
 
         try partialLiquidation.liquidationCall(debt, collateral, actor, debtToRepay, _receiveShares) {
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log("Solvent user liquidated!");
             assertTrue(false, "Solvent user liquidated!");
         } catch {
@@ -448,13 +502,16 @@ contract EchidnaMiddleman is EchidnaSetup {
 
         assertFalse(isSolvent, "expect not solvent user");
 
+        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(address(actor));
         assertFalse(isSolvent, "expect user to be not insolvent");
 
         uint256 ltvBefore = siloWithCollateral.getLtv(address(actor));
         uint256 lt = siloWithCollateral.getLt();
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("User LTV:", ltvBefore, 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("Liq Threshold:", lt, 16);
 
         uint256 maxRepay = siloWithDebt.maxRepay(address(actor));
@@ -462,9 +519,11 @@ contract EchidnaMiddleman is EchidnaSetup {
         uint256 maxPartialRepayValue = maxRepay * PartialLiquidationLib._FULL_LIQUIDATION_THRESHOLD / 1e18;
 
         (address collateral, address debt) = __liquidationTokens(address(siloWithDebt));
+        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(debt, collateral, actor, debtToRepay, false);
 
         uint256 ltvAfter = siloWithDebt.getLtv(address(actor));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("afterLtv:", ltvAfter, 16);
 
         assertEq(silo0.getLtv(address(actor)), silo1.getLtv(address(actor)), "LTV must match on both silos");
@@ -492,18 +551,23 @@ contract EchidnaMiddleman is EchidnaSetup {
         uint256 lt = siloWithDebt.getLt();
         uint256 ltv = siloWithDebt.getLtv(address(actor));
 
+        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(address(actor));
 
         (address collateral, address debt) = __liquidationTokens(address(siloWithDebt));
 
         try partialLiquidation.liquidationCall(debt, collateral, actor, debtToRepay, _receiveShares) {
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("User LTV:", ltv, 16);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("Liq Threshold:", lt, 16);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log("User liquidated!");
             assert(false);
         } catch {
             assertLe(ltv, lt, "ltv <= lt");
 
+            // forge-lint: disable-next-item(reentrancy-events)
             emit log_named_string(
                 "it is expected liquidationCall to throw, because user is solvent", isSolvent ? "YES" : "NO?!"
             );
@@ -533,6 +597,7 @@ contract EchidnaMiddleman is EchidnaSetup {
         MintableToken token = _silo == silo0 ? token0 : token1;
         token.mintOnDemand(_actor, _debtToRepay);
         vm.prank(_actor);
+        // forge-lint: disable-next-line(unused-return)
         token.approve(address(_silo), _debtToRepay);
     }
 }

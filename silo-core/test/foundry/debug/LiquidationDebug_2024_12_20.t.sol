@@ -20,6 +20,7 @@ contract LiquidationDebug_2024_12_20 is IntegrationTest {
         vm.label(0x82aF49447D8a07e3bd95BD0d56f35241523fBab1, "WETH");
         vm.label(address(HOOK), "IPartialLiquidation");
 
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(getChainRpcUrl(ARBITRUM_ONE_ALIAS), 286812225);
 
         helper = new LiquidationHelper({
@@ -65,6 +66,7 @@ contract LiquidationDebug_2024_12_20 is IntegrationTest {
         // 3	_liquidation.hook	address	0x2D2628f0434a5ed57601f6506d492849260193bA
         // 3	_liquidation.collateralAsset	address	0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
         // 3	_liquidation.user	address	0xDaE3B7D951621b6600A88234246858e741AA70BB
+        // forge-lint: disable-next-item(unused-return)
         helper.executeLiquidation({
             _flashLoanFrom: flashLoanFrom,
             _debtAsset: 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1,

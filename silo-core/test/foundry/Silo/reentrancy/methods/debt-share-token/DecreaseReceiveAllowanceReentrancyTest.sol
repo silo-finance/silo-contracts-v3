@@ -19,6 +19,7 @@ contract DecreaseReceiveAllowanceReentrancyTest is MethodReentrancyTest {
         address borrower = makeAddr("Borrower");
         address receiver = makeAddr("Receiver");
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtToken) = config.getShareTokens(address(silo0));
 
         uint256 allowance = 1000_0000e18;
@@ -29,6 +30,7 @@ contract DecreaseReceiveAllowanceReentrancyTest is MethodReentrancyTest {
         vm.prank(receiver);
         ShareDebtToken(debtToken).decreaseReceiveAllowance(borrower, allowance);
 
+        // forge-lint: disable-next-line(unused-return)
         (,, debtToken) = config.getShareTokens(address(silo1));
 
         vm.prank(receiver);
@@ -43,11 +45,13 @@ contract DecreaseReceiveAllowanceReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
         ISilo silo1 = TestStateLib.silo1();
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtToken) = config.getShareTokens(address(silo0));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
         ShareDebtToken(debtToken).decreaseReceiveAllowance(address(0), 0);
 
+        // forge-lint: disable-next-line(unused-return)
         (,, debtToken) = config.getShareTokens(address(silo1));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);

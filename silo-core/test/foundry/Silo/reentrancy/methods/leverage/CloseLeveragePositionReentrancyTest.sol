@@ -33,6 +33,7 @@ contract CloseLeveragePositionReentrancyTest is OpenLeveragePositionReentrancyTe
         address silo1 = address(TestStateLib.silo1());
 
         vm.prank(user);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(silo1).approve(userLeverageContract, type(uint256).max);
 
         TestStateLib.enableLeverageReentrancy();

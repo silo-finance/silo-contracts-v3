@@ -38,12 +38,14 @@ contract TransitionCollateralReentrancyTest is SiloLittleHelper, Test, PartialLi
         configOverride.hookReceiver = address(this);
         configOverride.configName = SiloConfigsNames.SILO_LOCAL_DEPLOYER;
 
+        // forge-lint: disable-next-line(unused-return)
         (siloConfig, silo0, silo1,,,) = siloFixture.deploy_local(configOverride);
         partialLiquidation = this;
 
         silo0.updateHooks();
     }
 
+    // forge-lint: disable-next-line(empty-block)
     function initialize(ISiloConfig, bytes calldata) public override {}
 
     function hookReceiverConfig(address _silo)
@@ -78,12 +80,14 @@ contract TransitionCollateralReentrancyTest is SiloLittleHelper, Test, PartialLi
 
         afterActionExecuted = true;
 
+        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(borrower);
 
         assertEq(collateralToLiquidate, 3, "collateralToLiquidate (5 - 2 underestimation)");
         assertEq(debtToRepay, 5, "debtToRepay");
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), borrower, debtToRepay, false);
     }
 
@@ -97,11 +101,13 @@ contract TransitionCollateralReentrancyTest is SiloLittleHelper, Test, PartialLi
         _borrow(5, borrower);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(depositedShares / 2, borrower, ISilo.CollateralType.Collateral);
 
         assertTrue(afterActionExecuted, "afterActionExecuted");
         assertTrue(silo0.isSolvent(borrower), "borrower is solvent after transition of collateral");
 
+        // forge-lint: disable-next-line(unused-return)
         (, ISiloConfig.ConfigData memory debt) = siloConfig.getConfigsForSolvency(borrower);
 
         assertTrue(silo0.isSolvent(borrower), "borrower is solvent after transition of collateral");

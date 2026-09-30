@@ -49,6 +49,7 @@ contract OracleThrowsTest is SiloLittleHelper, Test {
         SiloFixture siloFixture = new SiloFixture();
 
         address hook;
+        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
         partialLiquidation = IPartialLiquidation(hook);
     }
@@ -56,6 +57,7 @@ contract OracleThrowsTest is SiloLittleHelper, Test {
     /*
     forge test -vv --ffi --mt test_throwing_oracle
     */
+    // forge-lint: disable-next-item(empty-block)
     function test_throwing_oracle_1token() public {
         // we can not test oracle for 1 token, because we not using it for 1 token
         // _throwing_oracle();
@@ -79,6 +81,7 @@ contract OracleThrowsTest is SiloLittleHelper, Test {
         assertEq(token1.balanceOf(address(silo1)), 50e18, "DEPOSITOR's deposit");
 
         vm.warp(block.timestamp + 100 days);
+        // forge-lint: disable-next-line(unused-return)
         silo1.accrueInterest();
 
         SOLVENCY_ORACLE0.breakOracle();
@@ -105,24 +108,29 @@ contract OracleThrowsTest is SiloLittleHelper, Test {
         ISilo collateralSilo = silo0;
         MintableToken collateralToken = token0;
 
+        // forge-lint: disable-next-line(unused-return)
         collateralSilo.redeem(1, BORROWER, BORROWER);
         assertEq(collateralToken.balanceOf(BORROWER), 0, "BORROWER can not withdraw even 1 wei when oracle broken");
 
         uint256 silo1Balance = token1.balanceOf(address(silo1));
         uint256 silo1Liquidity = silo1.getLiquidity();
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("silo1Balance", silo1Balance, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("silo1Liquidity", silo1Liquidity, 18);
         assertGt(silo1Balance, 0, "expect tokens in silo");
         assertGt(silo1Balance, silo1Liquidity, "we need case with interest");
 
         vm.prank(DEPOSITOR);
         vm.expectRevert();
+        // forge-lint: disable-next-line(unused-return)
         silo1.withdraw(silo1Liquidity + 1, DEPOSITOR, DEPOSITOR);
         assertEq(
             token1.balanceOf(DEPOSITOR), 0, "silo has only X tokens available, withdraw for DEPOSITOR will fail"
         );
 
         vm.prank(DEPOSITOR);
+        // forge-lint: disable-next-line(unused-return)
         silo1.withdraw(silo1Liquidity, DEPOSITOR, DEPOSITOR);
         assertEq(
             token1.balanceOf(DEPOSITOR), silo1Liquidity, "DEPOSITOR can withdraw up to liquidity without oracle"
@@ -134,6 +142,7 @@ contract OracleThrowsTest is SiloLittleHelper, Test {
         _repay(10, BORROWER);
         assertEq(token1.balanceOf(address(silo1)), silo1Balance - silo1Liquidity + 10, "repay without oracle");
 
+        // forge-lint: disable-next-line(unused-return)
         (, address collateralShareToken1, address debtShareToken) = silo1.config().getShareTokens(address(silo1));
         uint256 borrowerDebtShares = IShareToken(debtShareToken).balanceOf(BORROWER);
 
@@ -142,12 +151,15 @@ contract OracleThrowsTest is SiloLittleHelper, Test {
             IShareToken(debtShareToken).balanceOf(BORROWER), 0, "repay all without oracle - expect no share debt"
         );
 
+        // forge-lint: disable-next-line(unused-return)
         (, address collateralShareToken,) = collateralSilo.config().getShareTokens(address(collateralSilo));
 
         vm.startPrank(BORROWER);
+        // forge-lint: disable-next-line(unused-return)
         collateralSilo.redeem(IShareToken(collateralShareToken).balanceOf(BORROWER), BORROWER, BORROWER);
 
         vm.startPrank(DEPOSITOR);
+        // forge-lint: disable-next-line(unused-return)
         silo1.redeem(IShareToken(collateralShareToken1).balanceOf(DEPOSITOR), DEPOSITOR, DEPOSITOR);
 
         silo1.withdrawFees();

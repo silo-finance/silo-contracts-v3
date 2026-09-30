@@ -19,12 +19,19 @@ contract ReentrancyTestState {
     bool public leverageReenter = true;
 
     function set(
+        // forge-lint: disable-next-line(missing-zero-check)
         address _siloConfig,
+        // forge-lint: disable-next-line(missing-zero-check)
         address _silo0,
+        // forge-lint: disable-next-line(missing-zero-check)
         address _silo1,
+        // forge-lint: disable-next-line(missing-zero-check)
         address _token0,
+        // forge-lint: disable-next-line(missing-zero-check)
         address _token1,
+        // forge-lint: disable-next-line(missing-zero-check)
         address _hookReceiver,
+        // forge-lint: disable-next-line(missing-zero-check)
         address _leverageRouter
     ) external {
         siloConfig = _siloConfig;

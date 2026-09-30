@@ -15,6 +15,7 @@ contract Deposit2ndGasTest is Gas, Test {
         _gasTestsInit();
 
         vm.prank(BORROWER);
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(ASSETS, BORROWER);
     }
 

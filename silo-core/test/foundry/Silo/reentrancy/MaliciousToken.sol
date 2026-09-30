@@ -86,20 +86,27 @@ contract MaliciousToken is MintableToken, Test, Tabs {
         uint256 stateBeforeReentrancyTest = vm.snapshotState();
 
         for (uint256 j = 0; j < _methodRegistries.length; j++) {
+            // forge-lint: disable-next-line(calls-loop)
             console2.log(_tabs(3, "[_callAllMethods] calling [%s] %s"), j, _methodRegistries[j].abiFile());
 
+            // forge-lint: disable-next-line(calls-loop)
             if (Strings.equal(_methodRegistries[j].abiFile(), _leverageMethodsRegistry.abiFile())) continue;
 
+            // forge-lint: disable-next-line(calls-loop)
             uint256 totalMethods = _methodRegistries[j].supportedMethodsLength();
 
             for (uint256 i = 0; i < totalMethods; i++) {
+                // forge-lint: disable-next-line(calls-loop)
                 bytes4 methodSig = _methodRegistries[j].supportedMethods(i);
+                // forge-lint: disable-next-line(calls-loop)
                 IMethodReentrancyTest method = _methodRegistries[j].methods(methodSig);
 
                 // console2.log(_tabs(4, "[_callAllMethods] loop [%s] %s"), i, method.methodDescription());
 
+                // forge-lint: disable-next-line(calls-loop)
                 method.verifyReentrancy();
 
+                // forge-lint: disable-next-line(calls-loop, unused-return)
                 vm.revertToState(stateBeforeReentrancyTest);
             }
 
@@ -117,13 +124,17 @@ contract MaliciousToken is MintableToken, Test, Tabs {
         uint256 totalMethods = _leverageMethodsRegistry.supportedMethodsLength();
 
         for (uint256 i = 0; i < totalMethods; i++) {
+            // forge-lint: disable-next-line(calls-loop)
             bytes4 methodSig = _leverageMethodsRegistry.supportedMethods(i);
+            // forge-lint: disable-next-line(calls-loop)
             IMethodReentrancyTest method = _leverageMethodsRegistry.methods(methodSig);
 
             // console2.log(_tabs(3), method.methodDescription());
 
+            // forge-lint: disable-next-line(calls-loop)
             method.verifyReentrancy();
 
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             vm.revertToState(stateBeforeReentrancyTest);
         }
 

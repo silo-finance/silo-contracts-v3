@@ -108,12 +108,15 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
         bool borrowShares = false;
 
         _executeBorrowScenario1(50, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario1(silo1.maxBorrow(address(this)) / 2, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario1(0, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -126,12 +129,15 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
         bool borrowShares = true;
 
         _executeBorrowScenario1(50, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario1(silo1.maxBorrow(address(this)) / 2, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario1(0, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -148,6 +154,7 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
             }
 
             vm.assume(maxBorrowShares != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo1.borrowShares(maxBorrowShares, borrower, borrower);
         } else {
             uint256 maxBorrow = silo1.maxBorrow(borrower);
@@ -158,6 +165,7 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
             }
 
             vm.assume(maxBorrow != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo1.borrow(maxBorrow, borrower, borrower);
         }
     }
@@ -171,12 +179,15 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
         bool borrowShares = false;
 
         _executeBorrowScenario2(50, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario2(silo1.maxBorrow(address(this)) / 2, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario2(0, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -189,12 +200,15 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
         bool borrowShares = true;
 
         _executeBorrowScenario2(50, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario2(silo1.maxBorrow(address(this)) / 2, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario2(0, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -206,11 +220,13 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
             uint256 maxBorrowShares = silo1.maxBorrowShares(borrower);
             _changeTotalsScenario2();
             vm.assume(maxBorrowShares != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo1.borrowShares(maxBorrowShares, borrower, borrower);
         } else {
             uint256 maxBorrow = silo1.maxBorrow(borrower);
             _changeTotalsScenario2();
             vm.assume(maxBorrow != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo1.borrow(maxBorrow, borrower, borrower);
         }
     }
@@ -231,12 +247,15 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
         bool borrowShares = false;
 
         _executeBorrowScenario3(50, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario3(silo1.maxBorrow(address(this)) / 2, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario3(0, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -249,12 +268,15 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
         bool borrowShares = true;
 
         _executeBorrowScenario3(50, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario3(silo1.maxBorrow(address(this)) / 2, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         _executeBorrowScenario3(0, borrowShares);
+        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
     }
 
@@ -271,6 +293,7 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
             }
 
             vm.assume(maxBorrowShares != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo1.borrowShares(maxBorrowShares, borrower, borrower);
         } else {
             uint256 maxBorrow = silo1.maxBorrow(borrower);
@@ -281,12 +304,15 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
             }
 
             vm.assume(maxBorrow != 0);
+            // forge-lint: disable-next-line(unused-return)
             silo1.borrow(maxBorrow, borrower, borrower);
         }
     }
 
     function _doDeposit(uint256 _amount) internal {
+        // forge-lint: disable-next-line(unused-return)
         silo0.mint(_amount, address(this));
+        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(_amount, address(1));
     }
 
@@ -294,6 +320,7 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
         address borrower = address(this);
 
         if (_amount != 0) {
+            // forge-lint: disable-next-line(unused-return)
             silo1.borrow(_amount, borrower, borrower);
         }
 
@@ -305,8 +332,11 @@ contract MaxBorrowAndFractions is SiloLittleHelper, Test {
         assertEq(fractions.interest, 0, "interest should be 0");
         assertEq(fractions.revenue, 0, "revenue should be 0");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("silo0.balanceOf", silo0.balanceOf(borrower));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("silo0.previewRedeem", silo0.previewRedeem(silo0.balanceOf(borrower)));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("silo1.maxRepay", silo1.maxRepay(borrower));
 
         maxBorrow = silo1.maxBorrow(borrower);

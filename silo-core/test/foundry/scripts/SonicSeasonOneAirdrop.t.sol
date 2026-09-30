@@ -16,6 +16,7 @@ contract SonicSeasonOneAirdropTest is Test {
     uint256[] balancesBefore;
 
     function setUp() public {
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(string(abi.encodePacked(vm.envString("RPC_SONIC"))), 40727841);
         airdropWallet = vm.createWallet(uint256(keccak256(bytes("1"))));
         // forge-lint: disable-next-line(unsafe-cheatcode)
@@ -52,6 +53,7 @@ contract SonicSeasonOneAirdropTest is Test {
 
         for (uint256 i = start; i < end; i++) {
             balancesBefore.push(data[i].addr.balance);
+            // forge-lint: disable-next-line(uninitialized-local)
             totalToSend += data[i].amount;
         }
 

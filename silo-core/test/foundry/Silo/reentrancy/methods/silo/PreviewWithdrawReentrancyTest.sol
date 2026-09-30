@@ -19,7 +19,9 @@ contract PreviewWithdrawReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().previewWithdraw(1000_000e18);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().previewWithdraw(1000_000e18);
     }
 }

@@ -18,11 +18,13 @@ contract Oracle is ISiloOracle {
 
     address public quoteToken;
 
+    // forge-lint: disable-next-line(missing-zero-check)
     constructor(uint8 _baseDecimals, address _quoteToken) {
         BASE_DECIMALS = _baseDecimals;
         quoteToken = _quoteToken;
     }
 
+    // forge-lint: disable-next-line(empty-block)
     function beforeQuote(address) external {}
 
     function setPrice(uint256 _priceOfOne) external {
@@ -65,6 +67,7 @@ contract SiloDecimalsTest is SiloLittleHelper, Test {
         }
 
         address hook;
+        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,, hook) = siloFixture.deploy_local(configOverride);
         partialLiquidation = IPartialLiquidation(hook);
     }
@@ -95,9 +98,11 @@ contract SiloDecimalsTest is SiloLittleHelper, Test {
         assertEq(debt, 39_40772, "debt");
         assertFalse(receiveSToken, "receiveSToken");
 
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), debt);
         token1.mint(address(this), debt);
 
+        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), borrower, debt, receiveSToken);
     }
 
@@ -133,9 +138,11 @@ contract SiloDecimalsTest is SiloLittleHelper, Test {
         assertEq(debt, 992883522, "debt");
         assertFalse(receiveSToken, "receiveSToken");
 
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), debt);
         token1.mint(address(this), debt);
 
+        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), borrower, debt, receiveSToken);
     }
 
@@ -174,9 +181,11 @@ contract SiloDecimalsTest is SiloLittleHelper, Test {
         assertEq(debt, 382813492061162048, "debt");
         assertFalse(receiveSToken, "receiveSToken");
 
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), debt);
         token1.mint(address(this), debt);
 
+        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), borrower, debt, receiveSToken);
     }
 
@@ -212,9 +221,11 @@ contract SiloDecimalsTest is SiloLittleHelper, Test {
         assertEq(debt, 190804, "debt");
         assertFalse(receiveSToken, "receiveSToken");
 
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), debt);
         token1.mint(address(this), debt);
 
+        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), borrower, debt, receiveSToken);
     }
 }

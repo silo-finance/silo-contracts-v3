@@ -147,17 +147,23 @@ contract SiloFixture is StdCheats, CommonBase {
     {
         if (!_mainNetDeployed) {
             SiloFactoryDeploy siloFactoryDeploy = new SiloFactoryDeploy();
+            // forge-lint: disable-next-line(reentrancy-no-eth)
             siloFactoryDeploy.disableDeploymentsSync();
+            // forge-lint: disable-next-line(reentrancy-no-eth, unused-return)
             siloFactoryDeploy.run();
             console2.log("[SiloFixture] _deploy: siloFactoryDeploy.run() done.");
 
             SiloImplementationDeploy siloImplementationDeploy = new SiloImplementationDeploy();
+            // forge-lint: disable-next-line(reentrancy-no-eth)
             siloImplementationDeploy.disableDeploymentsSync();
+            // forge-lint: disable-next-line(reentrancy-no-eth)
             siloImplementationDeploy.run();
             console2.log("[SiloFixture] _deploy: siloImplementationDeploy.run() done.");
 
             MainnetDeploy mainnetDeploy = new MainnetDeploy();
+            // forge-lint: disable-next-line(reentrancy-no-eth)
             mainnetDeploy.disableDeploymentsSync();
+            // forge-lint: disable-next-line(reentrancy-no-eth)
             mainnetDeploy.run();
             console2.log("[SiloFixture] _deploy: mainnetDeploy.run() done.");
 

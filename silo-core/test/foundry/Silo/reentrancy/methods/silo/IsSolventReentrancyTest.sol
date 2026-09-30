@@ -21,7 +21,9 @@ contract IsSolventReentrancyTest is MethodReentrancyTest {
     function _ensureItWillNotRevert() internal {
         address anyAddr = makeAddr("Any address");
 
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().isSolvent(anyAddr);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().isSolvent(anyAddr);
     }
 }

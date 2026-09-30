@@ -49,6 +49,7 @@ contract SiloLensWithOracleTest is SiloLittleHelper, Test {
         SiloFixture siloFixture = new SiloFixture();
 
         address hook;
+        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
         partialLiquidation = IPartialLiquidation(hook);
     }
@@ -117,6 +118,7 @@ contract SiloLensWithOracleTest is SiloLittleHelper, Test {
         uint256 balance1before = token1.balanceOf(address(this));
 
         token1.mint(address(this), _debtToCover);
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), _debtToCover);
 
         try partialLiquidation.liquidationCall({
@@ -149,6 +151,7 @@ contract SiloLensWithOracleTest is SiloLittleHelper, Test {
         console2.log("          balance0before", balance0before);
         console2.log("           balance0after", balance0after);
         console2.log("   collateralToLiquidate", _collateralToLiquidate);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("convertToAssets", silo0.convertToAssets(1e18), 18);
 
         // -2 for rounding errors

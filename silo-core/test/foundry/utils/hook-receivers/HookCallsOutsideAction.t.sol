@@ -43,6 +43,7 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
         overrides.hookReceiver = address(this);
 
         SiloFixture siloFixture = new SiloFixture();
+        // forge-lint: disable-next-line(unused-return)
         (siloConfig, silo0, silo1,,,) = siloFixture.deploy_local(overrides);
         partialLiquidation = this;
 
@@ -64,84 +65,114 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
 
         // execute all possible actions
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- _depositForBorrow --");
         _depositForBorrow(200e18, depositor);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- _deposit collateral --");
         _deposit(3, depositor);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- _depositCollateral --");
         _deposit(200e18, borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- _borrow --");
         _borrow(50e18, borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- _repay --");
         _repay(1e18, borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- _withdraw --");
         _withdraw(10e18, borrower);
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 10);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- accrueInterest0 --");
+        // forge-lint: disable-next-line(unused-return)
         silo0.accrueInterest();
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- accrueInterest1 --");
+        // forge-lint: disable-next-line(unused-return)
         silo1.accrueInterest();
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- transitionCollateral --");
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(100e18, borrower, ISilo.CollateralType.Collateral);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- _depositForBorrow --");
         _depositForBorrow(100e18, borrower);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(10, borrower);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(10, borrower, ISilo.CollateralType.Protected);
 
         (address protectedShareToken, address collateralShareToken, address debtShareToken) =
             siloConfig.getShareTokens(address(silo1));
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- protectedShareToken.transfer --");
         vm.prank(borrower);
         require(IERC20(protectedShareToken).transfer(depositor, 1), "transfer failed");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- collateralShareToken.transfer --");
         vm.prank(borrower);
         require(IERC20(collateralShareToken).transfer(depositor, 1), "transfer failed");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- setReceiveApproval --");
         vm.prank(depositor);
         IERC20R(debtShareToken).setReceiveApproval(borrower, 1);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- debtShareToken.transfer --");
         vm.prank(borrower);
         require(IERC20(debtShareToken).transfer(depositor, 1), "transfer failed");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- withdraw --");
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo1.withdraw(48e18, borrower, borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- flashLoan --");
+        // forge-lint: disable-next-line(unused-return)
         silo0.flashLoan(this, address(token0), silo0.maxFlashLoan(address(token0)), "");
 
         // liquidation
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-- liquidationCall --");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrower LTV", silo0.getLtv(borrower), 16);
 
         uint256 maxWithdraw = silo1.maxWithdraw(borrower);
         vm.prank(borrower);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("max withdraw", maxWithdraw);
+        // forge-lint: disable-next-line(unused-return)
         silo1.withdraw(maxWithdraw, borrower, borrower);
 
         vm.warp(block.timestamp + 20000 days);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrower LTV", silo0.getLtv(borrower), 16);
 
+        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token0),
             address(token1),
@@ -150,6 +181,7 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
             false // _receiveSToken
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrower LTV", silo0.getLtv(borrower), 16);
 
         silo1.withdrawFees();
@@ -194,9 +226,11 @@ contract HookCallsOutsideActionTest is PartialLiquidation, IERC3156FlashBorrower
             // we not in enter state, ok
         }
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("[after] action --------------------- ");
     }
 
+    // forge-lint: disable-next-line(missing-zero-check)
     function onFlashLoan(address, address _token, uint256 _amount, uint256, bytes calldata)
         external
         returns (bytes32)

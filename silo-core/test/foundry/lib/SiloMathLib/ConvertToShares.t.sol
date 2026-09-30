@@ -262,6 +262,7 @@ contract ConvertToSharesTest is Test {
         uint256 shares1 = SiloMathLib.convertToShares({
             _assets: toDeposit,
             _totalAssets: totalAssets,
+            // forge-lint: disable-next-line(uninitialized-local)
             _totalShares: totalShares,
             _assetType: assetType,
             _rounding: Rounding.DEPOSIT_TO_SHARES

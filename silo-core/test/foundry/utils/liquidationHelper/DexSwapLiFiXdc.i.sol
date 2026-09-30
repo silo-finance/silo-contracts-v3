@@ -17,6 +17,7 @@ contract DexSwapLiFiXdcTest is IntegrationTest {
 
     function setUp() public {
         uint256 blockToFork = 101335497;
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_XDC"), blockToFork);
         AddrLib.init();
         dex = new DexSwap(getAddress(AddrKey.EXCHANGE_AGGREGATOR_LI_FI));

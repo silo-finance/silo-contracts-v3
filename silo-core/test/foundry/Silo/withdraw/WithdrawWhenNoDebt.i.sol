@@ -42,6 +42,7 @@ contract WithdrawWhenNoDebtTest is SiloLittleHelper, Test {
         SiloFixture siloFixture = new SiloFixture();
 
         address hook;
+        // forge-lint: disable-next-line(unused-return)
         (siloConfig, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
         partialLiquidation = IPartialLiquidation(hook);
     }
@@ -246,8 +247,10 @@ contract WithdrawWhenNoDebtTest is SiloLittleHelper, Test {
     function _deposit(address _depositor, uint256 _amount, ISilo.CollateralType _type) internal {
         token0.mint(_depositor, _amount);
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), _amount);
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(_amount, _depositor, _type);
     }
 

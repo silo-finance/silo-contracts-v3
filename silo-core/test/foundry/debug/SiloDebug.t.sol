@@ -31,6 +31,7 @@ contract SiloDebugTest is IntegrationTest {
     IRMGetters internal constant _IRM_GETTERS = IRMGetters(_IRM_ADDR);
 
     function setUp() public {
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(getChainRpcUrl(ARBITRUM_ONE_ALIAS), 279148740);
 
         vm.label(address(_IRM), "irm");
@@ -63,6 +64,7 @@ contract SiloDebugTest is IntegrationTest {
         // this silo is not compatible with lens, it is from different deployment
         ISilo silo = ISilo(0x5d216642CE5936177f39EE12d57b1fE0d934bcb1);
         vm.expectRevert();
+        // forge-lint: disable-next-line(unused-return)
         siloLens.getLtv(silo, borrower);
 
         // silo from newest deployment

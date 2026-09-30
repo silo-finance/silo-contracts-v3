@@ -140,6 +140,7 @@ contract GetLiquidityAccrueInterestTest is SiloLittleHelper, Test {
 
         uint256 accruedInterest1 = silo1.accrueInterest();
         vm.assume(accruedInterest1 > 0);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("accruedInterest1", accruedInterest1, 18);
 
         assertEq(silo1_rawLiquidity, _toDeposit - _toBorrow, "[1] expect liquidity without counting in interest");

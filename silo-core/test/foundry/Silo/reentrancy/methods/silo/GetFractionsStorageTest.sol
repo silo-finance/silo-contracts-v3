@@ -23,7 +23,9 @@ contract GetFractionsStorageTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
         ISilo silo1 = TestStateLib.silo1();
 
+        // forge-lint: disable-next-line(unused-return)
         silo0.getFractionsStorage();
+        // forge-lint: disable-next-line(unused-return)
         silo1.getFractionsStorage();
     }
 }

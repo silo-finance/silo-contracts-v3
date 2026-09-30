@@ -105,6 +105,7 @@ contract NewMarketTest is InjectiveWorkaround {
         uint256 _externalPrice1 = vm.envUint("EXTERNAL_PRICE_1");
         string memory _rpc = vm.envString("RPC_URL");
 
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(_rpc);
 
         console2.log("block.timestamp", block.timestamp);
@@ -222,6 +223,7 @@ contract NewMarketTest is InjectiveWorkaround {
             }
         }
 
+        // forge-lint: disable-next-line(uninitialized-local)
         console2.log("\t- check for maxBorrow", maxBorrow);
 
         uint256 colateralMaxLtv = SILO_CONFIG.getConfig(address(_scenario.collateralSilo)).maxLtv;
@@ -229,6 +231,7 @@ contract NewMarketTest is InjectiveWorkaround {
         if (colateralMaxLtv == 0) {
             assertEq(maxBorrow, 0, "maxBorrow is zero when LTV is zero");
             vm.expectRevert(); // it can be ZeroQuote or AboveMaxLtv
+            // forge-lint: disable-next-line(unused-return)
             _scenario.debtSilo.borrow(1, borrower, borrower);
 
             uint256 nonZeroAmount = _findNonZeroQuote(_scenario.debtSilo);
@@ -237,6 +240,7 @@ contract NewMarketTest is InjectiveWorkaround {
 
             // in some extream case we can get ZeroQuote, but we can debug this case if needed
             vm.expectRevert(ISilo.AboveMaxLtv.selector);
+            // forge-lint: disable-next-line(unused-return)
             _scenario.debtSilo.borrow(nonZeroAmount, borrower, borrower);
 
             console2.log("\t- expect revert on borrow: OK");
@@ -257,6 +261,7 @@ contract NewMarketTest is InjectiveWorkaround {
         assertGt(maxBorrow, 0, "expect to borrow at least some tokens");
 
         // 2. Borrow
+        // forge-lint: disable-next-line(unused-return)
         _scenario.debtSilo.borrow(maxBorrow, borrower, borrower);
 
         uint256 borrowed = _scenario.debtToken.balanceOf(borrower);
@@ -297,6 +302,7 @@ contract NewMarketTest is InjectiveWorkaround {
         internal
     {
         assertEq(_collateralToken.balanceOf(address(this)), 0, "no collateralToken yet");
+        // forge-lint: disable-next-line(unused-return)
         _collateralSilo.redeem(_collateralSilo.balanceOf(address(this)), address(this), address(this));
         console2.log("\t- redeemed collateral");
 
@@ -311,11 +317,13 @@ contract NewMarketTest is InjectiveWorkaround {
     function _repayAndCheck(ISilo _debtSilo, IERC20Metadata _debtToken) internal {
         uint256 sharesToRepay = _debtSilo.maxRepayShares(address(this));
         uint256 maxRepay = _debtSilo.previewRepayShares(sharesToRepay);
+        // forge-lint: disable-next-line(unused-return)
         _debtToken.approve(address(_debtSilo), maxRepay);
 
         _dealTokens(address(_debtToken), address(this), maxRepay);
 
         assertGe(_debtToken.balanceOf(address(this)), maxRepay, "we need enough tokens for repay");
+        // forge-lint: disable-next-line(unused-return)
         _debtSilo.repayShares(sharesToRepay, address(this));
         assertEq((new SiloLens()).getLtv(_debtSilo, address(this)), 0, "Repay is successful, LTV==0");
         console2.log("\t- repaid debt");
@@ -326,9 +334,11 @@ contract NewMarketTest is InjectiveWorkaround {
 
         _dealTokens(address(token), _depositor, _amount);
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         token.approve(address(_silo), _amount);
 
         vm.prank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         _silo.deposit(_amount, _depositor);
     }
 
@@ -341,9 +351,11 @@ contract NewMarketTest is InjectiveWorkaround {
             if (address(_token) == AddrLib.getAddress(AddrKey.WINJ)) {
                 vm.deal(_depositor, _amount);
                 vm.prank(_depositor);
+                // forge-lint: disable-next-line(arbitrary-send-eth)
                 IWrappedNativeToken(payable(_token)).deposit{value: _amount}();
             } else {
                 vm.prank(_token);
+                // forge-lint: disable-next-line(unused-return)
                 BANK_MODULE.mint(_depositor, _amount);
             }
         } else {
@@ -390,8 +402,10 @@ contract NewMarketTest is InjectiveWorkaround {
     function _findNonZeroQuote(ISilo _debtSilo) internal returns (uint256 nonZeroAmount) {
         uint256 power;
         do {
+            // forge-lint: disable-next-line(calls-loop)
             ISiloOracle oracle = ISiloOracle(_debtSilo.config().getConfig(address(_debtSilo)).solvencyOracle);
 
+            // forge-lint: disable-next-line(calls-loop, uninitialized-local)
             try oracle.quote(10 ** power, address(_debtSilo.asset())) returns (uint256) {
                 return 10 ** power;
             } catch (bytes memory returnData) {
@@ -412,6 +426,7 @@ contract NewMarketTest is InjectiveWorkaround {
 
     /// @dev Revert payload: 4-byte selector + abi.encode(bytes32,uint256,uint256,uint256).
     function _returnDataAfterSelector(bytes memory returnData) internal pure returns (bytes memory payload) {
+        // forge-lint: disable-next-line(require-revert-in-loop)
         require(returnData.length > 4, "returnData too short");
         payload = new bytes(returnData.length - 4);
         for (uint256 i; i < payload.length; ++i) {
@@ -436,6 +451,7 @@ contract NewMarketTest is InjectiveWorkaround {
             console2.log("\t\tlastBlockTimestamp", lastBlockTimestamp);
             console2.log("\t\tlastValue", lastValue);
 
+            // forge-lint: disable-next-line(boolean-cst)
             return (true, lastValue);
         }
     }
@@ -443,6 +459,7 @@ contract NewMarketTest is InjectiveWorkaround {
     function _mockRedstoneAggretatorWithLastValue(address _oracle, uint256 _lastValue) internal {
         ChainlinkV3Oracle c = ChainlinkV3Oracle(_oracle);
 
+        // forge-lint: disable-next-line(calls-loop)
         try IManageableOracle(_oracle).oracle() returns (ISiloOracle oracle) {
             c = ChainlinkV3Oracle(address(oracle));
             console2.log("\t\tOracle is ManageableOracle -> ChainlinkV3Oracle");
@@ -450,8 +467,10 @@ contract NewMarketTest is InjectiveWorkaround {
             console2.log("\t\tOracle is ChainlinkV3Oracle");
         }
 
+        // forge-lint: disable-next-line(calls-loop)
         address aggregator = address(c.oracleConfig().getConfig().primaryAggregator);
 
+        // forge-lint: disable-next-item(calls-loop)
         vm.mockCall(
             aggregator,
             abi.encodeWithSelector(AggregatorV3Interface.latestRoundData.selector),

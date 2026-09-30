@@ -23,6 +23,7 @@ contract CalculateLtvTest is Test, OraclesHelper {
 
         ISiloOracle noOracle;
 
+        // forge-lint: disable-next-line(uninitialized-local)
         SiloSolvencyLib.LtvData memory ltvData = SiloSolvencyLib.LtvData(noOracle, noOracle, zero, zero, zero);
 
         address any = address(1);
@@ -41,6 +42,7 @@ contract CalculateLtvTest is Test, OraclesHelper {
 
         ISiloOracle noOracle;
 
+        // forge-lint: disable-next-line(uninitialized-local)
         SiloSolvencyLib.LtvData memory ltvData = SiloSolvencyLib.LtvData(noOracle, noOracle, zero, zero, debtAssets);
 
         address any = address(1);
@@ -64,6 +66,7 @@ contract CalculateLtvTest is Test, OraclesHelper {
         vm.assume(sumOfCollateralAssets < type(uint256).max / DECIMALS_POINTS);
 
         SiloSolvencyLib.LtvData memory ltvData =
+            // forge-lint: disable-next-line(uninitialized-local)
             SiloSolvencyLib.LtvData(noOracle, noOracle, _collateralAssets, _protectedAssets, _debtAssets);
 
         address any = address(1);
@@ -81,6 +84,7 @@ contract CalculateLtvTest is Test, OraclesHelper {
                 Math.mulDiv(_debtAssets, DECIMALS_POINTS, sumOfCollateralAssets, Math.Rounding(Rounding.LTV));
         }
 
+        // forge-lint: disable-next-line(uninitialized-local)
         assertEq(ltv, expectedLtv, "ltv");
     }
 

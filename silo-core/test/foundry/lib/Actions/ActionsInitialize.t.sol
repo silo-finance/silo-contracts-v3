@@ -24,6 +24,7 @@ contract ActionsInitializeTest is Test, SiloLittleHelper {
     */
     function test_actions_initialize_WrongSilo() public {
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
+        // forge-lint: disable-next-line(unused-return)
         Actions.initialize(siloConfig);
     }
 
@@ -61,9 +62,11 @@ contract ActionsInitializeTest is Test, SiloLittleHelper {
             abi.encode(mockedCfg)
         );
 
+        // forge-lint: disable-next-line(unused-return)
         Actions.initialize(siloConfig);
 
         vm.expectRevert(ISilo.SiloInitialized.selector);
+        // forge-lint: disable-next-line(unused-return)
         Actions.initialize(siloConfig);
     }
 }

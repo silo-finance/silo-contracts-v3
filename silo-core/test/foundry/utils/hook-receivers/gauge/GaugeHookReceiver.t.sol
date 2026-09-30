@@ -112,7 +112,6 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
         vm.expectRevert();
         _hookReceiver.setGauge(ISiloIncentivesController(_gauge), IShareToken(invalidShareToken));
 
-        // forge-lint: disable-next-line(unused-return)
         (address silo0,) = _siloConfig.getSilos();
 
         bytes memory data = abi.encodePacked(IShareToken.silo.selector);
@@ -129,7 +128,6 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
     */
     function testSetGaugePass() public {
         (address silo0, address silo1) = _siloConfig.getSilos();
-        // forge-lint: disable-next-line(unused-return)
         (, address shareCollateralToken,) = _siloConfig.getShareTokens(silo0);
 
         _mockGaugeShareToken(_gauge, shareCollateralToken);
@@ -174,7 +172,6 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testRemoveGauge
     function testRemoveGauge() public {
         (address silo0, address silo1) = _siloConfig.getSilos();
-        // forge-lint: disable-next-line(unused-return)
         (, address shareCollateralToken,) = _siloConfig.getShareTokens(silo0);
 
         vm.prank(_dao);
@@ -189,14 +186,12 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
         (uint24 hooksBefore0, uint24 hooksAfter0) = _hookReceiver.hookReceiverConfig(silo0);
 
         IShareToken.HookSetup memory silo0HooksBefore = IShareToken(address(silo0)).hookSetup();
-        // forge-lint: disable-next-line(unused-return)
         IShareToken(address(silo1)).hookSetup();
 
         vm.prank(_dao);
         _hookReceiver.removeGauge(IShareToken(shareCollateralToken));
 
         IShareToken.HookSetup memory silo0HooksAfter = IShareToken(address(silo0)).hookSetup();
-        // forge-lint: disable-next-line(unused-return)
         IShareToken(address(silo1)).hookSetup();
 
         (uint24 hooksBefore1, uint24 hooksAfter1) = _hookReceiver.hookReceiverConfig(silo0);
@@ -219,9 +214,7 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
 
     // FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testAfterTokenTransfer
     function testAfterTokenTransfer() public {
-        // forge-lint: disable-next-line(unused-return)
         (address silo0,) = _siloConfig.getSilos();
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = _siloConfig.getShareTokens(silo0);
 
         _mockGaugeShareToken(_gauge, debtShareToken);
@@ -231,7 +224,6 @@ contract GaugeHookReceiverTest is SiloLittleHelper, Test, TransferOwnership {
 
         uint256 action = Hook.shareTokenTransfer(Hook.DEBT_TOKEN);
 
-        // forge-lint: disable-next-line(unused-return)
         (, uint24 hooksAfter) = _hookReceiver.hookReceiverConfig(silo0);
         assertEq(uint256(hooksAfter), action);
 

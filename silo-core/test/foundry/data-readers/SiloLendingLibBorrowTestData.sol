@@ -42,13 +42,9 @@ contract SiloLendingLibBorrowTestData {
     address immutable DEBT_TOKEN;
 
     constructor(
-        // forge-lint: disable-next-line(missing-zero-check)
         address _protectedShareToken,
-        // forge-lint: disable-next-line(missing-zero-check)
         address _collateralShareToken,
-        // forge-lint: disable-next-line(missing-zero-check)
         address _debtShareToken,
-        // forge-lint: disable-next-line(missing-zero-check)
         address _debtToken
     ) {
         PROTECTED_SHARE_TOKEN = _protectedShareToken;
@@ -61,7 +57,6 @@ contract SiloLendingLibBorrowTestData {
         data = new SLLBData[](12);
         uint256 i;
 
-        // forge-lint: disable-next-line(uninitialized-local)
         _init(data[i], "#0 all zeros");
         data[i].output.reverts = ISilo.InputZeroShares.selector;
         data[i].mocks.debtSharesTotalSupplyMock = true;

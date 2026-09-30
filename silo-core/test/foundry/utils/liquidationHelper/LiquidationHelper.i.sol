@@ -36,21 +36,16 @@ contract LiquidationHelperTest is LiquidationHelperCommon {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_executeLiquidation -vvv
     */
     function test_executeLiquidation(uint64 _addTimestamp) public {
-        // forge-lint: disable-next-line(block-timestamp)
         vm.assume(block.timestamp + _addTimestamp < 2 ** 64 - 1);
         vm.warp(block.timestamp + _addTimestamp);
 
-        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(BORROWER);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("collateralToLiquidate", collateralToLiquidate, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("          debtToRepay", debtToRepay, 18);
         vm.assume(debtToRepay != 0);
 
         uint256 flashFee = silo1.flashFee(address(token1), debtToRepay);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("             flashFee", flashFee, 18);
 
         // we reject cases with invalid config or not profitable
@@ -71,9 +66,7 @@ contract LiquidationHelperTest is LiquidationHelperCommon {
 
         assertEq(debtToRepay, repayDebtAssets, "debtToRepay == repayDebtAssets");
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("token0.balanceOf(TOKENS_RECEIVER)", token0.balanceOf(TOKENS_RECEIVER), 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("token1.balanceOf(TOKENS_RECEIVER)", token1.balanceOf(TOKENS_RECEIVER), 18);
 
         assertLe(

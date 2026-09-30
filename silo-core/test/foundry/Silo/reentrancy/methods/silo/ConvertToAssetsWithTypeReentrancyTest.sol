@@ -20,19 +20,13 @@ contract ConvertToAssetsWithTypeReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().convertToAssets(100e18, ISilo.AssetType.Collateral);
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().convertToAssets(100e18, ISilo.AssetType.Collateral);
 
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().convertToAssets(100e18, ISilo.AssetType.Protected);
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().convertToAssets(100e18, ISilo.AssetType.Protected);
 
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().convertToAssets(100e18, ISilo.AssetType.Debt);
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().convertToAssets(100e18, ISilo.AssetType.Debt);
     }
 }

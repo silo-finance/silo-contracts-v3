@@ -113,7 +113,6 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
 
         assertEq(SILO_LENS.totalDeposits(silo1), deposit1, "totalDeposits after borrow are the same");
 
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 65 days);
 
         assertEq(SILO_LENS.getBorrowAPR(silo0), 0, "getBorrowAPR after 65 days #0");
@@ -181,7 +180,6 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
             "[debtBalanceOfUnderlying] with interest debt is higher"
         );
 
-        // forge-lint: disable-next-line(unused-return)
         silo1.accrueInterest();
 
         assertEq(SILO_LENS.getBorrowAPR(silo0), 0, "getBorrowAPR after accrueInterest #0");
@@ -239,24 +237,18 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
     }
 
     function _assertInterest(uint256 _toBorrow) internal {
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 5 days);
 
         uint256 getBorrowAPR = SILO_LENS.getBorrowAPR(silo1);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("utilization [%]", SILO_LENS.getUtilization(silo1), 16);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrow APR (CurrentInterestRate) [%]", SILO_LENS.getBorrowAPR(silo1), 16);
 
         vm.warp(block.timestamp + 360 days);
 
         uint256 maxRepay = silo1.maxRepay(borrower);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrow amount", _toBorrow, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxRepay after 1y", maxRepay, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("APY (compound) [%]", (maxRepay - _toBorrow) * 1e18 / _toBorrow, 16);
 
         _assertCloseTo(getBorrowAPR, (maxRepay - _toBorrow) * 1e18 / _toBorrow, "APY ~ APY");
@@ -266,11 +258,8 @@ contract SiloLensIntegrationTest is SiloLittleHelper, Test {
         uint256 diff = Math.max(_a, _closeTo) - Math.min(_a, _closeTo);
         uint256 deviation = diff * 1e18 / _closeTo;
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("      _a", _a);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("_closeTo", _closeTo);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("deviation", deviation, 16);
         assertLt(deviation, 0.04e18, string.concat(_msg, " (max accepted diff 4.0%)"));
     }

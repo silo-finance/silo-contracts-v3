@@ -15,13 +15,10 @@ contract LiquidationAccrueInterestGasTest is Gas, Test {
         _gasTestsInit();
 
         vm.prank(DEPOSITOR);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(ASSETS, DEPOSITOR);
 
         vm.startPrank(BORROWER);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(ASSETS * 5, BORROWER);
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(ASSETS, BORROWER, BORROWER);
         vm.stopPrank();
 
@@ -33,14 +30,12 @@ contract LiquidationAccrueInterestGasTest is Gas, Test {
     */
     function test_gas_liquidationCallWithInterest() public {
         vm.prank(DEPOSITOR);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), type(uint256).max);
 
         _action(
             DEPOSITOR,
             address(partialLiquidation),
             abi.encodeCall(
-                // forge-lint: disable-next-line(boolean-cst)
                 IPartialLiquidation.liquidationCall, (address(token0), address(token1), BORROWER, ASSETS / 2, false)
             ),
             "LiquidationCall with accrue interest",

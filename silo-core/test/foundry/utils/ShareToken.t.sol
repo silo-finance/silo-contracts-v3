@@ -139,18 +139,15 @@ contract ShareTokenTest is Test {
         bytes memory data = abi.encodeWithSelector(ERC20UpgradableMock.mockUserBalance.selector, someUser);
 
         vm.expectRevert(ISilo.OnlyHookReceiver.selector);
-        // forge-lint: disable-next-line(unused-return)
         protectedShareToken.callOnBehalfOfShareToken(upgradableMock, amountOfEth, ISilo.CallType.Delegatecall, data);
 
         vm.expectRevert(ISilo.OnlyHookReceiver.selector);
-        // forge-lint: disable-next-line(unused-return)
         debtShareToken.callOnBehalfOfShareToken(upgradableMock, amountOfEth, ISilo.CallType.Delegatecall, data);
 
         assertEq(IERC20(address(protectedShareToken)).balanceOf(someUser), 0);
         assertEq(IERC20(address(debtShareToken)).balanceOf(someUser), 0);
 
         vm.prank(hookAddr);
-        // forge-lint: disable-next-line(unused-return)
         protectedShareToken.callOnBehalfOfShareToken(upgradableMock, amountOfEth, ISilo.CallType.Delegatecall, data);
 
         assertEq(
@@ -160,7 +157,6 @@ contract ShareTokenTest is Test {
         );
 
         vm.prank(hookAddr);
-        // forge-lint: disable-next-line(unused-return)
         debtShareToken.callOnBehalfOfShareToken(upgradableMock, amountOfEth, ISilo.CallType.Delegatecall, data);
 
         assertEq(

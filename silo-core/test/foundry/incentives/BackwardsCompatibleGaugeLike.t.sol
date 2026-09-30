@@ -103,7 +103,6 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
     }
 
     function _backwardsCompatibility_forNetwork(string memory _rpc, string memory _networkKey) internal {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(_rpc);
 
         uint256 snapshot = vm.snapshot();
@@ -115,7 +114,6 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
         for (uint256 i = 0; i < deployedSiloConfigs[_networkKey].length; i++) {
             ISiloConfig siloConfig = ISiloConfig(deployedSiloConfigs[_networkKey][i]);
-            // forge-lint: disable-next-line(calls-loop)
             uint256 siloId = siloConfig.SILO_ID();
 
             if (networkHash == sonicHash) {
@@ -130,7 +128,6 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
             _check_backwardsCompatibility(siloConfig);
             console2.log("_______ %s [%s] DONE _______", _networkKey, i);
 
-            // forge-lint: disable-next-line(calls-loop, unused-return)
             vm.revertTo(snapshot);
         }
     }
@@ -139,10 +136,8 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
         console2.log("block.number: ", block.number);
 
         _deployFactory();
-        // forge-lint: disable-next-line(calls-loop)
         (address silo0, address silo1) = _siloConfig.getSilos();
 
-        // forge-lint: disable-next-line(calls-loop)
         if (ISilo(silo0).totalSupply() == 0 && ISilo(silo1).totalSupply() == 0) {
             console2.log("market is empty, skipping");
             return;
@@ -151,10 +146,8 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
         IGaugeHookReceiver hookReceiver = _getSiloHookReceiver(silo0);
 
         ISiloIncentivesController controller0 =
-            // forge-lint: disable-next-line(calls-loop)
             ISiloIncentivesController(_factory.create(address(this), address(hookReceiver), silo0, bytes32(0)));
         ISiloIncentivesController controller1 =
-            // forge-lint: disable-next-line(calls-loop)
             ISiloIncentivesController(_factory.create(address(this), address(hookReceiver), silo1, bytes32(0)));
 
         // QA
@@ -185,26 +178,17 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
     }
 
     function _dealTokens(ISiloConfig _siloConfig) internal {
-        // forge-lint: disable-next-line(calls-loop)
         (address silo0, address silo1) = _siloConfig.getSilos();
 
-        // forge-lint: disable-next-line(calls-loop)
         IERC20 asset0 = IERC20(IERC4626(silo0).asset());
-        // forge-lint: disable-next-line(calls-loop)
         IERC20 asset1 = IERC20(IERC4626(silo1).asset());
 
-        // forge-lint: disable-next-line(calls-loop)
         decimals0 = IERC20Metadata(address(asset0)).decimals();
-        // forge-lint: disable-next-line(calls-loop)
         decimals1 = IERC20Metadata(address(asset1)).decimals();
-        // forge-lint: disable-next-line(calls-loop)
         symbol0 = IERC20Metadata(address(asset0)).symbol();
-        // forge-lint: disable-next-line(calls-loop)
         symbol1 = IERC20Metadata(address(asset1)).symbol();
 
-        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_decimal_uint(string.concat("liquidity before deal ", symbol0), ISilo(silo0).getLiquidity(), decimals0);
-        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_decimal_uint(string.concat("liquidity before deal ", symbol1), ISilo(silo1).getLiquidity(), decimals1);
 
         uint256 amount0 = 100_000 * (10 ** decimals0);
@@ -214,45 +198,31 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
         token1stolen = false;
 
         // must be huge amount in case there is no enough liquidity
-        // forge-lint: disable-next-line(calls-loop)
         try this.dealTokens(address(asset0), amount0) {
             // OK
         } catch {
             console2.log("failed to deal %s, try direct transfer from Silo", symbol0);
-            // forge-lint: disable-next-line(calls-loop)
             uint256 siloBalance = IERC20(IERC4626(silo0).asset()).balanceOf(silo0);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("silo balance before stealing", siloBalance, decimals0);
-            // forge-lint: disable-next-line(calls-loop)
             vm.prank(silo0);
-            // forge-lint: disable-next-line(calls-loop, require-revert-in-loop)
             require(asset0.transfer(user, siloBalance / 1000), "transfer failed");
             token0stolen = true;
         }
 
-        // forge-lint: disable-next-line(calls-loop)
         try this.dealTokens(address(asset1), amount1) {
             // OK
         } catch {
             console2.log("failed to deal %s, try direct transfer from Silo", symbol1);
-            // forge-lint: disable-next-line(calls-loop)
             uint256 siloBalance = IERC20(IERC4626(silo1).asset()).balanceOf(silo1);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("silo balance before stealing", siloBalance, decimals1);
-            // forge-lint: disable-next-line(calls-loop)
             vm.prank(silo1);
-            // forge-lint: disable-next-line(calls-loop, require-revert-in-loop)
             require(asset1.transfer(user, siloBalance / 1000), "transfer failed");
             token1stolen = true;
         }
 
-        // forge-lint: disable-next-line(calls-loop)
         vm.startPrank(user);
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         asset0.approve(silo0, type(uint256).max);
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         asset1.approve(silo1, type(uint256).max);
-        // forge-lint: disable-next-line(calls-loop)
         vm.stopPrank();
 
         _printBalances(_siloConfig, "START");
@@ -263,42 +233,29 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
     }
 
     function _printBalances(ISiloConfig _siloConfig, string memory _prefix) internal {
-        // forge-lint: disable-next-line(calls-loop)
         (address silo0, address silo1) = _siloConfig.getSilos();
-        // forge-lint: disable-next-line(calls-loop)
         IERC20 asset0 = IERC20(IERC4626(silo0).asset());
-        // forge-lint: disable-next-line(calls-loop)
         IERC20 asset1 = IERC20(IERC4626(silo1).asset());
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
-            // forge-lint: disable-next-line(calls-loop)
             string.concat(_prefix, " asset0 ", symbol0, " balance"), asset0.balanceOf(user), decimals0
         );
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
-            // forge-lint: disable-next-line(calls-loop)
             string.concat(_prefix, " asset1 ", symbol1, " balance"), asset1.balanceOf(user), decimals1
         );
     }
 
     function _doSiloMoves(ISiloConfig _siloConfig) internal {
-        // forge-lint: disable-next-line(calls-loop)
         vm.startPrank(user);
 
-        // forge-lint: disable-next-line(calls-loop)
         (address silo0, address silo1) = _siloConfig.getSilos();
-        // forge-lint: disable-next-line(calls-loop)
         IERC20 asset0 = IERC20(IERC4626(silo0).asset());
-        // forge-lint: disable-next-line(calls-loop)
         IERC20 asset1 = IERC20(IERC4626(silo1).asset());
 
         console2.log("----------- Silo %s/%s moves ---------", symbol0, symbol1);
 
-        // forge-lint: disable-next-line(calls-loop)
         uint256 amount0 = asset0.balanceOf(user);
-        // forge-lint: disable-next-line(calls-loop)
         uint256 amount1 = asset1.balanceOf(user);
         // leave some in wallet for fees
         uint256 depositAmount = amount0 * 99 / 100;
@@ -306,26 +263,21 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
         
         if (depositAmount != 0) {
             console2.log("depositing %s %s", symbol0, depositAmount);
-            // forge-lint: disable-next-line(calls-loop, unused-return)
             IERC4626(silo0).deposit(depositAmount, user);
         }
 
-        // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
         vm.warp(block.timestamp + INTERVAL);
         depositAmount = amount1 * 99 / 100;
 
         if (depositAmount != 0) {
             console2.log("depositing %s %s", symbol1, depositAmount);
-            // forge-lint: disable-next-line(calls-loop, unused-return)
             IERC4626(silo1).deposit(depositAmount, user);
         }
 
-        // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
         vm.warp(block.timestamp + INTERVAL);
 
         if (_checkIfOracleWorking(ISilo(silo0))) {
             tryBorrow(_siloConfig, silo0, silo1, decimals0, symbol0);
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + INTERVAL);
         } else {
             console2.log("oracle is not working for silo#0");
@@ -333,93 +285,67 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
         if (_checkIfOracleWorking(ISilo(silo1))) {
             tryBorrow(_siloConfig, silo1, silo0, decimals1, symbol1);
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + INTERVAL);
         } else {
             console2.log("oracle is not working for silo#1");
         }
 
-        // forge-lint: disable-next-line(calls-loop)
         uint256 maxWithdrawable0 = IERC4626(silo0).maxWithdraw(user);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint(string.concat("maxWithdrawable0 ", symbol0), maxWithdrawable0, decimals0);
 
         if (maxWithdrawable0 != 0) {
-            // forge-lint: disable-next-line(calls-loop)
             try IERC4626(silo0).withdraw(maxWithdrawable0, user, user) {
                 // OK
             } catch (bytes memory e) {
                 if (!token0stolen) {
-                    // forge-lint: disable-next-line(calls-loop)
                     console2.log("failed to withdraw %s tokens on sil#0 %s", symbol0, vm.getLabel(address(silo0)));
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("      silo balance", IERC20(IERC4626(silo0).asset()).balanceOf(silo0), decimals0);
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("   total protected", ISilo(silo0).getTotalAssetsStorage(ISilo.AssetType.Protected), decimals0);
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("         liquidity", ISilo(silo0).getLiquidity(), decimals0);
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("  total collateral", ISilo(silo0).getCollateralAssets(), decimals0);
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("collateral storage", ISilo(silo0).getTotalAssetsStorage(ISilo.AssetType.Collateral), decimals0);
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("        total debt", ISilo(silo0).getDebtAssets(), decimals0);
                     RevertLib.revertBytes(e, "withdraw");
                 }
             }
         }
 
-        // forge-lint: disable-next-line(calls-loop)
         uint256 maxWithdrawable1 = IERC4626(silo1).maxWithdraw(user);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint(string.concat("maxWithdrawable1 ", symbol1), maxWithdrawable1, decimals1);
 
         if (maxWithdrawable1 != 0) {
-            // forge-lint: disable-next-line(calls-loop)
             try IERC4626(silo1).withdraw(maxWithdrawable1, user, user) {
                 // OK
             } catch (bytes memory e) {
                 if (!token1stolen) {
-                    // forge-lint: disable-next-line(calls-loop)
                     console2.log("failed to withdraw %s tokens on silo#1 %s", symbol1, vm.getLabel(address(silo1)));
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("      silo balance", IERC20(IERC4626(silo1).asset()).balanceOf(silo1), decimals1);
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("   total protected", ISilo(silo1).getTotalAssetsStorage(ISilo.AssetType.Protected), decimals1);
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("         liquidity", ISilo(silo1).getLiquidity(), decimals1);
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("  total collateral", ISilo(silo1).getCollateralAssets(), decimals1);
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("collateral storage", ISilo(silo1).getTotalAssetsStorage(ISilo.AssetType.Collateral), decimals1);
-                    // forge-lint: disable-next-line(calls-loop, reentrancy-events)
                     emit log_named_decimal_uint("        total debt", ISilo(silo1).getDebtAssets(), decimals1);
                     RevertLib.revertBytes(e, "withdraw");
                 }
             }
         }
 
-        // forge-lint: disable-next-line(calls-loop)
         vm.stopPrank();
     }
 
     function _borrowPossible(ISiloConfig _siloConfig, address _collateralSilo) internal view returns (bool success) {
-        // forge-lint: disable-next-line(calls-loop)
         try _siloConfig.getConfig(_collateralSilo) returns (ISiloConfig.ConfigData memory config) {
             return config.maxLtv != 0;
         } catch {
-            // forge-lint: disable-next-line(calls-loop)
             console2.log("config can not be pulled for silo#", vm.getLabel(address(_collateralSilo)));
             return false;
         }
     }
 
     function _checkIfOracleWorking(ISilo _debtSilo) internal view returns (bool working) {
-        // forge-lint: disable-next-line(calls-loop)
         try _debtSilo.maxBorrow(user) {
             working = true;
         } catch {
-            // forge-lint: disable-next-line(calls-loop)
             console2.log("oracle is not working for silo#", vm.getLabel(address(_debtSilo)));
             working = false;
         }
@@ -434,12 +360,9 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
     ) internal returns (bool success) {
         if (!_borrowPossible({_siloConfig: _siloConfig, _collateralSilo: _collateralSilo})) return false;
 
-        // forge-lint: disable-next-line(calls-loop)
         uint256 liquidity = ISilo(_debtSilo).getLiquidity();
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint(string.concat(_debtSymbol, " liquidity on debt silo"), liquidity, _debtDecimals);
 
-        // forge-lint: disable-next-line(calls-loop)
         uint256 maxBorrow = ISilo(_debtSilo).maxBorrow(user);
         uint256 borrowAmount = maxBorrow / 100;
 
@@ -447,25 +370,19 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
             console2.log("liquidity is 0 and borrowAmount is 0 (possible bad debt), skipping");
             return false;
         } else if (liquidity != 0 && maxBorrow == 0) {
-            // forge-lint: disable-next-item(reentrancy-events)
             emit log_named_decimal_uint(
                 string.concat(_debtSymbol, " maxBorrow is 0, liquidity is "), liquidity, _debtDecimals
             );
 
-            // forge-lint: disable-next-line(require-revert-in-loop)
             revert("maxBorrow is 0 but we do have liquidity");
         }
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint(string.concat(_debtSymbol, " borrowAmount "), borrowAmount, _debtDecimals);
 
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         ISilo(_debtSilo).borrow(borrowAmount, user, user);
 
-        // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
         vm.warp(block.timestamp + INTERVAL);
 
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         ISilo(_debtSilo).repayShares(ISilo(_debtSilo).maxRepayShares(user), user);
         console2.log("borrow/repay on silo %s done", _debtSymbol);
         return true;
@@ -473,9 +390,7 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
     function _tryToSetNewGauge(ISiloIncentivesController _controller, bool _kill) internal returns (bool success) {
         // usually share token is collateral, but let's be sure
-        // forge-lint: disable-next-line(calls-loop)
         address silo = _controller.SHARE_TOKEN();
-        // forge-lint: disable-next-line(calls-loop)
         console2.log("Silo sanity check: call for factory - ", address(ISilo(silo).factory()));
 
         if (_setGauge(_controller, silo)) return true;
@@ -489,36 +404,27 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
     function _killGauge(address _silo) internal returns (bool success) {
         IGaugeHookReceiver hookReceiver = _getSiloHookReceiver(_silo);
-        // forge-lint: disable-next-line(calls-loop)
         address controller = address(hookReceiver.configuredGauges(IShareToken(_silo)));
-        // forge-lint: disable-next-line(calls-loop)
         address owner = Ownable(address(controller)).owner();
 
         console2.log("trying to kill gauge: ", controller);
 
-        // forge-lint: disable-next-line(calls-loop)
         vm.prank(owner);
-        // forge-lint: disable-next-line(calls-loop)
         IBackwardsCompatibleGaugeLike(controller).killGauge();
 
-        // forge-lint: disable-next-line(calls-loop)
         console2.log("is killed: ", IBackwardsCompatibleGaugeLike(controller).is_killed());
         success = true;
     }
 
     function _getSiloHookReceiver(address _silo) internal view returns (IGaugeHookReceiver) {
-        // forge-lint: disable-next-line(calls-loop)
         return IGaugeHookReceiver(address(IShareToken(_silo).hookReceiver()));
     }
 
     function _setGauge(ISiloIncentivesController _controller, address _silo) internal returns (bool success) {
         IGaugeHookReceiver hookReceiver = _getSiloHookReceiver(_silo);
-        // forge-lint: disable-next-line(calls-loop)
         address owner = Ownable(address(hookReceiver)).owner();
 
-        // forge-lint: disable-next-line(calls-loop)
         vm.prank(owner);
-        // forge-lint: disable-next-line(calls-loop)
         try hookReceiver.setGauge(_controller, IShareToken(_silo)) {
             console2.log("Gauge set successfully!");
             return true;
@@ -538,12 +444,9 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
 
     function _removeGauge(address _silo) internal returns (bool success) {
         IGaugeHookReceiver hookReceiver = _getSiloHookReceiver(_silo);
-        // forge-lint: disable-next-line(calls-loop)
         address owner = Ownable(address(hookReceiver)).owner();
 
-        // forge-lint: disable-next-line(calls-loop)
         vm.prank(owner);
-        // forge-lint: disable-next-line(calls-loop)
         try hookReceiver.removeGauge(IShareToken(_silo)) {
             // forge-lint: disable-next-line(asm-keccak256)
             console2.log("Gauge removed successfully!");
@@ -562,11 +465,8 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
     }
 
     function _deployFactory() internal {
-        // forge-lint: disable-next-line(calls-loop)
         SiloIncentivesControllerFactoryDeploy deploy = new SiloIncentivesControllerFactoryDeploy();
-        // forge-lint: disable-next-line(calls-loop)
         deploy.disableDeploymentsSync();
-        // forge-lint: disable-next-line(calls-loop)
         _factory = deploy.run();
     }
 
@@ -584,16 +484,13 @@ contract BackwardsCompatibleGaugeLikeTest is Test {
         for (uint256 i = 0; i < networks.length; i++) {
             string memory network = networks[i];
             string memory networkPath = string.concat(".", network);
-            // forge-lint: disable-next-line(calls-loop)
             string[] memory siloKeys = vm.parseJsonKeys(json, networkPath);
 
             address[] memory addresses = new address[](siloKeys.length);
 
             for (uint256 j = 0; j < siloKeys.length; j++) {
                 string memory siloPath = _buildJsonPath(networkPath, siloKeys[j]);
-                // forge-lint: disable-next-line(calls-loop)
                 addresses[j] = vm.parseJsonAddress(json, siloPath);
-                // forge-lint: disable-next-line(require-revert-in-loop)
                 require(addresses[j] != address(0), string.concat("address is 0 for key: ", siloKeys[j]));
             }
 

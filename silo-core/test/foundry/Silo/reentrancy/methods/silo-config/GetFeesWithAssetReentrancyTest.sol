@@ -22,9 +22,7 @@ contract GetFeesWithAssetReentrancyTest is MethodReentrancyTest {
         address silo0 = address(TestStateLib.silo0());
         address silo1 = address(TestStateLib.silo1());
 
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.siloConfig().getFeesWithAsset(silo0);
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.siloConfig().getFeesWithAsset(silo1);
     }
 }

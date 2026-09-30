@@ -144,7 +144,6 @@ abstract contract KinkCommon {
     }
 
     function _getIRMConfig(IDynamicKinkModel _irm) internal view returns (IDynamicKinkModel.Config memory cfg) {
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         (cfg,) = _irm.irmConfig().getConfig();
     }
 
@@ -153,7 +152,6 @@ abstract contract KinkCommon {
         view
         returns (IDynamicKinkModel.ImmutableConfig memory immutableConfig)
     {
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         (, immutableConfig) = _irm.irmConfig().getConfig();
     }
 

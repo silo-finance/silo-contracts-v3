@@ -34,7 +34,6 @@ contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs
         address silo = address(this);
 
         vm.expectRevert();
-        // forge-lint: disable-next-line(unused-return)
         INTEREST_RATE_MODEL.getConfig(silo);
     }
 
@@ -109,7 +108,6 @@ contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs
         assertEq(Tcrit, 0, "Tcrit not initialized yet");
 
         vm.prank(silo);
-        // forge-lint: disable-next-line(unused-return)
         INTEREST_RATE_MODEL.getCompoundInterestRateAndUpdate(0, 0, block.timestamp);
 
         (ri, Tcrit, initialized) = INTEREST_RATE_MODEL.getSetup(silo);
@@ -132,7 +130,6 @@ contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs
             address silo = address(i.toUint160());
             InterestRateModelV2Impl IRMv2Impl = _createIRM(silo, testCase);
 
-            // forge-lint: disable-next-item(calls-loop)
             (uint256 rcomp, int256 ri, int256 Tcrit, bool overflow) = IRMv2Impl
                 .calculateCompoundInterestRateWithOverflowDetection(
                 cfg,
@@ -179,35 +176,26 @@ contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs
             );
 
             if (testCase.input.totalDeposits != utilizationData.collateralAssets) {
-                // forge-lint: disable-next-line(uninitialized-local)
                 totalDepositsOverflows++;
                 continue;
             }
             if (testCase.input.totalBorrowAmount != utilizationData.debtAssets) {
-                // forge-lint: disable-next-line(uninitialized-local)
                 totalBorrowAmountOverflows++;
                 continue;
             }
 
-            // forge-lint: disable-next-line(calls-loop)
             IRMv2Impl.mockSetup(silo, testCase.input.integratorState, testCase.input.Tcrit);
 
             bytes memory encodedData = abi.encodeWithSelector(ISilo.utilizationData.selector);
-            // forge-lint: disable-next-line(calls-loop)
             vm.mockCall(silo, encodedData, abi.encode(utilizationData));
-            // forge-lint: disable-next-line(calls-loop)
             vm.expectCall(silo, encodedData);
 
-            // forge-lint: disable-next-line(calls-loop)
             uint256 compoundInterestRate = IRMv2Impl.getCompoundInterestRate(silo, testCase.input.currentTime);
             assertEq(compoundInterestRate, rcomp, _concatMsg(i, "getCompoundInterestRate()"));
         }
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("totalBorrowAmountOverflows", totalBorrowAmountOverflows);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("totalDepositsOverflows", totalDepositsOverflows);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("total cases", data.length);
     }
 
@@ -222,7 +210,6 @@ contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs
             address silo = address(i.toUint160());
             InterestRateModelV2Impl IRMv2Impl = _createIRM(silo, testCase);
 
-            // forge-lint: disable-next-item(calls-loop, unused-return)
             (, int256 ri, int256 Tcrit,) = IRMv2Impl.calculateCompoundInterestRateWithOverflowDetection(
                 cfg,
                 testCase.input.totalDeposits,
@@ -231,19 +218,14 @@ contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs
                 testCase.input.currentTime
             );
 
-            // forge-lint: disable-next-line(calls-loop)
             IRMv2Impl.mockSetup(silo, testCase.input.integratorState, testCase.input.Tcrit);
 
-            // forge-lint: disable-next-line(calls-loop)
             vm.warp(testCase.input.currentTime);
-            // forge-lint: disable-next-line(calls-loop)
             vm.prank(silo);
-            // forge-lint: disable-next-item(calls-loop, unused-return)
             IRMv2Impl.getCompoundInterestRateAndUpdate(
                 testCase.input.totalDeposits, testCase.input.totalBorrowAmount, testCase.input.lastTransactionTime
             );
 
-            // forge-lint: disable-next-line(calls-loop)
             (int112 storageRi, int112 storageTcrit, bool initialized) = IRMv2Impl.getSetup(silo);
 
             assertTrue(initialized);
@@ -258,12 +240,9 @@ contract InterestRateModelV2RcompTest is RcompTestData, InterestRateModelConfigs
     {
         IRMv2Impl = InterestRateModelV2Impl(Clones.clone(address(INTEREST_RATE_MODEL)));
 
-        // forge-lint: disable-next-line(calls-loop)
         IInterestRateModelV2Config configAddress = new InterestRateModelV2Config(_toConfigStruct(_testCase));
 
-        // forge-lint: disable-next-line(calls-loop)
         vm.prank(_silo);
-        // forge-lint: disable-next-line(calls-loop)
         IRMv2Impl.initialize(address(configAddress));
     }
 

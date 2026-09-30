@@ -20,25 +20,19 @@ contract MaxLiquidationLTV100FullWithChunksTest is MaxLiquidationLTV100FullTest 
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
     {
         (uint256 totalCollateralToLiquidate, uint256 totalDebtToCover,) =
-            // forge-lint: disable-next-line(unused-return)
             partialLiquidation.maxLiquidation(BORROWER);
 
         emit log_named_decimal_uint("[LTV100FullWithChunks] ltv before", silo0.getLtv(BORROWER), 16);
 
         for (uint256 i; i < 6; i++) {
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[LTV100FullWithChunks] case ------------------------", i);
 
-            // forge-lint: disable-next-line(calls-loop, reentrancy-events)
             emit log_named_string("isSolvent", silo0.isSolvent(BORROWER) ? "YES" : "NO");
 
-            // forge-lint: disable-next-line(calls-loop, unused-return)
             (uint256 collateralToLiquidate, uint256 maxDebtToCover,) = partialLiquidation.maxLiquidation(BORROWER);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[LTV100FullWithChunks] collateralToLiquidate", collateralToLiquidate);
             if (maxDebtToCover == 0) continue;
 
-            // forge-lint: disable-next-line(calls-loop, unused-return)
             (,,, bool fullLiquidation) = SILO_LENS.maxLiquidation(silo1, partialLiquidation, BORROWER);
             assertTrue(fullLiquidation, "[LTV100FullWithChunks] fullLiquidation flag is UP when LTV is 100%");
 
@@ -49,19 +43,15 @@ contract MaxLiquidationLTV100FullWithChunksTest is MaxLiquidationLTV100FullTest 
 
             {
                 // too deep
-                // forge-lint: disable-next-line(calls-loop)
                 bool isSolvent = silo0.isSolvent(BORROWER);
 
-                // forge-lint: disable-next-line(require-revert-in-loop)
                 if (isSolvent && maxDebtToCover != 0) revert("if we solvent there should be no liquidation");
-                // forge-lint: disable-next-line(require-revert-in-loop)
                 if (!isSolvent && maxDebtToCover == 0) revert("if we NOT solvent there should be a liquidation");
 
                 if (isSolvent) break;
             }
 
             uint256 testDebtToCover = _calculateChunk(maxDebtToCover, i);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[LTV100FullWithChunks] testDebtToCover", testDebtToCover);
 
             (uint256 partialCollateral, uint256 partialDebt) =

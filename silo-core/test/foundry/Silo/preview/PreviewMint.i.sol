@@ -72,9 +72,7 @@ contract PreviewMintTest is SiloLittleHelper, Test {
 
         vm.warp(block.timestamp + 365 days);
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.accrueInterest();
-        // forge-lint: disable-next-line(unused-return)
         silo1.accrueInterest();
     }
 
@@ -89,7 +87,6 @@ contract PreviewMintTest is SiloLittleHelper, Test {
         _deposit(_depositAmount, makeAddr("any"));
 
         vm.warp(block.timestamp + 365 days);
-        // forge-lint: disable-next-line(unused-return)
         silo0.accrueInterest();
 
         _assertPreviewMint(_shares, _defaultType, _type);
@@ -107,7 +104,6 @@ contract PreviewMintTest is SiloLittleHelper, Test {
         token0.mint(DEPOSITOR, previewMint);
 
         vm.startPrank(DEPOSITOR);
-        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), previewMint);
 
         uint256 depositedAssets =

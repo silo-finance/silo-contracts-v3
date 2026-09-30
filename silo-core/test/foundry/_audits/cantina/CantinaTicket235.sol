@@ -24,7 +24,6 @@ contract CantinaTicket235 is CantinaTicket {
 
         // for (uint256 i = 0; i < iterations; i++) {
         // Transition collateral from "Collateral" to "Protected Collateral".
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(transitionShares, attacker, ISilo.CollateralType.Collateral);
         // Redeem the withdrawn assets by depositing them into the "Protected Collateral" state.
         // uint256 newShares = silo0.deposit(withdrawnAssets, attacker, ISilo.CollateralType.Protected);

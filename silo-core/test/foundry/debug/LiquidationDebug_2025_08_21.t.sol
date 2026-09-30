@@ -25,13 +25,10 @@ contract LiquidationDebug_2025_08_21 is IntegrationTest {
 
     function setUp() public {
         vm.label(weth, "WETH");
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(helper), "LiquidationHelper");
         // vm.label(address(hook), "IPartialLiquidation");
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(swapAllowanceHolder, "SWAP AllowanceHolder");
 
-        // forge-lint: disable-next-line(reentrancy-no-eth, unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), 43873559);
 
         helper = LiquidationHelper(payable(0xf363C6d369888F5367e9f1aD7b6a7dAe133e8740));
@@ -73,7 +70,6 @@ contract LiquidationDebug_2025_08_21 is IntegrationTest {
         // }
 
         vm.prank(0x0665609124CC2a958Cf0ED582eE132076243B6Da);
-        // forge-lint: disable-next-item(unused-return)
         helper.executeLiquidation({
             _flashLoanFrom: flashLoanFrom,
             _debtAsset: debtCfg.token,

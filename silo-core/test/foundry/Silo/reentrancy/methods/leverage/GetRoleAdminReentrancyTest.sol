@@ -20,7 +20,6 @@ contract GetRoleAdminReentrancyTest is MethodReentrancyTest {
 
     function _ensureItWillNotRevert() internal view {
         LeverageRouter router = _getLeverageRouter();
-        // forge-lint: disable-next-line(unused-return)
         router.getRoleAdmin(router.PAUSER_ROLE());
     }
 

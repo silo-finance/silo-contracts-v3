@@ -23,7 +23,6 @@ contract CalculateDebtReceiveApprovalReentrancyTest is MethodReentrancyTest {
     function _ensureItWillNotRevert() internal view {
         ILeverageRouter leverage = _getLeverage();
         ISilo silo = TestStateLib.silo0();
-        // forge-lint: disable-next-line(unused-return)
         leverage.calculateDebtReceiveApproval(silo, 1000e18);
     }
 

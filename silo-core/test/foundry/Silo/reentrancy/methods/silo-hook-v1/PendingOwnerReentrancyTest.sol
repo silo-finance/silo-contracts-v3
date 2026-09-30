@@ -21,7 +21,6 @@ contract PendingOwnerReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
-        // forge-lint: disable-next-line(unused-return)
         Ownable2Step(TestStateLib.hookReceiver()).pendingOwner();
     }
 }

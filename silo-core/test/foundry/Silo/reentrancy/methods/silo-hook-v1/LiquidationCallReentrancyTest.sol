@@ -29,7 +29,6 @@ contract LiquidationCallReentrancyTest is MethodReentrancyTest {
         uint256 collateralToLiquidate;
         uint256 debtToRepay;
 
-        // forge-lint: disable-next-line(unused-return)
         (collateralToLiquidate, debtToRepay,) = partialLiquidation.maxLiquidation(borrower);
 
         MaliciousToken token0 = MaliciousToken(TestStateLib.token0());
@@ -38,7 +37,6 @@ contract LiquidationCallReentrancyTest is MethodReentrancyTest {
         token0.mint(borrower, debtToRepay); // mint extra
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(partialLiquidation), type(uint256).max);
 
         // Enable reentrancy to check in the test so we can check it during the liquidation.
@@ -48,7 +46,6 @@ contract LiquidationCallReentrancyTest is MethodReentrancyTest {
         bool receiveSTokens = true;
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token1), address(token0), borrower, debtToRepay, receiveSTokens);
 
         TestStateLib.setReenterViaLiquidationCall(false);
@@ -74,7 +71,6 @@ contract LiquidationCallReentrancyTest is MethodReentrancyTest {
 
         IPartialLiquidation partialLiquidation = IPartialLiquidation(hookReceiver);
 
-        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(borrowerOnReentrancy);
 
         if (debtToRepay == 0) {
@@ -90,7 +86,6 @@ contract LiquidationCallReentrancyTest is MethodReentrancyTest {
             vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
         }
 
-        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token1), address(token0), borrowerOnReentrancy, debtToRepay, receiveSTokens
         );
@@ -111,21 +106,17 @@ contract LiquidationCallReentrancyTest is MethodReentrancyTest {
         token0.mint(_depositor, liquidityForBorrow);
 
         vm.prank(_depositor);
-        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), type(uint256).max);
 
         vm.prank(_depositor);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(liquidityForBorrow, _depositor);
 
         token1.mint(_borrower, collateralAmount);
 
         vm.prank(_borrower);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), type(uint256).max);
 
         vm.prank(_borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(collateralAmount, _borrower);
 
         uint256 maxBorrow = silo0.maxBorrow(_borrower);
@@ -133,7 +124,6 @@ contract LiquidationCallReentrancyTest is MethodReentrancyTest {
         if (maxBorrow == 0) {
             uint256 amount = silo0.getDebtAssets();
             vm.prank(_depositor);
-            // forge-lint: disable-next-line(unused-return)
             silo0.deposit(amount, _depositor);
 
             maxBorrow = silo0.maxBorrow(_borrower) / 2;
@@ -145,7 +135,6 @@ contract LiquidationCallReentrancyTest is MethodReentrancyTest {
         }
 
         vm.prank(_borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(maxBorrow, _borrower, _borrower);
 
         _makeUserInsolvent(_borrower, _depositor);
@@ -159,7 +148,6 @@ contract LiquidationCallReentrancyTest is MethodReentrancyTest {
 
         if (maxWithdraw != 0) {
             vm.prank(_borrower);
-            // forge-lint: disable-next-line(unused-return)
             silo1.withdraw(maxWithdraw, _borrower, _borrower);
         }
 
@@ -167,17 +155,13 @@ contract LiquidationCallReentrancyTest is MethodReentrancyTest {
 
         if (maxWithdraw != 0) {
             vm.prank(_depositor);
-            // forge-lint: disable-next-line(unused-return)
             silo0.withdraw(maxWithdraw, _depositor, _depositor);
         }
 
         uint256 y;
 
-        // forge-lint: disable-next-line(calls-loop)
         while (silo0.isSolvent(_borrower)) {
-            // forge-lint: disable-next-line(uninitialized-local)
             y++;
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 365 days);
         }
 

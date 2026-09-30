@@ -17,13 +17,10 @@ contract CalculateCurrentInterestRateGasTest is Gas, Test {
         _gasTestsInit();
 
         vm.prank(DEPOSITOR);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(ASSETS * 5, DEPOSITOR);
 
         vm.startPrank(BORROWER);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(ASSETS * 10, BORROWER);
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(ASSETS, BORROWER, BORROWER);
         vm.stopPrank();
 

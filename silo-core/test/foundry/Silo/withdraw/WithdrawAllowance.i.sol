@@ -45,7 +45,6 @@ contract WithdrawAllowanceTest is SiloLittleHelper, Test {
                 ASSETS * SiloMathLib._DECIMALS_OFFSET_POW
             )
         );
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(ASSETS, RECEIVER, DEPOSITOR);
     }
 
@@ -63,17 +62,15 @@ contract WithdrawAllowanceTest is SiloLittleHelper, Test {
     function _withdraw_WithAllowance(ISilo.CollateralType _type) internal {
         _deposit(ASSETS, DEPOSITOR, _type);
 
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken, address collateralShareToken,) = siloConfig.getShareTokens(address(silo0));
 
         address shareToken = _type == ISilo.CollateralType.Collateral ? collateralShareToken : protectedShareToken;
         vm.prank(DEPOSITOR);
-        // forge-lint: disable-next-line(divide-before-multiply, unused-return)
+        // forge-lint: disable-next-line(divide-before-multiply)
         IShareToken(shareToken).approve(address(this), (ASSETS / 2) * SiloMathLib._DECIMALS_OFFSET_POW);
 
         assertEq(token0.balanceOf(RECEIVER), 0, "no balance before");
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(ASSETS / 2, RECEIVER, DEPOSITOR, _type);
 
         assertEq(token0.balanceOf(RECEIVER), ASSETS / 2, "receiver got tokens");
@@ -84,7 +81,6 @@ contract WithdrawAllowanceTest is SiloLittleHelper, Test {
                 IERC20Errors.ERC20InsufficientAllowance.selector, address(this), 0, SiloMathLib._DECIMALS_OFFSET_POW
             )
         );
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(1, RECEIVER, DEPOSITOR, _type);
 
         _withdraw(ASSETS / 2, DEPOSITOR, _type);

@@ -32,7 +32,6 @@ contract WithdrawWhenNoDepositTest is IntegrationTest {
         configOverride.token0 = t0;
         configOverride.token1 = t1;
 
-        // forge-lint: disable-next-line(unused-return)
         (siloConfig, silo0, silo1,,,) = siloFixture.deploy_local(configOverride);
 
         token0 = new TokenMock(t0);
@@ -44,7 +43,6 @@ contract WithdrawWhenNoDepositTest is IntegrationTest {
     */
     function test_withdraw_zeros() public {
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(0, address(0), address(0));
     }
 
@@ -53,7 +51,6 @@ contract WithdrawWhenNoDepositTest is IntegrationTest {
     */
     function test_withdraw_WrongAssetType() public {
         vm.expectRevert();
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(0, address(1), address(1), ISilo.CollateralType(uint8(ISilo.AssetType.Debt)));
     }
 
@@ -62,19 +59,15 @@ contract WithdrawWhenNoDepositTest is IntegrationTest {
     */
     function test_withdraw_NothingToWithdraw() public {
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(0, address(this), address(this), ISilo.CollateralType.Collateral);
 
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(0, address(this), address(this), ISilo.CollateralType.Protected);
 
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(1, address(this), address(this), ISilo.CollateralType.Collateral);
 
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(1, address(this), address(this), ISilo.CollateralType.Protected);
     }
 
@@ -87,11 +80,9 @@ contract WithdrawWhenNoDepositTest is IntegrationTest {
 
         // test
         vm.expectRevert(ISilo.InputZeroShares.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(0, address(this), address(this), ISilo.CollateralType.Collateral);
 
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(0, address(this), address(this), ISilo.CollateralType.Protected);
 
         vm.expectRevert(
@@ -99,11 +90,9 @@ contract WithdrawWhenNoDepositTest is IntegrationTest {
                 IERC20Errors.ERC20InsufficientBalance.selector, address(this), 0, SiloMathLib._DECIMALS_OFFSET_POW
             )
         );
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(1, address(this), address(this), ISilo.CollateralType.Collateral);
 
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(1, address(this), address(this), ISilo.CollateralType.Protected);
 
         // any deposit so we have liquidity
@@ -114,7 +103,6 @@ contract WithdrawWhenNoDepositTest is IntegrationTest {
                 IERC20Errors.ERC20InsufficientBalance.selector, address(this), 0, SiloMathLib._DECIMALS_OFFSET_POW
             )
         );
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(1, address(this), address(this), ISilo.CollateralType.Protected);
     }
 
@@ -124,7 +112,6 @@ contract WithdrawWhenNoDepositTest is IntegrationTest {
 
         token0.transferFromMock(otherDepositor, address(silo0), depositAmount);
         vm.prank(otherDepositor);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(depositAmount, otherDepositor, _type);
     }
 }

@@ -53,7 +53,6 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
         _createScenario(true, _interest);
 
         uint256 preview = _getBorrowPreview(_amountIn);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("preview", preview);
 
         if (!_interest) {
@@ -75,11 +74,8 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
         uint256 minInput = 1;
         uint256 minPreview = _getBorrowPreview(minInput);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("_assetsOrShares", _assetsOrShares);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("minInput", minInput);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("minPreview", minPreview);
 
         _assertPreviewBorrow(minPreview, minInput);
@@ -100,11 +96,8 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
 
         uint256 maxPreview = _getBorrowPreview(maxInput);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("initial _assetsOrShares", _assetsOrShares);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint(string.concat("maxBorrow of ", _borrowShares() ? "shares" : "assets"), maxInput);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint(string.concat("maxPreview borrow ", _borrowShares() ? "shares" : "assets"), maxPreview);
 
         _assertPreviewBorrow(maxPreview, maxInput);
@@ -142,24 +135,18 @@ contract PreviewBorrowTest is SiloLittleHelper, Test {
         }
 
         uint256 warpTime = 10 days;
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + warpTime);
 
         uint256 ltvAfter = SILO_LENS.getLtv(silo1, otherBorrower);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ltvBefore", ltvBefore);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ltvAfter", ltvAfter);
 
         while (ltvAfter == ltvBefore) {
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + warpTime);
-            // forge-lint: disable-next-line(calls-loop)
             ltvAfter = SILO_LENS.getLtv(silo1, otherBorrower);
         }
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ltvAfter loop", ltvAfter);
 
         assertGt(ltvAfter, ltvBefore, "expect any interest");

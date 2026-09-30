@@ -166,24 +166,18 @@ contract PreviewWithdrawTest is SiloLittleHelper, Test {
             return;
         }
 
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 200 days);
 
         uint256 ltvAfter = SILO_LENS.getLtv(silo1, BORROWER);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ltvBefore", ltvBefore);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ltvAfter", ltvAfter);
 
         while (ltvAfter == ltvBefore) {
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 500 days);
-            // forge-lint: disable-next-line(calls-loop)
             ltvAfter = SILO_LENS.getLtv(silo1, BORROWER);
         }
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ltvAfter loop", ltvAfter);
 
         assertGt(ltvAfter, ltvBefore, "expect any interest");
@@ -204,7 +198,6 @@ contract PreviewWithdrawTest is SiloLittleHelper, Test {
     }
 
     function _getShareToken() internal view virtual returns (IShareToken shareToken) {
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken, address collateralShareToken,) = siloConfig.getShareTokens(address(silo1));
         shareToken = _collateralType() == ISilo.CollateralType.Collateral
             ? IShareToken(collateralShareToken)

@@ -26,19 +26,15 @@ contract BorrowSharesReentrancyTest is MethodReentrancyTest {
         token1.mint(borrower, collateralAmount);
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), depositAmount);
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(depositAmount, depositor);
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), collateralAmount);
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(collateralAmount, borrower);
 
         TestStateLib.enableReentrancy();
@@ -51,7 +47,6 @@ contract BorrowSharesReentrancyTest is MethodReentrancyTest {
         }
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrowShares(borrowAmount, borrower, borrower);
     }
 
@@ -59,13 +54,11 @@ contract BorrowSharesReentrancyTest is MethodReentrancyTest {
         ISilo silo1 = TestStateLib.silo1();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrowShares(1000, address(0), address(0));
 
         ISilo silo0 = TestStateLib.silo0();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrowShares(1000, address(0), address(0));
     }
 

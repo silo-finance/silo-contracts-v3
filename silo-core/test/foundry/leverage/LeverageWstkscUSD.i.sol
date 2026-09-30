@@ -50,12 +50,9 @@ contract LeverageWstkscUSDTest is SiloLittleHelper, Test {
     address debtShareToken;
 
     function setUp() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), 29990521);
 
-        // forge-lint: disable-next-line(unused-return)
         (, collateralShareToken,) = siloConfig.getShareTokens(address(wstkscUSDSilo));
-        // forge-lint: disable-next-line(unused-return)
         (,, debtShareToken) = siloConfig.getShareTokens(address(usdcSilo));
 
         leverageRouter = _deployLeverage();
@@ -72,9 +69,7 @@ contract LeverageWstkscUSDTest is SiloLittleHelper, Test {
         vm.prank(usdcWhale);
         require(usdcAsset.transfer(borrower, 100e6), "transfer failed");
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("borrower", borrower);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("siloLeverage", leverageRouter.predictUserLeverageContract(borrower));
     }
 
@@ -251,21 +246,15 @@ contract LeverageWstkscUSDTest is SiloLittleHelper, Test {
     }
 
     function _displayBorrowerState() internal {
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("____________");
 
         uint256 shares = wstkscUSDSilo.balanceOf(borrower);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("PT balance", wstkscUSDAsset.balanceOf(borrower), 6);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("USDC balance", usdcAsset.balanceOf(borrower), 6);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("COLLATERAL", wstkscUSDSilo.previewRedeem(shares), 6);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("DEBT SHARES", IERC20(debtShareToken).balanceOf(borrower), 6);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("MAX DEBT", usdcSilo.maxRepay(borrower), 6);
 
         address userLeverage = leverageRouter.predictUserLeverageContract(borrower);
@@ -273,9 +262,7 @@ contract LeverageWstkscUSDTest is SiloLittleHelper, Test {
         uint256 debtAllowance = IERC20(debtShareToken).allowance(borrower, userLeverage);
         uint256 debtReceiveAllowance = IERC20R(debtShareToken).receiveAllowance(borrower, userLeverage);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("DEBT allowance", debtAllowance, 6);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("DEBT receiveAllowance", debtReceiveAllowance, 6);
     }
 }

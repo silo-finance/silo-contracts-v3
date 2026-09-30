@@ -46,12 +46,10 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         siloConfig = _setUpLocalFixture();
 
         _depositForBorrow(COLLATERAL_FOR_BORROW, DEPOSITOR);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("COLLATERAL_FOR_BORROW", COLLATERAL_FOR_BORROW, 18);
 
         _deposit(COLLATERAL, BORROWER);
         _borrow(DEBT, BORROWER);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("DEBT", DEBT, 18);
         debtStart = block.timestamp;
 
@@ -77,11 +75,9 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         bool receiveSToken;
 
         vm.expectRevert(IPartialLiquidation.UnexpectedCollateralToken.selector);
-        // forge-lint: disable-next-line(uninitialized-local, unused-return)
         partialLiquidation.liquidationCall(address(token1), address(token1), BORROWER, maxDebtToCover, receiveSToken);
 
         vm.expectRevert(IPartialLiquidation.UnexpectedCollateralToken.selector);
-        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token1), address(token0), BORROWER, maxDebtToCover, receiveSToken);
     }
 
@@ -93,7 +89,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         bool receiveSToken;
 
         vm.expectRevert(IPartialLiquidation.UnexpectedDebtToken.selector);
-        // forge-lint: disable-next-line(uninitialized-local, unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token0), BORROWER, maxDebtToCover, receiveSToken);
     }
 
@@ -106,7 +101,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         vm.expectRevert(IPartialLiquidation.UserIsSolvent.selector);
 
-        // forge-lint: disable-next-line(uninitialized-local, unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), BORROWER, maxDebtToCover, receiveSToken);
     }
 
@@ -120,16 +114,13 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         ISiloConfig.ConfigData memory debt;
 
-        // forge-lint: disable-next-line(unused-return)
         (, debt) = siloConfig.getConfigsForSolvency(userWithoutDebt);
 
         assertTrue(debt.silo == address(0), "we need user without debt for this test");
 
         vm.expectRevert(IPartialLiquidation.UserIsSolvent.selector);
 
-        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
-            // forge-lint: disable-next-line(uninitialized-local)
             address(token0), address(token1), userWithoutDebt, maxDebtToCover, receiveSToken
         );
 
@@ -145,14 +136,12 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         token1.mint(BORROWER, maxDebtToCover);
         vm.prank(BORROWER);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), maxDebtToCover);
 
         assertTrue(silo0.isSolvent(BORROWER), "BORROWER solvent");
 
         vm.expectRevert(IPartialLiquidation.UserIsSolvent.selector);
         vm.prank(BORROWER);
-        // forge-lint: disable-next-line(uninitialized-local, unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), BORROWER, maxDebtToCover, receiveSToken);
 
         _liquidationModuleDoNotHaveTokens();
@@ -170,28 +159,24 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         uint256 ltv = SILO_LENS.getLtv(silo0, BORROWER);
         assertGt(ltv, 1e18, "expect bad debt for this test");
 
-        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(BORROWER);
         assertGt(collateralToLiquidate, 0, "expect any collateral to liquidate");
         assertLt(collateralToLiquidate, debtToRepay, "price is 1:1 os the goal is to get 0 collateral and some debt");
 
         _whitelistPermissionedLiquidation({_siloConfig: siloConfig, _whitelist: address(this), _allow: true});
         
-        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token0), address(token1), BORROWER, collateralToLiquidate, false /* receiveSToken */
         );
 
         assertTrue(!silo0.isSolvent(BORROWER), "BORROWER should be insolvent");
 
-        // forge-lint: disable-next-line(unused-return)
         (collateralToLiquidate, debtToRepay,) = partialLiquidation.maxLiquidation(BORROWER);
         assertEq(collateralToLiquidate, 0, "expect no collateral to liquidate");
         assertGt(debtToRepay, 0, "expect some debt to repay");
 
         // we have NoCollateralToLiquidate error for this, but ReturnZeroShares is generate as first one
         vm.expectRevert(ISilo.ReturnZeroShares.selector);
-        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), BORROWER, 1, false /* receiveSToken */ );
     }
 
@@ -204,9 +189,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         ISiloConfig.ConfigData memory collateralConfig = siloConfig.getConfig(address(silo1));
         ISiloConfig.ConfigData memory debtConfig = siloConfig.getConfig(address(silo0));
 
-        // forge-lint: disable-next-line(unused-return)
         (, uint64 interestRateTimestamp0,,,) = silo0.getSiloStorage();
-        // forge-lint: disable-next-line(unused-return)
         (, uint64 interestRateTimestamp1,,,) = silo1.getSiloStorage();
 
         (uint256 collateralToLiquidate, uint256 debtToRepay, bool sTokenRequired) =
@@ -226,9 +209,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         assertGt(collateralToLiquidate, 0, "expect collateralToLiquidate");
         assertGt(debtToRepay, maxDebtToCover, "expect debtToRepay");
         assertTrue(!sTokenRequired, "sTokenRequired NOT required");
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[test] max debtToRepay", debtToRepay, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[test] maxDebtToCover", maxDebtToCover, 18);
 
         vm.expectCall(address(silo0), abi.encodeWithSelector(ISilo.accrueInterest.selector));
@@ -243,14 +224,12 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
             abi.encodeWithSelector(IInterestRateModel.getCompoundInterestRateAndUpdate.selector)
         );
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[test] LTV after interest", silo1.getLtv(BORROWER), 16);
         assertEq(silo1.getLtv(BORROWER), 89_1188467990720448, "LTV after interest");
         assertLt(silo1.getLtv(BORROWER), 0.9e18, "expect LTV to be below dust level");
         assertFalse(silo1.isSolvent(BORROWER), "expect BORROWER to be insolvent");
 
         token1.mint(address(this), 2 ** 128);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), maxDebtToCover);
 
         // uint256 collateralWithFee = maxDebtToCover + 0.05e5; // too deep
@@ -280,12 +259,10 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
             );
 
             vm.expectEmit(true, true, true, true);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit IPartialLiquidation.LiquidationStart(IPartialLiquidation.LiquidationType.STANDARD);
 
             vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
 
-            // forge-lint: disable-next-item(unused-return)
             partialLiquidation.liquidationCall(
                 address(token0), address(token1), BORROWER, maxDebtToCover, false /* receiveSToken */
             );
@@ -296,15 +273,12 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
                 address(token0), address(token1), BORROWER, maxDebtToCover, false /* receiveSToken */
             );
 
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("[test] withdrawAssetsFromCollateral", withdrawAssetsFromCollateral, 18);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("[test] repayDebtAssets", repayDebtAssets, 18);
         }
 
         {
             // too deep
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("[test] LTV after small liquidation", silo1.getLtv(BORROWER), 16);
             assertEq(silo1.getLtv(BORROWER), 89_1188467990719805, "LTV after small liquidation");
             assertGt(silo1.getLtv(BORROWER), 0, "expect user to be still insolvent after small partial liquidation");
@@ -326,9 +300,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         {
             // too deep
-            // forge-lint: disable-next-line(unused-return)
             (, uint64 interestRateTimestamp0After,,,) = silo0.getSiloStorage();
-            // forge-lint: disable-next-line(unused-return)
             (, uint64 interestRateTimestamp1After,,,) = silo1.getSiloStorage();
 
             assertEq(interestRateTimestamp0 + timeForward, interestRateTimestamp0After, "interestRateTimestamp #0");
@@ -339,7 +311,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
             assertGt(debtToRepay, 0, "expect debtToRepay after partial liquidation");
             assertTrue(!sTokenRequired, "sTokenRequired NOT required");
 
-            // forge-lint: disable-next-line(unused-return)
             token1.approve(address(partialLiquidation), debtToRepay);
 
             // repay debt liquidator -> hook
@@ -364,7 +335,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
             );
 
             vm.expectEmit(true, true, true, true, address(partialLiquidation));
-            // forge-lint: disable-next-item(reentrancy-events)
             emit IPartialLiquidation.LiquidationCall(
                 address(this), address(silo1), BORROWER, 6_413645132946301397, 6_734327389593616466, false
             );
@@ -373,12 +343,9 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
                 address(token0), address(token1), BORROWER, 2 ** 128, false /* receiveSToken */
             );
 
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("[test] withdrawAssetsFromCollateral2", withdrawAssetsFromCollateral, 18);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("[test] repayDebtAssets2", repayDebtAssets, 18);
 
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("[test] LTV after max liquidation", silo1.getLtv(BORROWER), 16);
             assertGt(silo1.getLtv(BORROWER), 0, "expect some LTV after partial liquidation");
             assertTrue(silo1.isSolvent(BORROWER), "expect BORROWER to be solvent");
@@ -402,7 +369,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         assertLt(silo1.getLtv(BORROWER), 1e18, "expect insolvency, but not bad debt");
         assertGt(silo1.getLtv(BORROWER), 0.98e18, "expect hi LTV so we force full liquidation");
 
-        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay, bool sTokenRequired) = partialLiquidation.maxLiquidation(BORROWER);
 
         assertTrue(!sTokenRequired, "sTokenRequired NOT required");
@@ -414,7 +380,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         bool receiveSToken;
 
         vm.expectRevert(IPartialLiquidation.FullLiquidationRequired.selector);
-        // forge-lint: disable-next-line(uninitialized-local, unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), BORROWER, maxDebtToCover, receiveSToken);
 
         _liquidationModuleDoNotHaveTokens();
@@ -430,9 +395,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         ISiloConfig.ConfigData memory collateralConfig = siloConfig.getConfig(address(silo0));
         ISiloConfig.ConfigData memory debtConfig = siloConfig.getConfig(address(silo1));
 
-        // forge-lint: disable-next-line(unused-return)
         (, uint64 interestRateTimestamp0,,,) = silo0.getSiloStorage();
-        // forge-lint: disable-next-line(unused-return)
         (, uint64 interestRateTimestamp1,,,) = silo1.getSiloStorage();
 
         // move forward with time so we can have interests
@@ -467,11 +430,9 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         );
 
         token1.mint(address(this), maxDebtToCover);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), maxDebtToCover);
 
         _whitelistPermissionedLiquidation({_siloConfig: siloConfig, _whitelist: address(this), _allow: true});
-        // forge-lint: disable-next-line(uninitialized-local, unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), BORROWER, maxDebtToCover, receiveSToken);
 
         assertTrue(silo0.isSolvent(BORROWER), "user is solvent after liquidation");
@@ -525,9 +486,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         {
             // too deep
-            // forge-lint: disable-next-line(unused-return)
             (, uint64 interestRateTimestamp0After,,,) = silo0.getSiloStorage();
-            // forge-lint: disable-next-line(unused-return)
             (, uint64 interestRateTimestamp1After,,,) = silo1.getSiloStorage();
 
             assertEq(interestRateTimestamp0 + timeForward, interestRateTimestamp0After, "interestRateTimestamp #0");
@@ -547,7 +506,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         vm.expectCall(address(token0), abi.encodeWithSelector(IERC20.transfer.selector, liquidator, 10e18));
 
         _whitelistPermissionedLiquidation({_siloConfig: siloConfig, _whitelist: address(this), _allow: true});
-        // forge-lint: disable-next-line(uninitialized-local)
         _liquidationCall_badDebt_full(receiveSToken);
 
         assertEq(
@@ -623,7 +581,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         // 2. Alice fully repays her debt in SILO0. borrowerCollateralSilo[Alice] remains
         // unchanged and still points to SILO1.
         vm.prank(alice);
-        // forge-lint: disable-next-line(unused-return)
         silo0.repayShares(debtShares, alice);
 
         ISiloConfig.ConfigData memory cfg = siloConfig.getConfig(address(silo0));
@@ -643,7 +600,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         assertTrue(IERC20(debtConfig.debtShareToken).transfer(alice, 0.1e18));
 
         uint256 ltv = SILO_LENS.getUserLTV(silo0, alice);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("Alice LTV %", ltv, 16);
 
         assertGt(ltv, 0, "alice must have some LTV");
@@ -660,21 +616,17 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         // liquidation
         vm.startPrank(alice);
-        // forge-lint: disable-next-line(unused-return)
         silo1.repay(0.01e18, alice);
-        // forge-lint: disable-next-line(unused-return)
         silo1.redeem(silo1.maxRedeem(alice), alice, alice);
         vm.stopPrank();
 
         vm.warp(block.timestamp + 100 days);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("Alice final LTV %", SILO_LENS.getUserLTV(silo1, alice), 16);
         assertFalse(silo1.isSolvent(alice), "expect alice not be solvent");
 
         // we have on demand tokens, so liquidation process will generate neccessary tokens on the fly
         vm.prank(makeAddr("liquidator"));
-        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall({
             _collateralAsset: address(token1),
             _debtAsset: address(token1),
@@ -708,14 +660,11 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         token1.mint(liquidator, maxDebtToCover);
         vm.prank(liquidator);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), maxDebtToCover);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[test] maxDebtToCover", maxDebtToCover, 18);
 
         vm.prank(liquidator);
-        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), BORROWER, maxDebtToCover, _receiveSToken);
 
         maxRepay = silo1.maxRepay(BORROWER);
@@ -726,12 +675,10 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         token1.mint(liquidator, maxRepay);
         vm.prank(liquidator);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), maxRepay);
 
         (collateralToLiquidate, debtToRepay, sTokenRequired) = partialLiquidation.maxLiquidation(BORROWER);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[test] maxRepay", maxRepay, 18);
 
         assertEq(collateralToLiquidate, 0, "expect no collateral to liquidate");
@@ -740,7 +687,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
 
         vm.expectRevert(IPartialLiquidation.NoCollateralToLiquidate.selector);
         vm.prank(liquidator);
-        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token0), address(token1), BORROWER, maxRepay, _receiveSToken);
 
         assertEq(
@@ -765,52 +711,36 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
     }
 
     function _timeForwardAndDebug(uint256 _time) internal {
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("............................move forward days by", _time / 60 / 60 / 24);
 
-        // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
         vm.warp(block.timestamp + _time);
 
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         silo1.accrueInterest();
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         silo0.accrueInterest();
 
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(BORROWER);
 
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         (uint192 daoAndDeployerRevenue,,,,) = silo1.getSiloStorage();
-        // forge-lint: disable-next-line(calls-loop)
         uint256 maxRepay = silo1.maxRepay(BORROWER);
         uint256 interest = maxRepay - DEBT - daoAndDeployerRevenue;
-        // forge-lint: disable-next-line(calls-loop)
         uint256 liquidity = silo1.getLiquidity();
 
-        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_decimal_uint("balance of silo1", token1.balanceOf(address(silo1)), 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("silo1.getLiquidity()", liquidity, 18);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("daoAndDeployerRevenue", daoAndDeployerRevenue, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("interest", interest, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("fee + interest", daoAndDeployerRevenue + interest, 18);
 
         int256 calculatedLiquidity =
             (COLLATERAL_FOR_BORROW - DEBT).toInt256() - uint256(daoAndDeployerRevenue).toInt256();
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_int("(COLLATERAL_FOR_BORROW - DEBT) - fee == liquidity", calculatedLiquidity, 18);
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_string(
             "calculatedLiquidity == liquidity", calculatedLiquidity == liquidity.toInt256() ? "YES" : "NO"
         );
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_int(
             "liquidity without CAP == deposited + interest - DEBT - fee",
             (COLLATERAL_FOR_BORROW + interest).toInt256() - DEBT.toInt256()
@@ -818,28 +748,19 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
             18
         );
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrower debt", maxRepay, 18);
 
-        // forge-lint: disable-next-line(calls-loop)
         uint256 collateralBalanceOfUnderlying = SILO_LENS.collateralBalanceOfUnderlying(silo0, BORROWER);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrower collateral", collateralBalanceOfUnderlying, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("collateralToLiquidate", collateralToLiquidate, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("debtToRepay", debtToRepay, 18);
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         uint256 daysInDebt = (block.timestamp - debtStart) / 60 / 60 / 24;
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("days in debt", daysInDebt);
-        // forge-lint: disable-next-line(divide-before-multiply, reentrancy-events)
+        // forge-lint: disable-next-line(divide-before-multiply)
         emit log_named_decimal_uint("borrow APY %", (maxRepay - DEBT) * 1e18 / DEBT * 365 / daysInDebt, 16);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("CAP %", 1e20, 16);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("-----");
     }
 
@@ -866,9 +787,7 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         vm.warp(block.timestamp + 30 days);
 
         // Accrue interest
-        // forge-lint: disable-next-line(unused-return)
         silo0.accrueInterest();
-        // forge-lint: disable-next-line(unused-return)
         silo1.accrueInterest();
 
         assertFalse(silo0.isSolvent(protectedBorrower), "Borrower should be insolvent");
@@ -880,7 +799,6 @@ contract LiquidationCallTest is SiloLittleHelper, Test {
         // Get max liquidation from SiloLens (corrected implementation)
         // We can pass either silo0 or silo1
         (uint256 collateralToLiquidateLens, uint256 debtToRepayLens, bool sTokenRequiredLens,) =
-            // forge-lint: disable-next-line(unused-return)
             SILO_LENS.maxLiquidation(silo1, partialLiquidation, protectedBorrower);
 
         // Verify the bug: Hook says sTokenRequired=true because liquidity is 0

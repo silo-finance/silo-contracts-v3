@@ -60,13 +60,11 @@ contract ArchiveRpcTest is Test {
     function readArchiveBlockHistory() external {
         string memory rpc = vm.envString("RPC_URL");
 
-        // forge-lint: disable-next-item(unused-return)
         vm.rpc({
             urlOrAlias: rpc,
             method: "eth_getBlockByNumber",
             params: string.concat('["', archiveBlockHex, '", true]')
         });
-        // forge-lint: disable-next-item(unused-return)
         vm.rpc({
             urlOrAlias: rpc,
             method: "eth_getBlockReceipts",
@@ -79,10 +77,8 @@ contract ArchiveRpcTest is Test {
         string memory rpc = vm.envString("RPC_URL");
 
         if (blockNumber == LATEST_BLOCK) {
-            // forge-lint: disable-next-line(unused-return)
             vm.createSelectFork(rpc);
         } else {
-            // forge-lint: disable-next-line(unused-return)
             vm.createSelectFork({urlOrAlias: rpc, blockNumber: blockNumber});
         }
 

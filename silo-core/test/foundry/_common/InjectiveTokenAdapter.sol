@@ -7,7 +7,6 @@ contract InjectiveTokenAdapter {
     IBankModule public constant BANK_MODULE = IBankModule(address(0x64));
     address public immutable TOKEN;
 
-    // forge-lint: disable-next-line(missing-zero-check)
     constructor(address _token) {
         TOKEN = _token;
     }
@@ -17,13 +16,11 @@ contract InjectiveTokenAdapter {
     }
 
     function decimals() external view returns (uint8 d) {
-        // forge-lint: disable-next-line(unused-return)
         (,, d) = BANK_MODULE.metadata(TOKEN);
         require(d != 0, "decimals not set, check InjectiveWorkaround");
     }
 
     function symbol() external view returns (string memory s) {
-        // forge-lint: disable-next-line(unused-return)
         (s,,) = BANK_MODULE.metadata(TOKEN);
     }
 

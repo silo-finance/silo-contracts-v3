@@ -20,14 +20,10 @@ contract LiquidationDebug_2025_05_26 is IntegrationTest {
 
     function setUp() public {
         vm.label(weth, "WETH");
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(helper), "LiquidationHelper");
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(HOOK), "IPartialLiquidation");
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(swapAllowanceHolder, "SWAP AllowanceHolder");
 
-        // forge-lint: disable-next-line(reentrancy-no-eth, unused-return)
         vm.createSelectFork("https://rpc-gel.inkonchain.com", 14568229 - 1);
 
         helper = new LiquidationHelper(weth, swapAllowanceHolder, payable(0xE8e8041cB5E3158A0829A19E014CA1cf91098554));
@@ -55,7 +51,6 @@ contract LiquidationDebug_2025_05_26 is IntegrationTest {
         // 	_liquidation.hook	address	0x2D2628f0434a5ed57601f6506d492849260193bA
         // 	_liquidation.collateralAsset	address	0x82aF49447D8a07e3bd95BD0d56f35241523fBab1
         // 	_liquidation.user	address	0xDaE3B7D951621b6600A88234246858e741AA70BB
-        // forge-lint: disable-next-item(unused-return)
         helper.executeLiquidation({
             _flashLoanFrom: flashLoanFrom,
             _debtAsset: 0x0200C29006150606B650577BBE7B6248F58470c1,

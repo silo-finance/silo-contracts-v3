@@ -50,7 +50,6 @@ contract ReentrancyOnRepayTest is Test {
         uint256 expectedDebt = totalDebt;
 
         vm.expectEmit(false, false, false, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit TokenWithReentrancy.SiloAssetState(expectedDebt);
 
         _vulnerable.repay(_getConfigData(), 0, /* assets */ _SHARES, _borrower, _repayer);
@@ -72,7 +71,6 @@ contract ReentrancyOnRepayTest is Test {
         uint256 expectedDebt = totalDebtBefore - _ASSETS;
 
         vm.expectEmit(false, false, false, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit TokenWithReentrancy.SiloAssetState(expectedDebt);
 
         _nonVulnerable.repay(_getConfigData(), _ASSETS, 0, /* shares */ _borrower, _repayer);

@@ -24,7 +24,6 @@ contract LiquidationWrongInputsTest is SiloLittleHelper, Test {
     function test_liquidationInput_NoDebtToCover() public {
         vm.expectRevert(IPartialLiquidation.NoDebtToCover.selector);
 
-        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(0), address(0), address(0), 0, false);
     }
 }

@@ -104,11 +104,9 @@ contract OpenLeveragePositionReentrancyTest is MethodReentrancyTest {
         MaliciousToken(token0).mint(liquidityProvider, liquidityAmount);
 
         vm.prank(liquidityProvider);
-        // forge-lint: disable-next-line(unused-return)
         MaliciousToken(token0).approve(address(silo0), liquidityAmount);
 
         vm.prank(liquidityProvider);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(liquidityAmount, liquidityProvider, ISilo.CollateralType.Collateral);
 
         TestStateLib.enableReentrancy();
@@ -134,13 +132,11 @@ contract OpenLeveragePositionReentrancyTest is MethodReentrancyTest {
 
         if (_approveAssets) {
             // Approve user's leverage contract to pull deposit tokens
-            // forge-lint: disable-next-line(unused-return)
             MaliciousToken(TestStateLib.token1()).approve(userLeverageContract, _depositAmount);
         }
 
         // Get debt share token from silo0
         ISiloConfig config = TestStateLib.silo0().config();
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = config.getShareTokens(address(TestStateLib.silo0()));
 
         uint256 debtReceiveApproval = router.calculateDebtReceiveApproval(TestStateLib.silo0(), _flashloanAmount);

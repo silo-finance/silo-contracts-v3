@@ -22,17 +22,14 @@ contract TransitionCollateralReentrancyTest is MethodReentrancyTest {
         token0.mint(depositor, depositAmount);
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), depositAmount);
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(depositAmount, depositor);
 
         TestStateLib.enableReentrancy();
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(depositAmount / 2, depositor, ISilo.CollateralType.Collateral);
     }
 
@@ -40,13 +37,11 @@ contract TransitionCollateralReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(1000, address(0), ISilo.CollateralType.Protected);
 
         ISilo silo1 = TestStateLib.silo1();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo1.transitionCollateral(1000, address(0), ISilo.CollateralType.Protected);
     }
 

@@ -28,7 +28,6 @@ contract OwnableTest is Test {
 
         // Expect the OwnershipTransferred event
         vm.expectEmit(true, true, false, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit OwnershipTransferred(owner, newOwner);
 
         // Transfer ownership in one step
@@ -64,7 +63,6 @@ contract OwnableTest is Test {
     function testTransferOwnership1StepToSameOwner() public {
         // Transfer to same owner should succeed
         vm.expectEmit(true, true, false, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit OwnershipTransferred(owner, owner);
 
         vm.prank(owner);
@@ -84,7 +82,6 @@ contract OwnableTest is Test {
         address thirdOwner = address(0x4);
 
         vm.expectEmit(true, true, false, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit OwnershipTransferred(newOwner, thirdOwner);
 
         vm.prank(newOwner);
@@ -106,7 +103,6 @@ contract OwnableTest is Test {
 
         // Transfer to fuzzed target owner
         vm.expectEmit(true, true, false, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit OwnershipTransferred(initialOwner, targetOwner);
 
         vm.prank(initialOwner);

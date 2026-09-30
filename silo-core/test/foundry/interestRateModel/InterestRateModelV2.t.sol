@@ -45,7 +45,6 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
         address config = makeAddr("config");
 
         vm.expectEmit(true, true, true, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit Initialized(config);
 
         INTEREST_RATE_MODEL.initialize(config);
@@ -87,14 +86,12 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
     function test_IRM_calculateCompoundInterestRate_InvalidTimestamps() public {
         IInterestRateModelV2.Config memory c;
         vm.expectRevert(IInterestRateModelV2.InvalidTimestamps.selector);
-        // forge-lint: disable-next-line(unused-return)
         INTEREST_RATE_MODEL.calculateCompoundInterestRate(c, 0, 0, 1, 0);
     }
 
     function test_IRM_calculateCurrentInterestRate_InvalidTimestamps() public {
         IInterestRateModelV2.Config memory c;
         vm.expectRevert(IInterestRateModelV2.InvalidTimestamps.selector);
-        // forge-lint: disable-next-line(unused-return)
         INTEREST_RATE_MODEL.calculateCurrentInterestRate(c, 0, 0, 1, 0);
     }
 
@@ -119,7 +116,6 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
         uint256 currentTime = 0;
 
         vm.expectRevert(IInterestRateModelV2.InvalidTimestamps.selector);
-        // forge-lint: disable-next-line(unused-return)
         INTEREST_RATE_MODEL.calculateCurrentInterestRate(emptyConfig, 0, 0, lastTransactionTime, currentTime);
     }
 
@@ -129,7 +125,6 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
 
         uint256 cap = 3170979198376 * (1 + _t);
 
-        // forge-lint: disable-next-item(unused-return)
         (uint256 rcur,,,) = INTEREST_RATE_MODEL.calculateCompoundInterestRateWithOverflowDetection(
             _defaultConfig(),
             100e18, // _totalDeposits,
@@ -144,7 +139,6 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
 
     // forge test -vv --mt test_IRM_calculateCompoundInterestRateWithOverflowDetection_ZERO
     function test_IRM_calculateCompoundInterestRateWithOverflowDetection_ZERO() public view {
-        // forge-lint: disable-next-item(unused-return)
         (uint256 rcur,,,) = INTEREST_RATE_MODEL.calculateCompoundInterestRateWithOverflowDetection(
             _defaultConfig(),
             100e18, // _totalDeposits,
@@ -207,14 +201,11 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
         InterestRateModelV2Checked implChecked = new InterestRateModelV2Checked();
 
         (uint256 rcomp1, bool overflow1) = impl.calculateRComp(_totalDeposits, _totalBorrowAmount, _x);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("rcomp1", rcomp1);
 
         (uint256 rcomp2, bool overflow2) = implChecked._calculateRComp(_totalDeposits, _totalBorrowAmount, _x);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("rcomp2", rcomp2);
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_string(
             "overflow",
             overflow1 == overflow2 ? "same" : string.concat("different: 1st is ", overflow1 ? "true" : "false")
@@ -250,11 +241,9 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
 
         impl.initialize(address(new InterestRateModelV2Config(config)));
 
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 50 * 365 days);
 
         // should not overflow in 50y
-        // forge-lint: disable-next-item(unused-return)
         impl.getCompoundInterestRateAndUpdate({
             _collateralAssets: 1e18,
             _debtAssets: 0.99e18,
@@ -323,7 +312,6 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
 
         InterestRateModelV2 impl = new InterestRateModelV2();
         impl.initialize(address(new InterestRateModelV2Config(config)));
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 50 * 365 days);
 
         bool possibleRevert;
@@ -342,7 +330,6 @@ contract InterestRateModelV2Test is Test, InterestRateModelConfigs {
         }) {
             // if not revert, all good
         } catch {
-            // forge-lint: disable-next-line(uninitialized-local)
             assertTrue(possibleRevert, "we accept revert only when we detect it with configOverflowCheck");
         }
     }

@@ -39,22 +39,15 @@ contract XDataReader is Test {
     }
 
     function _print(Position memory _data) internal {
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("/njson.network_id", _data.network_id);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("json.block_number", _data.block_number);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("json.market", _data.market);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("json.account", _data.account);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("json.is_contract", _data.is_contract ? "true" : "false");
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("json.assets", _data.assets);
         // emit log_named_string("json.assets_normalized", _data.assets_normalized);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("json.asset_symbol", _data.asset_symbol);
         console2.log("--------------------------------");
     }

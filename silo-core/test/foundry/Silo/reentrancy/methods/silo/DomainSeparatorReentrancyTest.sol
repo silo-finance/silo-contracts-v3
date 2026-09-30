@@ -21,9 +21,7 @@ contract DomainSeparatorReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
-        // forge-lint: disable-next-line(unused-return)
         IERC20Permit(address(TestStateLib.silo0())).DOMAIN_SEPARATOR();
-        // forge-lint: disable-next-line(unused-return)
         IERC20Permit(address(TestStateLib.silo1())).DOMAIN_SEPARATOR();
     }
 }

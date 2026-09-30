@@ -20,7 +20,6 @@ contract SupportsInterfaceReentrancyTest is MethodReentrancyTest {
 
     function _ensureItWillNotRevert() internal view {
         LeverageRouter router = _getLeverageRouter();
-        // forge-lint: disable-next-line(unused-return)
         router.supportsInterface(0x00000000);
     }
 

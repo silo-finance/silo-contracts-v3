@@ -16,14 +16,12 @@ contract CantinaTicket239 is CantinaTicket {
         _depositForBorrow(assets, bob);
         _deposit(assets, bob);
 
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 days);
 
         // 2: Alice supplies and borrows assets
         _createDebt(assets, alice);
 
         // 3: Bob accruing interest
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 10 days);
         // In PoC they check collateral
         uint256 amountBeforeRepay = silo1.getCollateralAssets(); // get collat amount with interest

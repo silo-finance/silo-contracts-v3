@@ -30,7 +30,6 @@ contract SiloHookReceiverTest is Test {
     function test_hookReceiver_setHookConfig() public {
         vm.expectEmit(true, true, true, true);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit HookConfigured(silo, uint24(HOOKS_BEFORE), uint24(HOOKS_AFTER));
 
         hookReceiver.setHookConfig(silo, HOOKS_BEFORE, HOOKS_AFTER);

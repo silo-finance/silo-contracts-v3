@@ -11,7 +11,6 @@ contract VersionReentrancyTest is ConstantReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view override {
-        // forge-lint: disable-next-line(unused-return)
         IVersioned(TestStateLib.hookReceiver()).VERSION();
     }
 }

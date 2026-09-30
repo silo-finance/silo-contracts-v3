@@ -261,7 +261,6 @@ contract SiloFactorySettersTest is Test {
 
         vm.mockCall(config, abi.encodeWithSelector(ISiloConfig.SILO_ID.selector), abi.encode(1));
 
-        // forge-lint: disable-next-line(unused-return)
         (address dao,) = siloFactory.getFeeReceivers(_silo);
 
         assertEq(dao, _expectedAddress, string.concat("factory returns correct dao:", _msg));

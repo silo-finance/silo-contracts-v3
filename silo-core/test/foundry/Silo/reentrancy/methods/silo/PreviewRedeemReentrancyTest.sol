@@ -19,9 +19,7 @@ contract PreviewRedeemReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().previewRedeem(1000_000e18);
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().previewRedeem(1000_000e18);
     }
 }

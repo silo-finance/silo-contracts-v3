@@ -377,7 +377,6 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
             uint256 maxAmount = _totalDeposits > _totalBorrowAmount ? _totalDeposits : _totalBorrowAmount;
 
             if (maxAmount >= ASSET_DATA_OVERFLOW_LIMIT) {
-                // forge-lint: disable-next-line(boolean-cst)
                 return (0, true);
             }
 
@@ -393,7 +392,6 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
             ) {
                 rcomp = (ASSET_DATA_OVERFLOW_LIMIT - maxAmount) * _DP / _totalBorrowAmount;
 
-                // forge-lint: disable-next-line(boolean-cst)
                 return (rcomp, true);
             }
         }
@@ -426,7 +424,6 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
     {
         // uint256 cap = 10**20 / (365 * 24 * 3600); // this is per-second rate because _l.T is in seconds.
         uint256 cap = 3170979198376 * _t;
-        // forge-lint: disable-next-line(boolean-cst)
         return _rcomp > cap ? (cap, true) : (_rcomp, false);
     }
 

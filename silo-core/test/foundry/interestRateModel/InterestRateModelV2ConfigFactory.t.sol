@@ -146,14 +146,11 @@ contract InterestRateModelV2FactoryTest is Test, InterestRateModelConfigs {
         uint256 snapshot = vm.snapshotState();
 
         vm.prank(eoa1);
-        // forge-lint: disable-next-line(unused-return)
         (, IInterestRateModelV2 irm) = factory.create(config, bytes32(0));
 
-        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         vm.prank(eoa2);
-        // forge-lint: disable-next-line(unused-return)
         (, IInterestRateModelV2 irm2) = factory.create(config, bytes32(0));
 
         assertNotEq(address(irm), address(irm2), "irm address is the same");

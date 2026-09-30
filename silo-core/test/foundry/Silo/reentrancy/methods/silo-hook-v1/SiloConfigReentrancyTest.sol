@@ -21,7 +21,6 @@ contract SiloConfigReentrancyTest is MethodReentrancyTest {
 
     function _ensureItWillNotRevert() internal view {
         address hookReceiver = TestStateLib.hookReceiver();
-        // forge-lint: disable-next-line(unused-return)
         SiloHookV1(hookReceiver).siloConfig();
     }
 }

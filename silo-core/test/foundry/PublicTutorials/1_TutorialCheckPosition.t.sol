@@ -28,7 +28,6 @@ contract TutorialCheckPosition is Test {
     // Fork Arbitrum at specific block.
     function setUp() public {
         uint256 blockToFork = 270931754;
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_ARBITRUM"), blockToFork);
 
         // you can get the latest address from V2 protocol deployments
@@ -57,7 +56,6 @@ contract TutorialCheckPosition is Test {
     // only as collateral and not generate any interest. The advantage of protected deposit is an opportunity to
     // withdraw it any time.
     function test_getMyProtectedDepositsAmount() public view {
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken,,) = SILO_CONFIG.getShareTokens(address(SILO1));
         uint256 userProtectedShares = IShareToken(protectedShareToken).balanceOf(EXAMPLE_USER);
         uint256 userProtectedAssets = SILO1.previewRedeem(userProtectedShares, ISilo.CollateralType.Protected);

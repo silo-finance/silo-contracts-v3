@@ -55,7 +55,6 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
      */
     function test_createGaugeLike_zeroShares() public {
         vm.expectRevert(ISiloIncentivesController.EmptyShareToken.selector);
-        // forge-lint: disable-next-line(unused-return)
         _factory.create(_owner, _notifier, address(0), bytes32(0));
     }
 
@@ -119,7 +118,6 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
         assertFalse(SiloIncentivesControllerCompatible(gaugeLike).is_killed(), "GaugeLike should not be killed");
 
         vm.expectEmit(true, true, true, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit GaugeKilled();
 
         vm.prank(_owner);
@@ -140,7 +138,6 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
         assertTrue(SiloIncentivesControllerCompatible(gaugeLike).is_killed(), "GaugeLike should be killed");
 
         vm.expectEmit(true, true, true, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit GaugeUnKilled();
 
         vm.prank(_owner);
@@ -154,11 +151,9 @@ contract SiloIncentivesControllerGaugeLikeTest is SiloLittleHelper, Test {
      */
     function test_gaugeLikeIncentives_with_gaugeHookReceiver() public {
         ISiloConfig siloConfig = _setUpLocalFixture(SiloConfigsNames.SILO_LOCAL_GAUGE_HOOK_RECEIVER);
-        // forge-lint: disable-next-line(unused-return)
         (address silo0,) = siloConfig.getSilos();
 
         IGaugeHookReceiver gaugeHookReceiver = IGaugeHookReceiver(IShareToken(address(silo0)).hookSetup().hookReceiver);
-        // forge-lint: disable-next-line(unused-return)
         (,address shareCollateralToken,) = siloConfig.getShareTokens(silo0);
 
         address gaugeLikeController = _factory.create(_owner, _notifier, shareCollateralToken, bytes32(0));

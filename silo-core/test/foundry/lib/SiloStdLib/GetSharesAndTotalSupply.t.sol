@@ -21,7 +21,6 @@ contract GetSharesAndTotalSupplyTest is Test {
         address shareToken = SHARE_TOKEN.ADDRESS();
         address owner;
 
-        // forge-lint: disable-next-line(uninitialized-local)
         SHARE_TOKEN.balanceOfAndTotalSupplyMock(owner, 0, 0);
         (uint256 shares, uint256 totalSupply) = SiloStdLib.getSharesAndTotalSupply(shareToken, owner, 0);
         assertEq(shares, 0, "zero shares");

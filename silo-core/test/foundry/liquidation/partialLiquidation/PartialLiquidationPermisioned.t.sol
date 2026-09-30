@@ -97,7 +97,6 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         SiloFixture siloFixture = new SiloFixture();
 
         address hook;
-        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
         partialLiquidation = IPartialLiquidation(hook);
         hookV2 = IPartialLiquidationByDefaulting(hook);
@@ -237,7 +236,6 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         assertGt(balance, 0, "collateral");
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(balance, borrower, ISilo.CollateralType.Collateral);
 
         assertEq(silo0.balanceOf(borrower), 0, "transition did not worked");
@@ -264,7 +262,6 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         usdc.mint(address(helper), maxDebtToCover * 2); // for repay flashloan
 
         vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
-        // forge-lint: disable-next-item(unused-return)
         helper.executeLiquidation({
             _flashLoanFrom: siloUsdc,
             _debtAsset: address(usdc),
@@ -279,7 +276,6 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
 
         _grantAllowedRole(address(helper));
 
-        // forge-lint: disable-next-item(unused-return)
         helper.executeLiquidation({
             _flashLoanFrom: siloUsdc,
             _debtAsset: address(usdc),
@@ -321,12 +317,10 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         _printBorrowerLTV();
 
         vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
-        // forge-lint: disable-next-line(unused-return)
         hookV2.liquidationCallByDefaulting(borrower);
 
         _grantAllowedRole(address(this));
         controllerP.allowMeToLiquidate(); // it will work here only because foundy is one single tx
-        // forge-lint: disable-next-line(unused-return)
         hookV2.liquidationCallByDefaulting(borrower);
 
         _printBorrowerLTV();
@@ -358,18 +352,15 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         _printBorrowerLTV();
 
         vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
-        // forge-lint: disable-next-line(unused-return)
         hookV2.liquidationCallByDefaulting(borrower);
 
         _grantAllowedRole(address(this));
         controllerP.allowMeToLiquidate(); // invalid controller
 
         vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
-        // forge-lint: disable-next-line(unused-return)
         hookV2.liquidationCallByDefaulting(borrower);
 
         controllerC.allowMeToLiquidate(); // it will work here only because foundy is one single tx
-        // forge-lint: disable-next-line(unused-return)
         hookV2.liquidationCallByDefaulting(borrower);
 
         _printBorrowerLTV();
@@ -404,14 +395,12 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
         _printBorrowerLTV();
 
         vm.expectRevert(IPermissionedLiquidationController.LiquidationNotAllowed.selector);
-        // forge-lint: disable-next-line(unused-return)
         hookV2.liquidationCallByDefaulting(borrower);
 
         vm.prank(controllerC.owner());
         controllerC.setEnabled(false);
 
         // when disabled, liquidation is allowed
-        // forge-lint: disable-next-line(unused-return)
         hookV2.liquidationCallByDefaulting(borrower);
 
         _printBorrowerLTV();
@@ -504,7 +493,6 @@ contract PartialLiquidationPermissionedTest is SiloLittleHelper, IntegrationTest
     }
 
     function _printBorrowerLTV() internal {
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrower LTV", siloLens.getUserLTV(silo0, borrower), 16);
     }
 

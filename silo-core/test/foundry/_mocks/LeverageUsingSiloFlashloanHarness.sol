@@ -10,11 +10,9 @@ contract LeverageUsingSiloFlashloanHarness is LeverageUsingSiloFlashloanWithGene
     constructor(address _router, address _native) LeverageUsingSiloFlashloanWithGeneralSwap(_router, _native) {}
 
     function setTxData(
-        // forge-lint: disable-next-line(missing-zero-check)
         address _msgSender,
         ISiloConfig _siloConfig,
         ILeverageUsingSiloFlashloan.LeverageAction _action,
-        // forge-lint: disable-next-line(missing-zero-check)
         address _flashloanTarget,
         uint256 _msgValue
     ) external {

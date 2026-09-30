@@ -24,7 +24,6 @@ contract TokenHelperTest is Test {
     bytes32 public constant SYMBOL_BYTES_LEFT = 0x53494c4f5f544f4b454e00000000000000000000000000000000000000000000;
     bytes32 public constant SYMBOL_BYTES_RIGHT = 0x0000000000000000000000000000000000000000000053494c4f5f544f4b454e;
 
-    // forge-lint: disable-next-line(empty-block)
     function setUp() public {}
 
     function test_NoContract() public {

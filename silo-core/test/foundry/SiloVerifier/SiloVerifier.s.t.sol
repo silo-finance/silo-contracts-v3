@@ -35,7 +35,6 @@ contract SiloVerifierScriptTest is Test {
     address public constant DKINK_IRM_FACTORY = 0xCA1658fe7c04E7CF739c3072A1f60948506Efd83;
 
     function setUp() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(string(abi.encodePacked(vm.envString("RPC_ARBITRUM"))), 437839306);
         AddrLib.init();
 
@@ -266,7 +265,6 @@ contract SiloVerifierScriptTest is Test {
         SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        // forge-lint: disable-next-line(unused-return)
         (, address silo1) = GM_WETH_CONFIG.getSilos();
         ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
@@ -284,7 +282,6 @@ contract SiloVerifierScriptTest is Test {
         SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        // forge-lint: disable-next-line(unused-return)
         (, address silo1) = GM_WETH_CONFIG.getSilos();
         ISiloConfig.ConfigData memory configData1 = GM_WETH_CONFIG.getConfig(silo1);
 
@@ -354,7 +351,6 @@ contract SiloVerifierScriptTest is Test {
         SiloVerifier verifier = new SiloVerifier(GM_WETH_CONFIG, false, EXTERNAL_PRICE_0, EXTERNAL_PRICE_1);
         assertEq(verifier.verify(), 0, "no errors before mock");
 
-        // forge-lint: disable-next-line(unused-return)
         (address silo0,) = GM_WETH_CONFIG.getSilos();
         ISiloConfig.ConfigData memory configData0 = GM_WETH_CONFIG.getConfig(silo0);
 
@@ -444,7 +440,6 @@ contract SiloVerifierScriptTest is Test {
     }
 
     function test_CheckNonBorrowableAsset_nonBorrowableSiloConfigs() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(string(abi.encodePacked(vm.envString("RPC_MAINNET"))), 22875029);
 
         ISiloConfig lptConfig = ISiloConfig(0xAA5ED72b3Ca4aE7dA178e7BEff838F31e5c63342);
@@ -458,37 +453,27 @@ contract SiloVerifierScriptTest is Test {
 
         for (uint256 i; i < nonBorrowableSiloConfigs.length; i++) {
             ISiloConfig nonBorrowableSiloConfig = nonBorrowableSiloConfigs[i];
-            // forge-lint: disable-next-line(calls-loop)
             (address silo0, address silo1) = nonBorrowableSiloConfig.getSilos();
-            // forge-lint: disable-next-line(calls-loop)
             ISiloConfig.ConfigData memory configData1 = nonBorrowableSiloConfig.getConfig(silo1);
-            // forge-lint: disable-next-line(calls-loop)
             address token0 = nonBorrowableSiloConfig.getConfig(silo0).token;
 
-            // forge-lint: disable-next-line(calls-loop)
             CheckNonBorrowableAsset check = new CheckNonBorrowableAsset(token0, configData1);
             assertEq(configData1.maxLtv, 0, "max ltv is 0");
             assertEq(configData1.lt, 0, "lt is 0");
-            // forge-lint: disable-next-line(calls-loop)
             assertTrue(check.execute(), "check passes for existing PT/LPT/ERC4626 silos");
 
             configData1.maxLtv = 1;
-            // forge-lint: disable-next-line(calls-loop)
             check = new CheckNonBorrowableAsset(token0, configData1);
-            // forge-lint: disable-next-line(calls-loop)
             assertFalse(check.execute(), "check must fail if max ltv is not zero for other asset");
 
             configData1.maxLtv = 0;
             configData1.lt = 1;
-            // forge-lint: disable-next-line(calls-loop)
             check = new CheckNonBorrowableAsset(token0, configData1);
-            // forge-lint: disable-next-line(calls-loop)
             assertFalse(check.execute(), "check must fail if lt is not zero for other asset");
         }
     }
 
     function test_CheckNonBorrowableAsset_regularSiloConfig() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(string(abi.encodePacked(vm.envString("RPC_MAINNET"))), 22875029);
 
         ISiloConfig regularConfig = ISiloConfig(0x8689611D9A74BCc9837261872262009F89965ECc);

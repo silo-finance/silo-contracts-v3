@@ -41,7 +41,6 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
         SiloFixture siloFixture = new SiloFixture();
 
         address hook;
-        // forge-lint: disable-next-line(unused-return)
         (siloConfig, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
 
         partialLiquidation = IPartialLiquidation(hook);
@@ -84,10 +83,8 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
 
         console2.log("got shares after deposit", shares);
         uint256 decimals0 = token0.decimals();
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("ratio 1.0 assets : %s shares", silo0.convertToShares(10 ** decimals0), decimals0);
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "collateral value", SILO_LENS.calculateCollateralValue(siloConfig, borrower), decimals0
         );
@@ -172,10 +169,8 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
         maxRedeem = silo0.maxRedeem(borrower, ISilo.CollateralType.Protected);
         console2.log("maxRedeem", maxRedeem);
 
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken,, address debtShareToken) = silo0.config().getShareTokens(address(silo0));
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("ltv", SILO_LENS.getLtv(silo0, borrower), 16);
         console2.log("shares", IShareToken(protectedShareToken).balanceOf(borrower));
 
@@ -185,7 +180,6 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
         IShareToken(protectedShareToken).transfer(address(1), 1);
         vm.stopPrank();
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("ltv after transfer", SILO_LENS.getLtv(silo0, borrower), 16);
         console2.log("shares", IShareToken(protectedShareToken).balanceOf(borrower));
 
@@ -194,11 +188,9 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
         assertFalse(silo1.isSolvent(borrower), "borrower should be ready to liquidate");
 
         {
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("ltv", SILO_LENS.getLtv(silo0, borrower), 16);
 
             vm.expectRevert(abi.encodeWithSelector(IPartialLiquidation.NoRepayAssets.selector));
-            // forge-lint: disable-next-item(unused-return)
             partialLiquidation.liquidationCall(
                 address(token0), address(token1), borrower, type(uint256).max, _receiveSToken
             );
@@ -207,11 +199,9 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
             _mockQuote(minAmount, 7.7e9 * minAmount); // price DROP
             _mockQuote(maxWithdraw, 7.7e9 * maxWithdraw); // price DROP
 
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("ltv", SILO_LENS.getLtv(silo0, borrower), 16);
         }
 
-        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token0), address(token1), borrower, type(uint256).max, _receiveSToken
         );
@@ -243,7 +233,6 @@ contract PartialLiquidation1weiTest is SiloLittleHelper, Test {
 
         if (_burn != 0) {
             (address protectedShareToken, address collateralShareToken,) =
-                // forge-lint: disable-next-line(unused-return)
                 silo0.config().getShareTokens(address(silo0));
             address token =
                 _collateralType == ISilo.CollateralType.Protected ? protectedShareToken : collateralShareToken;

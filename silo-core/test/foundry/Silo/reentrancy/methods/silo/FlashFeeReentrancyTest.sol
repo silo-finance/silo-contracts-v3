@@ -23,9 +23,7 @@ contract FlashFeeReentrancyTest is MethodReentrancyTest {
         address token0 = TestStateLib.token0();
         address token1 = TestStateLib.token1();
 
-        // forge-lint: disable-next-line(unused-return)
         IERC3156FlashLender(address(TestStateLib.silo0())).flashFee(token0, 100e18);
-        // forge-lint: disable-next-line(unused-return)
         IERC3156FlashLender(address(TestStateLib.silo1())).flashFee(token1, 100e18);
     }
 }

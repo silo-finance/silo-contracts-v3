@@ -27,7 +27,6 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
 
     function setUp() public {
         siloConfig = _setUpLocalFixture();
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtSToken) = siloConfig.getShareTokens(address(silo1));
         shareDebtToken = ShareDebtToken(debtSToken);
     }
@@ -272,7 +271,6 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(toBorrow, address(this));
 
         vm.prank(RECEIVER);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(1, RECEIVER, RECEIVER);
 
         vm.prank(RECEIVER);
@@ -337,12 +335,11 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         address spender = makeAddr("Spender");
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         shareDebtToken.approve(spender, 1e18);
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.AmountExceedsAllowance.selector);
-        // forge-lint: disable-next-line(arbitrary-send-erc20, erc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transferFrom(borrower, RECEIVER, 1e18);
     }
 
@@ -365,7 +362,6 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _borrow(borrowAmount, borrower);
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         shareDebtToken.approve(spender, borrowAmount);
 
         vm.prank(RECEIVER);
@@ -373,7 +369,7 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.RecipientNotSolventAfterTransfer.selector);
-        // forge-lint: disable-next-line(arbitrary-send-erc20, erc20-unchecked-transfer)
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         shareDebtToken.transferFrom(borrower, RECEIVER, borrowAmount);
 
         _deposit(amount * 3, RECEIVER, ISilo.CollateralType.Collateral);
@@ -383,7 +379,6 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         assertEq(balance, 0, "RECEIVER has no debt");
 
         vm.prank(spender);
-        // forge-lint: disable-next-line(arbitrary-send-erc20)
         require(shareDebtToken.transferFrom(borrower, RECEIVER, borrowAmount), "transfer failed");
 
         balance = shareDebtToken.balanceOf(RECEIVER);
@@ -421,11 +416,9 @@ contract ShareDebtTokenTest is Test, SiloLittleHelper {
         _repay(2, RECEIVER);
 
         vm.prank(RECEIVER);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(2, RECEIVER, RECEIVER);
 
         vm.prank(RECEIVER);
-        // forge-lint: disable-next-line(unused-return)
         silo1.withdraw(2, RECEIVER, RECEIVER);
     }
 }

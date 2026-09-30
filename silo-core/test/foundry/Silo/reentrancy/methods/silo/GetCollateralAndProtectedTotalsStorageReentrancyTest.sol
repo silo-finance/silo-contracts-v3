@@ -19,9 +19,7 @@ contract GetCollateralAndProtectedTotalsStorageReentrancyTest is MethodReentranc
     }
 
     function _ensureItWillNotRevert() internal view {
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().getCollateralAndProtectedTotalsStorage();
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().getCollateralAndProtectedTotalsStorage();
     }
 }

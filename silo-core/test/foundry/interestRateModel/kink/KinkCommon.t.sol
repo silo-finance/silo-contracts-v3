@@ -61,7 +61,6 @@ contract KinkCommonTest is Test, KinkCommon {
     }
 
     function _assertCorrectHistory(IDynamicKinkModelConfig _in, IDynamicKinkModelConfig _out) internal view {
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         (, IDynamicKinkModelConfig irmConfig) = irm.configsHistory(_in);
         assertEq(address(irmConfig), address(_out), "history should point from _in => _out");
     }

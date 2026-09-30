@@ -15,11 +15,9 @@ contract Borrow1stGasTest is Gas, Test {
         _gasTestsInit();
 
         vm.prank(BORROWER);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(ASSETS * 2, BORROWER);
 
         vm.prank(DEPOSITOR);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(ASSETS, DEPOSITOR);
     }
 

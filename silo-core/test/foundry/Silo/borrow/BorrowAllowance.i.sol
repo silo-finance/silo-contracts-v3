@@ -38,7 +38,6 @@ contract BorrowAllowanceTest is SiloLittleHelper, Test {
     */
     function test_borrow_WithoutAllowance_1() public {
         vm.expectRevert(abi.encodeWithSelector(IShareToken.AmountExceedsAllowance.selector));
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(ASSETS, RECEIVER, BORROWER);
     }
 
@@ -46,7 +45,6 @@ contract BorrowAllowanceTest is SiloLittleHelper, Test {
     forge test --ffi -vv --mt test_borrow_WithAllowance
     */
     function test_borrow_WithAllowance() public {
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(address(silo1));
 
         vm.prank(BORROWER);
@@ -58,7 +56,6 @@ contract BorrowAllowanceTest is SiloLittleHelper, Test {
 
         assertEq(token1.balanceOf(RECEIVER), 0, "RECEIVER no tokens before");
 
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(ASSETS / 2, RECEIVER, BORROWER);
 
         assertEq(IShareToken(debtShareToken).balanceOf(BORROWER), ASSETS / 2, "BORROWER has debt after");

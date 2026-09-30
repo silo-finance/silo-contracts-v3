@@ -30,7 +30,6 @@ contract GetPositionValuesTest is Test, OraclesHelper {
         uint256 debtAssets = 3;
 
         SiloSolvencyLib.LtvData memory ltvData = SiloSolvencyLib.LtvData({
-            // forge-lint: disable-next-line(uninitialized-local)
             collateralOracle: noOracle,
             debtOracle: noOracle,
             borrowerProtectedAssets: protectedAssets,

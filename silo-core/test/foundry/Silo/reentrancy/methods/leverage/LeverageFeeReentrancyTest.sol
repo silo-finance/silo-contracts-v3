@@ -21,7 +21,6 @@ contract LeverageFeeReentrancyTest is MethodReentrancyTest {
 
     function _ensureItWillNotRevert() internal view {
         LeverageRouter router = _getLeverageRouter();
-        // forge-lint: disable-next-line(unused-return)
         router.leverageFee();
     }
 

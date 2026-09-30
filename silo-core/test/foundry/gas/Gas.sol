@@ -30,7 +30,6 @@ contract Gas is SiloLittleHelper {
         overrides.token1 = address(token1);
 
         address hook;
-        // forge-lint: disable-next-line(reentrancy-no-eth, unused-return)
         (, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
         partialLiquidation = IPartialLiquidation(hook);
 
@@ -42,17 +41,13 @@ contract Gas is SiloLittleHelper {
         _mintTokens(token1, max, DEPOSITOR);
 
         vm.prank(BORROWER);
-        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), max);
         vm.prank(BORROWER);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), max);
 
         vm.prank(DEPOSITOR);
-        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), max);
         vm.prank(DEPOSITOR);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), max);
     }
 
@@ -93,11 +88,9 @@ contract Gas is SiloLittleHelper {
 
             if (diff < _errorThreshold) {
                 console2.log(
-                    // forge-lint: disable-next-line(encode-packed-collision)
                     string(abi.encodePacked("[GAS] ", _msg, ": %s (got bit ", diffSign, " by %s)")), gas, diff
                 );
             } else {
-                // forge-lint: disable-next-item(encode-packed-collision)
                 revert(
                     string(
                         abi.encodePacked(

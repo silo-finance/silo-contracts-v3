@@ -29,7 +29,6 @@ contract SiloIncentivesControllerGaugeLikeIntegrationTest is Test {
     error CantRemoveActiveGauge();
 
     function setUp() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_ARBITRUM"), 366902426);
 
         SiloIncentivesControllerFactoryDeploy deploy = new SiloIncentivesControllerFactoryDeploy();
@@ -42,11 +41,9 @@ contract SiloIncentivesControllerGaugeLikeIntegrationTest is Test {
      */
     function test_gaugeHookReceiver_connect_disconnect_gaugeLikeIncentives() public {
         ISiloConfig siloConfig = ISiloConfig(0x1Fc8Def96461d58E73b208fEBDC964eeaD07256d); // Silo_WBTC_USDC_V2
-        // forge-lint: disable-next-line(unused-return)
         (address silo0,) = siloConfig.getSilos();
 
         IGaugeHookReceiver gaugeHookReceiver = IGaugeHookReceiver(IShareToken(address(silo0)).hookSetup().hookReceiver);
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(silo0);
 
         address gaugeLikeController = _factory.create(_owner, address(gaugeHookReceiver), debtShareToken, bytes32(0));

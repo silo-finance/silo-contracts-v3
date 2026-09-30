@@ -21,7 +21,6 @@ import {SiloLittleHelper} from "../../../_common/SiloLittleHelper.sol";
 
 contract GaugeHookReceiverReplaceTest is SiloLittleHelper, Test {
     function setUp() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), 64942204 - 1);
     }
 
@@ -30,7 +29,6 @@ contract GaugeHookReceiverReplaceTest is SiloLittleHelper, Test {
     */
     function test_skip_gauge_replacement() public {
         ISiloConfig siloConfig = ISiloConfig(0x062A36Bbe0306c2Fd7aecdf25843291fBAB96AD2);
-        // forge-lint: disable-next-line(unused-return)
         (address silo0,) = siloConfig.getSilos();
 
         address hook = IShareToken(silo0).hookSetup().hookReceiver;
@@ -44,13 +42,11 @@ contract GaugeHookReceiverReplaceTest is SiloLittleHelper, Test {
         console2.log("programName", programNames[0]);
         uint256 timeEnd = existingGauge.getDistributionEnd(programNames[0]);
         console2.log("distributionEnd", timeEnd);
-        // forge-lint: disable-next-line(block-timestamp, environment-read-across-mutation)
         console2.log("already ended?", timeEnd < block.timestamp);
 
         address user = 0x3F2756FED3d151C80eb9C0e818F67B2d436102c6;
 
         uint256 balanceBefore = existingGauge.getRewardsBalance(user, programNames);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("balance", balanceBefore, 18);
 
         vm.warp(1778233322);
@@ -74,9 +70,7 @@ contract GaugeHookReceiverReplaceTest is SiloLittleHelper, Test {
 
         vm.startPrank(user);
         deal(address(asset), user, amount);
-        // forge-lint: disable-next-line(unused-return)
         asset.approve(address(silo), amount);
-        // forge-lint: disable-next-line(unused-return)
         silo.deposit(amount, user);
         vm.stopPrank();
 

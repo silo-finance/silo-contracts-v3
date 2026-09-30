@@ -288,7 +288,6 @@ contract DefaultingLiquidationSplitMathTest is CloneHookV2 {
         ISilo.CollateralType collateralType =
             _useProtected ? ISilo.CollateralType.Protected : ISilo.CollateralType.Collateral;
 
-        // forge-lint: disable-next-item(unused-return)
         defaulting.getKeeperAndLenderSharesSplit({
             _assetsToLiquidate: _assetsToLiquidate,
             _collateralType: collateralType
@@ -314,7 +313,6 @@ contract DefaultingLiquidationSplitMathTest is CloneHookV2 {
         ISilo.CollateralType collateralType =
             _useProtected ? ISilo.CollateralType.Protected : ISilo.CollateralType.Collateral;
 
-        // forge-lint: disable-next-item(unused-return)
         (uint256 totalSharesToLiquidate,,) = defaulting.getKeeperAndLenderSharesSplit({
             _assetsToLiquidate: _assetsToLiquidate,
             _collateralType: collateralType
@@ -363,11 +361,9 @@ contract DefaultingLiquidationSplitMathTest is CloneHookV2 {
         uint256 _expectedKeeperShares,
         uint256 _expectedLendersShares
     ) internal view {
-        // forge-lint: disable-next-line(calls-loop)
         string memory id = vm.toString(_id);
         console2.log("\t ------", id);
 
-        // forge-lint: disable-next-item(calls-loop)
         (uint256 totalShares, uint256 keeperShares, uint256 lendersShares) = defaulting.getKeeperAndLenderSharesSplit({
             _assetsToLiquidate: _assetsToLiquidate,
             _collateralType: _collateralType
@@ -428,7 +424,6 @@ contract DefaultingLiquidationSplitMathTest is CloneHookV2 {
     function _mockTotalsCalls(ISilo.CollateralType _collateralType, uint256 _totalAssets, uint256 _totalShares)
         internal
     {
-        // forge-lint: disable-next-item(calls-loop)
         vm.mockCall(
             silo0,
             abi.encodeWithSelector(ISilo.getTotalAssetsStorage.selector, ISilo.AssetType(uint8(_collateralType))),
@@ -438,7 +433,6 @@ contract DefaultingLiquidationSplitMathTest is CloneHookV2 {
         address shareToken =
             _collateralType == ISilo.CollateralType.Protected ? protectedShareToken : collateralShareToken;
 
-        // forge-lint: disable-next-line(calls-loop)
         vm.mockCall(shareToken, abi.encodeWithSelector(IERC20.totalSupply.selector), abi.encode(_totalShares));
     }
 }

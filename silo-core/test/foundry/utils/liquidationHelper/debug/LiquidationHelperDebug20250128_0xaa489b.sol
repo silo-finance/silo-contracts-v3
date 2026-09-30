@@ -40,7 +40,6 @@ contract LiquidationHelperDebug20250128_0xaa489b is Test {
 
     function setUp() public {
         uint256 blockToFork = 5769896;
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), blockToFork);
 
         lens = new SiloLens();
@@ -72,21 +71,14 @@ contract LiquidationHelperDebug20250128_0xaa489b is Test {
         vm.label(collateralConfig.silo, "collateralSilo");
         vm.label(debtConfig.silo, "debtlSilo");
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("solvent?", ISilo(debtConfig.silo).isSolvent(borrower) ? "yes" : "NO");
         uint256 ltv = lens.getLtv(ISilo(debtConfig.silo), borrower);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("getLtv", ltv, 16);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("user", borrower);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("silo", address(debtConfig.silo));
 
-        // forge-lint: disable-next-line(unused-return)
         (uint256 collateral, uint256 debtToRepay,) = liquidation.maxLiquidation(borrower);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("collateral", collateral, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("debtToRepay", debtToRepay, 6);
 
         //        uint256 collateralToLiquidate = 639935999999999999491;
@@ -129,23 +121,18 @@ contract LiquidationHelperDebug20250128_0xaa489b is Test {
             address debtToken = 0x29219dd400f2Bf60E5a23d13Be72B486D4038894;
             vm.label(debtToken, "debtToken");
             vm.label(liquidationData.collateralAsset, "collateralAsset");
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("collateralConfig.liquidationFee", collateralConfig.liquidationFee, 18);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("==", (1e18 - collateralConfig.liquidationFee), 18);
 
             //            uint256 debtToCover = 1061306;
             //            uint256 debtToCover = debtToRepay * 0.95e18 / ltv;
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("calculated debtToCover 5%", debtToRepay * 0.95e18 / ltv, 6);
 
             //            uint256 debtToCover = debtToRepay * (1e18 - collateralConfig.liquidationFee) / ltv;
             uint256 debtToCover = debtToRepay * (0.95e18) / ltv;
 
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("calculated debtToCover", debtToCover, 6);
 
-            // forge-lint: disable-next-item(unused-return)
             liquidationHelper.executeLiquidation(
                 flashLoanFrom, debtToken, debtToCover, liquidationData, swapsInputs0x
             );

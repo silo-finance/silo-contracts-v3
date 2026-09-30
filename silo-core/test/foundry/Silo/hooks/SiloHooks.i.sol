@@ -48,7 +48,6 @@ contract SiloHooksTest is SiloLittleHelper, Test {
         configOverride.hookReceiver = _hookReceiverAddr;
         configOverride.configName = SiloConfigsNames.SILO_LOCAL_DEPLOYER;
 
-        // forge-lint: disable-next-line(unused-return)
         (_siloConfig, silo0, silo1,,,) = _siloFixture.deploy_local(configOverride);
     }
 
@@ -91,7 +90,6 @@ contract SiloHooksTest is SiloLittleHelper, Test {
 
     /// FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testCallOnBehalfOfSilo
     function testCallOnBehalfOfSilo() public {
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken,,) = _siloConfig.getShareTokens(address(silo0));
 
         uint256 tokensToMint = 100;
@@ -101,13 +99,11 @@ contract SiloHooksTest is SiloLittleHelper, Test {
         uint256 amountOfEth = 0;
 
         vm.expectRevert(ISilo.OnlyHookReceiver.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.callOnBehalfOfSilo(protectedShareToken, amountOfEth, ISilo.CallType.Call, data);
 
         assertEq(IERC20(protectedShareToken).balanceOf(_thridParty), 0);
 
         vm.prank(_hookReceiverAddr);
-        // forge-lint: disable-next-line(unused-return)
         silo0.callOnBehalfOfSilo(protectedShareToken, amountOfEth, ISilo.CallType.Call, data);
 
         assertEq(IERC20(protectedShareToken).balanceOf(_thridParty), tokensToMint);
@@ -124,7 +120,6 @@ contract SiloHooksTest is SiloLittleHelper, Test {
 
         vm.deal(_hookReceiverAddr, amoutToSend);
         vm.prank(_hookReceiverAddr);
-        // forge-lint: disable-next-line(arbitrary-send-eth, unused-return)
         silo0.callOnBehalfOfSilo{value: amoutToSend}(target, amoutToSend, ISilo.CallType.Call, data);
 
         assertEq(target.balance, amoutToSend, "Expect to have non zero balance");
@@ -146,7 +141,6 @@ contract SiloHooksTest is SiloLittleHelper, Test {
         assertEq(totalCollateralBeforeCall, 0, "Expect to have no collateral assets");
 
         vm.prank(_hookReceiverAddr);
-        // forge-lint: disable-next-line(unused-return)
         silo0.callOnBehalfOfSilo(target, amoutToSend, ISilo.CallType.Delegatecall, data);
 
         uint256 totalCollateralAfterCall = silo0.getTotalAssetsStorage(assetType);
@@ -164,7 +158,6 @@ contract SiloHooksTest is SiloLittleHelper, Test {
 
         vm.deal(_hookReceiverAddr, amoutToSend);
         vm.prank(_hookReceiverAddr);
-        // forge-lint: disable-next-line(arbitrary-send-eth, unused-return)
         silo0.callOnBehalfOfSilo{value: amoutToSend}(target, amoutToSend, ISilo.CallType.Call, data);
 
         assertEq(address(silo0).balance, amoutToSend, "Expect to have non zero balance");
@@ -175,7 +168,6 @@ contract SiloHooksTest is SiloLittleHelper, Test {
         bytes memory emptyPayload;
 
         vm.prank(_hookReceiverAddr);
-        // forge-lint: disable-next-line(unused-return)
         silo0.callOnBehalfOfSilo{value: 0}(_hookReceiverAddr, amoutToSend, ISilo.CallType.Call, emptyPayload);
 
         assertEq(_hookReceiverAddr.balance, amoutToSend, "Expect to have non zero balance on a hook receiver");
@@ -184,7 +176,6 @@ contract SiloHooksTest is SiloLittleHelper, Test {
     /// FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt testHooksMisconfiguration
     function testHooksMisconfiguration() public {
         vm.expectRevert(ISiloDeployer.HookReceiverMisconfigured.selector);
-        // forge-lint: disable-next-line(unused-return)
         _siloFixture.deploy_local(SiloConfigsNames.SILO_LOCAL_HOOKS_MISCONFIGURATION);
     }
 }

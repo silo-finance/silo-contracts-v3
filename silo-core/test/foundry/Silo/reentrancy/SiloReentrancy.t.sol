@@ -40,26 +40,21 @@ contract SiloReentrancyTest is Test {
         string memory root = vm.projectRoot();
 
         for (uint256 j = 0; j < methodRegistries.length; j++) {
-            // forge-lint: disable-next-line(calls-loop)
             string memory abiPath = string.concat(root, methodRegistries[j].abiFile());
-            // forge-lint: disable-next-line(calls-loop, unsafe-cheatcode)
+            // forge-lint: disable-next-line(unsafe-cheatcode)
             string memory json = vm.readFile(abiPath);
 
-            // forge-lint: disable-next-line(calls-loop)
             string[] memory keys = vm.parseJsonKeys(json, ".methodIdentifiers");
 
             for (uint256 i = 0; i < keys.length; i++) {
                 // forge-lint: disable-next-line(unsafe-typecast)
                 bytes4 sig = bytes4(keccak256(bytes(keys[i])));
-                // forge-lint: disable-next-line(calls-loop)
                 address method = address(methodRegistries[j].methods(sig));
 
                 if (method == address(0)) {
                     allCovered = false;
 
-                    // forge-lint: disable-next-line(reentrancy-events)
                     emit log_string(string.concat("\nABI: ", abiPath));
-                    // forge-lint: disable-next-line(reentrancy-events)
                     emit log_string(string.concat("Method not found: ", keys[i]));
                     methodsNotFound[abiPath].push(keys[i]);
                 }
@@ -71,7 +66,6 @@ contract SiloReentrancyTest is Test {
         }
 
         for (uint256 j = 0; j < methodRegistries.length; j++) {
-            // forge-lint: disable-next-line(calls-loop)
             string memory abiPath = string.concat(root, methodRegistries[j].abiFile());
 
             string[] memory methods = methodsNotFound[abiPath];
@@ -95,45 +89,33 @@ contract SiloReentrancyTest is Test {
         Registries registries = new Registries();
         IMethodsRegistry[] memory methodRegistries = registries.list();
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_string("\n\nRunning reentrancy test");
 
         uint256 stateBeforeTest = vm.snapshotState();
 
         for (uint256 j = 0; j < methodRegistries.length; j++) {
-            // forge-lint: disable-next-line(calls-loop)
             uint256 totalMethods = methodRegistries[j].supportedMethodsLength();
 
-            // forge-lint: disable-next-line(calls-loop)
             console2.log("\nVerifying [%s] %s", j, methodRegistries[j].abiFile());
 
             for (uint256 i = 0; i < totalMethods; i++) {
-                // forge-lint: disable-next-line(calls-loop)
                 bytes4 methodSig = methodRegistries[j].supportedMethods(i);
-                // forge-lint: disable-next-line(calls-loop)
                 IMethodReentrancyTest method = methodRegistries[j].methods(methodSig);
 
-                // forge-lint: disable-next-line(calls-loop)
                 console2.log("\nExecute [%s/%s] %s", j, i, method.methodDescription());
 
-                // forge-lint: disable-next-line(calls-loop)
                 bool entered = siloConfig.reentrancyGuardEntered();
                 assertTrue(!entered, "Reentrancy should be disabled before calling the method");
 
-                // forge-lint: disable-next-line(calls-loop)
                 method.callMethod();
 
-                // forge-lint: disable-next-line(calls-loop)
                 entered = siloConfig.reentrancyGuardEntered();
                 assertTrue(!entered, "Reentrancy should be disabled after calling the method");
 
-                // forge-lint: disable-next-line(calls-loop, unused-return)
                 vm.revertToState(stateBeforeTest);
-                // forge-lint: disable-next-line(calls-loop)
                 console2.log("Execute [%s/%s] %s - done\n", j, i, method.methodDescription());
             }
 
-            // forge-lint: disable-next-line(calls-loop)
             console2.log("Verifying [%s] %s - done\n", j, methodRegistries[j].abiFile());
         }
     }
@@ -150,7 +132,6 @@ contract SiloReentrancyTest is Test {
         ISilo silo1;
         address hookReceiver;
 
-        // forge-lint: disable-next-line(unused-return)
         (siloConfig, silo0, silo1,,, hookReceiver) = siloFixture.deploy_local(configOverride);
 
         AddrLib.setAddress(AddrKey.DAO, makeAddr("DAO"));

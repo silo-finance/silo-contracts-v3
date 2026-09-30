@@ -15,7 +15,6 @@ contract CalculateMaxBorrowValueTest is Test {
         uint256 borrowerDebtValue;
 
         assertEq(
-            // forge-lint: disable-next-line(uninitialized-local)
             SiloMathLib.calculateMaxBorrowValue(configMaxLtv, sumOfBorrowerCollateralValue, borrowerDebtValue),
             0,
             "when all zeros"

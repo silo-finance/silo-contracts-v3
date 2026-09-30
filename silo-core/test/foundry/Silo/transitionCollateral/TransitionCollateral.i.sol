@@ -25,7 +25,6 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
     */
     function test_transitionCollateral_zeros() public {
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(0, address(0), ISilo.CollateralType(0));
     }
 
@@ -34,7 +33,6 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
     */
     function test_transitionCollateral_noCollateral_ownerZero() public {
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(1, address(0), ISilo.CollateralType(0));
     }
 
@@ -43,7 +41,6 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
     */
     function test_transitionCollateral_noCollateral_shareZero() public {
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(0, address(1), ISilo.CollateralType(0));
     }
 
@@ -54,7 +51,6 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
         _deposit(10, address(this));
 
         vm.expectRevert(ISilo.NothingToWithdraw.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(1, address(1), ISilo.CollateralType.Protected);
     }
 
@@ -66,10 +62,8 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
 
         _deposit(10, owner);
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(1 * SiloMathLib._DECIMALS_OFFSET_POW, owner, ISilo.CollateralType.Collateral);
 
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken, address collateralShareToken,) = siloConfig.getShareTokens(address(silo0));
 
         assertEq(
@@ -92,10 +86,8 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
 
         _deposit(10, owner, ISilo.CollateralType.Protected);
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(2 * SiloMathLib._DECIMALS_OFFSET_POW, owner, ISilo.CollateralType.Protected);
 
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken, address collateralShareToken,) = siloConfig.getShareTokens(address(silo0));
 
         assertEq(
@@ -120,14 +112,11 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
         address otherOwner = makeAddr("otherOwner");
 
         _deposit(10, otherOwner, ISilo.CollateralType.Protected);
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken, address collateralShareToken,) = siloConfig.getShareTokens(address(silo0));
 
         vm.prank(otherOwner);
-        // forge-lint: disable-next-line(unused-return)
         IShareToken(protectedShareToken).approve(address(this), 2 * SiloMathLib._DECIMALS_OFFSET_POW);
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(2 * SiloMathLib._DECIMALS_OFFSET_POW, otherOwner, ISilo.CollateralType.Protected);
 
         assertEq(
@@ -155,7 +144,6 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
         _depositForBorrow(7, makeAddr("depositor"));
         _borrow(7, owner);
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(5 * SiloMathLib._DECIMALS_OFFSET_POW, owner, ISilo.CollateralType.Protected);
     }
 
@@ -173,7 +161,6 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
 
         assertTrue(silo0.isSolvent(owner), "this test is for solvent user");
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(0.5e18, owner, ISilo.CollateralType.Protected);
     }
 
@@ -190,7 +177,6 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
         vm.warp(block.timestamp + 100 days);
 
         vm.expectRevert(ISilo.NotSolvent.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.transitionCollateral(0.5e18, owner, ISilo.CollateralType.Protected);
     }
 
@@ -210,9 +196,7 @@ contract TransitionCollateralTest is SiloLittleHelper, Test {
         assertFalse(silo0.isSolvent(owner), "expect insolvent for this test");
 
         uint256 gasStart = gasleft();
-        // forge-lint: disable-next-line(unused-return)
         silo1.transitionCollateral({_shares: 1e3, _owner: owner, _transitionFrom: ISilo.CollateralType.Collateral});
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("gas for transitionCollateral", gasStart - gasleft()); // 180582 => 167639
     }
 }

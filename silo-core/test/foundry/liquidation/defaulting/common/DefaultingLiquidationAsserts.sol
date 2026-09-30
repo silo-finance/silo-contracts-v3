@@ -14,14 +14,11 @@ abstract contract DefaultingLiquidationAsserts is DefaultingLiquidationHelpers {
     /// 11 assets back to shares, we will get eg 3929 (with rounding up), bacause of that dust will be left
     /// this case was observed so far in same assets positions.
     function _assertNoShareTokens(ISilo _silo, address _user, bool _allowForDust, string memory _msg) internal {
-        // forge-lint: disable-next-line(calls-loop)
         console2.log("[_assertNoShareTokens] on silo %s for user %s", vm.getLabel(address(_silo)), vm.getLabel(_user));
 
         (address protectedShareToken, address collateralShareToken, address debtShareToken) =
-            // forge-lint: disable-next-line(calls-loop)
             siloConfig.getShareTokens(address(_silo));
 
-        // forge-lint: disable-next-line(calls-loop)
         uint256 balance = IShareToken(protectedShareToken).balanceOf(_user);
 
         if (_allowForDust) {
@@ -36,10 +33,8 @@ abstract contract DefaultingLiquidationAsserts is DefaultingLiquidationHelpers {
             assertEq(balance, 0, string.concat("[_assertNoShareTokens] protected: ", _msg));
         }
 
-        // forge-lint: disable-next-line(calls-loop)
         balance = IShareToken(collateralShareToken).balanceOf(_user);
 
-        // forge-lint: disable-next-line(calls-loop)
         if (_silo.getTotalAssetsStorage(ISilo.AssetType.Collateral) != 0) {
             if (_allowForDust) {
                 _assertNoRedeemable(
@@ -57,18 +52,15 @@ abstract contract DefaultingLiquidationAsserts is DefaultingLiquidationHelpers {
             // it is possible to have shares but no assets after defaulting
         }
 
-        // forge-lint: disable-next-line(calls-loop)
         balance = IShareToken(debtShareToken).balanceOf(_user);
         assertEq(balance, 0, string.concat("[_assertNoShareTokens] debt: ", _msg));
     }
 
     function _assertWithdrawableFees(ISilo _silo) internal {
-        // forge-lint: disable-next-line(unused-return)
         _silo.accrueInterest();
 
         _printFractions(_silo);
 
-        // forge-lint: disable-next-line(unused-return)
         (uint256 fees,,,,) = _silo.getSiloStorage();
 
         if (fees == 0) {
@@ -88,14 +80,12 @@ abstract contract DefaultingLiquidationAsserts is DefaultingLiquidationHelpers {
         bool _allowForDust,
         string memory _msg
     ) internal {
-        // forge-lint: disable-next-line(calls-loop)
         try _silo.redeem(_silo.balanceOf(_user), _user, _user, _collateralType) returns (uint256 assets) {
             if (_allowForDust) {
                 assertEq(
                     assets, 1, string.concat(_msg, " [_assertNoRedeemable] redeem should give us max 1 wei of assets")
                 );
             } else {
-                // forge-lint: disable-next-item(require-revert-in-loop)
                 revert(
                     string.concat(
                         _msg, " [_assertNoRedeemable] redeem should fail, after defaulting we expect zero assets"
@@ -108,13 +98,11 @@ abstract contract DefaultingLiquidationAsserts is DefaultingLiquidationHelpers {
     }
 
     function _assertNoWithdrawableFees(ISilo _silo) internal {
-        // forge-lint: disable-next-line(unused-return)
         _silo.accrueInterest();
 
         vm.expectRevert(ISilo.EarnedZero.selector);
         _silo.withdrawFees();
 
-        // forge-lint: disable-next-line(unused-return)
         (uint256 fees,,,,) = _silo.getSiloStorage();
         assertEq(
             fees, 0, string.concat("[_assertNoWithdrawableFees] expect NO fees for ", vm.getLabel(address(_silo)))
@@ -129,7 +117,6 @@ abstract contract DefaultingLiquidationAsserts is DefaultingLiquidationHelpers {
     function _assertEveryoneCanExitFromSilo(ISilo _silo, bool _allowForDust) internal {
         assertGt(depositors.length, 0, "[_assertEveryoneCanExit] no depositors to check");
 
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(address(_silo));
 
         assertEq(
@@ -156,7 +143,6 @@ abstract contract DefaultingLiquidationAsserts is DefaultingLiquidationHelpers {
     function _assertTotalSharesZeroOnlyGauge(ISilo _silo) internal view {
         uint256 totalAssetsLeft = _silo.getTotalAssetsStorage(ISilo.AssetType.Collateral);
 
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken,,) = siloConfig.getShareTokens(address(_silo));
 
         if (totalAssetsLeft == 0) {
@@ -189,7 +175,6 @@ abstract contract DefaultingLiquidationAsserts is DefaultingLiquidationHelpers {
     function _assertTotalSharesZero(ISilo _silo) internal view {
         uint256 totalAssetsLeft = _silo.getTotalAssetsStorage(ISilo.AssetType.Collateral);
 
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken,,) = siloConfig.getShareTokens(address(_silo));
 
         console2.log("gaugeCollateral", _silo.balanceOf(address(gauge)));
@@ -212,47 +197,32 @@ abstract contract DefaultingLiquidationAsserts is DefaultingLiquidationHelpers {
     }
 
     function _assertUserCanExit(ISilo _silo, address _user) internal {
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         (address protectedShareToken, address collateralShareToken,) = siloConfig.getShareTokens(address(_silo));
 
-        // forge-lint: disable-next-line(calls-loop)
         vm.startPrank(_user);
-        // forge-lint: disable-next-line(calls-loop)
         uint256 balance = IShareToken(collateralShareToken).balanceOf(_user);
-        // forge-lint: disable-next-line(calls-loop)
         uint256 redeemable = _silo.maxRedeem(_user);
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
-            // forge-lint: disable-next-line(calls-loop)
             string.concat("[", vm.getLabel(collateralShareToken), "] ", vm.getLabel(_user), " collateral shares"),
             balance,
             21
         );
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("\tredeemable", redeemable, 21);
         // using balance instead of redeemable to clear out as much shares as we can
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         if (redeemable != 0) _silo.redeem(balance, _user, _user);
 
-        // forge-lint: disable-next-line(calls-loop)
         balance = IShareToken(protectedShareToken).balanceOf(_user);
-        // forge-lint: disable-next-line(calls-loop)
         redeemable = _silo.maxRedeem(_user, ISilo.CollateralType.Protected);
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
-            // forge-lint: disable-next-line(calls-loop)
             string.concat("[", vm.getLabel(protectedShareToken), "] ", vm.getLabel(_user), " protected shares"),
             balance,
             21
         );
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("\tredeemable", redeemable, 21);
         // using balance instead of redeemable to clear out as much shares as we can
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         if (redeemable != 0) _silo.redeem(balance, _user, _user, ISilo.CollateralType.Protected);
-        // forge-lint: disable-next-line(calls-loop)
         vm.stopPrank();
     }
 

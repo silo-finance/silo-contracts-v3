@@ -185,7 +185,6 @@ contract SiloConfigTest is Test {
         SiloConfig siloConfig = siloConfigDeploy(_siloId, _configData0, _configData1);
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloConfig.getShareTokens(_wrongSilo);
 
         (address protectedShareToken, address collateralShareToken, address debtShareToken) =
@@ -211,7 +210,6 @@ contract SiloConfigTest is Test {
         SiloConfig siloConfig = siloConfigDeploy(_siloId, _configData0, _configData1);
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloConfig.getAssetForSilo(_wrongSilo);
 
         assertEq(siloConfig.getAssetForSilo(_configData0.silo), _configData0.token);
@@ -246,7 +244,6 @@ contract SiloConfigTest is Test {
         address anySilo = makeAddr("anySilo");
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloConfig.getConfigsForWithdraw(anySilo, address(0));
     }
 
@@ -259,7 +256,6 @@ contract SiloConfigTest is Test {
         address anySilo = makeAddr("anySilo");
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloConfig.getConfigsForBorrow(anySilo);
     }
 
@@ -280,7 +276,6 @@ contract SiloConfigTest is Test {
         SiloConfig siloConfig = siloConfigDeploy(_siloId, _configData0, _configData1);
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloConfig.getConfig(_wrongSilo);
 
         ISiloConfig.ConfigData memory c0 = siloConfig.getConfig(_configData0.silo);
@@ -301,7 +296,6 @@ contract SiloConfigTest is Test {
         SiloConfig siloConfig = siloConfigDeploy(_siloId, _configData0, _configData1);
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloConfig.getFeesWithAsset(_wrongSilo);
 
         (uint256 daoFee, uint256 deployerFee, uint256 flashloanFee, address asset) =
@@ -327,7 +321,6 @@ contract SiloConfigTest is Test {
         address anySilo = makeAddr("anySilo");
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.getDebtShareTokenAndAsset(anySilo);
     }
 
@@ -378,13 +371,11 @@ contract SiloConfigTest is Test {
         ISilo.CollateralType collateralType = ISilo.CollateralType.Collateral;
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.getCollateralShareTokenAndAsset(anySilo, collateralType);
 
         collateralType = ISilo.CollateralType.Protected;
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.getCollateralShareTokenAndAsset(anySilo, collateralType);
     }
 
@@ -417,7 +408,6 @@ contract SiloConfigTest is Test {
     */
     function test_setCollateralSilo_revertOnOnlySilo() public {
         vm.expectRevert(ISiloConfig.OnlySilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(makeAddr("borrower"));
     }
 
@@ -428,7 +418,6 @@ contract SiloConfigTest is Test {
         address borrower = makeAddr("borrower");
 
         vm.expectRevert(ISiloConfig.Deprecated.selector);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setThisSiloAsCollateralSilo(borrower);
     }
 
@@ -439,7 +428,6 @@ contract SiloConfigTest is Test {
         address borrower = makeAddr("borrower");
 
         vm.prank(_silo0Default);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(borrower);
 
         address configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
@@ -447,7 +435,6 @@ contract SiloConfigTest is Test {
         assertEq(address(_silo1Default), configuredSilo);
 
         vm.prank(_silo1Default);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(borrower);
 
         configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
@@ -463,24 +450,18 @@ contract SiloConfigTest is Test {
         address configuredSilo;
 
         for (uint256 i; i < 3; i++) {
-            // forge-lint: disable-next-line(calls-loop)
             vm.prank(_silo0Default);
-            // forge-lint: disable-next-line(calls-loop, unused-return)
             _siloConfig.setOtherSiloAsCollateralSilo(borrower);
 
-            // forge-lint: disable-next-line(calls-loop)
             configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
 
             assertEq(address(_silo1Default), configuredSilo);
         }
 
         for (uint256 i; i < 3; i++) {
-            // forge-lint: disable-next-line(calls-loop)
             vm.prank(_silo1Default);
-            // forge-lint: disable-next-line(calls-loop, unused-return)
             _siloConfig.setOtherSiloAsCollateralSilo(borrower);
 
-            // forge-lint: disable-next-line(calls-loop)
             configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
 
             assertEq(address(_silo0Default), configuredSilo);
@@ -498,7 +479,6 @@ contract SiloConfigTest is Test {
         assertEq(address(0), configuredSilo);
 
         vm.prank(_silo0Default);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(borrower);
 
         configuredSilo = _siloConfig.borrowerCollateralSilo(borrower);
@@ -517,11 +497,9 @@ contract SiloConfigTest is Test {
         _mockShareTokensBlances(borrower2, 1, 0);
 
         vm.prank(_silo0Default);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(borrower1);
 
         vm.prank(_silo1Default);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(borrower2);
     }
 
@@ -549,7 +527,6 @@ contract SiloConfigTest is Test {
         _mockShareTokensBlances(borrower, 0, 1);
 
         vm.prank(_silo1Default);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(borrower);
 
         ISiloConfig.ConfigData memory collateralConfig;
@@ -587,7 +564,6 @@ contract SiloConfigTest is Test {
 
         vm.prank(silo);
 
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(from);
 
         _mockShareTokensBlances(to, 0, 0);
@@ -678,13 +654,11 @@ contract SiloConfigTest is Test {
         _mockShareTokensBlances(from, 1, 0);
 
         vm.prank(_silo0Default);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(to);
 
         _mockShareTokensBlances(to, 0, 1);
 
         vm.prank(_silo1Default);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(from);
 
         vm.expectRevert(ISiloConfig.DebtExistInOtherSilo.selector);
@@ -705,13 +679,11 @@ contract SiloConfigTest is Test {
         _mockShareTokensBlances(to, 0, 0);
 
         vm.prank(_silo0Default);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(to);
 
         _mockShareTokensBlances(from, 1, 0);
 
         vm.prank(_silo0Default);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(from);
 
         _mockShareTokensBlances(to, 1, 0);
@@ -843,7 +815,6 @@ contract SiloConfigTest is Test {
         address wrongSilo = makeAddr("wrongSilo");
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.hasDebtInOtherSilo(wrongSilo, user);
     }
 
@@ -870,7 +841,6 @@ contract SiloConfigTest is Test {
         _mockShareTokensBlances(user, 1, 1);
 
         vm.expectRevert(ISiloConfig.DebtExistInOtherSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         _siloConfig.getDebtSilo(user);
     }
 

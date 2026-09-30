@@ -51,7 +51,6 @@ contract DynamicKinkModelTimelockTest is KinkCommonTest {
             IDynamicKinkModel.ImmutableArgs({timelock: 7 days + 1, rcompCap: 1});
 
         vm.expectRevert(IDynamicKinkModel.InvalidTimelock.selector);
-        // forge-lint: disable-next-line(unused-return)
         FACTORY.create(config, immutableArgs, address(this), silo, bytes32(0));
     }
 
@@ -69,7 +68,6 @@ contract DynamicKinkModelTimelockTest is KinkCommonTest {
         address activeIrmConfig = address(irm.irmConfig());
 
         vm.expectEmit(false, false, false, false);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit IDynamicKinkModel.NewConfig(IDynamicKinkModelConfig(address(0)), block.timestamp + 1 days);
 
         irm.updateConfig(pendingCfg);
@@ -82,25 +80,20 @@ contract DynamicKinkModelTimelockTest is KinkCommonTest {
         _assertModelCallsToActiveConfig(activeIrmConfig);
 
         vm.expectCall(pendingIrmConfig, abi.encodeWithSelector(IDynamicKinkModelConfig.getConfig.selector));
-        // forge-lint: disable-next-line(unused-return)
         irm.getModelStateAndConfig(true);
 
         vm.expectCall(pendingIrmConfig, abi.encodeWithSelector(IDynamicKinkModelConfig.getConfig.selector));
-        // forge-lint: disable-next-line(unused-return)
         irm.getPendingCurrentInterestRate(silo, block.timestamp);
 
         vm.expectCall(pendingIrmConfig, abi.encodeWithSelector(IDynamicKinkModelConfig.getConfig.selector));
-        // forge-lint: disable-next-line(unused-return)
         irm.getPendingCompoundInterestRate(silo, block.timestamp);
 
         IDynamicKinkModel.ModelState memory state = irm.modelState();
         assertEq(state.k, activeCfg.kmin, "modelState.k should return active k");
 
-        // forge-lint: disable-next-line(unused-return)
         (int96 activeK,) = irm.configsHistory(IDynamicKinkModelConfig(pendingIrmConfig));
         assertEq(activeK, activeCfg.kmin, "k in history is active, when pending config");
 
-        // forge-lint: disable-next-line(unused-return)
         (state,,) = irm.getModelStateAndConfig(true);
         assertEq(state.k, pendingCfg.kmin, "getModelStateAndConfig(true) return pending k");
     }
@@ -122,15 +115,12 @@ contract DynamicKinkModelTimelockTest is KinkCommonTest {
         pendingCfg.kmin = cfg.kmin + 1;
         irm.updateConfig(pendingCfg);
 
-        // forge-lint: disable-next-line(unused-return)
         (IDynamicKinkModel.ModelState memory state,,) = irm.getModelStateAndConfig(true);
         assertEq(state.k, pendingCfg.kmin, "model state has pending k");
 
-        // forge-lint: disable-next-line(unused-return)
         (int96 historyK,) = irm.configsHistory(IDynamicKinkModelConfig(irm.pendingIrmConfig()));
         assertEq(historyK, cfg.kmin, "history has active k");
 
-        // forge-lint: disable-next-line(unused-return)
         (state,,) = irm.getModelStateAndConfig(false);
         assertEq(state.k, cfg.kmin, "(getModelStateAndConfig(false)) returns active k");
 
@@ -141,19 +131,16 @@ contract DynamicKinkModelTimelockTest is KinkCommonTest {
 
         assertTrue(irm.pendingConfigExists(), "must be pending config for this test");
 
-        // forge-lint: disable-next-item(unused-return)
         irm.getCompoundInterestRateAndUpdate({
             _collateralAssets: 1e18,
             _debtAssets: 0.5e18,
             _interestRateTimestamp: 0 // we will acctu for long perion, so I;m expecting overflow
         });
 
-        // forge-lint: disable-next-line(unused-return)
         (state,,) = irm.getModelStateAndConfig(true);
         assertEq(state.k, mockedK, "pending k is not updated");
         assertEq(irm.modelState().k, cfg.kmin, "modelState.k returns updated value");
 
-        // forge-lint: disable-next-line(unused-return)
         (historyK,) = irm.configsHistory(IDynamicKinkModelConfig(irm.pendingIrmConfig()));
         assertEq(historyK, cfg.kmin, "pending k is updated in history");
     }
@@ -175,7 +162,6 @@ contract DynamicKinkModelTimelockTest is KinkCommonTest {
 
         _assertCorrectHistory(IDynamicKinkModelConfig(pendingIrmConfig), IDynamicKinkModelConfig(prevIrmConfig));
 
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 days);
 
         // QA
@@ -191,7 +177,6 @@ contract DynamicKinkModelTimelockTest is KinkCommonTest {
         IDynamicKinkModel.ModelState memory state = irm.modelState();
         assertEq(state.k, config.kmin, "modelState.k should return active k");
 
-        // forge-lint: disable-next-line(unused-return)
         (int96 activeK,) = irm.configsHistory(IDynamicKinkModelConfig(pendingIrmConfig));
         assertEq(activeK, config.kmin - 1, "k in history is lastactive k");
     }
@@ -216,11 +201,9 @@ contract DynamicKinkModelTimelockTest is KinkCommonTest {
         address prevIrmConfig = address(irm.irmConfig());
 
         vm.expectEmit(false, false, false, false);
-        // forge-lint: disable-next-line(environment-read-across-mutation, reentrancy-events)
         emit IDynamicKinkModel.NewConfig(IDynamicKinkModelConfig(address(0)), block.timestamp + 1 days);
 
         irm.updateConfig(config);
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 days - 1);
 
         irm.cancelPendingUpdateConfig();
@@ -239,15 +222,12 @@ contract DynamicKinkModelTimelockTest is KinkCommonTest {
         // expect calls to _irmConfig
 
         vm.expectCall(_irmConfig, abi.encodeWithSelector(IDynamicKinkModelConfig.getConfig.selector));
-        // forge-lint: disable-next-line(unused-return)
         irm.getModelStateAndConfig(false);
 
         vm.expectCall(_irmConfig, abi.encodeWithSelector(IDynamicKinkModelConfig.getConfig.selector));
-        // forge-lint: disable-next-line(unused-return)
         irm.getCompoundInterestRate(silo, block.timestamp);
 
         vm.expectCall(_irmConfig, abi.encodeWithSelector(IDynamicKinkModelConfig.getConfig.selector));
-        // forge-lint: disable-next-line(unused-return)
         irm.getCurrentInterestRate(silo, block.timestamp);
     }
 
@@ -266,7 +246,6 @@ contract DynamicKinkModelTimelockTest is KinkCommonTest {
         assertFalse(irm.pendingConfigExists(), "pendingConfigExists should be false after cancel");
 
         irm.updateConfig(cfg);
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 days - 1);
         assertTrue(irm.pendingConfigExists(), "pendingConfigExists should be true before timelock");
 

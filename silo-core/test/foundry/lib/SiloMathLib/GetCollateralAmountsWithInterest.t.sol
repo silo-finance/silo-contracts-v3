@@ -21,7 +21,6 @@ contract GetCollateralAmountsWithInterestTest is Test {
             uint256 debtAssetsWithInterest,
             uint256 daoAndDeployerRevenue,
             uint256 accruedInterest
-        // forge-lint: disable-next-line(uninitialized-local)
         ) = SiloMathLib.getCollateralAmountsWithInterest(collateralAssets, debtAssets, rcomp, daoFee, deployerFee);
 
         assertEq(collateralAssetsWithInterest, 0);

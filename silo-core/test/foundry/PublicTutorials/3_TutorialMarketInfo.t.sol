@@ -28,7 +28,6 @@ contract TutorialMarketInfo is Test {
     // Fork Arbitrum at specific block.
     function setUp() public {
         uint256 blockToFork = 270931754;
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_ARBITRUM"), blockToFork);
 
         SILO_LENS = new SiloLens();

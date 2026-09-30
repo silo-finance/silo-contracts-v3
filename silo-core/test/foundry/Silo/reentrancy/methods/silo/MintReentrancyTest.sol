@@ -19,13 +19,11 @@ contract MintReentrancyTest is MethodReentrancyTest {
         token.mint(depositor, amount);
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         token.approve(address(silo), amount);
 
         TestStateLib.enableReentrancy();
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         silo.mint(amount, depositor);
     }
 
@@ -33,13 +31,11 @@ contract MintReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.mint(1000, address(0));
 
         ISilo silo1 = TestStateLib.silo1();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo1.mint(1000, address(0));
     }
 

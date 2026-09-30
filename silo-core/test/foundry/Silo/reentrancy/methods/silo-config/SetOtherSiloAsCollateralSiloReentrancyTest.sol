@@ -11,7 +11,6 @@ contract SetOtherSiloAsCollateralSiloReentrancyTest is MethodReentrancyTest {
         ISiloConfig config = TestStateLib.siloConfig();
 
         vm.expectRevert(ISiloConfig.OnlySilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         config.setOtherSiloAsCollateralSilo(address(0));
     }
 
@@ -19,7 +18,6 @@ contract SetOtherSiloAsCollateralSiloReentrancyTest is MethodReentrancyTest {
         ISiloConfig config = TestStateLib.siloConfig();
 
         vm.expectRevert(ISiloConfig.OnlySilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         config.setOtherSiloAsCollateralSilo(address(0));
     }
 

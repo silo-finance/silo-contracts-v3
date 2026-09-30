@@ -9,7 +9,6 @@ import {IHookReceiver} from "silo-core/contracts/interfaces/IHookReceiver.sol";
 contract HookReceiverMock is CommonBase, StdCheats {
     address public immutable ADDRESS;
 
-    // forge-lint: disable-next-line(missing-zero-check)
     constructor(address _hook) {
         ADDRESS = _hook == address(0) ? makeAddr("HookReceiverMockAddr") : _hook;
     }

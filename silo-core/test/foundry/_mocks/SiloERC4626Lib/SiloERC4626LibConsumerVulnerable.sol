@@ -21,7 +21,6 @@ contract SiloERC4626LibConsumerVulnerable {
         address _receiver,
         IShareToken _collateralShareToken
     ) public {
-        // forge-lint: disable-next-item(unused-return)
         SiloERC4626LibWithReentrancyIssue.deposit(
             _token, _depositor, _assets, _shares, _receiver, _collateralShareToken
         );

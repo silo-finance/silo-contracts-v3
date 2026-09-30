@@ -118,7 +118,6 @@ contract GetExactLiquidationAmountsTest is GetExactLiquidationAmountsHelper {
         uint256 maxDebtToCover;
         uint256 liquidationFee;
 
-        // forge-lint: disable-next-line(uninitialized-local)
         P_SHARE_TOKEN_A.balanceOfAndTotalSupplyMock(user, 0, 0);
         SILO_A.getCollateralAndProtectedAssetsMock(0, 0);
 
@@ -127,9 +126,7 @@ contract GetExactLiquidationAmountsTest is GetExactLiquidationAmountsHelper {
         D_SHARE_TOKEN_B.balanceOfAndTotalSupplyMock(user, 0, 0);
         SILO_B.totalMock(ISilo.AssetType.Debt, 0);
 
-        // forge-lint: disable-next-item(unused-return)
         (uint256 fromCollateral, uint256 fromProtected, uint256 repayDebtAssets,) = PartialLiquidationExecLib
-            // forge-lint: disable-next-line(uninitialized-local)
             .getExactLiquidationAmounts(collateralConfig, debtConfig, user, maxDebtToCover, liquidationFee);
 
         assertEq(fromCollateral, 0);
@@ -149,34 +146,28 @@ contract GetExactLiquidationAmountsTest is GetExactLiquidationAmountsHelper {
         for (uint256 i; i < testDatas.length; i++) {
             GetExactLiquidationAmountsTestData.GELAData memory testData = testDatas[i];
 
-            // forge-lint: disable-next-item(calls-loop)
             P_SHARE_TOKEN_A.balanceOfAndTotalSupplyMock(
                 testData.input.user,
                 testData.mocks.protectedUserSharesBalanceOf,
                 testData.mocks.protectedSharesTotalSupply
             );
 
-            // forge-lint: disable-next-item(calls-loop)
             SILO_A.getCollateralAndProtectedAssetsMock(
                 testData.mocks.siloTotalCollateralAssets, testData.mocks.siloTotalProtectedAssets
             );
 
-            // forge-lint: disable-next-item(calls-loop)
             C_SHARE_TOKEN_A.balanceOfAndTotalSupplyMock(
                 testData.input.user,
                 testData.mocks.collateralUserSharesBalanceOf,
                 testData.mocks.collateralSharesTotalSupply
             );
 
-            // forge-lint: disable-next-item(calls-loop)
             D_SHARE_TOKEN_B.balanceOfAndTotalSupplyMock(
                 testData.input.user, testData.mocks.debtUserSharesBalanceOf, testData.mocks.debtSharesTotalSupply
             );
 
-            // forge-lint: disable-next-line(calls-loop)
             SILO_B.totalMock(ISilo.AssetType.Debt, testData.mocks.siloTotalDebtAssets);
 
-            // forge-lint: disable-next-item(calls-loop, unused-return)
             (uint256 fromCollateral, uint256 fromProtected, uint256 repayDebtAssets,) = PartialLiquidationExecLib
                 .getExactLiquidationAmounts(
                 collateralConfig,

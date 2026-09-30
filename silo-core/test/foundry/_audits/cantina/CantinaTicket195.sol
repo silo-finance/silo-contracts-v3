@@ -61,7 +61,6 @@ contract CantinaTicket195 is CantinaTicket {
             DistributionTypes.IncentivesProgramCreationInput({
                 name: _PROGRAM_NAME,
                 rewardToken: address(_rewardToken),
-                // forge-lint: disable-next-line(environment-read-across-mutation)
                 distributionEnd: (block.timestamp + 200).toUint40(),
                 emissionPerSecond: emissionPerSecond.toUint104()
             })
@@ -71,22 +70,18 @@ contract CantinaTicket195 is CantinaTicket {
         assertEq(_controller.getRewardsBalance(user1, _PROGRAM_NAME), 0, "no rewards initially");
 
         // User1 deposits tokens into silo0.
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(100e18, user1);
         assertEq(silo0.balanceOf(user1), 100_000e18, "expect deposit");
 
         // Warp time forward to allow rewards to accrue.
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 50);
 
         // Retrieve the rewards balance before any claim.
-        // forge-lint: disable-next-line(unused-return)
         _controller.getRewardsBalance(user1, _PROGRAM_NAME);
         // At this point, rewards should roughly equal emissionPerSecond * 50 (subject to scaling factors).
 
         // User1 makes the first claim.
         vm.prank(user1);
-        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
 
         uint256 balanceAfterFirstClaim = _rewardToken.balanceOf(user1);
@@ -96,7 +91,6 @@ contract CantinaTicket195 is CantinaTicket {
 
         // User1 makes a second claim.
         vm.prank(user1);
-        // forge-lint: disable-next-line(unused-return)
         _controller.claimRewards(user1);
 
         uint256 balanceAfterSecondClaim = _rewardToken.balanceOf(user1);

@@ -44,7 +44,6 @@ contract CantinaTicket236 is CantinaTicket {
 
         SiloFixture siloFixture = new SiloFixture();
 
-        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,,) = siloFixture.deploy_local(overrides);
 
         solvencyOracle0.setExpectBeforeQuote(true);

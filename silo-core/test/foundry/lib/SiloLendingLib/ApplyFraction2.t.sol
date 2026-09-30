@@ -46,14 +46,12 @@ contract ApplyFraction2 is Test {
         uint64 lastTimestamp = $.interestRateTimestamp;
 
         // Interest has already been accrued this block
-        // forge-lint: disable-next-line(block-timestamp)
         if (lastTimestamp == block.timestamp) {
             revert("we need test with time");
         }
 
         // This is the first time, so we can return early and save some gas
         if (lastTimestamp == 0) {
-            // forge-lint: disable-next-line(unsafe-typecast)
             $.interestRateTimestamp = uint64(block.timestamp);
             revert("we need test with lastTimestamp");
         }
@@ -63,7 +61,6 @@ contract ApplyFraction2 is Test {
         uint256 totalDebtAssets = $.totalAssets[ISilo.AssetType.Debt];
 
         if (_rcomp == 0) {
-            // forge-lint: disable-next-line(unsafe-typecast)
             $.interestRateTimestamp = uint64(block.timestamp);
             revert("we need test with interest");
         }
@@ -86,7 +83,6 @@ contract ApplyFraction2 is Test {
         });
 
         // update remaining contract state
-        // forge-lint: disable-next-line(unsafe-typecast)
         $.interestRateTimestamp = uint64(block.timestamp);
 
         // we operating on chunks (fees) of real tokens, so overflow should not happen

@@ -100,7 +100,6 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
             console2.log("\t[_tryWithdrawAll] maxRedeem failed");
         }
 
-        // forge-lint: disable-next-line(uninitialized-local)
         try _silo.redeem(amount, _user, _user, _collateralType) {
             // nothing to do
         } catch {
@@ -122,7 +121,6 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         address lpProvider = makeAddr("lpProvider");
         (, ISilo debtSilo) = _getSilos();
         vm.prank(lpProvider);
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.deposit(_amount, lpProvider);
 
         depositors.push(lpProvider);
@@ -136,9 +134,7 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         (ISilo collateralSilo,) = _getSilos();
 
         vm.startPrank(_borrower);
-        // forge-lint: disable-next-line(unused-return)
         if (_collateral != 0) collateralSilo.deposit(_collateral, _borrower);
-        // forge-lint: disable-next-line(unused-return)
         if (_protected != 0) collateralSilo.deposit(_protected, _borrower, ISilo.CollateralType.Protected);
         vm.stopPrank();
 
@@ -178,7 +174,6 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
             console2.log("\tmmaxRedeem failed", vm.getLabel(address(_silo)));
         }
 
-        // forge-lint: disable-next-line(uninitialized-local)
         if (amount == 0) return;
 
         vm.startPrank(_user);
@@ -235,7 +230,6 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     }
 
     function _isOracleThrowing(address _borrower) internal view returns (bool throwing, uint256 ltv) {
-        // forge-lint: disable-next-line(calls-loop)
         try SILO_LENS.getLtv(silo0, _borrower) returns (uint256 _ltv) {
             throwing = false;
             ltv = _ltv;
@@ -247,11 +241,9 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     function _printLtv(address _user) internal returns (uint256 ltv) {
         try SILO_LENS.getLtv(silo0, _user) returns (uint256 _ltv) {
             ltv = _ltv;
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint(string.concat(vm.getLabel(_user), " LTV [%]"), ltv, 16);
             (ISilo collateralSilo,) = _getSilos();
             uint256 lt = collateralSilo.config().getConfig(address(collateralSilo)).lt;
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint(" LT [%]", lt, 16);
         } catch {
             console2.log("\t[_printLtv] getLtv failed");
@@ -259,7 +251,6 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     }
 
     function _printMaxLiquidation(address _user) internal view {
-        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(_user);
         console2.log("maxLiquidation: collateralToLiquidate", collateralToLiquidate);
         console2.log("maxLiquidation: debtToRepay", debtToRepay);
@@ -273,10 +264,8 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     }
 
     function _defaultingPossible(uint256 _ltv) internal view returns (bool possible) {
-        // forge-lint: disable-next-line(calls-loop)
         uint256 margin = defaulting.LT_MARGIN_FOR_DEFAULTING();
         (ISilo collateralSilo,) = _getSilos();
-        // forge-lint: disable-next-line(calls-loop)
         uint256 lt = collateralSilo.config().getConfig(address(collateralSilo)).lt;
 
         possible = _ltv > lt + margin;
@@ -295,7 +284,6 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
 
     function _removePermissionedLiquidationController() internal {
         (ISilo collateralSilo,) = _getSilos();
-        // forge-lint: disable-next-line(unused-return)
         (address collateralShareToken, address protectedShareToken, ) = siloConfig.getShareTokens(address(collateralSilo));
 
         address owner = Ownable(address(defaulting)).owner();
@@ -330,19 +318,14 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
 
     /// @param _price 1e18 will make collateral:debt 1:1, 2e18 will make collateral to be 2x more valuable than debt
     function _setCollateralPrice(uint256 _price, bool _printLogs) internal {
-        // forge-lint: disable-next-line(reentrancy-events)
         if (_printLogs) emit log_named_decimal_uint("\t[_setCollateralPrice] setting price to", _price, 18);
 
         (ISilo collateralSilo,) = _getSilos();
 
-        // forge-lint: disable-next-line(calls-loop)
         if (address(collateralSilo) == address(silo0)) oracle0.setPrice(_price);
-        // forge-lint: disable-next-line(calls-loop)
         else oracle0.setPrice(_price == 0 ? 0 : 1e36 / _price);
 
-        // forge-lint: disable-next-line(calls-loop)
         try oracle0.quote(10 ** token0.decimals(), address(token0)) returns (uint256 _quote) {
-            // forge-lint: disable-next-line(calls-loop, reentrancy-events)
             if (_printLogs) emit log_named_decimal_uint("token 0 value", _quote, token1.decimals());
         } catch {
             console2.log("\t[_setCollateralPrice] quote failed");
@@ -357,18 +340,15 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
     function _printFractions(ISilo _silo) internal {
         (ISilo.Fractions memory fractions) = _silo.getFractionsStorage();
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             string.concat(vm.getLabel(address(_silo)), " fractions.interest"), fractions.interest, 18
         );
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             string.concat(vm.getLabel(address(_silo)), " fractions.revenue"), fractions.revenue, 18
         );
     }
 
     function _printRevenue(ISilo _silo) internal view returns (uint256 revenue, uint256 revenueFractions) {
-        // forge-lint: disable-next-line(unused-return)
         (revenue,,,,) = _silo.getSiloStorage();
         console2.log(vm.getLabel(address(_silo)), "revenue", revenue);
 
@@ -507,21 +487,17 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         (bool throwing, uint256 ltv) = _isOracleThrowing(_borrower);
 
         while (!_defaultingPossible(ltv)) {
-            // forge-lint: disable-next-line(calls-loop)
             vm.assume(price > _priceDrop);
 
             price -= _priceDrop;
             _setCollateralPrice(price, false);
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + _warp);
 
             (throwing, ltv) = _isOracleThrowing(_borrower);
-            // forge-lint: disable-next-line(calls-loop)
             vm.assume(!throwing);
         }
 
         _printLtv(_borrower);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("price", oracle0.price(), 18);
     }
 
@@ -531,26 +507,21 @@ abstract contract DefaultingLiquidationHelpers is SiloLittleHelper, Test {
         (bool throwing, uint256 ltv) = _isOracleThrowing(_borrower);
 
         while (ltv < 1e18) {
-            // forge-lint: disable-next-line(calls-loop)
             vm.assume(price > _priceDrop);
             price -= _priceDrop;
             _setCollateralPrice(price, false);
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + _warp);
 
             (throwing, ltv) = _isOracleThrowing(_borrower);
-            // forge-lint: disable-next-line(calls-loop)
             vm.assume(!throwing);
         }
 
         _printLtv(_borrower);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("price", oracle0.price(), 18);
     }
 
     function _printDepositors() internal view {
         for (uint256 i; i < depositors.length; i++) {
-            // forge-lint: disable-next-line(calls-loop)
             console2.log("depositor", i, ":", vm.getLabel(depositors[i]));
         }
     }

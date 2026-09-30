@@ -53,7 +53,6 @@ contract MaxRedeemDustTest is SiloLittleHelper, Test {
 
         _deposit(10, depositor, _type);
 
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken, address collateralShareToken,) = silo0.config().getShareTokens(address(silo0));
 
         address shareToken = _type == ISilo.CollateralType.Protected ? protectedShareToken : collateralShareToken;
@@ -67,13 +66,11 @@ contract MaxRedeemDustTest is SiloLittleHelper, Test {
         assertEq(maxRedeem, 0, "max redeem should return 0 because of rounding and fractions");
 
         vm.expectRevert();
-        // forge-lint: disable-next-line(unused-return)
         silo0.redeem(notwithrawableShares, owner, owner);
 
         vm.prank(depositor);
         require(IShareToken(shareToken).transfer(owner, 1), "transfer failed");
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.redeem(IShareToken(shareToken).balanceOf(owner), owner, owner, _type);
     }
 
@@ -83,7 +80,6 @@ contract MaxRedeemDustTest is SiloLittleHelper, Test {
 
         _deposit(10, depositor, _type);
 
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken, address collateralShareToken,) = silo0.config().getShareTokens(address(silo0));
 
         address shareToken = _type == ISilo.CollateralType.Protected ? protectedShareToken : collateralShareToken;
@@ -91,7 +87,6 @@ contract MaxRedeemDustTest is SiloLittleHelper, Test {
         vm.prank(depositor);
         require(IShareToken(shareToken).transfer(owner, 999), "transfer failed");
 
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = silo1.config().getShareTokens(address(silo1));
 
         _depositForBorrow(9, address(2));

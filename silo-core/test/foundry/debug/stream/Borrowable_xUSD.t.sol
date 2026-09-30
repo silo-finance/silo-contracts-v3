@@ -19,7 +19,6 @@ contract Borrowable_xUSD is UserState {
     FOUNDRY_PROFILE=core_test forge test --mt test_skip_borrowable_xUSD_mainnet --ffi -vvv
     */
     function test_skip_borrowable_xUSD_mainnet() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_MAINNET"), 23735714);
 
         _borrowable_xUSD_mainnet(0x2E3A8F2DD842910FF8a3c65D93B129806e500417, "MAINNET");
@@ -29,7 +28,6 @@ contract Borrowable_xUSD is UserState {
     FOUNDRY_PROFILE=core_test forge test --mt test_skip_borrowable_xUSD_sonic --ffi -vvv
     */
     function test_skip_borrowable_xUSD_sonic() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), 53838420);
 
         _borrowable_xUSD_mainnet(0x172a687c397E315DBE56ED78aB347D7743D0D4fa, "SONIC");
@@ -39,7 +37,6 @@ contract Borrowable_xUSD is UserState {
     FOUNDRY_PROFILE=core_test forge test --mt test_skip_borrowable_xUSD_arbitrum --ffi -vvv
     */
     function test_skip_borrowable_xUSD_arbitrum() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_ARBITRUM"), 397182312);
 
         _borrowable_xUSD_mainnet(0xd8872677af7bf49D85352fc18c7C32F106f6Fc49, "ARBITRUM");
@@ -49,7 +46,6 @@ contract Borrowable_xUSD is UserState {
     FOUNDRY_PROFILE=core_test forge test --mt test_skip_borrowable_xUSD_avalanche --ffi -vvv
     */
     function test_skip_borrowable_xUSD_avalanche() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_AVALANCHE"), 71479672);
 
         _borrowable_xUSD_mainnet(0xc380E5250d9718f8d9116Bc9d787A0229044e2EB, "AVALANCHE");
@@ -73,7 +69,6 @@ contract Borrowable_xUSD is UserState {
 
         uint256 xDecimals = IERC20Metadata(xUSDsilo.asset()).decimals();
         uint256 liquidity = xUSDsilo.getLiquidity();
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("liquidity", liquidity, xDecimals);
 
         if (liquidity == 0) {
@@ -91,17 +86,13 @@ contract Borrowable_xUSD is UserState {
 
         assertGt(collateral.balanceOf(user), 0, "we need asset to deposit");
 
-        // forge-lint: disable-next-line(unused-return)
         collateral.approve(address(collateralSilo), collateralAmount);
-        // forge-lint: disable-next-line(unused-return)
         collateralSilo.deposit(collateralAmount, user, ISilo.CollateralType.Collateral);
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             string.concat("collateral deposited ", collateral.symbol()), collateralAmount, collateralDecimals
         );
         uint256 borrowable = xUSDsilo.maxBorrow(user);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("estimate borrowable", borrowable, xDecimals);
 
         if (borrowable == 0) {
@@ -109,10 +100,8 @@ contract Borrowable_xUSD is UserState {
             return;
         }
 
-        // forge-lint: disable-next-line(unused-return)
         xUSDsilo.borrow(borrowable, user, user);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("maxRepay", xUSDsilo.maxRepay(user));
     }
 }

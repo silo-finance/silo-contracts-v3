@@ -23,9 +23,7 @@ contract AssetReentrancyTest is MethodReentrancyTest {
         Silo silo0 = Silo(payable(address(TestStateLib.silo0())));
         Silo silo1 = Silo(payable(address(TestStateLib.silo1())));
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.asset();
-        // forge-lint: disable-next-line(unused-return)
         silo1.asset();
     }
 }

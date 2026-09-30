@@ -36,7 +36,6 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
         configOverride.token0 = address(token0);
         configOverride.token1 = address(token1);
 
-        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,,) = siloFixture.deploy_local(configOverride);
 
         uint256 one = 10 ** _decimals;
@@ -60,13 +59,11 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
         vm.stopPrank();
 
         vm.warp(block.timestamp + 1);
-        // forge-lint: disable-next-line(unused-return)
         silo1.accrueInterest();
 
         vm.expectEmit(address(silo1));
         uint256 daoFees = 1; // DAO have higher priority
         uint256 deployerFees = 0;
-        // forge-lint: disable-next-line(reentrancy-events)
         emit ISilo.WithdrawnFees(daoFees, deployerFees, false);
         silo1.withdrawFees();
     }
@@ -82,17 +79,12 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
         vm.warp(block.timestamp + 1);
         uint256 interest = silo1.accrueInterest();
 
-        // forge-lint: disable-next-line(unused-return)
         (uint192 daoAndDeployerRevenue,,,,) = silo1.getSiloStorage();
         ISilo.Fractions memory fractions = silo1.getFractionsStorage();
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("interest", interest);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("fractions.interest", fractions.interest);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("fractions.revenue", fractions.revenue);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("daoAndDeployerRevenue", daoAndDeployerRevenue);
 
         assertEq(interest, 1159717550, "interest");
@@ -104,7 +96,6 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
         vm.expectEmit(address(silo1));
         uint256 daoFees = 173957633;
         uint256 deployerFees = 115971754;
-        // forge-lint: disable-next-line(reentrancy-events)
         emit ISilo.WithdrawnFees(daoFees, deployerFees, false);
         silo1.withdrawFees();
     }
@@ -121,17 +112,12 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
         vm.warp(block.timestamp + 1);
         uint256 interest = silo1.accrueInterest();
 
-        // forge-lint: disable-next-line(unused-return)
         (uint192 daoAndDeployerRevenue,,,,) = silo1.getSiloStorage();
         ISilo.Fractions memory fractions = silo1.getFractionsStorage();
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("interest", interest);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("fractions.interest", fractions.interest);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("fractions.revenue", fractions.revenue);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("daoAndDeployerRevenue", daoAndDeployerRevenue);
 
         assertEq(interest, 0, "interest");
@@ -159,15 +145,11 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
         uint256 interest;
 
         for (uint256 t = 1; t < 24 hours; t++) {
-            // forge-lint: disable-next-line(calls-loop)
             vm.warp(block.timestamp + 1);
-            // forge-lint: disable-next-line(calls-loop)
             interest = silo1.accrueInterest();
 
             if (interest != 0) {
-                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_uint("we got interest after s", t);
-                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_uint("interest", interest);
                 break;
             }
@@ -182,23 +164,19 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
 
             assertEq(
                 daoAndDeployerRevenue,
-                // forge-lint: disable-next-line(uninitialized-local)
                 prevDaoAndDeployerRevenue,
                 string.concat("#", Strings.toString(t), " revenue stay zero until we got interest")
             );
 
             assertGt(
                 fractions.interest,
-                // forge-lint: disable-next-line(uninitialized-local)
                 prevInterestFraction,
                 string.concat("#", Strings.toString(t), "prevInterestFraction incrementing")
             );
 
-            // forge-lint: disable-next-line(uninitialized-local)
             if (prevInterest == interest) {
                 assertEq(
                     fractions.revenue,
-                    // forge-lint: disable-next-line(uninitialized-local)
                     prevRevenueFraction,
                     string.concat(
                         "#", Strings.toString(t), "revenueFraction not changed, because interest did not increased"
@@ -217,13 +195,10 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
             prevInterestFraction = fractions.interest;
             prevRevenueFraction = fractions.revenue;
 
-            // forge-lint: disable-next-line(calls-loop)
             vm.expectRevert();
-            // forge-lint: disable-next-line(calls-loop)
             silo1.withdrawFees();
         }
 
-        // forge-lint: disable-next-line(uninitialized-local)
         assertGt(interest, 0, "expect some interest at this point");
 
         (ISilo.Fractions memory fractions_,) = _printFractions(interest);
@@ -235,12 +210,10 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
         );
 
         vm.warp(block.timestamp + 6050);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("warp... 6050");
         (, prevDaoAndDeployerRevenue) = _printFractions(silo1.accrueInterest());
 
         vm.expectEmit(address(silo1));
-        // forge-lint: disable-next-line(reentrancy-events)
         emit ISilo.WithdrawnFees(2, 0, false);
 
         silo1.withdrawFees();
@@ -251,10 +224,8 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
             "expect revenue to be at lest 2 wei, because it has to be split by 2 to be ready to withdraw"
         );
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("# daoAndDeployerRevenue", prevDaoAndDeployerRevenue, 18);
 
-        // forge-lint: disable-next-line(unused-return)
         (uint256 daoAndDeployerRevenue_,,,,) = silo1.getSiloStorage();
         assertLt(daoAndDeployerRevenue_, 10 ** _decimals, "[daoAndDeployerRevenue] only fraction left < 1e18");
     }
@@ -285,9 +256,7 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
         uint256 sum;
 
         for (uint256 i; i < INTEREST_TIME; i++) {
-            // forge-lint: disable-next-line(calls-loop)
             vm.warp(block.timestamp + 1);
-            // forge-lint: disable-next-line(calls-loop, uninitialized-local)
             sum += silo1.accrueInterest();
         }
 
@@ -306,18 +275,12 @@ contract WithdrawFeesIntegrationTest is SiloLittleHelper, Test {
         internal
         returns (ISilo.Fractions memory fractions, uint192 daoAndDeployerRevenue)
     {
-        // forge-lint: disable-next-line(calls-loop, unused-return)
         (daoAndDeployerRevenue,,,,) = silo1.getSiloStorage();
-        // forge-lint: disable-next-line(calls-loop)
         fractions = silo1.getFractionsStorage();
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("interest", interest);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("fractions.interest", fractions.interest);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("fractions.revenue", fractions.revenue);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("daoAndDeployerRevenue", daoAndDeployerRevenue);
     }
 

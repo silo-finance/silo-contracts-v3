@@ -36,7 +36,6 @@ contract BorrowNotPossibleTest is SiloLittleHelper, Test {
         _depositForBorrow(depositAssets, borrower);
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(1, borrower, borrower);
     }
 
@@ -53,7 +52,6 @@ contract BorrowNotPossibleTest is SiloLittleHelper, Test {
 
         vm.prank(borrower);
         vm.expectRevert(ISilo.AboveMaxLtv.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(1, borrower, borrower);
     }
 

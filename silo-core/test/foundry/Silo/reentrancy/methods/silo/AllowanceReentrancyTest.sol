@@ -26,9 +26,7 @@ contract AllowanceReentrancyTest is MethodReentrancyTest {
         address anyAddr1 = makeAddr("Any address 1");
         address anyAddr2 = makeAddr("Any address 2");
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.allowance(anyAddr1, anyAddr2);
-        // forge-lint: disable-next-line(unused-return)
         silo1.allowance(anyAddr1, anyAddr2);
     }
 }

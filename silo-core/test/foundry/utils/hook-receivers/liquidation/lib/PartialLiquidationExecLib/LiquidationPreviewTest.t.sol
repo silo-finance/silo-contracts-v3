@@ -109,7 +109,6 @@ contract LiquidationPreviewTest is Test, OraclesHelper {
             params.liquidationFee
         );
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxDebtToCover", maxDebtToCover, 18);
 
         params.maxDebtToCover = maxDebtToCover;
@@ -119,7 +118,6 @@ contract LiquidationPreviewTest is Test, OraclesHelper {
         debtOracle.quoteMock(ltvData.borrowerDebtAssets, DEBT_ASSET, ltvData.borrowerDebtAssets);
 
         // does not revert - counter example first
-        // forge-lint: disable-next-line(unused-return)
         (uint256 receiveCollateralAssets, uint256 repayDebtAssets,) = impl.liquidationPreview(ltvData, params);
         // -2 because we underestimating max value
         assertEq(receiveCollateralAssets - 2, maxCollateralToLiquidate, "expect same collateral #1");
@@ -129,7 +127,6 @@ contract LiquidationPreviewTest is Test, OraclesHelper {
         // more debt should cause revert because of _LT_LIQUIDATION_MARGIN_IN_BP
         params.maxDebtToCover += 1;
 
-        // forge-lint: disable-next-line(unused-return)
         (receiveCollateralAssets, repayDebtAssets,) = impl.liquidationPreview(ltvData, params);
         assertEq(receiveCollateralAssets, maxDebtToCover, "receiveCollateralAssets #3 - cap to max");
         assertEq(repayDebtAssets, maxDebtToCover, "repayDebtAssets #3 - cap to max");

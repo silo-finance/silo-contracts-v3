@@ -29,37 +29,29 @@ contract TransferReentrancyTest is MethodReentrancyTest {
         token1.mint(receiver, collateralAmount);
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), depositAmount);
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(depositAmount, depositor);
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), collateralAmount);
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(collateralAmount, borrower);
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowAmount, borrower, borrower);
 
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtToken) = TestStateLib.siloConfig().getShareTokens(address(silo0));
 
         vm.prank(receiver);
         ShareDebtToken(debtToken).setReceiveApproval(borrower, borrowAmount);
 
         vm.prank(receiver);
-        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), collateralAmount);
 
         vm.prank(receiver);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(collateralAmount, receiver);
 
         TestStateLib.enableReentrancy();
@@ -73,14 +65,12 @@ contract TransferReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
         ISilo silo1 = TestStateLib.silo1();
 
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtToken) = config.getShareTokens(address(silo0));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
         // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareDebtToken(debtToken).transfer(address(0), 0);
 
-        // forge-lint: disable-next-line(unused-return)
         (,, debtToken) = config.getShareTokens(address(silo1));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);

@@ -84,7 +84,6 @@ contract MaxRepayTest is SiloLittleHelper, Test {
     }
 
     function _ensureBorrowerHasDebt() internal view {
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = silo1.config().getShareTokens(address(silo1));
 
         assertGt(silo1.maxRepay(BORROWER), 0, "expect debt");
@@ -92,7 +91,6 @@ contract MaxRepayTest is SiloLittleHelper, Test {
     }
 
     function _assertBorrowerHasNoDebt() internal view {
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = silo1.config().getShareTokens(address(silo1));
 
         assertEq(silo1.maxRepay(BORROWER), 0, "expect maxRepay to be 0");

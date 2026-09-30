@@ -18,7 +18,6 @@ contract GetDebtAmountsWithInterestTest is Test {
         uint256 rcompInDp;
 
         (uint256 debtAssetsWithInterest, uint256 accruedInterest) =
-            // forge-lint: disable-next-line(uninitialized-local)
             SiloMathLib.getDebtAmountsWithInterest(debtAssets, rcompInDp);
 
         assertEq(debtAssetsWithInterest, 0);

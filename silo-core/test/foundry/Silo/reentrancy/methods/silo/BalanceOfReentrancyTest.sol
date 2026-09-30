@@ -25,9 +25,7 @@ contract BalanceOfReentrancyTest is MethodReentrancyTest {
 
         address anyAddr = makeAddr("Any address");
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.balanceOf(anyAddr);
-        // forge-lint: disable-next-line(unused-return)
         silo1.balanceOf(anyAddr);
     }
 }

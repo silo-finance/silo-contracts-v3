@@ -28,7 +28,6 @@ contract OnFlashLoanReentrancyTest is MethodReentrancyTest {
 
         vm.expectRevert(ILeverageUsingSiloFlashloan.InvalidFlashloanLender.selector);
 
-        // forge-lint: disable-next-line(unused-return)
         leverage.onFlashLoan(address(this), address(0), 100e18, 1e18, "");
     }
 

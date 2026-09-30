@@ -47,7 +47,6 @@ abstract contract ManualLiquidationHelperCommon is SiloLittleHelper, Test {
     }
 
     function _assertAddressHasSTokens(ISilo _silo, address _address) internal view {
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken, address collateralShareToken,) = siloConfig.getShareTokens(address(_silo));
 
         uint256 pBalance = IERC20(protectedShareToken).balanceOf(_address);

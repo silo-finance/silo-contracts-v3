@@ -21,7 +21,6 @@ contract FeePrecisionReentrancyTest is MethodReentrancyTest {
 
     function _ensureItWillNotRevert() internal view {
         LeverageRouter leverage = _getLeverage();
-        // forge-lint: disable-next-line(unused-return)
         leverage.FEE_PRECISION();
     }
 

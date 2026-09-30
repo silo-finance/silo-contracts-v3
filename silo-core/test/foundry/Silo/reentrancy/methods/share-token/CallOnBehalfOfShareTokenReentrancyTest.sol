@@ -21,7 +21,6 @@ contract CallOnBehalfOfShareTokenReentrancyTest is ShareTokenMethodReentrancyTes
 
     function _ensureItWillRevertAsExpected(address _token) internal {
         vm.expectRevert(ISilo.OnlyHookReceiver.selector);
-        // forge-lint: disable-next-line(unused-return)
         IShareTokenInitializable(_token).callOnBehalfOfShareToken(address(this), 0, ISilo.CallType.Call, "");
     }
 }

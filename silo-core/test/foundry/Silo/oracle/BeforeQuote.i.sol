@@ -52,7 +52,6 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         SiloFixture siloFixture = new SiloFixture();
 
         address hook;
-        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
         partialLiquidation = IPartialLiquidation(hook);
 
@@ -72,7 +71,6 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         // notice: we calling oracle0 with `borrowAmount` because we borrowing token0, so this is our debt token
         _expectCallsToMaxLtvOracle(borrowAmount);
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowAmount, borrower, borrower);
     }
 
@@ -85,7 +83,6 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         // notice: we calling oracle0 with `depositAssets` because we borrow token1 and depositAssets is our collateral
         _expectCallsToMaxLtvOracle(depositAssets);
 
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(borrowAmount, borrower, borrower);
     }
 
@@ -96,11 +93,9 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         _setupForBorrow0();
 
         _expectCallsToMaxLtvOracle(borrowAmount);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowAmount, borrower, borrower);
 
         _expectCallsToSolvencyOracle(borrowAmount);
-        // forge-lint: disable-next-line(unused-return)
         silo1.withdraw(withdrawAmount, borrower, borrower);
     }
 
@@ -111,11 +106,9 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         _setupForBorrow1();
 
         _expectCallsToMaxLtvOracle(depositAssets);
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(borrowAmount, borrower, borrower);
 
         _expectCallsToSolvencyOracle(depositAssets - withdrawAmount);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(withdrawAmount, borrower, borrower);
     }
 
@@ -125,7 +118,6 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
     function test_beforeQuote_shareTokenTransfer_noDebt() public {
         _deposit(depositAssets, depositor);
 
-        // forge-lint: disable-next-line(unused-return)
         (, address collateral,) = silo0.config().getShareTokens(address(silo0));
 
         // Solvency check is ignored for share token transfer as a user has no debt.
@@ -141,10 +133,8 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         _setupForBorrow0();
 
         _expectCallsToMaxLtvOracle(borrowAmount);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowAmount, borrower, borrower);
 
-        // forge-lint: disable-next-line(unused-return)
         (, address collateral,) = silo1.config().getShareTokens(address(silo1));
 
         solvencyOracle0.setExpectBeforeQuote(true);
@@ -166,10 +156,8 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         _depositForBorrow(depositAssets, borrower);
 
         _expectCallsToMaxLtvOracle(borrowAmount);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowAmount, borrower, borrower);
 
-        // forge-lint: disable-next-line(unused-return)
         (, address collateral,) = silo1.config().getShareTokens(address(silo1));
 
         solvencyOracle0.setExpectBeforeQuote(true);
@@ -192,12 +180,10 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         _depositForBorrow(depositAssets, borrower);
 
         _expectCallsToMaxLtvOracle(borrowAmount);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowAmount, borrower, borrower);
 
         _deposit(depositAssets, borrower);
 
-        // forge-lint: disable-next-line(unused-return)
         (, address collateral,) = silo0.config().getShareTokens(address(silo0));
 
         // Solvency check is ignored for share token transfer as deposit is not collateral.
@@ -213,25 +199,19 @@ contract BeforeQuoteTest is SiloLittleHelper, Test {
         _setupForBorrow0();
 
         _expectCallsToMaxLtvOracle(borrowAmount);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowAmount, borrower, borrower);
 
         vm.startPrank(depositor);
         vm.warp(block.timestamp + 100000 days);
         token0.mint(depositor, borrowAmount / 2);
-        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(partialLiquidation), borrowAmount / 2);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("maxLtvOracle0", address(maxLtvOracle0));
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("solvencyOracle0", address(solvencyOracle0));
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("liquidationModule", address(partialLiquidation));
 
         _expectCallsToSolvencyOracle(0x1bd942c37174f394000); // amount with interest
 
-        // forge-lint: disable-next-line(unused-return)
         partialLiquidation.liquidationCall(address(token1), address(token0), borrower, borrowAmount / 2, false);
     }
 

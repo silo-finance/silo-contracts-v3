@@ -22,20 +22,16 @@ contract TransferReentrancyTest is MethodReentrancyTest {
         token.mint(depositor, amount);
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         token.approve(address(silo), amount);
 
         uint256 depositAmount = amount / 2;
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         silo.deposit(depositAmount, depositor, ISilo.CollateralType.Collateral);
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         silo.deposit(depositAmount, depositor, ISilo.CollateralType.Protected);
 
-        // forge-lint: disable-next-line(unused-return)
         (address protected, address collateral,) = TestStateLib.siloConfig().getShareTokens(address(silo));
 
         TestStateLib.enableReentrancy();
@@ -52,7 +48,6 @@ contract TransferReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
         ISilo silo1 = TestStateLib.silo1();
 
-        // forge-lint: disable-next-line(unused-return)
         (address protected, address collateral,) = config.getShareTokens(address(silo0));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
@@ -63,7 +58,6 @@ contract TransferReentrancyTest is MethodReentrancyTest {
         // forge-lint: disable-next-line(erc20-unchecked-transfer)
         ShareToken(protected).transfer(address(0), 0);
 
-        // forge-lint: disable-next-line(unused-return)
         (protected, collateral,) = config.getShareTokens(address(silo1));
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);

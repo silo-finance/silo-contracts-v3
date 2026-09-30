@@ -19,9 +19,7 @@ contract UtilizationDataReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().utilizationData();
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().utilizationData();
     }
 }

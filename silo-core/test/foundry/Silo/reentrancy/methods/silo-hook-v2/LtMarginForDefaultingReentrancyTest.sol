@@ -11,7 +11,6 @@ contract LtMarginForDefaultingReentrancyTest is ConstantReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view override {
-        // forge-lint: disable-next-line(unused-return)
         SiloHookV2(TestStateLib.hookReceiver()).LT_MARGIN_FOR_DEFAULTING();
     }
 }

@@ -58,11 +58,8 @@ contract MaxLiquidationDustTest is MaxLiquidationCommon {
 
         assertTrue(!sTokenRequired, "sTokenRequired not required");
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[DustLiquidation] ltv before", silo0.getLtv(BORROWER), 16);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[DustLiquidation] debtToRepay", debtToRepay);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[DustLiquidation] collateralToLiquidate", collateralToLiquidate);
 
         // to test max, we want to provide higher `_maxDebtToCover` and we expect not higher results
@@ -73,9 +70,7 @@ contract MaxLiquidationDustTest is MaxLiquidationCommon {
             address(token0), address(token1), BORROWER, maxDebtToCover, _receiveSToken
         );
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[DustLiquidation] withdrawCollateral", withdrawCollateral);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[DustLiquidation] repayDebtAssets", repayDebtAssets);
 
         assertEq(silo0.getLtv(BORROWER), 0, "[DustLiquidation] expect full liquidation with dust");

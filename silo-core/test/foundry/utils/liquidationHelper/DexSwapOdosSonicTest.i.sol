@@ -17,7 +17,6 @@ contract DexSwapOdosSonicTest is IntegrationTest {
 
     function setUp() public {
         uint256 blockToFork = 2838462;
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), blockToFork);
         AddrLib.init();
         dex = new DexSwap(getAddress(AddrKey.ODOS_ROUTER));

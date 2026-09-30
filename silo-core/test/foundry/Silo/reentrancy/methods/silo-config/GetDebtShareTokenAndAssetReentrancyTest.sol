@@ -25,13 +25,10 @@ contract GetDebtShareTokenAndAssetReentrancyTest is MethodReentrancyTest {
         address silo1 = address(TestStateLib.silo1());
         address wrongSilo = makeAddr("Wrong silo");
 
-        // forge-lint: disable-next-line(unused-return)
         config.getDebtShareTokenAndAsset(silo0);
-        // forge-lint: disable-next-line(unused-return)
         config.getDebtShareTokenAndAsset(silo1);
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
-        // forge-lint: disable-next-line(unused-return)
         config.getDebtShareTokenAndAsset(wrongSilo);
     }
 }

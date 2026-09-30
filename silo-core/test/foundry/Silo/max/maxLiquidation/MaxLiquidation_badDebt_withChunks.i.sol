@@ -19,7 +19,6 @@ contract MaxLiquidationBadDebtWithChunksTest is MaxLiquidationBadDebtTest {
     function _maxLiquidation_partial(uint128 _collateral, bool _receiveSToken) internal override {
         _createDebtForBorrower(_collateral);
 
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 50 days); // initial time movement to speed up _moveTimeUntilInsolvent
 
         // for same asset interest increasing slower, because borrower is also depositor, also LT is higher
@@ -40,54 +39,38 @@ contract MaxLiquidationBadDebtWithChunksTest is MaxLiquidationBadDebtTest {
         returns (uint256 withdrawCollateral, uint256 repayDebtAssets)
     {
         (uint256 totalCollateralToLiquidate, uint256 totalDebtToCover,) =
-            // forge-lint: disable-next-line(unused-return)
             partialLiquidation.maxLiquidation(BORROWER);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[BadDebtWithChunks] ltv before", silo0.getLtv(BORROWER), 16);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[BadDebtWithChunks] totalCollateralToLiquidate", totalCollateralToLiquidate);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[BadDebtWithChunks] totalDebtToCover", totalDebtToCover);
 
         for (uint256 i; i < 5; i++) {
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[BadDebtWithChunks] case ------------------------", i);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("ltv", silo0.getLtv(BORROWER), 16);
 
             if (silo0.getLtv(BORROWER) <= 1e18) break; // not bad debt anymore
 
             {
                 // too deep
-                // forge-lint: disable-next-line(calls-loop)
                 bool isSolvent = silo0.isSolvent(BORROWER);
-                // forge-lint: disable-next-line(reentrancy-events)
                 emit log_named_string("isSolvent", isSolvent ? "YES" : "NO");
 
                 if (isSolvent) break;
             }
 
-            // forge-lint: disable-next-item(reentrancy-events)
             emit log_named_uint(
-                // forge-lint: disable-next-line(calls-loop)
                 "collateralBalanceOfUnderlying", SILO_LENS.collateralBalanceOfUnderlying(silo1, BORROWER)
             );
-            // forge-lint: disable-next-line(calls-loop, reentrancy-events)
             emit log_named_uint("debtBalanceOfUnderlying", SILO_LENS.debtBalanceOfUnderlying(silo1, BORROWER));
-            // forge-lint: disable-next-line(calls-loop, reentrancy-events)
             emit log_named_uint("total(collateral).assets", silo1.getTotalAssetsStorage(ISilo.AssetType.Collateral));
-            // forge-lint: disable-next-line(calls-loop, reentrancy-events)
             emit log_named_uint("getCollateralAssets()", silo1.getCollateralAssets());
 
             uint256 collateralToLiquidate;
             uint256 maxDebtToCover;
-            // forge-lint: disable-next-line(calls-loop, unused-return)
             (collateralToLiquidate, maxDebtToCover,) = partialLiquidation.maxLiquidation(BORROWER);
 
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[BadDebtWithChunks] collateralToLiquidate", collateralToLiquidate);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[BadDebtWithChunks] maxDebtToCover", maxDebtToCover);
 
             if (collateralToLiquidate == 0) {
@@ -96,15 +79,12 @@ contract MaxLiquidationBadDebtWithChunksTest is MaxLiquidationBadDebtTest {
             }
 
             uint256 testDebtToCover = _calculateChunk(maxDebtToCover, i);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[BadDebtWithChunks] testDebtToCover", testDebtToCover);
 
             (uint256 partialCollateral, uint256 partialDebt) =
                 _liquidationCall(testDebtToCover, _receiveSToken);
 
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[BadDebtWithChunks] partialCollateral", partialCollateral);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[BadDebtWithChunks] partialDebt", partialDebt);
 
             _assertLeDiff(partialCollateral, collateralToLiquidate, "partialCollateral");
@@ -113,7 +93,6 @@ contract MaxLiquidationBadDebtWithChunksTest is MaxLiquidationBadDebtTest {
             repayDebtAssets += partialDebt;
         }
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("ltv", silo0.getLtv(BORROWER), 16);
 
         // sum of chunk liquidation can be smaller than one max/total, because with chunks we can get to the point

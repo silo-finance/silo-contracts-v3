@@ -16,7 +16,6 @@ FOUNDRY_PROFILE=core_test forge test --mc LiquidationDebug_2025_10_15_Sonic2 --f
 contract LiquidationDebug_2025_10_15_Sonic2 is UserState {
     function setUp() public override {
       
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), 50726224);
 
         super.setUp();
@@ -78,7 +77,6 @@ contract LiquidationDebug_2025_10_15_Sonic2 is UserState {
         // }
 
         vm.prank(0x0665609124CC2a958Cf0ED582eE132076243B6Da);
-        // forge-lint: disable-next-item(unused-return)
         HELPER.executeLiquidation({
             _flashLoanFrom: flashLoanFrom,
             _debtAsset: debtCfg.token,

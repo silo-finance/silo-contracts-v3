@@ -27,11 +27,9 @@ contract InjectiveWorkaround is Test {
         );
 
         vm.prank(AddrLib.getAddress(AddrKey.WINJ));
-        // forge-lint: disable-next-line(unused-return)
         BANK_MODULE.setMetadata("WINJ", "WINJ", 18);
         
         vm.prank(AddrLib.getAddress(AddrKey.YINJ));
-        // forge-lint: disable-next-line(unused-return)
         BANK_MODULE.setMetadata("yINJ", "yINJ", 18);
     }
 
@@ -45,13 +43,9 @@ contract InjectiveWorkaround is Test {
             _injectiveMetadataAdapters[_token] = adapter;
         }
 
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.mockFunction(_token, adapter, abi.encodeWithSelector(IERC20.balanceOf.selector));
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.mockFunction(_token, adapter, abi.encodeWithSelector(IERC20Metadata.decimals.selector));
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.mockFunction(_token, adapter, abi.encodeWithSelector(IERC20Metadata.symbol.selector));
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.mockFunction(_token, adapter, abi.encodeWithSelector(IERC20.totalSupply.selector));
     }
 }

@@ -19,7 +19,6 @@ contract GetConfigsReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.siloConfig().getConfigsForSolvency(address(0));
     }
 }

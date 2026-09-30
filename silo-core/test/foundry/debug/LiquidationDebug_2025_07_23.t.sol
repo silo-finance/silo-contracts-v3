@@ -25,14 +25,10 @@ contract LiquidationDebug_2025_07_23 is IntegrationTest {
 
     function setUp() public {
         vm.label(weth, "WETH");
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(helper), "LiquidationHelper");
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(address(HOOK), "IPartialLiquidation");
-        // forge-lint: disable-next-line(reentrancy-no-eth)
         vm.label(swapAllowanceHolder, "SWAP AllowanceHolder");
 
-        // forge-lint: disable-next-line(reentrancy-no-eth, unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), 39843039 - 5);
         //  -1: 649934417432853875
         //  -5:
@@ -98,7 +94,6 @@ contract LiquidationDebug_2025_07_23 is IntegrationTest {
         console2.log("                        user LTV: ", LENS.getUserLTV(silo, user));
 
         vm.prank(0x0665609124CC2a958Cf0ED582eE132076243B6Da);
-        // forge-lint: disable-next-item(unused-return)
         helper.executeLiquidation({
             _flashLoanFrom: flashLoanFrom,
             _debtAsset: 0x29219dd400f2Bf60E5a23d13Be72B486D4038894,

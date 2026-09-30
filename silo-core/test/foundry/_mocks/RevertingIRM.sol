@@ -19,7 +19,6 @@ contract RevertingIRM is IInterestRateModel, Overflows {
         revertReason = _revertReason;
     }
 
-    // forge-lint: disable-next-line(empty-block)
     function initialize(address _irmConfig) external {}
 
     function getCompoundInterestRateAndUpdate(uint256, uint256, uint256) external view returns (uint256) {

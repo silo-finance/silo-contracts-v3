@@ -71,7 +71,6 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
         _deposit(_collateral, BORROWER, _collateralType);
 
         maxBorrow = silo1.maxBorrow(BORROWER);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxBorrow", maxBorrow, 18);
 
         _assertWeCanNotBorrowAboveMax(maxBorrow, 2);
@@ -97,9 +96,7 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
         _deposit(1e18, BORROWER);
 
         uint256 maxBorrow = silo1.maxBorrow(BORROWER);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("maxBorrow before", maxBorrow);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("balance of silo1", token1.balanceOf(address(silo1)));
 
         assertEq(maxBorrow, 0, "no liquidity");
@@ -107,7 +104,6 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
         _depositForBorrow(1e18, address(2));
 
         maxBorrow = silo1.maxBorrow(BORROWER);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("maxBorrow after", maxBorrow);
 
         _borrow(maxBorrow, BORROWER);
@@ -153,7 +149,6 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
         uint256 maxBorrow = silo1.maxBorrow(BORROWER);
 
         uint256 firstBorrow = maxBorrow / 3;
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("firstBorrow", firstBorrow);
         vm.assume(firstBorrow > 0);
         _borrow(firstBorrow, BORROWER);
@@ -162,7 +157,6 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
         vm.warp(block.timestamp + 100 days);
 
         maxBorrow = silo1.maxBorrow(BORROWER);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("maxBorrow", maxBorrow);
 
         _assertWeCanNotBorrowAboveMax(maxBorrow, 6);
@@ -202,25 +196,20 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
         uint256 maxBorrow = silo1.maxBorrow(BORROWER);
 
         uint256 firstBorrow = maxBorrow / 3;
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("firstBorrow", firstBorrow);
         vm.assume(firstBorrow > 0);
         _borrow(firstBorrow, BORROWER);
 
         // now we have debt
         vm.warp(block.timestamp + 100 days);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("----- time travel -----");
 
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = silo1.config().getShareTokens(address(silo1));
 
         token1.setOnDemand(true);
         uint256 debt = IShareToken(debtShareToken).balanceOf(BORROWER);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("user shares", debt, 18);
         uint256 debtToRepay = debt * 9 / 10 == 0 ? 1 : debt * 9 / 10;
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("debtToRepay", debtToRepay, 18);
 
         _repayShares(1, debtToRepay, BORROWER);
@@ -231,7 +220,6 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
         maxBorrow = silo1.maxBorrow(BORROWER);
         assertGt(maxBorrow, 0, "we can borrow again after repay");
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("ratio", silo1.convertToShares(1e18, ISilo.AssetType.Debt), 18);
 
         _assertWeCanNotBorrowAboveMax(maxBorrow, 33);
@@ -247,55 +235,42 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
         address user1 = makeAddr("user1");
         address user2 = makeAddr("user2");
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("User 1 deposits 54901887191424375183106916902 assets into Silo 2");
         _depositForBorrow(54901887191424375183106916902, user1);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("User 0 deposits 37778931862957161709569 assets into Silo 1");
         _deposit(37778931862957161709569, user0);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("User 2 mints 57553484963063775982514231325194206610732636 shares from Silo 2");
 
         token1.setOnDemand(true);
         _mintForBorrow(1, 57553484963063775982514231325194206610732636, user2);
         token1.setOnDemand(false);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("User 1 max borrow on silo2", silo1.maxBorrow(user1));
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("User 1 borrows the maximum returned from maxBorrow from Silo 1");
         uint256 maxBorrow = silo0.maxBorrow(user1);
         vm.prank(user1);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(maxBorrow, user1, user1);
 
         vm.warp(block.timestamp + 41);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("Timestamp is increased by 41 seconds");
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("User 0 deposits type(uint128).max assets into Silo 1");
         _deposit(type(uint128).max, user0);
 
         uint256 liquidity = silo0.getLiquidity();
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("liquidity on the fly", liquidity);
-        // forge-lint: disable-next-line(unused-return)
         silo0.accrueInterest();
         assertEq(liquidity, silo0.getLiquidity());
 
         maxBorrow = silo0.maxBorrow(user2);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("user2 maxBorrow", maxBorrow);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log("User 2 attempts to borrow maxBorrow assets, it should NOT fail with AboveMaxLtv()");
         vm.prank(user2);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(maxBorrow, user2, user2); // expect to pass
     }
 
@@ -305,16 +280,13 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
 
     /// @param _precision is needed because we count for precision error and we allow for 1 wei diff
     function _assertWeCanNotBorrowAboveMax(uint256 _maxBorrow, uint256 _precision) internal {
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("------- QA: _assertWeCanNotBorrowAboveMax +/-", _precision);
 
         uint256 toBorrow = _maxBorrow + _precision;
 
         uint256 liquidity = silo1.getLiquidity();
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[_assertWeCanNotBorrowAboveMax] liquidity", liquidity, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[_assertWeCanNotBorrowAboveMax]  toBorrow", toBorrow, 18);
 
         vm.prank(BORROWER);
@@ -328,9 +300,7 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
             // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
 
-            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 error1 = bytes4(keccak256(abi.encodePacked("NotEnoughLiquidity()")));
-            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 error2 = bytes4(keccak256(abi.encodePacked("AboveMaxLtv()")));
 
             if (errorType != error1 && errorType != error2) {
@@ -341,14 +311,12 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
         }
 
         if (_maxBorrow > 0) {
-            // forge-lint: disable-next-item(reentrancy-events)
             emit log_named_decimal_uint(
                 "[_assertWeCanNotBorrowAboveMax] _maxBorrow > 0? YES, borrowing max", _maxBorrow, 18
             );
 
             liquidity = silo1.getLiquidity();
 
-            // forge-lint: disable-next-item(reentrancy-events)
             emit log_named_decimal_uint(
                 "[_assertWeCanNotBorrowAboveMax]                          liquidity", liquidity, 18
             );
@@ -364,7 +332,6 @@ contract MaxBorrowTest is SiloLittleHelper, Test {
     }
 
     function _assertMaxBorrowIsZeroAtTheEnd(uint256 _underestimatedBy) internal {
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_uint(
             "================ _assertMaxBorrowIsZeroAtTheEnd ================ +/-", _underestimatedBy
         );

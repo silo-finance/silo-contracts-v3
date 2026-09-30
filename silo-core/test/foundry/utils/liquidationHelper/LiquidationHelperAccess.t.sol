@@ -37,7 +37,6 @@ contract LiquidationHelperAccessTest is Test {
     function test_onFlashLoan_closed_direct() public {
         vm.expectRevert(LiquidationHelper.UnauthorizedFlashLoanCallback.selector);
         // positional: first param is unnamed in LiquidationHelper.onFlashLoan
-        // forge-lint: disable-next-line(unused-return)
         liquidationHelper.onFlashLoan(address(0), makeAddr("debt"), 1, 0, bytes(""));
     }
 
@@ -57,7 +56,6 @@ contract LiquidationHelperAccessTest is Test {
 
         vm.prank(_caller);
         vm.expectRevert(LiquidationHelper.UnauthorizedFlashLoanCallback.selector);
-        // forge-lint: disable-next-line(unused-return)
         liquidationHelper.onFlashLoan(_initiator, _debtAsset, _maxDebtToCover, _fee, _data);
     }
 
@@ -70,7 +68,6 @@ contract LiquidationHelperAccessTest is Test {
 
         vm.prank(attacker);
         vm.expectRevert(Whitelist.OnlyAllowedRole.selector);
-        // forge-lint: disable-next-item(unused-return)
         liquidationHelper.executeLiquidation({
             _flashLoanFrom: ISilo(makeAddr("silo")),
             _debtAsset: makeAddr("debt"),

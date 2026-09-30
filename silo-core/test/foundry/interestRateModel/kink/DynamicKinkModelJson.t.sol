@@ -38,13 +38,11 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
     constructor() {
         DynamicKinkModel tmp = new DynamicKinkModel();
 
-        // forge-lint: disable-next-line(unsafe-typecast)
         _RCOMP_CAP_PER_SECOND = int96(tmp.RCOMP_CAP_PER_SECOND());
 
         IDynamicKinkModel.Config memory cfg;
 
         IDynamicKinkModel.ImmutableArgs memory immutableArgs =
-            // forge-lint: disable-next-line(unsafe-typecast)
             IDynamicKinkModel.ImmutableArgs({timelock: _TIMELOCK, rcompCap: int96(tmp.RCUR_CAP())});
 
         IRM = DynamicKinkModelMock(
@@ -90,7 +88,6 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
             (IDynamicKinkModel.ModelState memory state, IDynamicKinkModel.Config memory c) = _toSetupRcur(data[i]);
             // _printRcur(data[i]);
 
-            // forge-lint: disable-next-item(calls-loop)
             try IRM.currentInterestRate(
                 c,
                 state,
@@ -112,10 +109,8 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
                     acceptableDiffPercentRcur
                 );
             } catch {
-                // forge-lint: disable-next-item(require-revert-in-loop)
                 revert(
                     string.concat(
-                        // forge-lint: disable-next-line(calls-loop)
                         "we should not revert in this tests, but case with ID ", vm.toString(data[i].id), " did"
                     )
                 );
@@ -134,15 +129,12 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
         for (uint256 i; i < data.length; i++) {
             (IDynamicKinkModel.ModelState memory state, IDynamicKinkModel.Config memory c) = _toSetupRcur(data[i]);
 
-            // forge-lint: disable-next-line(calls-loop, unsafe-typecast)
             vm.warp(uint256(data[i].input.currentTime));
             _setUtilizationData(data[i]);
-            // forge-lint: disable-next-line(calls-loop)
             IRM.mockState(c, state.k);
 
             // _printRcur(data[i]);
 
-            // forge-lint: disable-next-line(calls-loop, unsafe-typecast)
             uint256 rcur = IRM.getCurrentInterestRate(silo, uint256(data[i].input.currentTime));
 
             if (data[i].input.totalBorrowAmount == 0) {
@@ -170,7 +162,6 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
             (IDynamicKinkModel.ModelState memory state, IDynamicKinkModel.Config memory c) = _toSetupRcomp(data[i]);
             // _printRcomp(data[i]);
 
-            // forge-lint: disable-next-item(calls-loop)
             try IRM.compoundInterestRate(
                 c,
                 state,
@@ -209,7 +200,6 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
                     data[i].expected.didOverflow,
                     1,
                     string.concat(
-                        // forge-lint: disable-next-line(calls-loop)
                         "we should not revert in this tests, but case with ID ", vm.toString(data[i].id), " did"
                     )
                 );
@@ -228,15 +218,12 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
         for (uint256 i; i < data.length; i++) {
             (IDynamicKinkModel.ModelState memory state, IDynamicKinkModel.Config memory c) = _toSetupRcomp(data[i]);
 
-            // forge-lint: disable-next-line(calls-loop, unsafe-typecast)
             vm.warp(uint256(data[i].input.currentTime));
             _setUtilizationData(data[i]);
-            // forge-lint: disable-next-line(calls-loop)
             IRM.mockState(c, state.k);
 
             // _printRcomp(data[i]);
 
-            // forge-lint: disable-next-line(calls-loop, unsafe-typecast)
             uint256 rcomp = IRM.getCompoundInterestRate(silo, uint256(data[i].input.currentTime));
 
             if (data[i].input.totalBorrowAmount == 0) {
@@ -281,21 +268,16 @@ contract DynamicKinkModelJsonTest is KinkRcompTestData, KinkRcurTestData {
 
         string memory errorMessage = string.concat(
             "ID ",
-            // forge-lint: disable-next-line(calls-loop)
             vm.toString(_testId),
             ": ",
             _msg,
             " relative error: ",
-            // forge-lint: disable-next-line(calls-loop)
             vm.toString(diffPercent),
             " [%] larger than acceptable diff: ",
-            // forge-lint: disable-next-line(calls-loop)
             vm.toString(_acceptableDiffPercent),
             " got: ",
-            // forge-lint: disable-next-line(calls-loop)
             vm.toString(_got),
             " expected: ",
-            // forge-lint: disable-next-line(calls-loop)
             vm.toString(_expected)
         );
 

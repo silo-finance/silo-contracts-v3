@@ -34,7 +34,6 @@ contract EggsSonicPriceProvider is IntegrationTest {
 
     function setUp() public {
         uint256 blockToFork = 10053279;
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), blockToFork);
     }
 
@@ -70,7 +69,6 @@ contract EggsSonicPriceProvider is IntegrationTest {
 
     function test_EggsSonicPriceProvider_donationAttack() public {
         uint256 priceBefore = _eggs.EGGStoSONIC(1e18);
-        // forge-lint: disable-next-line(arbitrary-send-eth)
         require(payable(address(_eggs)).send(100000 ether));
         uint256 priceAfter = _eggs.EGGStoSONIC(1e18);
 
@@ -91,7 +89,6 @@ contract EggsSonicPriceProvider is IntegrationTest {
 
     function test_EggsSonicPriceProvider_leverage() public {
         uint256 priceBefore = _eggs.EGGStoSONIC(1e18);
-        // forge-lint: disable-next-line(arbitrary-send-eth)
         _eggs.leverage{value: 1000000}(1000000, 365);
         uint256 priceAfter = _eggs.EGGStoSONIC(1e18);
 
@@ -107,7 +104,6 @@ contract EggsSonicPriceProvider is IntegrationTest {
         _eggs.sell(eggsAmount);
 
         uint256 priceBefore = _eggs.EGGStoSONIC(1e18);
-        // forge-lint: disable-next-line(arbitrary-send-eth)
         _eggs.buy{value: 1000000}(address(this));
         uint256 priceAfter = _eggs.EGGStoSONIC(1e18);
 
@@ -142,7 +138,6 @@ contract EggsSonicPriceProvider is IntegrationTest {
         _eggs.borrow(sonicAmount, 1);
 
         uint256 priceBefore = _eggs.EGGStoSONIC(1e18);
-        // forge-lint: disable-next-line(arbitrary-send-eth)
         _eggs.closePosition{value: _eggs.Loans(address(this)).borrowed}();
         uint256 priceAfter = _eggs.EGGStoSONIC(1e18);
 

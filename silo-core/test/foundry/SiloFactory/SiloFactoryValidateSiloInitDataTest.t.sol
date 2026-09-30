@@ -31,49 +31,41 @@ contract SiloFactoryValidateSiloInitDataTest is Test {
         ISiloConfig.InitData memory initData;
 
         vm.expectRevert(ISiloFactory.MissingHookReceiver.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
         initData.hookReceiver = address(2);
 
         vm.expectRevert(ISiloFactory.EmptyToken0.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
         initData.token0 = address(1);
 
         vm.expectRevert(ISiloFactory.EmptyToken1.selector); // even when zeros
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
         initData.token1 = address(1);
 
         vm.expectRevert(ISiloFactory.SameAsset.selector); // even when zeros
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.token1 = address(2);
 
         vm.expectRevert(ISiloFactory.InvalidMaxLtv.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.maxLtv0 = 0.75e18;
         initData.maxLtv1 = 0.65e18;
 
         vm.expectRevert(ISiloFactory.InvalidMaxLtv.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.lt0 = 8.5e18;
         initData.lt1 = 7.5e18;
 
         vm.expectRevert(ISiloFactory.InvalidLt.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.lt0 = 0.95e18;
         initData.liquidationFee0 = 0.1e18;
 
         vm.expectRevert(ISiloFactory.InvalidLt.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.lt0 = 0.9e18;
@@ -82,49 +74,41 @@ contract SiloFactoryValidateSiloInitDataTest is Test {
         initData.liquidationFee1 = 0.05e18;
 
         vm.expectRevert(ISiloFactory.InvalidLt.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.lt1 = 0.75e18;
 
         vm.expectRevert(ISiloFactory.DaoMinRangeExceeded.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.daoFee = 1.15e18;
 
         vm.expectRevert(ISiloFactory.DaoMaxRangeExceeded.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.daoFee = 0.15e18;
 
         vm.expectRevert(ISiloFactory.InvalidIrm.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.maxLtvOracle0 = address(1);
         vm.expectRevert(ISiloFactory.OracleMisconfiguration.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.callBeforeQuote0 = true;
         initData.maxLtvOracle0 = address(0);
         initData.solvencyOracle0 = address(0);
         vm.expectRevert(ISiloFactory.InvalidCallBeforeQuote.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.solvencyOracle0 = address(1);
         initData.maxLtvOracle1 = address(1);
         vm.expectRevert(ISiloFactory.OracleMisconfiguration.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.callBeforeQuote1 = true;
         initData.maxLtvOracle1 = address(0);
         vm.expectRevert(ISiloFactory.InvalidCallBeforeQuote.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.callBeforeQuote0 = false;
@@ -135,66 +119,52 @@ contract SiloFactoryValidateSiloInitDataTest is Test {
         initData.deployerFee = 0.01e18;
 
         vm.expectRevert(ISiloFactory.InvalidDeployer.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.deployer = address(100001);
 
         vm.expectRevert(ISiloFactory.InvalidIrm.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.deployerFee = siloFactory.maxDeployerFee() + 1;
 
         vm.expectRevert(ISiloFactory.MaxDeployerFeeExceeded.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.deployerFee = 0.01e18;
 
         vm.expectRevert(ISiloFactory.InvalidIrm.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
-        // forge-lint: disable-next-line(unsafe-typecast)
         initData.flashloanFee0 = uint64(siloFactory.maxFlashloanFee() + 1);
 
         vm.expectRevert(ISiloFactory.MaxFlashloanFeeExceeded.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.flashloanFee0 = 0.01e18;
 
         vm.expectRevert(ISiloFactory.InvalidIrm.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
-        // forge-lint: disable-next-line(unsafe-typecast)
         initData.flashloanFee1 = uint64(siloFactory.maxFlashloanFee() + 1);
 
         vm.expectRevert(ISiloFactory.MaxFlashloanFeeExceeded.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.flashloanFee1 = 0.01e18;
 
         vm.expectRevert(ISiloFactory.InvalidIrm.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
-        // forge-lint: disable-next-line(unsafe-typecast)
         initData.liquidationFee0 = uint64(siloFactory.maxLiquidationFee() + 1);
 
         vm.expectRevert(ISiloFactory.MaxLiquidationFeeExceeded.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.liquidationFee0 = 0.01e18;
-        // forge-lint: disable-next-line(unsafe-typecast)
         initData.liquidationFee1 = uint64(siloFactory.maxLiquidationFee() + 1);
 
         vm.expectRevert(ISiloFactory.MaxLiquidationFeeExceeded.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.liquidationFee1 = 0.01e18;
@@ -202,13 +172,11 @@ contract SiloFactoryValidateSiloInitDataTest is Test {
         initData.interestRateModel0 = address(0);
 
         vm.expectRevert(ISiloFactory.InvalidIrm.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.interestRateModel1 = address(100005);
 
         vm.expectRevert(ISiloFactory.InvalidIrm.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         initData.interestRateModel0 = address(100006);
@@ -257,7 +225,6 @@ contract SiloFactoryValidateSiloInitDataTest is Test {
         maxLtvOracle0.quoteTokenMock(address(1));
         initData.maxLtvOracle0 = maxLtvOracle0.ADDRESS();
         vm.expectRevert(ISiloFactory.InvalidQuoteToken.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         maxLtvOracle0.quoteTokenMock(makeAddr("quoteToken"));
@@ -266,7 +233,6 @@ contract SiloFactoryValidateSiloInitDataTest is Test {
         solvencyOracle1.quoteTokenMock(address(1));
         initData.solvencyOracle1 = solvencyOracle1.ADDRESS();
         vm.expectRevert(ISiloFactory.InvalidQuoteToken.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         solvencyOracle1.quoteTokenMock(makeAddr("quoteToken"));
@@ -275,7 +241,6 @@ contract SiloFactoryValidateSiloInitDataTest is Test {
         maxLtvOracle1.quoteTokenMock(address(1));
         initData.maxLtvOracle1 = maxLtvOracle1.ADDRESS();
         vm.expectRevert(ISiloFactory.InvalidQuoteToken.selector);
-        // forge-lint: disable-next-line(unused-return)
         siloFactory.validateSiloInitData(initData);
 
         maxLtvOracle1.quoteTokenMock(makeAddr("quoteToken"));

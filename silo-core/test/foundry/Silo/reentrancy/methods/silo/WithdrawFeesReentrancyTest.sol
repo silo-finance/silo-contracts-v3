@@ -25,17 +25,14 @@ contract WithdrawFeesReentrancyTest is MethodReentrancyTest {
         token1.setOnDemand(true);
 
         vm.prank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(depositAmount, depositor);
 
         vm.startPrank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(collateralAmount, borrower);
         uint256 shares = silo0.borrow(borrowAmount, borrower, borrower);
 
         vm.warp(block.timestamp + 10 days);
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.repayShares(shares, borrower);
         vm.stopPrank();
 

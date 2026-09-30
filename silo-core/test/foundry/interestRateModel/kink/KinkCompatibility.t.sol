@@ -11,7 +11,6 @@ contract KinkCompatibility is DynamicKinkModel, IInterestRateModel {
         return 0;
     }
 
-    // forge-lint: disable-next-item(empty-block)
     function initialize(address) external pure {
         /// the only method that is not compatible with IInterestRateModel is `initialize`;
         /// this test just check if we can build it without errors if we add just one method

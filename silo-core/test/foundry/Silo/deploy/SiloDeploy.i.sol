@@ -42,7 +42,6 @@ contract SiloDeployTest is IntegrationTest {
     DIAOracleFactoryMock internal _diaOracleFactoryMock;
 
     function setUp() public {
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(getChainRpcUrl(MAINNET_ALIAS), _FORKING_BLOCK_NUMBER);
 
         _uniV3OracleFactoryMock = new UniswapV3OracleFactoryMock();
@@ -79,7 +78,6 @@ contract SiloDeployTest is IntegrationTest {
     // AGGREGATOR=1INCH FOUNDRY_PROFILE=core_test forge test -vv --ffi -mt test_oracles_deploy
     function test_oracles_deploy() public view virtual {
         // solhint-disable-line func-name-mixedcase
-        // forge-lint: disable-next-line(unused-return)
         (, address silo1) = _siloConfig.getSilos();
 
         ISiloConfig.ConfigData memory siloConfig1 = _siloConfig.getConfig(silo1);
@@ -122,18 +120,15 @@ contract SiloDeployTest is IntegrationTest {
         ISiloConfig siloConfig1 =
             _siloDeploy.useConfig(SiloConfigsNames.SILO_FULL_CONFIG_TEST).usePrivateKey(wallet1.privateKey).run();
 
-        // forge-lint: disable-next-line(unused-return)
         (address silo0,) = siloConfig1.getSilos();
 
         ISiloConfig.ConfigData memory siloConfigData1 = siloConfig1.getConfig(silo0);
 
-        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         ISiloConfig siloConfig2 =
             _siloDeploy.useConfig(SiloConfigsNames.SILO_FULL_CONFIG_TEST).usePrivateKey(wallet2.privateKey).run();
 
-        // forge-lint: disable-next-line(unused-return)
         (silo0,) = siloConfig2.getSilos();
 
         ISiloConfig.ConfigData memory siloConfigData2 = siloConfig2.getConfig(silo0);

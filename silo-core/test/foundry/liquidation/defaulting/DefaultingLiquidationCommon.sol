@@ -62,7 +62,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         SiloFixture siloFixture = new SiloFixture();
 
         address hook;
-        // forge-lint: disable-next-line(unused-return)
         (siloConfig, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
 
         partialLiquidation = IPartialLiquidation(hook);
@@ -123,7 +122,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         address protectedUser = makeAddr("protectedUser");
         vm.prank(protectedUser);
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.deposit(assets, protectedUser, ISilo.CollateralType.Protected);
         depositors.push(protectedUser);
 
@@ -149,13 +147,11 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         _setCollateralPrice(1e18); // 2% down
 
         do {
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 2 hours);
         } while (!_defaultingPossible(borrower));
 
         _printLtv(borrower);
 
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.accrueInterest();
         (uint256 revenue, uint256 revenueFractions) = _printRevenue(debtSilo);
         assertTrue(revenue > 0 || revenueFractions > 0, "we need case with fees");
@@ -169,14 +165,11 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         console2.log("maxRepay other borrower:", debtSilo.maxRepay(makeAddr("otherBorrower")));
 
         vm.expectEmit(true, true, true, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit IPartialLiquidation.LiquidationStart(IPartialLiquidation.LiquidationType.DEFAULTING);
 
         (collateralToLiquidate, debtToRepay) = defaulting.liquidationCallByDefaulting(borrower);
         console2.log("AFTER DEFAULTING what happened?");
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("collateralToLiquidate", collateralToLiquidate, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("debtToRepay", debtToRepay, 18);
 
         _assertProtectedRatioDidNotchanged();
@@ -239,7 +232,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
-        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate,,) = IPartialLiquidation(address(defaulting)).maxLiquidation(borrower);
 
         try defaulting.getKeeperAndLenderSharesSplit(collateralToLiquidate, ISilo.CollateralType.Collateral) {
@@ -303,7 +295,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         MintableToken(debtSilo.asset()).setOnDemand(true);
 
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.repayShares(debtBalanceBefore, otherBorrower);
         assertEq(debtShareToken.balanceOf(otherBorrower), 0, "other borrower should be able fully repay");
 
@@ -332,7 +323,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         do {
             price -= 0.01e18; // drop price by 1%
             _setCollateralPrice(price);
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 1 days);
         } while (silo0.getLtv(_borrower) < 1e18);
 
@@ -353,7 +343,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(_borrower);
 
         _assertProtectedRatioDidNotchanged();
@@ -427,14 +416,12 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         MintableToken(debtSilo.asset()).setOnDemand(true);
 
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.repayShares(debtBalanceBefore, otherBorrower);
         assertEq(debtShareToken.balanceOf(otherBorrower), 0, "other borrower should be able fully repay");
 
         uint256 debtBalance = debtShareToken.balanceOf(borrower);
 
         if (debtBalance != 0) {
-            // forge-lint: disable-next-line(unused-return)
             debtSilo.repayShares(debtShareToken.balanceOf(borrower), borrower);
         }
 
@@ -462,7 +449,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         do {
             price -= 0.001e18; // drop price litle by little, to not create bad debt instantly
             _setCollateralPrice(price);
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 12 hours);
         } while (!_defaultingPossible(_borrower));
 
@@ -479,7 +465,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(_borrower);
 
         _printBalances(silo0, _borrower);
@@ -517,14 +502,12 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         _setCollateralPrice(1e18);
 
         do {
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 10 days);
             // 1.01 because when we do normal liquidation it can be no debt after that
         } while (silo0.getLtv(borrower) < 1.01e18);
 
         // we need case, where we do not oveflow on interest, so we can apply interest
         // vm.assume(debtSilo.maxRepay(borrower) > repayBefore);
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.accrueInterest();
         (uint256 revenue, uint256 revenueFractions) = _printRevenue(debtSilo);
         assertTrue(revenue > 0 || revenueFractions > 0, "we need case with fees");
@@ -547,7 +530,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         } catch (bytes memory data) {
             // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
-            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 returnZeroShares = bytes4(keccak256(abi.encodePacked("ReturnZeroShares()")));
 
             // skipping case, when we can not liquidate tiny debt because of ReturnZeroShares error on repay
@@ -565,7 +547,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         assertEq(collateralShareToken.balanceOf(borrower), 0, "collateral shares must be 0");
         assertEq(protectedShareToken.balanceOf(borrower), 0, "protected shares must be 0");
-        // forge-lint: disable-next-line(incorrect-strict-equality)
         vm.assume(debtShareToken.balanceOf(borrower) != 0); //  we need bad debt
 
         assertTrue(_defaultingPossible(borrower), "defaulting should be possible even without collateral");
@@ -573,7 +554,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(borrower);
         console2.log("AFTER DEFAULTING");
 
@@ -661,20 +641,17 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         _setCollateralPrice(1e18);
 
         do {
-            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 10 days);
             // 1.01 because when we do normal liquidation it can be no debt after that
         } while (silo0.getLtv(borrower) < 1.01e18);
 
         // we need case, where we do not oveflow on interest, so we can apply interest
         // vm.assume(debtSilo.maxRepay(borrower) > repayBefore);
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.accrueInterest();
         (uint256 revenue, uint256 revenueFractions) = _printRevenue(debtSilo);
         assertTrue(revenue > 0 || revenueFractions > 0, "we need case with fees");
 
         // this repay should make other liquidation not reset total assets, so everyone can exit
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.repayShares(debtShareToken.balanceOf(makeAddr("otherBorrower")), makeAddr("otherBorrower"));
         console2.log("AFTER otherBorrower REPAY");
 
@@ -695,7 +672,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         } catch (bytes memory data) {
             // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 errorType = bytes4(data);
-            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4 returnZeroShares = bytes4(keccak256(abi.encodePacked("ReturnZeroShares()")));
             if (errorType == returnZeroShares) {
                 vm.assume(false);
@@ -720,7 +696,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         );
 
         assertEq(protectedShareToken.balanceOf(borrower), 0, "protected shares must be 0");
-        // forge-lint: disable-next-line(incorrect-strict-equality)
         vm.assume(debtShareToken.balanceOf(borrower) != 0); // we need bad debt
 
         console2.log("-------------------------------- AFTER NORMAL LIQUIDATION --------------------------------");
@@ -730,7 +705,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(borrower);
         console2.log("-------------------------------- AFTER DEFAULTING --------------------------------");
 
@@ -792,7 +766,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
             collateralSilo, borrower, ISilo.CollateralType.Collateral, false, "collateral assets must be 0"
         );
         assertEq(protectedShareToken.balanceOf(borrower), 0, "protected shares must be 0");
-        // forge-lint: disable-next-line(incorrect-strict-equality)
         vm.assume(debtShareToken.balanceOf(borrower) != 0); // we need bad debt
 
         console2.log("AFTER DEFAULTING #1");
@@ -800,7 +773,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         assertTrue(_defaultingPossible(borrower), "defaulting should be possible even without collateral");
 
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(borrower);
         console2.log("AFTER DEFAULTING #2");
         _assertProtectedRatioDidNotchanged();
@@ -824,9 +796,7 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         token0.setOnDemand(true);
         token1.setOnDemand(true);
 
-        // forge-lint: disable-next-line(unused-return)
         collateralSilo.deposit(1e18, makeAddr("anyUser"));
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.deposit(2, makeAddr("anyUser2"));
         depositors.push(makeAddr("anyUser"));
         depositors.push(makeAddr("anyUser2"));
@@ -860,11 +830,8 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         (, ISilo debtSilo) = _getSilos();
 
         for (uint256 i; i < _protectedDeposits.length; i++) {
-            // forge-lint: disable-next-line(calls-loop)
             address user = makeAddr(string.concat("user", vm.toString(i + 1)));
-            // forge-lint: disable-next-line(calls-loop)
             vm.prank(user);
-            // forge-lint: disable-next-line(calls-loop, unused-return)
             debtSilo.deposit(Math.max(_protectedDeposits[i], 1), user, ISilo.CollateralType.Protected);
         }
 
@@ -893,11 +860,8 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         }
 
         for (uint256 i; i < _protectedDeposits.length; i++) {
-            // forge-lint: disable-next-line(calls-loop)
             address user = makeAddr(string.concat("user", vm.toString(i + 1)));
-            // forge-lint: disable-next-line(calls-loop)
             vm.prank(user);
-            // forge-lint: disable-next-line(calls-loop, unused-return)
             debtSilo.withdraw(Math.max(_protectedDeposits[i], 1), user, user, ISilo.CollateralType.Protected);
         }
     }
@@ -963,7 +927,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         bool _badDebtCasesOnly
     ) internal {
         uint64 initialPrice = 1e18;
-        // forge-lint: disable-next-line(unsafe-typecast)
         uint256 changePrice = _calculateNewPrice(initialPrice, -int64(0.001e18 + (_dropPricePercentage % 0.1e18)));
 
         changePrice = 0.2e18;
@@ -985,7 +948,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
             _setCollateralPrice(changePrice);
             (throwing,) = _isOracleThrowing(borrower);
             vm.assume(!throwing);
-            // forge-lint: disable-next-line(environment-read-across-mutation)
             vm.warp(block.timestamp + _warp);
         } else {
             vm.assume(_printLtv(borrower) < 1e18);
@@ -1008,7 +970,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(borrower);
         _assertProtectedRatioDidNotchanged();
     }
@@ -1046,7 +1007,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         // this will help with interest
         _removeLiquidity();
         _setCollateralPrice(targetPrice);
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + _warp);
 
         // if oracle is throwing, we can not test anything
@@ -1069,7 +1029,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         UserState memory userState0 = _getUserState(silo0, borrower);
         UserState memory userState1 = _getUserState(silo1, borrower);
 
-        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
         console2.log("snapshot reverted");
 
@@ -1119,7 +1078,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         );
 
         vm.expectRevert("repayDidNotWork");
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(borrower);
 
         assertEq(ltv, silo0.getLtv(borrower), "ltv should be unchanged because no liquidation happened");
@@ -1162,7 +1120,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         vm.mockCallRevert(address(debtSilo), callOnBehalfOfSiloCalldata, abi.encode("deductDidNotWork"));
 
         vm.expectRevert("deductDidNotWork");
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(borrower);
 
         assertEq(ltv, silo0.getLtv(borrower), "ltv should be unchanged because no liquidation happened");
@@ -1188,7 +1145,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         _removeLiquidity();
 
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + _warp);
 
         uint256 price = 1e18;
@@ -1223,13 +1179,11 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         token0.setOnDemand(false);
         token1.setOnDemand(false);
 
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(borrower);
 
         console2.log("AFTER LIQUIDATION");
 
         vm.prank(lpProvider);
-        // forge-lint: disable-next-line(unused-return)
         gauge.claimRewards(lpProvider);
 
         uint256 collateralRewards = collateralShareToken.balanceOf(lpProvider);
@@ -1299,11 +1253,9 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         (ISilo collateralSilo, ISilo debtSilo) = _getSilos();
 
         uint256 shares1 = debtSilo.deposit(1, makeAddr("lpProvider1"));
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.deposit(1, makeAddr("lpProvider3"), ISilo.CollateralType.Protected);
 
         uint256 shares2 = debtSilo.deposit(Math.max(_collateral, 1), makeAddr("lpProvider2"));
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.deposit(Math.max(_protected, 1), makeAddr("lpProvider4"), ISilo.CollateralType.Protected);
 
         depositors.push(makeAddr("lpProvider1"));
@@ -1334,14 +1286,12 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         console2.log("borrower colateral share balance", collateralSilo.balanceOf(borrower));
 
         (uint256 collateralToLiquidate, uint256 debtToRepay,) =
-            // forge-lint: disable-next-line(unused-return)
             IPartialLiquidation(address(defaulting)).maxLiquidation(borrower);
             
         console2.log("collateralToLiquidate", collateralToLiquidate);
         console2.log("debtToRepay", debtToRepay);
         vm.assume(debtToRepay > 0);
 
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(borrower);
 
         uint256 collateralRewards = collateralShareToken.balanceOf(address(gauge));
@@ -1351,16 +1301,12 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         console2.log("gauge2 protected balance", protectedRewards);
 
         vm.prank(makeAddr("lpProvider1"));
-        // forge-lint: disable-next-line(unused-return)
         gauge.claimRewards(makeAddr("lpProvider1"));
         vm.prank(makeAddr("lpProvider2"));
-        // forge-lint: disable-next-line(unused-return)
         gauge.claimRewards(makeAddr("lpProvider2"));
         vm.prank(makeAddr("lpProvider3"));
-        // forge-lint: disable-next-line(unused-return)
         gauge.claimRewards(makeAddr("lpProvider3"));
         vm.prank(makeAddr("lpProvider4"));
-        // forge-lint: disable-next-line(unused-return)
         gauge.claimRewards(makeAddr("lpProvider4"));
 
         uint256 oneWeiRewardsCollateral = shares1 * collateralRewards / debtSilo.totalSupply();
@@ -1492,23 +1438,18 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         (IShareToken collateralShareToken, IShareToken protectedShareToken,) = _getBorrowerShareTokens(borrower);
 
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(borrower);
 
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.deposit(10e18, makeAddr("lpProvider3"));
 
         uint256 collateralRewards = collateralShareToken.balanceOf(address(gauge));
         uint256 protectedRewards = protectedShareToken.balanceOf(address(gauge));
 
         vm.prank(makeAddr("lpProvider1"));
-        // forge-lint: disable-next-line(unused-return)
         gauge.claimRewards(makeAddr("lpProvider1"));
         vm.prank(makeAddr("lpProvider2"));
-        // forge-lint: disable-next-line(unused-return)
         gauge.claimRewards(makeAddr("lpProvider2"));
         vm.prank(makeAddr("lpProvider3"));
-        // forge-lint: disable-next-line(unused-return)
         gauge.claimRewards(makeAddr("lpProvider3"));
 
         assertEq(
@@ -1585,7 +1526,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         uint256 lpPrivider1Assets = debtSilo.previewRedeem(shares1);
 
         // 20% to cover fees, +1 to not generate zero input
-        // forge-lint: disable-next-line(unused-return)
         debtSilo.deposit(lpPrivider1Assets * 12 / 10 + 1, makeAddr("lpProvider2"));
         console2.log("lpPrivider1Assets + 20%", lpPrivider1Assets);
 
@@ -1614,7 +1554,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         assertGt(rewardsBalanceCollateral1 + rewardsBalanceProtected1, 0, "[lpProvider1] has claimable rewards");
 
         vm.prank(makeAddr("lpProvider1"));
-        // forge-lint: disable-next-line(unused-return)
         gauge.claimRewards(makeAddr("lpProvider1"));
 
         _moveUntillDefaultingPossible(makeAddr("borrower2"), 0.001e18, 1 hours);
@@ -1626,7 +1565,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         assertGt(collateralRewards2 + protectedRewards2, 0, "expect ANY rewards from second liquidation");
 
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 hours);
 
         console2.log("block.timestamp", block.timestamp);
@@ -1649,7 +1587,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         assertGt(rewardsBalanceCollateral2 + rewardsBalanceProtected2, 0, "[lpProvider2] has claimable rewards");
 
         vm.prank(makeAddr("lpProvider2"));
-        // forge-lint: disable-next-line(unused-return)
         gauge.claimRewards(makeAddr("lpProvider2"));
 
         assertLe(
@@ -1696,21 +1633,17 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         uint64 _collateral = 10e18;
 
         ISiloIncentivesController gauge1 = gauge;
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         (, ISilo debtSilo) = _getSilos();
         uint256 shares1 = debtSilo.deposit(_collateral, makeAddr("lpProvider1"));
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         _removeIncentiveController();
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         uint256 shares2 = debtSilo.deposit(_collateral, makeAddr("lpProvider2"));
         assertEq(shares1, shares2, "we should get same shares, because no interest yet");
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         // it will stay not liquidated
@@ -1719,16 +1652,13 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
 
         console2.log("protected shares borrower=", borrowerProtectedShareToken.balanceOf(borrower));
         assertTrue(success, "create position should succeed");
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         gauge2 = _createIncentiveController();
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         success = _createPosition({_borrower: makeAddr("borrower2"), _collateral: 1e18, _protected: 0, _maxOut: true});
         assertTrue(success, "create position2 should succeed");
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         _moveUntillDefaultingPossible(makeAddr("borrower2"), 0.001e18, 1 hours);
@@ -1736,21 +1666,17 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         success =
             _createPosition({_borrower: makeAddr("borrower3"), _collateral: 0, _protected: 0.1e18, _maxOut: true});
         assertTrue(success, "create position3 should succeed");
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         vm.prank(makeAddr("keeper2"));
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(makeAddr("borrower2"));
 
         assertEq(borrowerProtectedShareToken.balanceOf(address(gauge2)), 0, "gauge2 should have no protected rewards");
 
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         _removeIncentiveController();
         gauge3 = _createIncentiveController();
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         if (_warp) vm.warp(block.timestamp + 1 hours);
 
         _moveUntillDefaultingPossible(makeAddr("borrower3"), 0.001e18, 1 hours);
@@ -1758,7 +1684,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         console2.log("max repay", debtSilo.maxRepay(makeAddr("borrower3")));
         console2.log("protected shares=", borrowerProtectedShareToken.balanceOf(makeAddr("borrower3")));
         vm.prank(makeAddr("keeper3"));
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(makeAddr("borrower3"));
         _printLtv(makeAddr("borrower3"));
 
@@ -1786,12 +1711,10 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         whitelist.grantRole(role, allowed);
 
         vm.expectRevert(Whitelist.OnlyAllowedRole.selector);
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(address(2));
 
         vm.prank(allowed);
         vm.expectRevert(IPartialLiquidation.UserIsSolvent.selector);
-        // forge-lint: disable-next-line(unused-return)
         defaulting.liquidationCallByDefaulting(address(2));
     }
 
@@ -1811,7 +1734,6 @@ abstract contract DefaultingLiquidationCommon is DefaultingLiquidationAsserts {
         IGaugeHookReceiver(address(defaulting)).setGauge(gauge, IShareToken(address(collateralSilo)));
 
         vm.expectRevert(IPartialLiquidationByDefaulting.NoControllerForCollateral.selector);
-        // forge-lint: disable-next-line(unused-return)
         defaulting.validateControllerForCollateral(address(debtSilo));
     }
 }

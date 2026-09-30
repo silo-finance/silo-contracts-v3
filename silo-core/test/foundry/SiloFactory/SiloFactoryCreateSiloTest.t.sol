@@ -58,7 +58,6 @@ contract SiloFactoryCreateSiloTest is SiloLittleHelper, IntegrationTest {
     FOUNDRY_PROFILE=core_test forge test -vv --ffi --mt test_createSilo
     */
     function test_createSilo() public {
-        // forge-lint: disable-next-line(unused-return)
         (, ISiloConfig.InitData memory initData,) = siloData.getConfigData(SILO_TO_DEPLOY);
 
         uint256 currentSiloId = 3001;
@@ -119,7 +118,6 @@ contract SiloFactoryCreateSiloTest is SiloLittleHelper, IntegrationTest {
         IInterestRateModelV2Config modelConfigAddr0 = InterestRateModelV2(configData0.interestRateModel).irmConfig();
         IInterestRateModelV2.Config memory irmConfigUsed0 = modelConfigAddr0.getConfig();
 
-        // forge-lint: disable-next-line(unused-return)
         (SiloConfigData.ConfigData memory siloConfigData,,) = siloData.getConfigData(SILO_TO_DEPLOY);
         IInterestRateModelV2.Config memory irmConfigExpected0 =
             modelData.getConfigData(siloConfigData.interestRateModelConfig0);
@@ -141,7 +139,6 @@ contract SiloFactoryCreateSiloTest is SiloLittleHelper, IntegrationTest {
     forge test -vv --ffi --mt test_createSilo_zeroes
     */
     function test_createSilo_zeroes() public {
-        // forge-lint: disable-next-line(unused-return)
         (, ISiloConfig.InitData memory initData,) = siloData.getConfigData(SILO_TO_DEPLOY);
 
         address siloImpl = address(new Silo(siloFactory));
@@ -195,7 +192,6 @@ contract SiloFactoryCreateSiloTest is SiloLittleHelper, IntegrationTest {
     forge test -vv --ffi --mt test_createSilo_NewSiloEvent
     */
     function test_createSilo_NewSiloEvent() public {
-        // forge-lint: disable-next-line(unused-return)
         (, ISiloConfig.InitData memory initData,) = siloData.getConfigData(SILO_TO_DEPLOY);
 
         address siloImpl = address(new Silo(siloFactory));
@@ -210,7 +206,6 @@ contract SiloFactoryCreateSiloTest is SiloLittleHelper, IntegrationTest {
 
         vm.expectEmit(true, true, true, false);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit NewSilo(siloImpl, makeAddr("token0"), makeAddr("token1"), silo0, silo1, address(config));
 
         siloFactory.createSilo(

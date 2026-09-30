@@ -48,9 +48,7 @@ contract EchidnaSetup is SiloLittleHelper, Test {
             uint256 ans = low + (value % (high - low + 1));
             string memory valueStr = Strings.toString(value);
             string memory ansStr = Strings.toString(ans);
-            // forge-lint: disable-next-line(encode-packed-collision)
             bytes memory message = abi.encodePacked("Clamping value ", valueStr, " to ", ansStr);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log(string(message));
             return actors[ans];
         }
@@ -59,9 +57,7 @@ contract EchidnaSetup is SiloLittleHelper, Test {
     }
 
     function _invariant_checkForInterest(ISilo _silo) internal returns (bool noInterest) {
-        // forge-lint: disable-next-line(unused-return)
         (, uint256 interestRateTimestamp,,,) = _silo.getSiloStorage();
-        // forge-lint: disable-next-line(block-timestamp)
         noInterest = block.timestamp == interestRateTimestamp;
 
         if (noInterest) assertEq(_silo.accrueInterest(), 0, "no interest should be applied");
@@ -76,9 +72,7 @@ contract EchidnaSetup is SiloLittleHelper, Test {
 
         isSolvent = silo0.isSolvent(_user);
 
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken0) = siloConfig.getShareTokens(address(silo0));
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken1) = siloConfig.getShareTokens(address(silo1));
 
         uint256 debtShareBalance0 = IShareToken(debtShareToken0).balanceOf(_user);
@@ -107,15 +101,12 @@ contract EchidnaSetup is SiloLittleHelper, Test {
         (address protectedShareToken0, address collateralShareToken0, address debtShareToken0) =
             siloConfig.getShareTokens(address(silo0));
 
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken1) = siloConfig.getShareTokens(address(silo1));
 
         uint256 debtBalance0 = IShareToken(debtShareToken0).balanceOf(_user);
         uint256 debtBalance1 = IShareToken(debtShareToken1).balanceOf(_user);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("debtBalance0 (one of it must be 0)", debtBalance0, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("debtBalance1 (one of it must be 0)", debtBalance1, 18);
 
         assertEq(debtBalance0 * debtBalance1, 0, "[onlySolventUserCanRedeem] one balance must be 0");
@@ -145,9 +136,7 @@ contract EchidnaSetup is SiloLittleHelper, Test {
     }
 
     function _checkForInterest(ISilo _silo) internal returns (bool noInterest) {
-        // forge-lint: disable-next-line(unused-return)
         (, uint256 interestRateTimestamp,,,) = _silo.getSiloStorage();
-        // forge-lint: disable-next-line(block-timestamp)
         noInterest = block.timestamp == interestRateTimestamp;
 
         if (noInterest) assertEq(_silo.accrueInterest(), 0, "no interest should be applied");
@@ -158,33 +147,21 @@ contract EchidnaSetup is SiloLittleHelper, Test {
     }
 
     function _dumpState(address _actor) internal {
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("block.number:", block.number);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("block.timestamp:", block.timestamp);
 
-        // forge-lint: disable-next-line(unused-return)
         (uint256 collectedFees0, uint256 irmTimestamp0,,,) = silo0.getSiloStorage();
-        // forge-lint: disable-next-line(unused-return)
         (uint256 collectedFees1, uint256 irmTimestamp1,,,) = silo1.getSiloStorage();
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("getLiquidity0:", silo0.getLiquidity(), 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("getLiquidity1:", silo1.getLiquidity(), 18);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("collectedFees0:", collectedFees0, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("irmTimestamp0:", irmTimestamp0);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("collectedFees1:", collectedFees1, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("irmTimestamp1:", irmTimestamp1);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV0:", silo0.getLtv(_actor), 16);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV1:", silo1.getLtv(_actor), 16);
 
         (address protectedToken0, address collateralToken0, address debtShareToken0) =
@@ -193,65 +170,47 @@ contract EchidnaSetup is SiloLittleHelper, Test {
         (address protectedToken1, address collateralToken1, address debtShareToken1) =
             siloConfig.getShareTokens(address(silo1));
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "protectedToken0.balanceOf:", IShareToken(protectedToken0).balanceOf(_actor), 18
         );
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "collateralToken0.balanceOf:", IShareToken(collateralToken0).balanceOf(_actor), 18
         );
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "debtShareToken0.balanceOf:", IShareToken(debtShareToken0).balanceOf(_actor), 18
         );
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "protectedToken1.balanceOf:", IShareToken(protectedToken1).balanceOf(_actor), 18
         );
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "collateralToken1.balanceOf:", IShareToken(collateralToken1).balanceOf(_actor), 18
         );
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "debtShareToken1.balanceOf:", IShareToken(debtShareToken1).balanceOf(_actor), 18
         );
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxWithdraw0:", silo0.maxWithdraw(_actor), 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxRedeem0:", silo0.maxRedeem(_actor), 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxWithdraw1:", silo1.maxWithdraw(_actor), 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxRedeem1:", silo1.maxRedeem(_actor), 18);
 
         uint256 maxBorrow0 = silo0.maxBorrow(_actor);
         uint256 maxBorrow1 = silo1.maxBorrow(_actor);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxBorrow0:", maxBorrow0, 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxBorrow1:", maxBorrow1, 18);
 
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "convertToShares(maxBorrow0):", silo0.convertToShares(maxBorrow0, ISilo.AssetType.Debt), 18
         );
-        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "convertToShares(maxBorrow1):", silo1.convertToShares(maxBorrow1, ISilo.AssetType.Debt), 18
         );
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxBorrowShares0:", silo0.maxBorrowShares(_actor), 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxBorrowShares1:", silo1.maxBorrowShares(_actor), 18);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("liquidity0", silo0.getLiquidity(), 18);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("liquidity1", silo1.getLiquidity(), 18);
     }
 }

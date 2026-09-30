@@ -19,9 +19,7 @@ contract GetDebtAssetsReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().getDebtAssets();
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().getDebtAssets();
     }
 }

@@ -3,7 +3,6 @@ pragma solidity ^0.8.10;
 
 import {MintableToken} from "../../_common/MintableToken.sol";
 
-// forge-lint: disable-next-line(locked-ether)
 contract WETH {
     MintableToken immutable WRAPPED;
 

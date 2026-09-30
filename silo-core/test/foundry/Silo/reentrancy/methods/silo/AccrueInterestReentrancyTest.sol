@@ -19,9 +19,7 @@ contract AccrueInterestReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal {
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().accrueInterest();
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().accrueInterest();
     }
 }

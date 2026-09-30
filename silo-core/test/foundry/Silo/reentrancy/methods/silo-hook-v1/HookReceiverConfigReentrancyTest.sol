@@ -21,7 +21,6 @@ contract HookReceiverConfigReentrancyTest is MethodReentrancyTest {
 
     function _ensureItWillNotRevert() internal view {
         address hookReceiver = TestStateLib.hookReceiver();
-        // forge-lint: disable-next-line(unused-return)
         IGaugeHookReceiver(hookReceiver).hookReceiverConfig(address(this));
     }
 }

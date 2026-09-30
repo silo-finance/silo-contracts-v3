@@ -63,12 +63,10 @@ contract WithdrawWhenDebtTest is SiloLittleHelper, Test {
 
         vm.prank(borrower);
         vm.expectRevert(ISilo.NotSolvent.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(1, borrower, borrower);
 
         vm.prank(borrower);
         vm.expectRevert(ISilo.NotSolvent.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(1, borrower, borrower, ISilo.CollateralType.Protected);
     }
 
@@ -81,9 +79,7 @@ contract WithdrawWhenDebtTest is SiloLittleHelper, Test {
         ISilo collateralSilo = silo0;
 
         (address protectedShareToken, address collateralShareToken,) =
-            // forge-lint: disable-next-line(unused-return)
             siloConfig.getShareTokens(address(collateralSilo));
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(address(silo1));
 
         // collateral

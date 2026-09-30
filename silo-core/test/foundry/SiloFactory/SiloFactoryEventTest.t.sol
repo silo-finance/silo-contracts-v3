@@ -55,9 +55,7 @@ contract SiloFactoryEventTest is Test {
     address hookReceiver1 = makeAddr("hookReceiver1");
 
     function setUp() public {
-        // forge-lint: disable-next-line(unsafe-typecast)
         uint24 protectedTokenType = uint24(Hook.PROTECTED_TOKEN);
-        // forge-lint: disable-next-line(unsafe-typecast)
         uint24 debtTokenType = uint24(Hook.DEBT_TOKEN);
 
         vm.mockCall(silo0, abi.encodeWithSelector(ISilo.initialize.selector, address(siloConfig)), abi.encode(true));
@@ -107,19 +105,15 @@ contract SiloFactoryEventTest is Test {
     */
     function test_siloFactory_events() public {
         vm.expectEmit(true, true, true, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloFactory.NewSiloShareTokens(protectedShareToken0, silo0, debtShareToken0);
 
         vm.expectEmit(true, true, true, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloFactory.NewSiloHook(silo0, hookReceiver0);
 
         vm.expectEmit(true, true, true, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloFactory.NewSiloShareTokens(protectedShareToken1, silo1, debtShareToken1);
 
         vm.expectEmit(true, true, true, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloFactory.NewSiloHook(silo1, hookReceiver1);
 
         factoryMock.createSilo({

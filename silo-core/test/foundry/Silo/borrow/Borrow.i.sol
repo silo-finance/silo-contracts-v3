@@ -41,20 +41,14 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
 
         //@audit-issue BORROWING_HSPOST_F: User borrowing maxBorrow should never revert
         // error -> NotEnoughLiquidity
-        // forge-lint: disable-next-line(unused-return)
         silo0.mint(11638058238813243150339, borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(8533010, address(1));
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(8256930, borrower, borrower);
 
-        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 12);
-        // forge-lint: disable-next-line(unused-return)
         silo1.accrueInterest();
         vm.warp(block.timestamp + 7);
 
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(silo1.maxBorrow(borrower), borrower, borrower);
     }
     
@@ -67,11 +61,8 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
 
         address borrower = address(this);
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.mint(11638058238813243150339, borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(1e18, address(1));
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(8256930, borrower, borrower);
 
         MaxWithdraw maxWithdraw = new MaxWithdraw();
@@ -84,19 +75,15 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         vm.expectRevert();
         maxWithdraw.doMaxWithdraw(silo0);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV", SILO_LENS.getLtv(silo0, borrower), 16);
 
-        // forge-lint: disable-next-line(unused-return)
         silo0.approve(address(maxWithdraw), type(uint256).max);
         maxWithdraw.doMaxWithdraw(silo0);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV", SILO_LENS.getLtv(silo0, borrower), 16);
 
         vm.warp(block.timestamp + 100 seconds);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV", SILO_LENS.getLtv(silo0, borrower), 16);
     }
 
@@ -105,7 +92,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
     */
     function test_borrow_all_zeros() public {
         vm.expectRevert(ISilo.InputZeroShares.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(0, address(0), address(0));
     }
 
@@ -117,7 +103,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         address borrower = address(1);
 
         vm.expectRevert(ISilo.InputZeroShares.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(assets, borrower, borrower);
     }
 
@@ -129,7 +114,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         address receiver = address(10);
 
         vm.expectRevert(ISilo.NotEnoughLiquidity.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(assets, receiver, receiver);
     }
 
@@ -144,11 +128,9 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         _deposit(assets, borrower);
 
         vm.expectRevert(ISilo.AboveMaxLtv.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(assets, borrower, borrower);
 
         vm.expectRevert(ISilo.NotEnoughLiquidity.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(assets, borrower, borrower);
     }
 
@@ -167,7 +149,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         // because we want to mint for receiver
         vm.expectRevert(abi.encodeWithSelector(IShareToken.AmountExceedsAllowance.selector));
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowForReceiver, borrower, makeAddr("receiver"));
     }
 
@@ -183,7 +164,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
 
         vm.expectRevert(ISilo.NotEnoughLiquidity.selector);
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(1, borrower, receiver);
     }
 
@@ -203,7 +183,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         // because we want to mint for receiver
         vm.expectRevert(abi.encodeWithSelector(IShareToken.AmountExceedsAllowance.selector));
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(borrowForReceiver, borrower, receiver);
     }
 
@@ -221,7 +200,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
 
         vm.expectRevert(ISilo.AboveMaxLtv.selector);
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(assets, borrower, borrower);
     }
 
@@ -235,7 +213,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         _deposit(assets, borrower, ISilo.CollateralType.Protected);
 
         vm.expectRevert(ISilo.NotEnoughLiquidity.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(assets, borrower, borrower);
     }
 
@@ -250,7 +227,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         _deposit(assets, borrower);
 
         vm.expectRevert(ISilo.AboveMaxLtv.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(assets, borrower, borrower);
     }
 
@@ -266,7 +242,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         _borrow(1, borrower);
 
         vm.expectRevert(ISilo.BorrowNotPossible.selector);
-        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(assets, borrower, borrower);
     }
 
@@ -297,7 +272,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         _depositForBorrow(assets, makeAddr("depositor"));
         _deposit(assets, borrower, ISilo.CollateralType.Protected);
 
-        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken, address collateralShareToken,) = siloConfig.getShareTokens(address(silo1));
 
         _depositForBorrow(5, frontrunner);
@@ -325,7 +299,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         _deposit(assets, borrower, ISilo.CollateralType.Protected);
 
         vm.expectEmit(address(silo1));
-        // forge-lint: disable-next-line(reentrancy-events)
         emit ISilo.CollateralTypeChanged(borrower);
 
         _borrow(12345, borrower);
@@ -356,7 +329,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
 
         vm.expectRevert(ISilo.AboveMaxLtv.selector);
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(borrowToMuch, borrower, borrower);
 
         _borrow(maxBorrow, borrower);
@@ -387,9 +359,7 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         // deposit, so we can borrow
         _depositForBorrow(depositAssets * 2, depositor);
 
-        // forge-lint: disable-next-line(unused-return)
         (, address collateralShareToken,) = siloConfig.getShareTokens(address(silo0));
-        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(address(silo1));
 
         assertEq(
@@ -514,7 +484,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         _depositForBorrow(_forBorrow, depositor);
 
         vm.expectEmit(address(silo1));
-        // forge-lint: disable-next-line(reentrancy-events)
         emit ISilo.CollateralTypeChanged(borrower);
 
         uint256 amount = _borrowShares(1, borrower);
@@ -537,13 +506,11 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         assertEq(maxBorrow, 0, "maxBorrow should be 0, because this is where collateral is");
 
         maxBorrow = silo1.maxBorrow(_borrower);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxBorrow #1", maxBorrow, 18);
         // -1 because of the fractions underestimation
         assertEq(maxBorrow, maxLtv - 1, "maxBorrow borrower can do, maxLTV is 75%");
 
         uint256 borrowAmount = maxBorrow / 2;
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("first borrow amount", borrowAmount, 18);
 
         uint256 convertToShares = silo1.convertToShares(borrowAmount, ISilo.AssetType.Debt);
@@ -576,7 +543,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         );
 
         borrowAmount = silo1.maxBorrow(_borrower);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrowAmount #2", borrowAmount, 18);
         assertEq(borrowAmount, maxLtv / 2 - 2, "borrow second time"); // -2 because of the fractions underestimation
 
@@ -594,7 +560,6 @@ contract BorrowIntegrationTest is SiloLittleHelper, Test {
         );
 
         // collateral silo
-        // forge-lint: disable-next-line(unused-return)
         (,, _debtShareToken) = siloConfig.getShareTokens(address(silo0));
 
         assertEq(

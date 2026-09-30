@@ -14,7 +14,6 @@ contract MaxLiquidationLTV100PartialTest is MaxLiquidationCommon {
     forge test -vv --ffi --mt test_maxLiquidation_LTV100_partial_sToken_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 100
-    // forge-lint: disable-next-item(empty-block)
     function test_maxLiquidation_LTV100_partial_sToken() public {
         // I did not found cases for this scenario
     }
@@ -23,7 +22,6 @@ contract MaxLiquidationLTV100PartialTest is MaxLiquidationCommon {
     forge test -vv --ffi --mt test_maxLiquidation_LTV100_partial_token_fuzz
     */
     /// forge-config: core_test.fuzz.runs = 100
-    // forge-lint: disable-next-item(empty-block)
     function test_maxLiquidation_LTV100_partial_token() public {
         // I did not found cases for this scenario
     }

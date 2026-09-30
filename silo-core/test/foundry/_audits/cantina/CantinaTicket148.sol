@@ -32,9 +32,7 @@ contract CantinaTicket148 is CantinaTicket {
         uint256 seedAmount = 100e18; // 100 WETH
         WETH.mint(seeder, seedAmount);
         vm.startPrank(seeder);
-        // forge-lint: disable-next-line(unused-return)
         WETH.approve(address(silo0), seedAmount);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(seedAmount, seeder, ISilo.CollateralType.Collateral);
         vm.stopPrank();
 
@@ -45,10 +43,8 @@ contract CantinaTicket148 is CantinaTicket {
         uint256 aliceDeposit = 1e15; // 0.001 WETH
         WETH.mint(alice, aliceDeposit);
         vm.startPrank(alice);
-        // forge-lint: disable-next-line(unused-return)
         WETH.approve(address(silo0), aliceDeposit);
         /* SILO: deposit chnaged to Collateral */
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(aliceDeposit, alice, ISilo.CollateralType.Collateral);
         vm.stopPrank();
 
@@ -59,9 +55,7 @@ contract CantinaTicket148 is CantinaTicket {
         console.log("\n=== Step 3: Seed USDC Liquidity ===");
         uint256 usdcLiquidity = 1_000_000e6; // 1M USDC
         USDC.mint(address(this), usdcLiquidity);
-        // forge-lint: disable-next-line(unused-return)
         USDC.approve(address(silo1), usdcLiquidity);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(usdcLiquidity, address(this), ISilo.CollateralType.Collateral);
 
         console.log("Contract deposited:", usdcLiquidity, "USDC into Silo1");
@@ -76,7 +70,6 @@ contract CantinaTicket148 is CantinaTicket {
         console.log("\n=== Step 4: Alice's Borrow ===");
         uint256 aliceBorrow = 150_000e6; // 150k USDC
         vm.startPrank(alice);
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(aliceBorrow, alice, alice);
         vm.stopPrank();
 
@@ -88,9 +81,7 @@ contract CantinaTicket148 is CantinaTicket {
         uint256 bobDeposit = 1000e18; // 1000 WETH
         WETH.mint(bob, bobDeposit);
         vm.startPrank(bob);
-        // forge-lint: disable-next-line(unused-return)
         WETH.approve(address(silo0), bobDeposit);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(bobDeposit, bob, ISilo.CollateralType.Collateral);
         vm.stopPrank();
 
@@ -133,11 +124,9 @@ contract CantinaTicket148 is CantinaTicket {
         //prove
         assertTrue(aliceProfit > 0, "Alice USDC profit");
         assertTrue(bobLoss == 0, "Bob NOT lost WETH");
-        // forge-lint: disable-next-line(incorrect-strict-equality)
         assertTrue(silo1.balanceOf(alice) == 0, "Alice debt");
         /* SILO: convertToAsset to asset were missing */
         //        assertTrue(silo0.balanceOf(bob) < bobDeposit, "Bob WETH shares lost");
-        // forge-lint: disable-next-line(incorrect-strict-equality)
         assertTrue(silo0.convertToAssets(silo0.balanceOf(bob)) == bobDeposit, "Bob WETH shares NOT lost");
     }
 }

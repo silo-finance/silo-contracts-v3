@@ -12,9 +12,7 @@ abstract contract ShareTokenMethodReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
         ISilo silo1 = TestStateLib.silo1();
 
-        // forge-lint: disable-next-line(unused-return)
         (address protected0,, address debt0) = config.getShareTokens(address(silo0));
-        // forge-lint: disable-next-line(unused-return)
         (address protected1,, address debt1) = config.getShareTokens(address(silo1));
 
         func(protected0);
@@ -29,9 +27,7 @@ abstract contract ShareTokenMethodReentrancyTest is MethodReentrancyTest {
         address silo0 = address(TestStateLib.silo0());
         address silo1 = address(TestStateLib.silo1());
 
-        // forge-lint: disable-next-line(unused-return)
         (address protected0,, address debt0) = config.getShareTokens(silo0);
-        // forge-lint: disable-next-line(unused-return)
         (address protected1,, address debt1) = config.getShareTokens(silo1);
 
         func(silo0, protected0);

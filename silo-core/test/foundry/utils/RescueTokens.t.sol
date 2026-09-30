@@ -30,7 +30,6 @@ contract RescueTokensTest is Test {
         assertEq(_token.balanceOf(address(_rescue)), amount);
 
         vm.expectEmit(true, true, true, true);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit RescueTokens.TokensRescued({ token: address(_token), amount: amount });
 
         _rescue.rescueTokens({ _token: IERC20(address(_token)) });

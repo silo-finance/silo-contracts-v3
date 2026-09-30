@@ -46,7 +46,6 @@ contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
         ISilo.AccrueInterestInMemory accrueInMemory;
 
         vm.expectRevert();
-        // forge-lint: disable-next-line(uninitialized-local, unused-return)
         IMPL.isBelowMaxLtv(collateralConfig, debtConfig, borrower, accrueInMemory);
     }
 
@@ -57,11 +56,9 @@ contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
         address borrower;
 
         (ISiloConfig.ConfigData memory collateralConfig, ISiloConfig.ConfigData memory debtConfig) =
-            // forge-lint: disable-next-line(uninitialized-local)
             siloConfig.getConfigsForSolvency(borrower);
 
         vm.expectRevert(); // because configs are empty
-        // forge-lint: disable-next-line(unused-return)
         IMPL.isBelowMaxLtv(collateralConfig, debtConfig, borrower, ISilo.AccrueInterestInMemory.Yes);
     }
 
@@ -100,7 +97,6 @@ contract IsBelowMaxLtvTest is Test, SiloLittleHelper {
         _borrow(silo1.maxBorrow(borrower), borrower);
 
         vm.prank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(2, borrower, borrower);
 
         (ISiloConfig.ConfigData memory collateralConfig, ISiloConfig.ConfigData memory debtConfig) =

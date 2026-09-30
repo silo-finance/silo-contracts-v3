@@ -13,7 +13,6 @@ contract DefaultingLiquidationHookV3Test is Test {
         SiloHookV3 hook = new SiloHookV3();
 
         vm.expectRevert(SiloHookV3.NotSupported.selector);
-        // forge-lint: disable-next-line(unused-return)
         hook.liquidationCall(address(0), address(0), address(0), 0, false);
     }
 

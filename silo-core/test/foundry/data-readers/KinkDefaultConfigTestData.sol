@@ -150,31 +150,18 @@ contract KinkDefaultConfigTestData is Test {
         // console2.log("config transform");
 
         _out.config = IDynamicKinkModel.Config({
-            // forge-lint: disable-next-line(unsafe-typecast)
             ulow: int256(_in.config.ulow),
-            // forge-lint: disable-next-line(unsafe-typecast)
             u1: int256(_in.config.u1),
-            // forge-lint: disable-next-line(unsafe-typecast)
             u2: int256(_in.config.u2),
-            // forge-lint: disable-next-line(unsafe-typecast)
             ucrit: int256(_in.config.ucrit),
-            // forge-lint: disable-next-line(unsafe-typecast)
             rmin: int256(_in.config.rmin),
-            // forge-lint: disable-next-line(unsafe-typecast)
             kmin: int256(_in.config.kmin).toInt96(),
-            // forge-lint: disable-next-line(unsafe-typecast)
             kmax: int256(_in.config.kmax).toInt96(),
-            // forge-lint: disable-next-line(unsafe-typecast)
             alpha: int256(_in.config.alpha),
-            // forge-lint: disable-next-line(unsafe-typecast)
             cminus: int256(_in.config.cminus),
-            // forge-lint: disable-next-line(unsafe-typecast)
             cplus: int256(_in.config.cplus),
-            // forge-lint: disable-next-line(unsafe-typecast)
             c1: int256(_in.config.c1),
-            // forge-lint: disable-next-line(unsafe-typecast)
             c2: int256(_in.config.c2),
-            // forge-lint: disable-next-line(unsafe-typecast)
             dmax: int256(_in.config.dmax)
         });
 

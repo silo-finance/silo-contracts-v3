@@ -38,7 +38,6 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
 
     function setUp() public {
         uint256 blockToFork = 56376270;
-        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), blockToFork);
 
         SiloFixture siloFixture = new SiloFixture();
@@ -50,7 +49,6 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
         configOverride.token1 = AddrLib.getAddress(AddrKey.wS);
         configOverride.configName = "Silo_stS_S";
 
-        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,, hookReceiver) = siloFixture.deploy_local(configOverride);
 
         token0 = MintableToken(AddrLib.getAddress(AddrKey.stS));
@@ -67,7 +65,6 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
         lens = new SiloLens();
 
         // another deployment so we have silo for flashloan
-        // forge-lint: disable-next-line(unused-return)
         (,, flashLoanFrom,,,) = siloFixture.deploy_local(configOverride);
         vm.label(address(flashLoanFrom), "flashLoanFrom");
     }
@@ -81,13 +78,11 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
 
         address borrower = makeAddr("borrower");
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("getLtv", lens.getLtv(silo1, borrower), 16);
 
         assertFalse(silo1.isSolvent(borrower), "user should be insolvent");
         assertLt(lens.getLtv(silo1, borrower), 0.98e18, "we want healthy position");
 
-        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay,) = IPartialLiquidation(hookReceiver).maxLiquidation(borrower);
 
         assertLt(debtToRepay, silo1.maxRepay(borrower), "we want partial liquidation");
@@ -113,13 +108,11 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
 
         address borrower = makeAddr("borrower");
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("getLtv", lens.getLtv(silo1, borrower), 16);
 
         assertFalse(silo1.isSolvent(borrower), "user should be insolvent");
         assertLt(lens.getLtv(silo1, borrower), 1e18, "we want healthy position");
 
-        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay,) = IPartialLiquidation(hookReceiver).maxLiquidation(borrower);
 
         assertEq(debtToRepay, silo1.maxRepay(borrower), "we want FULL");
@@ -139,7 +132,6 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
     function _executeLiquidation() internal {
         address borrower = makeAddr("borrower");
 
-        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate,,) = IPartialLiquidation(hookReceiver).maxLiquidation(borrower);
 
         // note: this is swap data for stS => sW with 50% slippage allowance
@@ -161,7 +153,6 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
         liquidation.collateralAsset = AddrLib.getAddress(AddrKey.stS);
         liquidation.user = borrower;
 
-        // forge-lint: disable-next-item(unused-return)
         liquidationHelper.executeLiquidation(
             flashLoanFrom, AddrLib.getAddress(AddrKey.wS), silo1.maxRepay(borrower), liquidation, swapsInputs0x
         );
@@ -191,38 +182,28 @@ contract LiquidationHelperOdosTest is SiloLittleHelper, IntegrationTest {
         deal(AddrLib.getAddress(AddrKey.wS), depositor, deposit);
 
         vm.startPrank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         IERC20(AddrLib.getAddress(AddrKey.wS)).approve(address(silo1), deposit);
-        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(deposit, depositor, ISilo.CollateralType.Collateral);
         vm.stopPrank();
 
         vm.startPrank(borrower);
-        // forge-lint: disable-next-line(unused-return)
         IERC20(AddrLib.getAddress(AddrKey.stS)).approve(address(silo0), assets);
-        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(assets, borrower, ISilo.CollateralType.Collateral);
 
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxBorrow", silo1.maxBorrow(borrower), 18);
 
-        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(silo1.maxBorrow(borrower), borrower, borrower);
-        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(silo0.maxWithdraw(borrower), borrower, borrower, ISilo.CollateralType.Collateral);
         vm.stopPrank();
 
         uint256 amountToRepay = silo1.maxRepay(borrower);
         amountToRepay += flashLoanFrom.flashFee(AddrLib.getAddress(AddrKey.wS), amountToRepay);
-        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("repay + flash fee", amountToRepay, 18);
 
         deal(AddrLib.getAddress(AddrKey.wS), depositor, amountToRepay);
 
         vm.startPrank(depositor);
-        // forge-lint: disable-next-line(unused-return)
         IERC20(AddrLib.getAddress(AddrKey.wS)).approve(address(flashLoanFrom), amountToRepay);
-        // forge-lint: disable-next-line(unused-return)
         flashLoanFrom.deposit(amountToRepay, depositor, ISilo.CollateralType.Collateral);
         vm.stopPrank();
     }

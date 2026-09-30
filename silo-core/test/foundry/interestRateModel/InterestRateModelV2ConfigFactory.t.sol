@@ -37,7 +37,6 @@ contract InterestRateModelV2FactoryTest is Test, InterestRateModelConfigs {
         vm.expectRevert(IInterestRateModelV2.InvalidUopt.selector);
         factory.verifyConfig(config);
 
-        // forge-lint: disable-next-line(unsafe-typecast)
         config.uopt = int256(factory.DP());
         vm.expectRevert(IInterestRateModelV2.InvalidUopt.selector);
         factory.verifyConfig(config);
@@ -48,7 +47,6 @@ contract InterestRateModelV2FactoryTest is Test, InterestRateModelConfigs {
         vm.expectRevert(IInterestRateModelV2.InvalidUcrit.selector);
         factory.verifyConfig(config);
 
-        // forge-lint: disable-next-line(unsafe-typecast)
         config.ucrit = int256(factory.DP());
         vm.expectRevert(IInterestRateModelV2.InvalidUcrit.selector);
         factory.verifyConfig(config);
@@ -146,14 +144,11 @@ contract InterestRateModelV2FactoryTest is Test, InterestRateModelConfigs {
         uint256 snapshot = vm.snapshotState();
 
         vm.prank(eoa1);
-        // forge-lint: disable-next-line(unused-return)
         (, IInterestRateModelV2 irm) = factory.create(config, bytes32(0));
 
-        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshot);
 
         vm.prank(eoa2);
-        // forge-lint: disable-next-line(unused-return)
         (, IInterestRateModelV2 irm2) = factory.create(config, bytes32(0));
 
         assertNotEq(address(irm), address(irm2), "irm address is the same");

@@ -35,16 +35,12 @@ contract MaxLiquidationDustWithChunksTest is MaxLiquidationDustTest {
         emit log_named_decimal_uint("[DustWithChunks] ltv before", silo0.getLtv(BORROWER), 16);
 
         for (uint256 i; i < 5; i++) {
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[DustWithChunks] case ------------------------", i);
-            // forge-lint: disable-next-line(calls-loop)
             bool isSolvent = silo0.isSolvent(BORROWER);
 
-            // forge-lint: disable-next-line(require-revert-in-loop)
             if (isSolvent) revert("it should be NOT possible to liquidate with chunk, so why user solvent?");
 
             uint256 testDebtToCover = _calculateChunk(maxDebtToCover, i);
-            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("[DustWithChunks] testDebtToCover", testDebtToCover);
 
             _liquidationCallReverts(testDebtToCover, _receiveSToken);
@@ -55,10 +51,8 @@ contract MaxLiquidationDustWithChunksTest is MaxLiquidationDustTest {
     }
 
     function _liquidationCallReverts(uint256 _maxDebtToCover, bool _receiveSToken) private {
-        // forge-lint: disable-next-line(calls-loop)
         vm.expectRevert(IPartialLiquidation.FullLiquidationRequired.selector);
 
-        // forge-lint: disable-next-item(calls-loop, unused-return)
         partialLiquidation.liquidationCall(
             address(token0), address(token1), BORROWER, _maxDebtToCover, _receiveSToken
         );

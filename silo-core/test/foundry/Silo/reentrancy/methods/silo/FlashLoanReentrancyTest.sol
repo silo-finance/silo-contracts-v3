@@ -17,7 +17,6 @@ contract FlashLoanReentrancyTest is MethodReentrancyTest {
         external
         returns (bytes32)
     {
-        // forge-lint: disable-next-line(unused-return)
         IERC20(_token).approve(msg.sender, _amount + _fee);
         return FLASHLOAN_CALLBACK;
     }
@@ -51,10 +50,8 @@ contract FlashLoanReentrancyTest is MethodReentrancyTest {
         token.mint(address(this), amount); // to cover the flash loan fee
 
         // no reentrancy test as flashLoan allows to reenter
-        // forge-lint: disable-next-line(unused-return)
         silo.flashLoan(IERC3156FlashBorrower(address(this)), address(token), flashLoanAmount, data);
 
-        // forge-lint: disable-next-line(unused-return)
         vm.revertToState(snapshotId);
     }
 }

@@ -19,9 +19,7 @@ contract DecimalsReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().decimals();
-        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().decimals();
     }
 }

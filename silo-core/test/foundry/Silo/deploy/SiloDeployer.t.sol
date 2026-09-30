@@ -48,7 +48,6 @@ contract SiloDeployerTest is Test {
     }
 
     function test_siloDeployer_isDefaultingHook_neverRevert(address _hook) public view {
-        // forge-lint: disable-next-line(unused-return)
         siloDeployer.isDefaultingHook(_hook);
     }
 }

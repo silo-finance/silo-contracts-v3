@@ -8,7 +8,6 @@ import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 contract OracleMock is Test {
     address public immutable ADDRESS;
 
-    // forge-lint: disable-next-line(missing-zero-check)
     constructor(address _address) {
         ADDRESS = _address == address(0) ? makeAddr("OracleMock") : _address;
     }

@@ -40,6 +40,7 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
     ManualLiquidationHelper manualLiquidation;
 
     function setUp() public {
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_MAINNET"), 24498300);
 
         AddrLib.init();
@@ -58,6 +59,7 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
 
         SiloFixture siloFixture = new SiloFixture();
 
+        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,,) = siloFixture.deploy_local(overrides);
 
         siloLens = new SiloLens();
@@ -80,26 +82,34 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
         _depositUsdc(borrowerUsdt);
 
         _borrowFrom(siloUsdc, borrowerUsdc);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
 
         _borrowFrom(siloUsdt, borrowerUsdt);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 300 days);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("insolvent borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("insolvent borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
 
         assertFalse(silo0.isSolvent(borrowerUsdt), "Borrower USDT is still solvent");
         assertFalse(silo0.isSolvent(borrowerUsdc), "Borrower USDC is still solvent");
 
         usdt.approve(address(manualLiquidation), MAX_AMOUNT);
+        // forge-lint: disable-next-line(unused-return)
         usdc.approve(address(manualLiquidation), MAX_AMOUNT);
 
         manualLiquidation.executeLiquidation(siloUsdt, borrowerUsdt);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("solvent borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
 
         manualLiquidation.executeLiquidation(siloUsdc, borrowerUsdc);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("solvent borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
 
         vm.warp(block.timestamp + 3000 days);
@@ -109,15 +119,18 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
         if (!silo0.isSolvent(borrowerUsdc)) {
             expctOnePartial = true;
             manualLiquidation.executeLiquidation(siloUsdc, borrowerUsdc);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("final borrowerUsdc LTV", siloLens.getUserLTV(silo0, borrowerUsdc), 16);
         }
 
         if (!silo0.isSolvent(borrowerUsdt)) {
             expctOnePartial = true;
             manualLiquidation.executeLiquidation(siloUsdt, borrowerUsdt);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("final borrowerUsdt LTV", siloLens.getUserLTV(silo1, borrowerUsdt), 16);
         }
 
+        // forge-lint: disable-next-line(uninitialized-local)
         assertTrue(expctOnePartial, "expected one partial liquidation");
     }
 
@@ -163,7 +176,9 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
 
     function _depositUsdc(address _depositor) internal {
         vm.startPrank(_depositor);
+        // forge-lint: disable-next-line(unused-return)
         usdc.approve(address(siloUsdc), DEPOSIT_AMOUNT);
+        // forge-lint: disable-next-line(unused-return)
         siloUsdc.deposit(DEPOSIT_AMOUNT, _depositor);
         vm.stopPrank();
     }
@@ -171,6 +186,7 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
     function _depositUsdt(address _depositor) internal {
         vm.startPrank(_depositor);
         usdt.approve(address(siloUsdt), DEPOSIT_AMOUNT);
+        // forge-lint: disable-next-line(unused-return)
         siloUsdt.deposit(DEPOSIT_AMOUNT, _depositor);
         vm.stopPrank();
     }
@@ -182,10 +198,12 @@ contract PartialLiquidationUsdtTest is SiloLittleHelper, IntegrationTest {
 
         uint256 maxBorrow = _debtSilo.maxBorrow(_borrower);
         console2.log("maxBorrow", maxBorrow);
+        // forge-lint: disable-next-line(unused-return)
         _debtSilo.borrow(maxBorrow, _borrower, _borrower);
 
         uint256 maxWithdraw = collateralSilo.maxWithdraw(_borrower);
         console2.log("maxWithdraw", maxWithdraw);
+        // forge-lint: disable-next-line(unused-return)
         collateralSilo.withdraw(maxWithdraw, _borrower, _borrower);
         vm.stopPrank();
     }

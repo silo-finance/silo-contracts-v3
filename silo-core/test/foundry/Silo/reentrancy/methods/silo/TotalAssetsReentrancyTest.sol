@@ -20,7 +20,9 @@ contract TotalAssetsReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         Silo(payable(address(TestStateLib.silo0()))).totalAssets();
+        // forge-lint: disable-next-line(unused-return)
         Silo(payable(address(TestStateLib.silo1()))).totalAssets();
     }
 }

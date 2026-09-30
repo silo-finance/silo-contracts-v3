@@ -44,9 +44,11 @@ contract GetFeesAndFeeReceiversWithAssetTest is SiloLittleHelper, IntegrationTes
     function test_getFeesAndFeeReceiversWithAsset(address _newDeployer) public {
         vm.assume(_newDeployer != address(0));
 
+        // forge-lint: disable-next-line(unused-return)
         (, ISiloConfig.InitData memory initData,) = siloData.getConfigData(SILO_TO_DEPLOY);
         (address silo0, address silo1) = siloConfig.getSilos();
 
+        // forge-lint: disable-next-line(unused-return)
         (uint256 daoFee, uint256 deployerFee,, address asset) = siloConfig.getFeesWithAsset(silo0);
 
         assertGe(daoFee, siloFactory.daoFeeRange().min, "min.daoFee");
@@ -72,11 +74,13 @@ contract GetFeesAndFeeReceiversWithAssetTest is SiloLittleHelper, IntegrationTes
         vm.prank(initData.deployer);
         siloFactory.transferFrom(initData.deployer, _newDeployer, siloId);
 
+        // forge-lint: disable-next-line(unused-return)
         (, deployerFeeReceiver) = siloFactory.getFeeReceivers(silo0);
 
         assertEq(deployerFeeReceiver, _newDeployer, "deployerFeeReceiver silo0");
         assertEq(siloFactory.ownerOf(siloId), _newDeployer, "ownerOf(siloId) silo0");
 
+        // forge-lint: disable-next-line(unused-return)
         (, deployerFeeReceiver) = siloFactory.getFeeReceivers(silo1);
 
         assertEq(deployerFeeReceiver, _newDeployer, "deployerFeeReceiver silo1");

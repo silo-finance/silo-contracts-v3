@@ -8,6 +8,7 @@ import {ISilo} from "silo-core/contracts/interfaces/ISilo.sol";
 contract SiloMock is Test {
     address public immutable ADDRESS;
 
+    // forge-lint: disable-next-line(missing-zero-check)
     constructor(address _silo) {
         ADDRESS = _silo == address(0) ? makeAddr("SiloMockAddr") : _silo;
     }

@@ -40,6 +40,7 @@ contract DefaultingLiquidation_IncentiveControllerSetupTest is CloneHookV2 {
         );
 
         vm.expectRevert(IPartialLiquidationByDefaulting.EmptyCollateralShareToken.selector);
+        // forge-lint: disable-next-line(unused-return)
         defaulting.validateControllerForCollateral(silo0);
     }
 
@@ -53,6 +54,7 @@ contract DefaultingLiquidation_IncentiveControllerSetupTest is CloneHookV2 {
         _mockGetShareTokens();
 
         vm.expectRevert(IPartialLiquidationByDefaulting.NoControllerForCollateral.selector);
+        // forge-lint: disable-next-line(unused-return)
         defaulting.validateControllerForCollateral(silo0);
     }
 
@@ -69,6 +71,7 @@ contract DefaultingLiquidation_IncentiveControllerSetupTest is CloneHookV2 {
 
         _setGauge(gauge, collateralShareToken);
 
+        // forge-lint: disable-next-line(unused-return)
         defaulting.validateControllerForCollateral(silo0);
     }
 
@@ -85,12 +88,15 @@ contract DefaultingLiquidation_IncentiveControllerSetupTest is CloneHookV2 {
         _setGauge(gauge, collateralShareToken);
 
         vm.expectRevert(IPartialLiquidationByDefaulting.NoControllerForCollateral.selector);
+        // forge-lint: disable-next-line(unused-return)
         defaulting.validateControllerForCollateral(silo1);
 
         vm.expectRevert();
+        // forge-lint: disable-next-line(unused-return)
         defaulting.validateControllerForCollateral(protectedShareToken);
 
         vm.expectRevert();
+        // forge-lint: disable-next-line(unused-return)
         defaulting.validateControllerForCollateral(debtShareToken);
     }
 

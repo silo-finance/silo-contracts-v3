@@ -34,6 +34,7 @@ contract DebugTotalAssetsTest is Test {
 
     function test_skip_totalAssets_tx1_multicall() public {
         uint256 blockNumber = 24717386;
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_MAINNET"), blockNumber - 1);
         // vm.rollFork(TX_1);
 
@@ -47,6 +48,7 @@ contract DebugTotalAssetsTest is Test {
 
         uint256 afterTotal = SILO_1.totalAssets();
         console2.log("SILO_1 totalAssets after transact ", afterTotal);
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_MAINNET"), blockNumber + 1);
 
         afterTotal = SILO_1.totalAssets();
@@ -55,6 +57,7 @@ contract DebugTotalAssetsTest is Test {
 
     function test_skip_totalAssets_tx2_reallocate() public {
         uint256 blockNumber = 24749064;
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_MAINNET"), blockNumber - 1);
         // vm.rollFork(TX_2);
 
@@ -68,6 +71,7 @@ contract DebugTotalAssetsTest is Test {
 
         uint256 afterTotal = SILO_2.totalAssets();
         console2.log("SILO_2 totalAssets after transact ", afterTotal);
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_MAINNET"), blockNumber + 1);
 
         afterTotal = SILO_2.totalAssets();

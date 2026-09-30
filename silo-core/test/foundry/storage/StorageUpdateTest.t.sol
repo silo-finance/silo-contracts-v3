@@ -58,6 +58,7 @@ contract StorageUpdateTest is ISomeSilo, Test {
 
         assertEq(currentPointer, expectedPointer, "siloStorage pointer is correct");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_bytes32(pointerSalt, expectedPointer);
     }
 
@@ -79,6 +80,7 @@ contract StorageUpdateTest is ISomeSilo, Test {
 
         assertEq(currentPointer, expectedPointer, "shareToken pointer is correct");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_bytes32(pointerSalt, expectedPointer);
     }
 
@@ -100,6 +102,7 @@ contract StorageUpdateTest is ISomeSilo, Test {
 
         assertEq(currentPointer, expectedPointer, "shareDebtToken pointer is correct");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_bytes32(pointerSalt, expectedPointer);
     }
 

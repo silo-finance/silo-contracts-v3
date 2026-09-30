@@ -56,6 +56,7 @@ contract MaxWithdrawTest is MaxWithdrawCommon {
         uint256 maxWithdraw = collateralSilo.maxWithdraw(BORROWER);
         assertLt(maxWithdraw, _collateral, "with debt you can not withdraw all");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV", collateralSilo.getLtv(BORROWER), 16);
 
         _assertBorrowerCanNotWithdrawMore(maxWithdraw, 4);
@@ -81,20 +82,26 @@ contract MaxWithdrawTest is MaxWithdrawCommon {
 
         uint256 borrowOnSilo0 = collateralSilo.getCollateralAssets() * _percentToBorrowOnSilo0 / 1e18;
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("_percentToBorrowOnSilo0", _percentToBorrowOnSilo0, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrowOnSilo0", borrowOnSilo0, 18);
 
         if (borrowOnSilo0 > 0) {
             address any = makeAddr("yet another user");
+            // forge-lint: disable-next-line(divide-before-multiply)
             _depositForBorrow(borrowOnSilo0 * 2, any);
             vm.prank(any);
+            // forge-lint: disable-next-line(unused-return)
             collateralSilo.borrow(borrowOnSilo0, any, any);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("LTV any", silo1.getLtv(any), 16);
         }
 
         uint256 maxWithdraw = collateralSilo.maxWithdraw(BORROWER);
         assertLt(maxWithdraw, _collateral, "with debt you can not withdraw all");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV", silo1.getLtv(BORROWER), 16);
 
         _assertBorrowerCanNotWithdrawMore(maxWithdraw, 4);
@@ -114,7 +121,9 @@ contract MaxWithdrawTest is MaxWithdrawCommon {
         uint256 maxWithdraw = collateralSilo.maxWithdraw(BORROWER);
         assertLt(maxWithdraw, _collateral, "with debt you can not withdraw all");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV before withdraw", silo1.getLtv(BORROWER), 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("maxWithdraw", maxWithdraw);
 
         _assertBorrowerCanNotWithdrawMore(maxWithdraw, 4);
@@ -137,7 +146,9 @@ contract MaxWithdrawTest is MaxWithdrawCommon {
         uint256 maxWithdraw = collateralSilo.maxWithdraw(BORROWER);
         assertLt(maxWithdraw, _collateral, "with debt you can not withdraw all");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV before withdraw", silo1.getLtv(BORROWER), 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("maxWithdraw", maxWithdraw);
 
         _assertBorrowerCanNotWithdrawMore(maxWithdraw, 4);
@@ -145,6 +156,7 @@ contract MaxWithdrawTest is MaxWithdrawCommon {
     }
 
     function _assertBorrowerHasNothingToWithdraw() internal view {
+        // forge-lint: disable-next-line(unused-return)
         (, address collateralShareToken,) = silo0.config().getShareTokens(address(silo0));
 
         assertEq(silo0.maxWithdraw(BORROWER), 0, "expect maxWithdraw to be 0");
@@ -158,14 +170,18 @@ contract MaxWithdrawTest is MaxWithdrawCommon {
     function _assertBorrowerCanNotWithdrawMore(uint256 _maxWithdraw, uint256 _underestimate) internal {
         assertGt(_underestimate, 0, "_underestimate must be at least 1");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("=== QA [_assertBorrowerCanNotWithdrawMore] _maxWithdraw:", _maxWithdraw);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("=== QA [_assertBorrowerCanNotWithdrawMore] _underestimate:", _underestimate);
 
         ISilo collateralSilo = silo0;
 
         if (_maxWithdraw > 0) {
             vm.prank(BORROWER);
+            // forge-lint: disable-next-line(unused-return)
             collateralSilo.withdraw(_maxWithdraw, BORROWER, BORROWER);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("[_assertBorrowerCanNotWithdrawMore] LTV", silo1.getLtv(BORROWER), 16);
         }
 
@@ -176,12 +192,14 @@ contract MaxWithdrawTest is MaxWithdrawCommon {
         }
 
         uint256 counterExample = isSolvent ? _underestimate : 1;
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_uint(
             "=========== [counterexample] testing counterexample for maxWithdraw with", counterExample
         );
 
         vm.prank(BORROWER);
         vm.expectRevert();
+        // forge-lint: disable-next-line(unused-return)
         collateralSilo.withdraw(counterExample, BORROWER, BORROWER);
     }
 
@@ -190,6 +208,7 @@ contract MaxWithdrawTest is MaxWithdrawCommon {
     }
 
     function _assertMaxWithdrawIsZeroAtTheEnd(uint256 _underestimate) internal {
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_uint(
             "================= _assertMaxWithdrawIsZeroAtTheEnd ================= +/-", _underestimate
         );

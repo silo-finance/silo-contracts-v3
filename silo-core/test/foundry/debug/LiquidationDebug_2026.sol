@@ -14,6 +14,7 @@ FOUNDRY_PROFILE=core_test forge test --mc LiquidationDebug_2026_04--ffi -vvv
 contract LiquidationDebug_2026_04 is UserState {
     function setUp() public override {
         //vm.createSelectFork(vm.envString("RPC_MAINNET"), 24973389);
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_MAINNET"), 24973388);
 
         super.setUp();

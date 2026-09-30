@@ -19,6 +19,7 @@ contract EstimateMaxRepayValueTestData {
         uint256 i;
 
         // no debt no liquidation
+        // forge-lint: disable-next-line(uninitialized-local)
         data[i++] = EMRVData({
             input: Input({
                 totalBorrowerDebtValue: 0,

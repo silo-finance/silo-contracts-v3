@@ -41,6 +41,7 @@ contract GetExactLiquidationAmountsTestData {
         data = new GELAData[](8);
         uint256 i;
 
+        // forge-lint: disable-next-line(uninitialized-local)
         data[i].name = "all zeros => zero output";
         data[i].input.user = address(1);
         data[i].input.maxDebtToCover = 1e18;

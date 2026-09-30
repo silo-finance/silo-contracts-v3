@@ -12,7 +12,9 @@ contract GetKeeperAndLenderSharesSplitReentrancyTest is ConstantReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view override {
+        // forge-lint: disable-next-line(unused-return)
         SiloHookV2(TestStateLib.hookReceiver()).getKeeperAndLenderSharesSplit(100, ISilo.CollateralType.Collateral);
+        // forge-lint: disable-next-line(unused-return)
         SiloHookV2(TestStateLib.hookReceiver()).getKeeperAndLenderSharesSplit(100, ISilo.CollateralType.Protected);
     }
 }

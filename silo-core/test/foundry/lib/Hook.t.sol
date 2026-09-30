@@ -40,9 +40,11 @@ contract HookTest is Test {
     */
     function test_hook_shareTokenTransfer() public {
         vm.expectRevert(Hook.InvalidTokenType.selector);
+        // forge-lint: disable-next-line(unused-return)
         hookImpl.shareTokenTransfer(0);
 
         vm.expectRevert(Hook.InvalidTokenType.selector);
+        // forge-lint: disable-next-line(unused-return)
         hookImpl.shareTokenTransfer(Hook.PROTECTED_TOKEN | Hook.COLLATERAL_TOKEN);
 
         assertEq(

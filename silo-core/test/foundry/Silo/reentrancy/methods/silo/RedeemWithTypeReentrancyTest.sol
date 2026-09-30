@@ -19,14 +19,17 @@ contract RedeemWithTypeReentrancyTest is MethodReentrancyTest {
         token.mint(depositor, amount);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         token.approve(address(silo), amount);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo.deposit(amount, depositor, ISilo.CollateralType.Protected);
 
         TestStateLib.enableReentrancy();
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo.redeem(amount, depositor, depositor, ISilo.CollateralType.Protected);
     }
 
@@ -34,11 +37,13 @@ contract RedeemWithTypeReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.redeem(1000, address(0), address(0), ISilo.CollateralType.Protected);
 
         ISilo silo1 = TestStateLib.silo1();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo1.redeem(1000, address(0), address(0), ISilo.CollateralType.Protected);
     }
 

@@ -15,6 +15,7 @@ forge test -vv --mc PRBMathSD59x18Test
 contract PRBMathSD59x18Test is Assertions, PRBMathSD59x18_exp2_data, PRBMathSD59x18_exp_data {
     using Strings for uint256;
 
+    // forge-lint: disable-next-line(empty-block)
     function setUp() public {}
 
     function test_PRBMathCommon_exp() public {

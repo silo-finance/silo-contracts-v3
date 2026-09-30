@@ -30,6 +30,7 @@ contract BorrowSameAssetTest is SiloLittleHelper, Test {
         _deposit(assets, borrower);
 
         vm.expectRevert(ISilo.Deprecated.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.borrowSameAsset(1, borrower, borrower);
     }
 }

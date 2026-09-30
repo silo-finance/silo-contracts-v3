@@ -20,6 +20,7 @@ contract DynamicKinkModelFactoryJsonTest is KinkDefaultConfigTestData, KinkCommo
         UserInputData[] memory data = _readUserInputDataFromJson();
 
         for (uint256 i; i < data.length; i++) {
+            // forge-lint: disable-next-line(calls-loop)
             try FACTORY.generateConfig(data[i].input) returns (IDynamicKinkModel.Config memory c) {
                 _compareConfigs(data[i].id, data[i].config, c);
 
@@ -80,8 +81,10 @@ contract DynamicKinkModelFactoryJsonTest is KinkDefaultConfigTestData, KinkCommo
                 );
             } catch {
                 if (data[i].success) {
+                    // forge-lint: disable-next-item(require-revert-in-loop)
                     revert(
                         string.concat(
+                            // forge-lint: disable-next-line(calls-loop)
                             "we should not revert in this tests, but case with ID ", vm.toString(data[i].id), " did"
                         )
                     );
@@ -119,16 +122,21 @@ contract DynamicKinkModelFactoryJsonTest is KinkDefaultConfigTestData, KinkCommo
 
         string memory errorMessage = string.concat(
             "ID ",
+            // forge-lint: disable-next-line(calls-loop)
             vm.toString(_testId),
             ": ",
             _msg,
             " relative error: ",
+            // forge-lint: disable-next-line(calls-loop)
             vm.toString(diffPercent),
             " [%] larger than acceptable diff: ",
+            // forge-lint: disable-next-line(calls-loop)
             vm.toString(_acceptableDiffPercent),
             " got: ",
+            // forge-lint: disable-next-line(calls-loop)
             vm.toString(_got),
             " expected: ",
+            // forge-lint: disable-next-line(calls-loop)
             vm.toString(_expected)
         );
 
@@ -213,6 +221,7 @@ contract DynamicKinkModelFactoryJsonTest is KinkDefaultConfigTestData, KinkCommo
         returns (string memory)
     {
         return string.concat(
+            // forge-lint: disable-next-line(calls-loop)
             _msg, "[", vm.toString(_id), "] got: ", vm.toString(_got), " expected: ", vm.toString(_expected)
         );
     }

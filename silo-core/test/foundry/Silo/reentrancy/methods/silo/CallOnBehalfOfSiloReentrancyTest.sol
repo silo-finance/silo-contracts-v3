@@ -33,11 +33,13 @@ contract CallOnBehalfOfSiloReentrancyTest is MethodReentrancyTest {
 
         vm.prank(address(config0.hookReceiver));
         (bool success,) =
+            // forge-lint: disable-next-line(unused-return)
             silo0.callOnBehalfOfSilo(config0.protectedShareToken, 0, /* eth value */ ISilo.CallType.Call, payload);
 
         if (!success) revert();
 
         vm.prank(address(config0.hookReceiver));
+        // forge-lint: disable-next-item(unused-return)
         (success,) =
             silo1.callOnBehalfOfSilo(config0.protectedShareToken, 0, /* eth value */ ISilo.CallType.Call, payload);
 

@@ -27,6 +27,7 @@ contract RepayTest is SiloLittleHelper, Test {
     */
     function test_repay_zeros() public {
         vm.expectRevert(ISilo.InputZeroShares.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.repay(0, address(0));
     }
 
@@ -36,6 +37,7 @@ contract RepayTest is SiloLittleHelper, Test {
     function test_repay_fromZeroAddress() public {
         // for some reason we not bale to check for this error: Error != expected error: NH{q != Arithmetic over/underflow
         vm.expectRevert();
+        // forge-lint: disable-next-line(unused-return)
         silo0.repay(1, address(0));
     }
 
@@ -47,9 +49,11 @@ contract RepayTest is SiloLittleHelper, Test {
         uint256 amount = 1;
 
         token0.mint(address(this), amount);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), amount);
         // for some reason we not bale to check for this error: Error != expected error: NH{q != Arithmetic over/underflow
         vm.expectRevert(); // "Arithmetic over/underflow";
+        // forge-lint: disable-next-line(unused-return)
         silo0.repay(amount, borrower);
     }
 
@@ -64,6 +68,7 @@ contract RepayTest is SiloLittleHelper, Test {
         vm.warp(block.timestamp + 50 * 365 days); // interest must be big, so conversion 1 asset => share be 0
 
         vm.expectRevert(ISilo.ReturnZeroShares.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo1.repay(assets, borrower);
     }
 
@@ -105,16 +110,20 @@ contract RepayTest is SiloLittleHelper, Test {
 
         vm.warp(block.timestamp + 1 days);
 
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), assetsToRepay);
 
         uint256 maxRepay = silo1.maxRepay(borrower);
         uint256 shares = silo1.previewRepay(maxRepay);
 
         vm.expectEmit(address(silo1));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Repay(address(this), borrower, maxRepay, shares);
 
+        // forge-lint: disable-next-line(unused-return)
         silo1.repay(assetsToRepay, borrower);
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(address(silo1));
         assertEq(IShareToken(debtShareToken).balanceOf(borrower), 0, "debt fully repaid");
     }
@@ -133,6 +142,7 @@ contract RepayTest is SiloLittleHelper, Test {
 
         _repayShares(assets, shares, borrower);
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(address(silo1));
         assertEq(IShareToken(debtShareToken).balanceOf(borrower), 0, "debt fully repaid");
 
@@ -155,6 +165,7 @@ contract RepayTest is SiloLittleHelper, Test {
 
         _repayShares(assetsToRepay, shares, borrower);
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(address(silo1));
         assertEq(IShareToken(debtShareToken).balanceOf(borrower), 0, "debt fully repaid");
 
@@ -169,6 +180,7 @@ contract RepayTest is SiloLittleHelper, Test {
         address borrower = makeAddr("Borrower");
 
         uint256 shares = _createDebt(assets, borrower);
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 days);
 
         uint256 previewRepay = silo1.previewRepayShares(shares);
@@ -196,6 +208,7 @@ contract RepayTest is SiloLittleHelper, Test {
         address borrower = makeAddr("Borrower");
 
         uint256 shares = _createDebt(assets, borrower);
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 days);
 
         uint256 interest = 11684166722553653; // interest less when more collateral
@@ -206,6 +219,7 @@ contract RepayTest is SiloLittleHelper, Test {
 
         _repayShares(previewRepay + interest * 3, shares, borrower);
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(address(silo1));
         assertEq(IShareToken(debtShareToken).balanceOf(borrower), 0, "debt fully repaid");
 
@@ -223,12 +237,14 @@ contract RepayTest is SiloLittleHelper, Test {
 
         _createDebt(assets, borrower);
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 days);
         _repay(assets / 2, borrower);
 
         vm.warp(block.timestamp + 1 days);
         _repay(assets / 2, borrower);
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShareToken) = siloConfig.getShareTokens(address(silo1));
         uint256 interestLeft = 12011339784578816; // interest smaller for one token
         assertEq(IShareToken(debtShareToken).balanceOf(borrower), interestLeft, "interest left");

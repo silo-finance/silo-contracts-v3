@@ -29,20 +29,25 @@ contract MaxLiquidationCapTest is MaxLiquidationCommon {
         (uint256 collateralToLiquidate, uint256 maxDebtToCover, bool sTokenRequired) =
             partialLiquidation.maxLiquidation(BORROWER);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("         getLiquidity #1", silo0.getLiquidity());
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("collateralToLiquidate #1", collateralToLiquidate);
 
         assertTrue(!sTokenRequired, "sTokenRequired NOT required because it is partial liquidation");
 
         vm.startPrank(DEPOSITOR);
+        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(silo0.maxBorrow(DEPOSITOR), DEPOSITOR, DEPOSITOR);
         vm.stopPrank();
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("getLiquidity after borrow", silo0.getLiquidity());
 
         (collateralToLiquidate, maxDebtToCover, sTokenRequired) = partialLiquidation.maxLiquidation(BORROWER);
         assertTrue(sTokenRequired, "sTokenRequired IS required because we borrowed on silo0");
 
         vm.expectRevert(ISilo.NotEnoughLiquidity.selector);
+        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token0),
             address(token1),
@@ -53,6 +58,7 @@ contract MaxLiquidationCapTest is MaxLiquidationCommon {
 
         _deposit(collateralToLiquidate - silo0.getLiquidity(), address(1));
 
+        // forge-lint: disable-next-line(unused-return)
         (,, sTokenRequired) = partialLiquidation.maxLiquidation(BORROWER);
         assertTrue(sTokenRequired, "sTokenRequired is still required because of -2");
 
@@ -63,9 +69,12 @@ contract MaxLiquidationCapTest is MaxLiquidationCommon {
             !sTokenRequired, "sTokenRequired NOT required because we have 'collateralToLiquidate + 2' in silo0"
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("         getLiquidity #2", silo0.getLiquidity());
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("collateralToLiquidate #2", collateralToLiquidate);
 
+        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token0),
             address(token1),

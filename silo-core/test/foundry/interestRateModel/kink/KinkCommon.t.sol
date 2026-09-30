@@ -21,6 +21,7 @@ contract KinkCommonTest is Test, KinkCommon {
 
     modifier makeValidImmutableArgs(IDynamicKinkModel.ImmutableArgs memory _immutableArgs) {
         _immutableArgs.timelock = uint32(_immutableArgs.timelock % (FACTORY.IRM().MAX_TIMELOCK() + 1));
+        // forge-lint: disable-next-line(unsafe-typecast)
         _immutableArgs.rcompCap = int96(SignedMath.max(1, _immutableArgs.rcompCap % FACTORY.IRM().RCUR_CAP()));
 
         _;
@@ -60,6 +61,7 @@ contract KinkCommonTest is Test, KinkCommon {
     }
 
     function _assertCorrectHistory(IDynamicKinkModelConfig _in, IDynamicKinkModelConfig _out) internal view {
+        // forge-lint: disable-next-line(calls-loop, unused-return)
         (, IDynamicKinkModelConfig irmConfig) = irm.configsHistory(_in);
         assertEq(address(irmConfig), address(_out), "history should point from _in => _out");
     }

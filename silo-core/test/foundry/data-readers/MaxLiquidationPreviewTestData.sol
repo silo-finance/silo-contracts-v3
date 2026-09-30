@@ -26,6 +26,7 @@ contract MaxLiquidationPreviewTestData {
         uint256 i;
 
         // no debt no liquidation
+        // forge-lint: disable-next-line(uninitialized-local)
         data[i++] = MLPData({
             input: Input({
                 lt: 0.8e18,

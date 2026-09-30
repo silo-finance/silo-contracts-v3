@@ -55,6 +55,7 @@ contract PreviewDepositTest is SiloLittleHelper, Test {
         uint256 sharesBefore = _defaultType ? _deposit(_assets, DEPOSITOR) : _deposit(_assets, DEPOSITOR, cType);
 
         vm.warp(block.timestamp + 365 days);
+        // forge-lint: disable-next-line(unused-return)
         silo0.accrueInterest();
 
         uint256 previewShares = _defaultType ? silo0.previewDeposit(_assets) : silo0.previewDeposit(_assets, cType);
@@ -108,7 +109,9 @@ contract PreviewDepositTest is SiloLittleHelper, Test {
             );
         }
 
+        // forge-lint: disable-next-line(unused-return)
         silo0.accrueInterest();
+        // forge-lint: disable-next-line(unused-return)
         silo1.accrueInterest();
 
         assertEq(
@@ -133,6 +136,7 @@ contract PreviewDepositTest is SiloLittleHelper, Test {
             "with interests, we can receive less shares than assets amount"
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("previewShares1", previewShares1);
 
         if (previewShares1 == 0) {

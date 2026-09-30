@@ -19,7 +19,9 @@ contract PreviewBorrowSharesReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().previewBorrowShares(100_000e18);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().previewBorrowShares(100_000e18);
     }
 }

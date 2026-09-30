@@ -55,15 +55,22 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
         //        }
 
         // let's wait until user insolvent
+        // forge-lint: disable-next-line(calls-loop)
         while (silo1.isSolvent(borrower)) {
             //            vm.warp(block.timestamp + 1 days);
+            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 1 hours);
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             silo1.accrueInterest(); // to boost %
         }
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("DIFF", silo1.convertToAssets(precision * offset));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("DIFF", precision);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("repay:", silo1.maxRepay(borrower), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("time:", block.timestamp);
 
         _printCollateralRatio(offset);
@@ -78,7 +85,9 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
         uint256 withdrawBefore = silo1.maxWithdraw(depositor);
         uint256 repayBefore = silo1.maxRepay(borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxWithdraw(depositor)", withdrawBefore, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxRepay(borrower)", repayBefore, 18);
 
         for (uint256 i; i < 1000; i++) {
@@ -96,28 +105,39 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
             // by leaving 1 wei you can change ratio by 1 per iteration
             // BUT you paying for it!
             _withdrawFromBorrow(depositAmount - 1, depositor2);
+            // forge-lint: disable-next-line(uninitialized-local)
             moneySpend += (depositAmount - depositAmount + 1);
 
+            // forge-lint: disable-next-line(calls-loop)
             _initial = silo1.getCollateralAssets();
         }
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ratioBefore", ratioBefore);
 
         uint256 ratioDiff = silo1.convertToAssets(precision * offset) - ratioBefore;
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint(">>>>>> ratio increased by", ratioDiff, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("moneySpend", moneySpend, 18);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxRepay(borrower)", repayBefore, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxRepay(borrower)", silo1.maxRepay(borrower), 18);
 
         _repay(silo1.maxRepay(borrower), borrower);
         _printCollateralRatio(offset);
 
         // depositor2 was doing attack and he lost, he left 150K wei but he can withdraw only 78K wei after attack
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxWithdraw(depositor2)", silo1.maxWithdraw(depositor2), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxWithdraw(depositor3)", silo1.maxWithdraw(depositor3), 18);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxWithdraw(depositor)", silo1.maxWithdraw(depositor), 18);
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "maxWithdraw(depositor) diff", silo1.maxWithdraw(depositor) - withdrawBefore, 18
         );
@@ -145,7 +165,9 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
         //            vm.warp(block.timestamp + 1);
         //        }
 
+        // forge-lint: disable-next-line(calls-loop)
         while (silo1.isSolvent(makeAddr("borrower2"))) {
+            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + 1 hours);
             // doing this will reduce total debt from
             // 850003201235794561 to
@@ -154,6 +176,7 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
             // simply not worth it
             //            _borrowRepay();
 
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             silo1.accrueInterest(); // to boost %
         }
 
@@ -164,9 +187,13 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
 
         uint256 ratioBefore = silo1.previewBorrowShares(precision * offset);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("DIFF", precision);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("DIFF", ratioBefore);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("repay:", silo1.maxRepay(makeAddr("borrower")), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("time:", block.timestamp);
 
         _printBorrowRatio();
@@ -177,9 +204,13 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
         uint256 withdrawBefore = silo1.maxWithdraw(makeAddr("depositor"));
         uint256 repayBefore = silo1.maxRepay(makeAddr("borrower"));
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxWithdraw(depositor)", withdrawBefore, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxRepay(borrower)", repayBefore, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxRepay(borrower2)", silo1.maxRepay(makeAddr("borrower2")), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxRepay(borrower3)", silo1.maxRepay(makeAddr("borrower3")), 18);
 
         // _repay(silo1.maxRepay(borrower), borrower);
@@ -187,13 +218,16 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
         for (uint256 i; i < 30; i++) {
             // vm.warp(block.timestamp + 1);
 
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("#i", i);
             // emit log_named_decimal_uint("_initial", _initial, 18);
 
             _borrowRepay();
         }
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ratioBefore", ratioBefore);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ratioNow   ", silo1.previewBorrowShares(precision * offset));
 
         uint256 ratioDiff = ratioBefore - silo1.previewBorrowShares(precision * offset);
@@ -201,18 +235,25 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
         // we repay MORE because of rounding, so every time attacker do this, he repay more
         // and this "more" is what other borrowers will not pay
         //
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("ratio DECREASED?? by", ratioDiff, 18);
         //        emit log_named_decimal_uint("moneySpend", moneySpend, 18);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("BEFORE maxRepay(borrower)", repayBefore, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("AFTER maxRepay(borrower)", silo1.maxRepay(makeAddr("borrower")), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("AFTER maxRepay(borrower2)", silo1.maxRepay(makeAddr("borrower2")), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("AFTER maxRepay(borrower3)", silo1.maxRepay(makeAddr("borrower3")), 18);
 
         _repay(silo1.maxRepay(makeAddr("borrower")), makeAddr("borrower"));
         _printBorrowRatio();
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxWithdraw(depositor)", silo1.maxWithdraw(makeAddr("depositor")), 18);
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "maxWithdraw(depositor) diff", silo1.maxWithdraw(makeAddr("depositor")) - withdrawBefore, 18
         );
@@ -224,12 +265,16 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
         _deposit(3, user);
         _borrow(1, user);
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtShare) = siloConfig.getShareTokens(address(silo1));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("1 wei == shares:", IShareToken(debtShare).balanceOf(user), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("AFTER maxRepay(user)", silo1.maxRepay(user), 18);
     }
 
     function _borrowRepay() internal {
+        // forge-lint: disable-next-line(calls-loop)
         uint256 _amount = silo1.getDebtAssets();
         if (_amount == 0) _amount = 1;
 
@@ -241,13 +286,18 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
 
         _borrow(borrowAmount, makeAddr("borrower"));
 
+        // forge-lint: disable-next-line(calls-loop)
         uint256 toRepay = silo1.maxRepay(makeAddr("borrower")) - 1;
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("borrowAmount", borrowAmount, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("toRepay", toRepay, 18);
 
         _repay(toRepay, makeAddr("borrower"));
 
+        // forge-lint: disable-next-line(calls-loop, unused-return)
         (,, address debtShare) = siloConfig.getShareTokens(address(silo1));
+        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_decimal_uint("toRepay shares #1", IShareToken(debtShare).balanceOf(makeAddr("borrower")), 18);
         //        _repay(2, makeAddr("borrower"));
         //        emit log_named_decimal_uint("toRepay shares #2", IShareToken(debtShare).balanceOf(makeAddr("borrower")), 18);
@@ -256,32 +306,52 @@ contract ShareManipulationTest is SiloLittleHelper, Test {
     }
 
     function _printBorrowRatio() internal {
+        // forge-lint: disable-next-line(calls-loop, unused-return)
         (,, address debtShare) = siloConfig.getShareTokens(address(silo1));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("---------");
+        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_uint("[silo1] debt share totalSupply ", IShareToken(debtShare).totalSupply());
+        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_uint("[silo1] debt asset total ", silo1.getDebtAssets());
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_uint(
+            // forge-lint: disable-next-line(calls-loop)
             "[silo1] share balanceOf(borrower) ", IShareToken(debtShare).balanceOf(makeAddr("borrower"))
         );
+        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_uint("[silo1] silo1.maxRepay(borrower) ", silo1.maxRepay(makeAddr("borrower")));
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_uint(
+            // forge-lint: disable-next-line(calls-loop)
             "[silo1] share balanceOf(borrower2) ", IShareToken(debtShare).balanceOf(makeAddr("borrower2"))
         );
+        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_uint("[silo1] silo1.maxRepay(borrower2) ", silo1.maxRepay(makeAddr("borrower2")));
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_uint(
+            // forge-lint: disable-next-line(calls-loop)
             "[silo1] share balanceOf(borrower3) ", IShareToken(debtShare).balanceOf(makeAddr("borrower3"))
         );
+        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_uint("[silo1] silo1.maxRepay(borrower3) ", silo1.maxRepay(makeAddr("borrower3")));
 
+        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_decimal_uint("[silo1] 1e18 share =", silo1.previewBorrowShares(1e18), 18);
+        // forge-lint: disable-next-line(calls-loop, reentrancy-events)
         emit log_named_uint("[silo1] 1 share =", silo1.previewBorrowShares(1));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("---------");
     }
 
     function _printCollateralRatio(uint256 _offset) internal {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[silo1] time", block.timestamp);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[silo1] getCollateralAssets", silo1.getCollateralAssets());
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[silo1] 1 collateral share =", silo1.convertToAssets(1));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[silo1] 1e18 collateral share =", silo1.convertToAssets(1e18 * _offset));
     }
 }

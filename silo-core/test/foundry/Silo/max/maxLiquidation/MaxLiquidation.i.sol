@@ -57,6 +57,7 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
 
         _assertBorrowerIsNotSolvent(_BAD_DEBT);
 
+        // forge-lint: disable-next-line(unused-return)
         (,,, bool fullLiquidation) = SILO_LENS.maxLiquidation(silo1, partialLiquidation, BORROWER);
 
         _executeLiquidationAndRunChecks(_receiveSToken);
@@ -81,16 +82,21 @@ contract MaxLiquidationTest is MaxLiquidationCommon {
         // to test max, we want to provide higher `_maxDebtToCover` and we expect not higher results
         uint256 maxDebtToCover = type(uint256).max;
 
+        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(BORROWER);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[MaxLiquidation] collateralToLiquidate", collateralToLiquidate, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[MaxLiquidation] debtToRepay", debtToRepay, 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[MaxLiquidation] ltv before", silo0.getLtv(BORROWER), 16);
 
         (withdrawCollateral, repayDebtAssets) = partialLiquidation.liquidationCall(
             address(token0), address(token1), BORROWER, maxDebtToCover, _receiveSToken
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[MaxLiquidation] ltv after", silo0.getLtv(BORROWER), 16);
 
         assertEq(debtToRepay, repayDebtAssets, "[MaxLiquidation] debt: maxLiquidation == result");

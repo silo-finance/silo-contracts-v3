@@ -19,7 +19,9 @@ contract SymbolReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().symbol();
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().symbol();
     }
 }

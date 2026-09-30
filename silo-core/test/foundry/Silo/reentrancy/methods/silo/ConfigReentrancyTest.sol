@@ -19,7 +19,9 @@ contract ConfigReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().config();
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().config();
     }
 }

@@ -69,6 +69,7 @@ contract DefaultingSiloLogicTest is Test {
 
         console2.log("collateralAssets before", $.totalAssets[ISilo.AssetType.Collateral]);
 
+        // forge-lint: disable-next-item(controlled-delegatecall)
         (success,) = logic.delegatecall(
             abi.encodeWithSelector(DefaultingSiloLogic.deductDefaultedDebtFromCollateral.selector, _assetsToRepay)
         );

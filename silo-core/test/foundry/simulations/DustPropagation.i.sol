@@ -39,14 +39,19 @@ contract DustPropagationTest is SiloLittleHelper, Test {
 
         // provide liquidity to silo0
         token0.mint(address(this), COLLATERAL);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), COLLATERAL);
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(COLLATERAL, address(this));
 
         // we cresting debt on silo0, because lt there is 85 and in silo0 95, so it is easier to test because of dust
         vm.startPrank(BORROWER);
         token1.mint(BORROWER, COLLATERAL);
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(silo1), COLLATERAL);
+        // forge-lint: disable-next-line(unused-return)
         silo1.deposit(COLLATERAL, BORROWER);
+        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(DEBT, BORROWER, BORROWER);
         vm.stopPrank();
 
@@ -56,12 +61,15 @@ contract DustPropagationTest is SiloLittleHelper, Test {
         assertEq(silo0.getLiquidity(), 0, "with bad debt and no depositors, no liquidity");
         _printState("after time forward");
 
+        // forge-lint: disable-next-line(unused-return)
         (, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(BORROWER);
 
         token0.mint(address(this), debtToRepay);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(partialLiquidation), debtToRepay);
         bool receiveSToken;
 
+        // forge-lint: disable-next-line(uninitialized-local, unused-return)
         partialLiquidation.liquidationCall(address(token1), address(token0), BORROWER, debtToRepay, receiveSToken);
         _printState("after liquidation");
 
@@ -69,7 +77,9 @@ contract DustPropagationTest is SiloLittleHelper, Test {
 
         silo0.withdrawFees();
         uint256 maxRedeem = silo0.maxRedeem(address(this));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("maxRedeem for liquidity provider", maxRedeem);
+        // forge-lint: disable-next-line(unused-return)
         if (maxRedeem != 0) silo0.redeem(maxRedeem, address(this), address(this));
 
         _printState("after withdrawFees");
@@ -90,8 +100,10 @@ contract DustPropagationTest is SiloLittleHelper, Test {
 
         assertEq(silo0.getLiquidity(), DUST_LEFT, "getLiquidity == 4, dust!");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("there is no users in silo, but balance is", token0.balanceOf(address(silo0)));
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_uint(
             "IShareToken(configData.collateralShareToken).totalSupply()",
             IShareToken(configData.collateralShareToken).totalSupply()
@@ -104,7 +116,9 @@ contract DustPropagationTest is SiloLittleHelper, Test {
     function test_dustPropagation_oneUser() public {
         address user1 = makeAddr("user1");
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("total supply", silo0.totalSupply());
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("liquidity", silo0.getLiquidity());
 
         /*
@@ -127,8 +141,11 @@ contract DustPropagationTest is SiloLittleHelper, Test {
             Atm the only downside I noticed: it creates "minimal deposit" situation in some cases
         */
         uint256 shares1 = _deposit(1, user1);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[user1] shares1", shares1);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("total supply", silo0.totalSupply());
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("liquidity", silo0.getLiquidity());
 
         // +1 because we underestimated for fractions in maxWithdraw function
@@ -137,8 +154,11 @@ contract DustPropagationTest is SiloLittleHelper, Test {
         );
 
         shares1 += _deposit(1, user1);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[user1] shares1 #2", shares1);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("total supply #2", silo0.totalSupply());
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("liquidity #2", silo0.getLiquidity());
 
         assertEq(
@@ -160,9 +180,11 @@ contract DustPropagationTest is SiloLittleHelper, Test {
 
         uint256 assets = 1;
         uint256 shares1 = _deposit(assets, user1);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[user1] shares1", shares1);
 
         uint256 shares2 = _deposit(assets, user2);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[user2] shares2", shares2);
 
         uint256 maxWithdraw1 = silo0.maxWithdraw(user1);
@@ -181,6 +203,7 @@ contract DustPropagationTest is SiloLittleHelper, Test {
         );
 
         shares2 += _deposit(1, user2);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[user2] shares2 #2", shares2);
         assertEq(
             silo0.maxWithdraw(user2), 1, "[user2] maxWithdraw 1, dust propagated, user lost 1 wei because of rounding"
@@ -215,13 +238,17 @@ contract DustPropagationTest is SiloLittleHelper, Test {
         uint256 shares1 = _deposit(deposit1, user1);
         uint256 shares2 = _deposit(deposit2, user2);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("shares1", shares1);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("shares2", shares2);
 
         _withdrawFromSilo(user1, deposit1, shares1);
         _withdrawFromSilo(user2, deposit2, shares2);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("dust was", DUST_LEFT);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("silo0.getLiquidity() is now", silo0.getLiquidity());
 
         assertLt(silo0.getLiquidity(), DUST_LEFT, "some dust was propagated");
@@ -232,8 +259,11 @@ contract DustPropagationTest is SiloLittleHelper, Test {
 
         bool userGetsMore = maxWithdraw > _deposited;
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("user1 will get", userGetsMore ? "MORE" : "LESS");
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("    deposit1", _deposited);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("maxWithdraw1", maxWithdraw);
 
         if (!userGetsMore) {
@@ -241,6 +271,7 @@ contract DustPropagationTest is SiloLittleHelper, Test {
         }
 
         uint256 withdrawn = _redeem(_shares, _user);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("withdrawn1", withdrawn);
         assertLe(
             withdrawn - maxWithdraw,
@@ -252,6 +283,7 @@ contract DustPropagationTest is SiloLittleHelper, Test {
 
         uint256 diff = userGotMore ? withdrawn - _deposited : _deposited - withdrawn;
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("diff", diff);
 
         if (!userGotMore) {
@@ -262,31 +294,43 @@ contract DustPropagationTest is SiloLittleHelper, Test {
     function _printState(string memory _title) private {
         ISiloConfig.ConfigData memory collateralConfig = siloConfig.getConfig(address(silo0));
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("================ ", _title);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[silo0] borrower LTV ", silo0.getLtv(BORROWER), 16);
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "[silo0] borrower collateral shares ",
             IShareToken(collateralConfig.collateralShareToken).balanceOf(BORROWER),
             18
         );
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[silo0] borrower debt (max repay)", silo0.maxRepay(BORROWER), 18);
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "[silo0] collateral assets RAW (storage)", silo0.getTotalAssetsStorage(ISilo.AssetType.Collateral), 18
         );
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[silo0] collateral assets with interest", silo0.getCollateralAssets(), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[silo0] liquidity", silo0.getLiquidity(), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[silo0] balanceOf(silo)", token0.balanceOf(address(silo0)), 18);
 
+        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToWithdraw, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(BORROWER);
 
         if (debtToRepay != 0) {
+            // forge-lint: disable-next-item(reentrancy-events)
             emit log_named_decimal_uint(
                 "[silo0] liquidation possible, collateralToWithdraw", collateralToWithdraw, 18
             );
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("[silo0] liquidation possible, debtToRepay", debtToRepay, 18);
         }
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("_____");
     }
 }

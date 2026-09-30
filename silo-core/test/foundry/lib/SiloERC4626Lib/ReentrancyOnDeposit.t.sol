@@ -53,6 +53,7 @@ contract ReentrancyOnDepositTest is Test {
         uint256 expectedCollateral = totalCollateral;
 
         vm.expectEmit(false, false, false, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit TokenWithReentrancy.SiloAssetState(expectedCollateral);
 
         _vulnerable.deposit(_token, _depositor, 0, /* assets */ _SHARES, _receiver, _shareCollateralToken);
@@ -74,6 +75,7 @@ contract ReentrancyOnDepositTest is Test {
         uint256 expectedCollateral = totalCollateral + _ASSETS;
 
         vm.expectEmit(false, false, false, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit TokenWithReentrancy.SiloAssetState(expectedCollateral);
 
         _nonVulnerable.deposit(_token, _depositor, _ASSETS, 0, /* shares */ _receiver, _shareCollateralToken);

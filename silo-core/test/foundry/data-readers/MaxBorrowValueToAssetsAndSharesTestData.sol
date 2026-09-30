@@ -26,6 +26,7 @@ contract MaxBorrowValueToAssetsAndSharesTestData {
 
     MBVData[] allData;
 
+    // forge-lint: disable-next-line(missing-zero-check)
     constructor(address _debtToken) {
         DEBT_TOKEN = _debtToken;
     }
@@ -66,6 +67,7 @@ contract MaxBorrowValueToAssetsAndSharesTestData {
         allData[i].input.oracleSet = true;
         allData[i].input.debtOracleQuote = 3e18;
         allData[i].output.assets = 29;
+        // forge-lint: disable-next-line(divide-before-multiply)
         allData[i].output.shares = uint256(100) / 3 * 2; // *2 because of ratio
 
         i = _init("has some debt, assets:shares is 2:1");
@@ -109,6 +111,7 @@ contract MaxBorrowValueToAssetsAndSharesTestData {
         i = allData.length;
         allData.push();
 
+        // forge-lint: disable-next-line(encode-packed-collision)
         allData[i].name = string(abi.encodePacked("#", toString(i), " ", _name));
 
         allData[i].input.debtToken = DEBT_TOKEN;

@@ -27,13 +27,18 @@ contract GetCollateralShareTokenAndAssetReentrancyTest is MethodReentrancyTest {
         address silo1 = address(TestStateLib.silo1());
         address wrongSilo = makeAddr("Wrong silo");
 
+        // forge-lint: disable-next-line(unused-return)
         config.getCollateralShareTokenAndAsset(silo0, ISilo.CollateralType.Collateral);
+        // forge-lint: disable-next-line(unused-return)
         config.getCollateralShareTokenAndAsset(silo0, ISilo.CollateralType.Protected);
 
+        // forge-lint: disable-next-line(unused-return)
         config.getCollateralShareTokenAndAsset(silo1, ISilo.CollateralType.Collateral);
+        // forge-lint: disable-next-line(unused-return)
         config.getCollateralShareTokenAndAsset(silo1, ISilo.CollateralType.Protected);
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
+        // forge-lint: disable-next-line(unused-return)
         config.getCollateralShareTokenAndAsset(wrongSilo, ISilo.CollateralType.Protected);
     }
 }

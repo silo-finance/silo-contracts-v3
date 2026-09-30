@@ -8,6 +8,7 @@ import {CommonBase} from "forge-std/Base.sol";
 contract TokenMock is CommonBase {
     address public immutable ADDRESS;
 
+    // forge-lint: disable-next-line(missing-zero-check)
     constructor(address _token) {
         ADDRESS = _token == address(0) ? address(0x5224928173683243804202752353186) : _token;
     }
@@ -83,6 +84,7 @@ contract TokenMock is CommonBase {
     }
 
     function decimalsMock(uint256 _decimals) external {
+        // forge-lint: disable-next-line(unsafe-typecast)
         bytes memory data = abi.encodeWithSelector(bytes4(keccak256("decimals()")));
         vm.mockCall(ADDRESS, data, abi.encode(_decimals));
         vm.expectCall(ADDRESS, data);

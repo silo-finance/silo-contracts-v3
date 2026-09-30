@@ -49,6 +49,7 @@ contract SafeTransferInternalTest is Test {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_safeTransferInternal_return_uint  -vv
     */
     function test_safeTransferInternal_return_uint() public {
+        // forge-lint: disable-next-line(unsafe-typecast)
         bytes4 selector = bytes4(keccak256("transfer(address,uint256)"));
         vm.mockCall(TOKEN, abi.encodeWithSelector(selector, TO, AMOUNT), abi.encode(uint256(1)));
         assertTrue(

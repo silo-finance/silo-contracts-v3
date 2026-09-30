@@ -47,6 +47,7 @@ contract WithdrawFeesTest is Test {
         token = new TokenMock(makeAddr("Asset"));
 
         ISiloConfig cfg = ShareTokenLib.siloConfig();
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_address(address(cfg));
     }
 
@@ -77,7 +78,9 @@ contract WithdrawFeesTest is Test {
         address deployer;
 
         siloConfig.turnOnReentrancyProtectionMock();
+        // forge-lint: disable-next-line(uninitialized-local)
         siloConfig.getFeesWithAssetMock(address(this), daoFee, deployerFee, flashloanFeeInBp, asset);
+        // forge-lint: disable-next-line(uninitialized-local)
         siloFactory.getFeeReceiversMock(address(this), dao, deployer);
 
         token.balanceOfMock(address(this), 0);
@@ -112,7 +115,9 @@ contract WithdrawFeesTest is Test {
         address deployer;
 
         siloConfig.turnOnReentrancyProtectionMock();
+        // forge-lint: disable-next-line(uninitialized-local)
         siloConfig.getFeesWithAssetMock(address(this), daoFee, deployerFee, flashloanFeeInBp, asset);
+        // forge-lint: disable-next-line(uninitialized-local)
         siloFactory.getFeeReceiversMock(address(this), dao, deployer);
         siloConfig.turnOffReentrancyProtectionMock();
 
@@ -167,7 +172,9 @@ contract WithdrawFeesTest is Test {
         address deployer;
 
         siloConfig.turnOnReentrancyProtectionMock();
+        // forge-lint: disable-next-line(uninitialized-local)
         siloConfig.getFeesWithAssetMock(address(this), daoFee, deployerFee, flashloanFeeInBp, asset);
+        // forge-lint: disable-next-line(uninitialized-local)
         siloFactory.getFeeReceiversMock(address(this), dao, deployer);
         siloConfig.turnOffReentrancyProtectionMock();
 
@@ -197,6 +204,7 @@ contract WithdrawFeesTest is Test {
         address deployer = makeAddr("Deployer");
 
         siloConfig.turnOnReentrancyProtectionMock();
+        // forge-lint: disable-next-line(uninitialized-local)
         siloConfig.getFeesWithAssetMock(address(this), daoFee, deployerFee, flashloanFeeInBp, asset);
         siloFactory.getFeeReceiversMock(address(this), dao, deployer);
         siloConfig.turnOffReentrancyProtectionMock();
@@ -208,6 +216,7 @@ contract WithdrawFeesTest is Test {
         token.transferResultFalseMock(deployer, siloBalance / 2); // transfer to deployer fails
         token.transferMock(dao, siloBalance); // dao gets all fees as transfer to deployer fails
 
+        // forge-lint: disable-next-line(unused-return)
         (,, bool redirectedDeployerFees) = Actions.withdrawFees(ISilo(address(this)));
         assertTrue(redirectedDeployerFees, "redirected fees");
     }
@@ -225,6 +234,7 @@ contract WithdrawFeesTest is Test {
         address deployer = makeAddr("Deployer");
 
         siloConfig.turnOnReentrancyProtectionMock();
+        // forge-lint: disable-next-line(uninitialized-local)
         siloConfig.getFeesWithAssetMock(address(this), _daoFee, _deployerFee, flashloanFeeInBp, asset);
         siloFactory.getFeeReceiversMock(address(this), dao, deployer);
         siloConfig.turnOffReentrancyProtectionMock();

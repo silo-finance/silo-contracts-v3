@@ -40,10 +40,12 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
         _mintTokens(token0, siloCollateralAssets, victim);
 
         vm.prank(victim);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), siloCollateralAssets);
 
         // The user is able to deposit after SiloMathLib._DECIMALS_OFFSET_POW set to 10 ** 3
         vm.prank(victim); // the victim is not victim anymore
+        // forge-lint: disable-next-line(unused-return)
         silo0.deposit(1e8, victim, ISilo.CollateralType.Collateral);
 
         // The following is true only if SiloMathLib._DECIMALS_OFFSET_POW = 10 ** 0
@@ -74,9 +76,11 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
         uint256 attackerDeposits = _messWithRatio();
 
         for (uint256 i = 0; i < 15; i++) {
+            // forge-lint: disable-next-line(calls-loop)
             string memory user = vm.toString(i + 1);
             address depositor = makeAddr(user);
 
+            // forge-lint: disable-next-line(calls-loop)
             uint256 toDeposit = silo0.getCollateralAssets();
             _makeDeposit(silo0, token0, toDeposit, depositor, ISilo.CollateralType.Collateral);
         }
@@ -112,10 +116,12 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
         uint256[] memory depositsAmounts = new uint256[](numberOfDepositors);
 
         for (uint256 i = 0; i < numberOfDepositors; i++) {
+            // forge-lint: disable-next-line(calls-loop)
             string memory user = vm.toString(i + 1);
             address _depositor = makeAddr(user);
             depositors[i] = _depositor;
 
+            // forge-lint: disable-next-line(calls-loop)
             uint256 toDeposit = silo0.getCollateralAssets();
             _makeDeposit(silo0, token0, toDeposit, _depositor, ISilo.CollateralType.Collateral);
 
@@ -128,6 +134,7 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
         // The user is able to withdraw after SiloMathLib._DECIMALS_OFFSET_POW set to 10 ** 3
         // -1 for underestimation
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(depositsAmounts[anyDepositor] - 1, depositor, depositor);
 
         // The following is true only if SiloMathLib._DECIMALS_OFFSET_POW = 10 ** 0
@@ -189,20 +196,26 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
         uint256 borrowerShares = silo0.maxRedeem(borrower);
 
         vm.prank(borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo0.redeem(borrowerShares, borrower, borrower);
 
+        // forge-lint: disable-next-line(unused-return)
         silo0.accrueInterest();
 
         for (uint256 i = 0; i < 30; i++) {
+            // forge-lint: disable-next-line(calls-loop)
             uint256 toDeposit = silo0.getCollateralAssets();
             _makeDeposit(silo0, token0, toDeposit, attacker, ISilo.CollateralType.Collateral);
             depositedForAttack += toDeposit;
 
+            // forge-lint: disable-next-line(calls-loop)
             vm.prank(attacker);
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             silo0.withdraw(1, attacker, attacker);
             depositedForAttack -= 1;
         }
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[_doAttack] gas used: ", gasStart - gasleft());
     }
 
@@ -220,6 +233,7 @@ contract CollateralTokenInflationAttack is SiloLittleHelper, Test {
         uint256 toRepay = silo0.maxRepay(_borrower);
 
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(address(silo0), toRepay);
 
         _mintTokens(token0, toRepay, _borrower);

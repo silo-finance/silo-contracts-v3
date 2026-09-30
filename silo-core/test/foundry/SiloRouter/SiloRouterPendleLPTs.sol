@@ -23,6 +23,7 @@ contract SiloRouterPendleLPTsTest is Test {
     address public pendleLPWhale = 0xF6853c77a2452576EaE5af424975a101FfC47308;
 
     function setUp() public {
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_MAINNET"), 22722152); // forking block Jun 17 2025
 
         string memory chainAlias = ChainsLib.chainAlias();
@@ -51,6 +52,7 @@ contract SiloRouterPendleLPTsTest is Test {
         assertEq(pendleLPToken.balanceOf(depositor), amount, "Expect to have 100 pendle LP tokens");
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         pendleLPToken.approve(address(router), amount);
 
         bytes[] memory data = new bytes[](1);
@@ -58,6 +60,7 @@ contract SiloRouterPendleLPTsTest is Test {
             abi.encodeCall(SiloRouterV2Implementation.wrapPendleLP, (wrapper, pendleLPToken, depositor, amount));
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall{value: 0}(data);
 
         assertEq(pendleLPToken.balanceOf(depositor), 0, "Expect to have no pendle LP tokens");
@@ -79,6 +82,7 @@ contract SiloRouterPendleLPTsTest is Test {
         require(pendleLPToken.transfer(depositor, amount), "transfer failed");
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         pendleLPToken.approve(address(wrapper), amount);
 
         vm.prank(depositor);
@@ -95,6 +99,7 @@ contract SiloRouterPendleLPTsTest is Test {
         data[0] = abi.encodeCall(SiloRouterV2Implementation.unwrapPendleLP, (wrapper, depositor, amount));
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall{value: 0}(data);
 
         assertEq(pendleLPToken.balanceOf(depositor), amount, "Expect to have 100 pendle LP tokens");
@@ -116,6 +121,7 @@ contract SiloRouterPendleLPTsTest is Test {
         require(pendleLPToken.transfer(depositor, amount), "transfer failed");
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         pendleLPToken.approve(address(wrapper), amount);
 
         vm.prank(depositor);
@@ -132,6 +138,7 @@ contract SiloRouterPendleLPTsTest is Test {
         data[0] = abi.encodeCall(SiloRouterV2Implementation.unwrapAllPendleLP, (wrapper, depositor));
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         router.multicall{value: 0}(data);
 
         assertEq(pendleLPToken.balanceOf(depositor), amount, "Expect to have 100 pendle LP tokens");

@@ -31,10 +31,12 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
 
     function setUp() public {
         siloConfig = _setUpLocalFixture();
+        // forge-lint: disable-next-line(unused-return)
         (address protectedShareToken, address collateralShareToken,) = siloConfig.getShareTokens(address(silo0));
         shareCollateralToken0 = ShareCollateralToken(collateralShareToken);
         shareProtectedToken0 = ShareCollateralToken(protectedShareToken);
 
+        // forge-lint: disable-next-line(unused-return)
         (protectedShareToken, collateralShareToken,) = siloConfig.getShareTokens(address(silo1));
         shareCollateralToken1 = ShareCollateralToken(collateralShareToken);
         shareProtectedToken1 = ShareCollateralToken(protectedShareToken);
@@ -74,6 +76,7 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
         _deposit(100, DEPOSITOR, _collateralType);
 
         vm.expectRevert(IShareToken.ZeroTransfer.selector);
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         _token1(_collateralType).transfer(RECEIVER, 0);
     }
 
@@ -123,9 +126,11 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
 
         vm.startPrank(DEPOSITOR);
 
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         _token0(_collateralType).transfer(RECEIVER, 1);
         assertEq(_token0(_collateralType).balanceOf(RECEIVER), 1, "transfer0 success");
 
+        // forge-lint: disable-next-line(erc20-unchecked-transfer)
         _token1(_collateralType).transfer(RECEIVER, 1);
         assertEq(_token1(_collateralType).balanceOf(RECEIVER), 1, "transfer1 success");
 
@@ -196,18 +201,22 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
         IShareToken shareToken = _token0(_collateralType);
 
         vm.prank(DEPOSITOR);
+        // forge-lint: disable-next-line(unused-return)
         shareToken.approve(spender, amount);
 
         vm.prank(spender);
+        // forge-lint: disable-next-line(arbitrary-send-erc20)
         require(shareToken.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
         assertEq(shareToken.balanceOf(RECEIVER), 1, "transfer0 success");
 
         shareToken = _token1(_collateralType);
 
         vm.prank(DEPOSITOR);
+        // forge-lint: disable-next-line(unused-return)
         shareToken.approve(spender, amount);
 
         vm.prank(spender);
+        // forge-lint: disable-next-line(arbitrary-send-erc20)
         require(shareToken.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
         assertEq(shareToken.balanceOf(RECEIVER), 1, "transfer1 success");
     }
@@ -240,18 +249,21 @@ contract ShareCollateralTokenTest is Test, SiloLittleHelper {
         IShareToken token1 = _token1(_collateralType);
 
         vm.prank(DEPOSITOR);
+        // forge-lint: disable-next-line(unused-return)
         token0.approve(spender, 1);
 
         vm.prank(spender);
         vm.expectRevert(IShareToken.SenderNotSolventAfterTransfer.selector);
-        // forge-lint: disable-next-line(erc20-unchecked-transfer)
+        // forge-lint: disable-next-line(arbitrary-send-erc20, erc20-unchecked-transfer)
         token0.transferFrom(DEPOSITOR, RECEIVER, 1);
         assertEq(token0.balanceOf(RECEIVER), 0, "transferFrom0 success");
 
         vm.prank(DEPOSITOR);
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(spender, 1);
 
         vm.prank(spender);
+        // forge-lint: disable-next-line(arbitrary-send-erc20)
         require(token1.transferFrom(DEPOSITOR, RECEIVER, 1), "transfer failed");
         assertEq(token1.balanceOf(RECEIVER), 1, "transferFrom1 success");
     }

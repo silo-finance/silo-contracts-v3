@@ -68,12 +68,16 @@ contract BorrowImmediateBadDebtTest is SiloLittleHelper, Test {
         assertEq(data.debtAssets * 1e18 / data.collateralAssets, 1e18, "100% utilization");
 
         uint256 solvencyTime = 8 days;
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + solvencyTime);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV after solvencyTime", silo1.getLtv(borrower), 18);
         assertTrue(silo1.isSolvent(borrower));
 
         uint256 insolventTime = solvencyTime + 1 days;
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 days);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV after some time", silo1.getLtv(borrower), 18);
 
         assertTrue(
@@ -81,24 +85,35 @@ contract BorrowImmediateBadDebtTest is SiloLittleHelper, Test {
             string.concat("it takes over ", (solvencyTime / 60 / 60 / 24).toString(), " days to be insolvent")
         );
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 365 days - insolventTime);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[1y] LTV after 1y", silo1.getLtv(borrower), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[1y] current debt", silo1.previewRepayShares(borrowShares));
+        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[1y] collateralToLiquidate", collateralToLiquidate);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[1y] debtToRepay", debtToRepay);
 
         assertEq(silo1.getLtv(borrower), ltvBefore * 100, "[1y] LTV x100");
 
         vm.warp(block.timestamp + 365 days);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[2y] LTV after 2y", silo1.getLtv(borrower), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[2y] current debt", silo1.previewRepayShares(borrowShares));
+        // forge-lint: disable-next-line(unused-return)
         (collateralToLiquidate, debtToRepay,) = partialLiquidation.maxLiquidation(borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[2y] collateralToLiquidate", collateralToLiquidate);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[2y] debtToRepay", debtToRepay);
 
         assertEq(silo1.getLtv(borrower), ltvBefore * 200, "[2y] LTV x200");
@@ -117,6 +132,7 @@ contract BorrowImmediateBadDebtTest is SiloLittleHelper, Test {
 
         vm.prank(borrower);
         ISilo collateralSilo = silo0;
+        // forge-lint: disable-next-line(unused-return)
         collateralSilo.withdraw(11, borrower, borrower); // bring LTV just below LT
 
         uint256 ltvBefore = silo1.getLtv(borrower);
@@ -127,12 +143,16 @@ contract BorrowImmediateBadDebtTest is SiloLittleHelper, Test {
         assertEq(data.debtAssets * 1e18 / data.collateralAssets, 1e18, "100% utilization");
 
         uint256 solvencyTime = 1 days;
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + solvencyTime);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV after solvencyTime", silo1.getLtv(borrower), 18);
         assertTrue(silo1.isSolvent(borrower), "user must be still solvent");
 
         uint256 insolventTime = solvencyTime + 1 days;
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 1 days);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV after some time", silo1.getLtv(borrower), 18);
 
         assertTrue(
@@ -140,24 +160,35 @@ contract BorrowImmediateBadDebtTest is SiloLittleHelper, Test {
             string.concat("it takes over ", (solvencyTime / 60 / 60 / 24).toString(), " days to be insolvent")
         );
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 365 days - insolventTime);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[1y] LTV after 1y", silo1.getLtv(borrower), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[1y] current debt", silo1.previewRepayShares(borrowShares));
+        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[1y] collateralToLiquidate", collateralToLiquidate);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[1y] debtToRepay", debtToRepay); // 2 tokens: 7574,
 
         assertEq(silo1.getLtv(borrower), 85.101123595505617978e18, "[1y] LTV 850%");
 
         vm.warp(block.timestamp + 365 days);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[2y] LTV after 2y", silo1.getLtv(borrower), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[2y] current debt", silo1.previewRepayShares(borrowShares));
+        // forge-lint: disable-next-line(unused-return)
         (collateralToLiquidate, debtToRepay,) = partialLiquidation.maxLiquidation(borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[2y] collateralToLiquidate", collateralToLiquidate);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[2y] debtToRepay", debtToRepay); // 2 tokens: 15074
 
         assertEq(silo1.getLtv(borrower), 169.370786516853932585e18, "[2y] LTV 1600%");
@@ -173,22 +204,28 @@ contract BorrowImmediateBadDebtTest is SiloLittleHelper, Test {
         _depositForBorrow(assets, makeAddr("depositor"));
 
         uint256 toBorrow = _collateral * 75 / 100;
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("toBorrow for 1 sec", toBorrow, _decimals);
 
         _deposit(_collateral, borrower);
         _borrow(toBorrow, borrower);
 
         ISilo collateralSilo = silo0;
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("maxWithdraw", collateralSilo.maxWithdraw(borrower), _decimals);
 
         vm.prank(borrower);
         // d / c = 0.85 => c = d / 0.85
+        // forge-lint: disable-next-line(divide-before-multiply)
         uint256 toWithdraw = _collateral - toBorrow * one / ((one * 85) / 100) - 1;
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("toWithdraw", toWithdraw, _decimals);
+        // forge-lint: disable-next-line(unused-return)
         collateralSilo.withdraw(toWithdraw, borrower, borrower); // bring LTV just below LT
 
         uint256 solvencyTime = 1;
         vm.warp(block.timestamp + solvencyTime);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV after solvencyTime", silo1.getLtv(borrower), 18);
         assertTrue(!silo1.isSolvent(borrower), "user insolvent after 1 sec");
     }
@@ -203,6 +240,7 @@ contract BorrowImmediateBadDebtTest is SiloLittleHelper, Test {
         overrides.token1 = address(token1);
 
         address hook;
+        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,, hook) = siloFixture.deploy_local(overrides);
         partialLiquidation = IPartialLiquidation(hook);
     }

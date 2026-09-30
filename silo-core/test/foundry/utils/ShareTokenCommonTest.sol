@@ -53,6 +53,7 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
         uint256 approveAmount = 100e18;
 
         vm.prank(user);
+        // forge-lint: disable-next-line(unused-return)
         _shareToken.approve(otherUser, approveAmount);
 
         allowance = _shareToken.allowance(user, otherUser);
@@ -107,6 +108,7 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
         ISilo silo = _shareToken.silo();
 
         vm.expectEmit(true, true, true, true, address(_shareToken));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Transfer(address(0), user, mintAmount);
 
         vm.prank(address(silo));
@@ -136,12 +138,14 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
         ISilo silo = _shareToken.silo();
 
         vm.expectEmit(true, true, true, true, address(_shareToken));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Transfer(address(0), user, mintAmount);
 
         vm.prank(address(silo));
         _shareToken.mint(user, user, mintAmount);
 
         vm.expectEmit(true, true, true, true, address(_shareToken));
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Transfer(user, address(0), mintAmount);
 
         vm.prank(address(silo));
@@ -162,9 +166,11 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
         _shareToken.mint(user, user, mintAmount);
 
         vm.prank(user);
+        // forge-lint: disable-next-line(unused-return)
         _shareToken.approve(otherUser, mintAmount);
 
         vm.expectEmit(true, true, true, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Transfer(user, address(0), mintAmount);
 
         vm.prank(address(silo));
@@ -204,6 +210,7 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
         string memory version;
         address verifyingContract;
 
+        // forge-lint: disable-next-line(unused-return)
         (, name, version,, verifyingContract,,) = ERC20PermitUpgradeable(address(_shareToken)).eip712Domain();
 
         assertEq(keccak256(bytes(name)), keccak256(bytes(_NAME)), "name should be equal to _NAME");
@@ -300,7 +307,9 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
     FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_collateralShareTokenDecimals
     */
     function test_collateralShareTokenDecimals() public view {
+        // forge-lint: disable-next-line(unused-return)
         (address protected0, address collateral0,) = siloConfig.getShareTokens(address(silo0));
+        // forge-lint: disable-next-line(unused-return)
         (address protected1, address collateral1,) = siloConfig.getShareTokens(address(silo1));
 
         _collateralShareTokenDecimals(IShareToken(collateral0), address(token0));
@@ -447,7 +456,9 @@ contract ShareTokenCommonTest is SiloLittleHelper, Test, ERC20PermitUpgradeable 
     }
 
     function _executeForAllCollateralShareTokens(function(IShareToken) internal func) internal {
+        // forge-lint: disable-next-line(unused-return)
         (address protected0, address collateral0,) = siloConfig.getShareTokens(address(silo0));
+        // forge-lint: disable-next-line(unused-return)
         (address protected1, address collateral1,) = siloConfig.getShareTokens(address(silo1));
 
         func(IShareToken(protected0));

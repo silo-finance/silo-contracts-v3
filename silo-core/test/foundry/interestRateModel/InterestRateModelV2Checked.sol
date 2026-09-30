@@ -208,6 +208,7 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
 
         if (_l.u > _c.ucrit) {
             // rp := kcrit *(1 + Tcrit + beta *T)*( u0 - ucrit )
+            // forge-lint: disable-next-line(divide-before-multiply)
             _l.rp = _c.kcrit * (_l.DP + _c.Tcrit + _c.beta * _l.T) / _l.DP * (_l.u - _c.ucrit) / _l.DP;
         } else {
             // rp := min (0, klow * (u0 - ulow ))
@@ -283,8 +284,10 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
 
         if (_l.u > _c.ucrit) {
             // rp := kcrit * (1 + Tcrit) * (u0 - ucrit )
+            // forge-lint: disable-next-line(divide-before-multiply)
             _l.rp = _c.kcrit * (decimalPoints + Tcrit) / decimalPoints * (_l.u - _c.ucrit) / decimalPoints;
             // slope := slopei + kcrit * beta * (u0 - ucrit )
+            // forge-lint: disable-next-line(divide-before-multiply)
             _l.slope = _l.slopei + _c.kcrit * _c.beta / decimalPoints * (_l.u - _c.ucrit) / decimalPoints;
             // Tcrit := Tcrit + beta * T
             Tcrit = Tcrit + _c.beta * _l.T;
@@ -374,6 +377,7 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
             uint256 maxAmount = _totalDeposits > _totalBorrowAmount ? _totalDeposits : _totalBorrowAmount;
 
             if (maxAmount >= ASSET_DATA_OVERFLOW_LIMIT) {
+                // forge-lint: disable-next-line(boolean-cst)
                 return (0, true);
             }
 
@@ -389,6 +393,7 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
             ) {
                 rcomp = (ASSET_DATA_OVERFLOW_LIMIT - maxAmount) * _DP / _totalBorrowAmount;
 
+                // forge-lint: disable-next-line(boolean-cst)
                 return (rcomp, true);
             }
         }
@@ -421,6 +426,7 @@ contract InterestRateModelV2Checked is IInterestRateModel, IInterestRateModelV2 
     {
         // uint256 cap = 10**20 / (365 * 24 * 3600); // this is per-second rate because _l.T is in seconds.
         uint256 cap = 3170979198376 * _t;
+        // forge-lint: disable-next-line(boolean-cst)
         return _rcomp > cap ? (cap, true) : (_rcomp, false);
     }
 

@@ -20,9 +20,11 @@ contract TransferReentrancyTest is MethodReentrancyTest {
         token.mint(depositor, amount);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         token.approve(address(silo), amount);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo.deposit(amount, depositor);
 
         TestStateLib.enableReentrancy();

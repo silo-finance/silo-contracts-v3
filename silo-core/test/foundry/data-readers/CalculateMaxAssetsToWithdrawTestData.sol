@@ -47,6 +47,7 @@ contract CalculateMaxAssetsToWithdrawTestData {
 
         ourMax = uint256(999099909990999099) / 5;
         _add(10e18, 8e18, 0.8888e18, 1e18, 1e18, ourMax, "LTV after => 88,88% (2)");
+        // forge-lint: disable-next-line(divide-before-multiply)
         _add(10e18 - ourMax * 5, 8e18, 0.8888e18, 1e18 - ourMax, 0, 0, "^ LTV after => 88,88% (2)");
 
         //  0.1e18 / (3e18 - 2882352941176470589));

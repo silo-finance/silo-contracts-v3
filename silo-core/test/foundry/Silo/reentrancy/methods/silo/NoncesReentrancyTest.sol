@@ -21,7 +21,9 @@ contract NoncesReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         IERC20Permit(address(TestStateLib.silo0())).nonces(address(1));
+        // forge-lint: disable-next-line(unused-return)
         IERC20Permit(address(TestStateLib.silo1())).nonces(address(1));
     }
 }

@@ -23,7 +23,9 @@ contract BorrowerCollateralSiloReentrancyTest is MethodReentrancyTest {
         ISiloConfig config = TestStateLib.siloConfig();
         address borrower = makeAddr("Borrower");
 
+        // forge-lint: disable-next-line(unused-return)
         config.borrowerCollateralSilo(borrower);
+        // forge-lint: disable-next-line(unused-return)
         config.borrowerCollateralSilo(address(0));
     }
 }

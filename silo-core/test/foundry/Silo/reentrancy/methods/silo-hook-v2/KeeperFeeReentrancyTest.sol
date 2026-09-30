@@ -11,6 +11,7 @@ contract KeeperFeeReentrancyTest is ConstantReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view override {
+        // forge-lint: disable-next-line(unused-return)
         SiloHookV2(TestStateLib.hookReceiver()).KEEPER_FEE();
     }
 }

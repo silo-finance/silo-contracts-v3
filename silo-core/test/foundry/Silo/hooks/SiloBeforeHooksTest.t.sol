@@ -28,6 +28,7 @@ contract HookReceiver is IHookReceiver, Test {
         // return to not create infinite loop
         if (imIn) return;
 
+        // forge-lint: disable-next-line(unused-return)
         (address silo0,) = siloConfig.getSilos();
 
         imIn = true;
@@ -38,7 +39,9 @@ contract HookReceiver is IHookReceiver, Test {
             receiver = input.receiver;
 
             // create debt in two silos
+            // forge-lint: disable-next-line(reentrancy-no-eth)
             vm.prank(receiver);
+            // forge-lint: disable-next-line(reentrancy-no-eth, unused-return)
             ISilo(silo0).borrow(1, receiver, receiver);
         } else {
             revert("should not happen");
@@ -94,6 +97,7 @@ contract SiloBeforeHooksTest is SiloLittleHelper, Test {
 
         configOverride.hookReceiver = _hookReceiverAddr;
 
+        // forge-lint: disable-next-line(unused-return)
         (_siloConfig, silo0, silo1,,,) = siloFixture.deploy_local(configOverride);
 
         _deposit(1e18, BORROWER);
@@ -107,17 +111,20 @@ contract SiloBeforeHooksTest is SiloLittleHelper, Test {
     FOUNDRY_PROFILE=core_test forge test -vvv --ffi --mt test_borrow_beforeHook_createDebt
     */
     function test_borrow_beforeHook_createDebt() public {
+        // forge-lint: disable-next-line(unsafe-typecast)
         _hookReceiver.setBefore(uint24(Hook.BORROW));
         silo1.updateHooks();
 
         vm.expectRevert(ISilo.BorrowNotPossible.selector);
         vm.prank(BORROWER);
+        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(8, BORROWER, BORROWER);
 
         _hookReceiver.setBefore(uint24(0));
         silo1.updateHooks();
 
         vm.prank(BORROWER);
+        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(8, BORROWER, BORROWER);
     }
 }

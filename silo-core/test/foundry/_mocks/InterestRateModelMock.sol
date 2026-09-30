@@ -15,6 +15,7 @@ contract InterestRateModelMock is Test {
     // IInterestRateModel.getCompoundInterestRate.selector: 0xcfdfcffa
     function getCompoundInterestRateMock(address _silo, uint256 _blockTimestamp, uint256 _rcomp) external {
         bytes memory data = abi.encodeWithSelector(
+            // forge-lint: disable-next-line(unsafe-typecast)
             bytes4(keccak256(abi.encodePacked("getCompoundInterestRate(address,uint256)"))), _silo, _blockTimestamp
         );
 

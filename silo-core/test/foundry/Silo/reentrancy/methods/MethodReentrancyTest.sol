@@ -8,6 +8,7 @@ import {Tabs} from "../../../_common/Tabs.sol";
 
 abstract contract MethodReentrancyTest is Test, IMethodReentrancyTest, Tabs {
     function methodSignature() external view returns (bytes4 sig) {
+        // forge-lint: disable-next-line(unsafe-typecast)
         sig = bytes4(bytes32(keccak256(bytes(IMethodReentrancyTest(address(this)).methodDescription()))));
     }
 }

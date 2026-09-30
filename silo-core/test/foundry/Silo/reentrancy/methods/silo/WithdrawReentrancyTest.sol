@@ -19,14 +19,17 @@ contract WithdrawReentrancyTest is MethodReentrancyTest {
         token.mint(depositor, amount);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         token.approve(address(silo), amount);
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo.deposit(amount, depositor, ISilo.CollateralType.Collateral);
 
         TestStateLib.enableReentrancy();
 
         vm.prank(depositor);
+        // forge-lint: disable-next-line(unused-return)
         silo.withdraw(amount, depositor, depositor);
     }
 
@@ -34,11 +37,13 @@ contract WithdrawReentrancyTest is MethodReentrancyTest {
         ISilo silo0 = TestStateLib.silo0();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo0.withdraw(1000, address(0), address(0));
 
         ISilo silo1 = TestStateLib.silo1();
 
         vm.expectRevert(ICrossReentrancyGuard.CrossReentrantCall.selector);
+        // forge-lint: disable-next-line(unused-return)
         silo1.withdraw(1000, address(0), address(0));
     }
 

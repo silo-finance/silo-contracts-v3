@@ -36,6 +36,7 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
     */
     function test_updateHooks_anyoneCanCall() public {
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit HooksUpdated(0, 0);
 
         silo1.updateHooks();
@@ -49,6 +50,7 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
         silo0.updateHooks();
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit HooksUpdated(0, 0);
 
         silo0.updateHooks();
@@ -56,6 +58,7 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
         silo1.updateHooks();
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit HooksUpdated(0, 0);
 
         silo1.updateHooks();
@@ -68,6 +71,7 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
         _mockHookReceiver(address(this));
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit HooksUpdated(_hooksBefore, _hooksAfter);
 
         silo1.updateHooks();
@@ -107,6 +111,7 @@ contract UpdateHooksTest is SiloLittleHelper, Test {
         _hooksBefore = 0;
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit HooksUpdated(0, 0);
 
         silo1.updateHooks();

@@ -124,15 +124,19 @@ contract PreviewRepayTest is SiloLittleHelper, Test {
         }
 
         uint256 warpTime = 20 days;
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + warpTime);
 
         uint256 ltvAfter = SILO_LENS.getLtv(silo1, BORROWER);
 
         while (ltvAfter == ltvBefore) {
+            // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
             vm.warp(block.timestamp + warpTime);
+            // forge-lint: disable-next-line(calls-loop)
             ltvAfter = SILO_LENS.getLtv(silo1, BORROWER);
         }
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("ltvAfter loop", ltvAfter);
 
         assertGt(ltvAfter, ltvBefore, "expect any interest");

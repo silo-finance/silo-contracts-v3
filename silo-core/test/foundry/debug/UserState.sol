@@ -15,7 +15,7 @@ import {ILiquidationHelper} from "silo-core/contracts/interfaces/ILiquidationHel
 import {ISiloOracle} from "silo-core/contracts/interfaces/ISiloOracle.sol";
 
 abstract contract UserState is Test {
-    SiloLens internal constant LENS = SiloLens(0xB477131cf512fE4D2F46888B7A352763a168a30C);
+    SiloLens internal constant LENS = SiloLens(0xeA5359C6AbA077Bcd19AB5F7CcB8245AAc45687B);
     address internal immutable SWAP_ALLOWANCE_HOLDER;
     address internal constant WETH = 0x50c42dEAcD8Fc9773493ED674b675bE577f2634b;
     address internal constant WS = 0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38;
@@ -57,9 +57,11 @@ abstract contract UserState is Test {
         console2.log("      debt asset: ", debtSymbol, debtCfg.token);
         console2.log("collateral Liquidation Threshold: ", collateralCfg.lt);
         console2.log("      debt Liquidation Threshold: ", debtCfg.lt);
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "                        user LTV: ", LENS.getUserLTV(ISilo(debtCfg.silo), _user), 16
         );
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_string("user solvent?: ", ISilo(debtCfg.silo).isSolvent(_user) ? "yes" : "no");
 
         IPartialLiquidation hook = IPartialLiquidation(collateralCfg.hookReceiver);
@@ -68,17 +70,21 @@ abstract contract UserState is Test {
         uint256 collateralDecimals = IERC20Metadata(collateralCfg.token).decimals();
         uint256 debtDecimals = IERC20Metadata(debtCfg.token).decimals();
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "[maxLiquidation] collateral to liquidate: ", collateralToLiquidate, collateralDecimals
         );
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[maxLiquidation]           debt to repay: ", debtToRepay, debtDecimals);
         console2.log("[maxLiquidation] sToken required: ", sTokenRequired ? "yes" : "no");
 
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "collateral value: ",
             ISiloOracle(collateralCfg.solvencyOracle).quote(collateralToLiquidate, collateralCfg.token),
             18
         );
+        // forge-lint: disable-next-item(reentrancy-events)
         emit log_named_decimal_uint(
             "      debt value: ", ISiloOracle(debtCfg.solvencyOracle).quote(debtToRepay, debtCfg.token), 18
         );

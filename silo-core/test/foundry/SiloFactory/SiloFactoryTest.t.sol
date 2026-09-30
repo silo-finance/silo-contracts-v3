@@ -45,6 +45,7 @@ contract SiloFactoryTest is SiloLittleHelper, IntegrationTest {
     function test_burnCreatedSiloToken() public {
         uint256 firstSiloId = siloFactory.getNextSiloId() - 1;
 
+        // forge-lint: disable-next-line(unused-return)
         (, address owner) = siloFactory.getFeeReceivers(address(silo0));
 
         assertNotEq(owner, address(0), "owner is 0");
@@ -60,6 +61,7 @@ contract SiloFactoryTest is SiloLittleHelper, IntegrationTest {
         vm.prank(owner);
         siloFactory.burn(firstSiloId);
 
+        // forge-lint: disable-next-line(unused-return)
         (, owner) = siloFactory.getFeeReceivers(address(silo0));
 
         assertEq(owner, address(0), "owner is not 0 after burn");
@@ -102,6 +104,7 @@ contract SiloFactoryTest is SiloLittleHelper, IntegrationTest {
         );
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ISiloFactory.BaseURI(_newBaseURI);
 
         vm.prank(Ownable(address(siloFactory)).owner());
@@ -124,6 +127,7 @@ contract SiloFactoryTest is SiloLittleHelper, IntegrationTest {
         );
 
         vm.expectRevert(abi.encodeWithSelector(IERC721Errors.ERC721NonexistentToken.selector, nonExistingSiloId));
+        // forge-lint: disable-next-line(unused-return)
         IERC721Metadata(address(siloFactory)).tokenURI(nonExistingSiloId);
     }
 

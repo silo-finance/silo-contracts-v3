@@ -9,6 +9,7 @@ import {ICrossReentrancyGuard} from "silo-core/contracts/interfaces/ICrossReentr
 contract SiloConfigMock is Test {
     address public immutable ADDRESS;
 
+    // forge-lint: disable-next-line(missing-zero-check)
     constructor(address _siloConfig) {
         ADDRESS = _siloConfig == address(0) ? makeAddr("SiloConfigMock") : _siloConfig;
     }

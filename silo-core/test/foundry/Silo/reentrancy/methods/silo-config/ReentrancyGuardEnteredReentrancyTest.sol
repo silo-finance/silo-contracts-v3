@@ -19,6 +19,7 @@ contract ReentrancyGuardEnteredReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.siloConfig().reentrancyGuardEntered();
     }
 }

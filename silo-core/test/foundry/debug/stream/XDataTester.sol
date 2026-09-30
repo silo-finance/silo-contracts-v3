@@ -71,6 +71,7 @@ contract XDataTester is XDataReader {
         SiloLens siloLens = SiloLens(0xB627bdf951889deaAFbE4CF1E8a8aE6DED8338F8);
 
         uint256 ltv = siloLens.getLtv(silo, account);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("ltv %", ltv, 16);
     }
 
@@ -105,17 +106,23 @@ contract XDataTester is XDataReader {
 
                 assertLe(
                     totalAssets,
+                    // forge-lint: disable-next-line(calls-loop)
                     ISilo(position.market).totalAssets(),
+                    // forge-lint: disable-next-line(calls-loop)
                     string.concat("invalid total assets for market ", vm.toString(position.market))
                 );
+                // forge-lint: disable-next-line(calls-loop)
                 uint256 assetsDiff = ISilo(position.market).totalAssets() - totalAssets;
 
+                // forge-lint: disable-next-line(calls-loop)
                 console2.log("shares diff", totalShares - ISilo(position.market).totalSupply());
                 console2.log("assets diff", assetsDiff); // it is ok to have mote in Silo, because or rounding on withdraw
 
                 assertEq(
                     totalShares,
+                    // forge-lint: disable-next-line(calls-loop)
                     ISilo(position.market).totalSupply(),
+                    // forge-lint: disable-next-line(calls-loop)
                     string.concat("invalid total shares for market ", vm.toString(position.market))
                 );
 
@@ -126,7 +133,9 @@ contract XDataTester is XDataReader {
     }
 
     function _checkAccountBalance(Position memory _position, uint256 _id) internal {
+        // forge-lint: disable-next-line(calls-loop)
         uint256 shares = IShareToken(_position.market).balanceOf(_position.account);
+        // forge-lint: disable-next-line(calls-loop)
         uint256 assets = ISilo(_position.market).previewRedeem(shares);
 
         marketShares[_position.market] += shares;
@@ -139,12 +148,14 @@ contract XDataTester is XDataReader {
         }
 
         assertEq(
+            // forge-lint: disable-next-line(calls-loop)
             assets, _position.assets, string.concat("assets mismatch for account ", vm.toString(_position.account))
         );
 
         assertEq(
             IsContract.isContract(_position.account),
             _position.is_contract,
+            // forge-lint: disable-next-line(calls-loop)
             string.concat("contract detection mismatch for account ", vm.toString(_position.account))
         );
     }
@@ -170,20 +181,25 @@ contract XDataTester is XDataReader {
         if (_chainId == 146) {
             console2.log("forking to sonic");
             assertEq(_blockNumber, 54144258);
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             vm.createSelectFork(vm.envString("RPC_SONIC"), _blockNumber);
         } else if (_chainId == 1) {
             console2.log("forking to mainnet");
             assertEq(_blockNumber, 23747030);
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             vm.createSelectFork(vm.envString("RPC_MAINNET"), _blockNumber);
         } else if (_chainId == 42161) {
             console2.log("forking to arbitrum");
             assertEq(_blockNumber, 397731469);
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             vm.createSelectFork(vm.envString("RPC_ARBITRUM"), _blockNumber);
         } else if (_chainId == 43114) {
             console2.log("forking to avalanche");
             assertEq(_blockNumber, 71568890);
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             vm.createSelectFork(vm.envString("RPC_AVALANCHE"), _blockNumber);
         } else {
+            // forge-lint: disable-next-line(require-revert-in-loop)
             revert("chainId not supported (make sure you replace `vault` => `market` in json file)");
         }
     }

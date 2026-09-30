@@ -70,6 +70,7 @@ contract KinkMathLibTest is Test {
     function test_kinkMath_wouldOverflowOnCastToInt256_fuzz(uint256 _value) public pure {
         bool result = _value.wouldOverflowOnCastToInt256();
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         if (_value > uint256(type(int256).max)) assertTrue(result, "value should overflow");
         else assertFalse(result, "value should NOT overflow");
     }

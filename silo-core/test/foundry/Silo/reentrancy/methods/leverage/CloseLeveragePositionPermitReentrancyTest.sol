@@ -18,6 +18,7 @@ contract CloseLeveragePositionPermitReentrancyTest is CloseLeveragePositionReent
         uint256 flashAmount = TestStateLib.silo0().maxRepay(wallet.addr);
 
         uint256 amountIn = flashAmount * 111 / 100;
+        // forge-lint: disable-next-line(divide-before-multiply)
         swap.setSwap(TestStateLib.token1(), amountIn, TestStateLib.token0(), amountIn * 99 / 100);
 
         LeverageRouter router = _getLeverageRouter();

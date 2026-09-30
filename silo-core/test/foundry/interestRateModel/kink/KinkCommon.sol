@@ -75,7 +75,9 @@ abstract contract KinkCommon {
             rmin: uint256(_config.rmin).toInt256(),
             // we need to modulo, because on both sides we have 96 bits,
             // in order not to use vm.assume or require, we bound random value
+            // forge-lint: disable-next-line(unsafe-typecast)
             kmin: int96(_config.kmin % uint96(type(int96).max)),
+            // forge-lint: disable-next-line(unsafe-typecast)
             kmax: int96(_config.kmax % uint96(type(int96).max)),
             alpha: uint256(_config.alpha).toInt256(),
             cminus: uint256(_config.cminus).toInt256(),
@@ -93,7 +95,9 @@ abstract contract KinkCommon {
 
         _config.ucrit = _getBetween(_config.ucrit, _config.u2, _DP);
         _config.rmin = _getBetween(_config.rmin, 0, _DP);
+        // forge-lint: disable-next-line(unsafe-typecast)
         _config.kmin = int96(_getBetween(_config.kmin, 0, UNIVERSAL_LIMIT));
+        // forge-lint: disable-next-line(unsafe-typecast)
         _config.kmax = int96(_getBetween(_config.kmax, _config.kmin, UNIVERSAL_LIMIT));
         _config.alpha = _getBetween(_config.alpha, 0, UNIVERSAL_LIMIT);
         _config.cminus = _getBetween(_config.cminus, 0, UNIVERSAL_LIMIT);
@@ -140,6 +144,7 @@ abstract contract KinkCommon {
     }
 
     function _getIRMConfig(IDynamicKinkModel _irm) internal view returns (IDynamicKinkModel.Config memory cfg) {
+        // forge-lint: disable-next-line(calls-loop, unused-return)
         (cfg,) = _irm.irmConfig().getConfig();
     }
 
@@ -148,6 +153,7 @@ abstract contract KinkCommon {
         view
         returns (IDynamicKinkModel.ImmutableConfig memory immutableConfig)
     {
+        // forge-lint: disable-next-line(calls-loop, unused-return)
         (, immutableConfig) = _irm.irmConfig().getConfig();
     }
 

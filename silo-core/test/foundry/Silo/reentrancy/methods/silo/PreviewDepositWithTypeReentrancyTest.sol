@@ -22,10 +22,14 @@ contract PreviewDepositWithTypeReentrancyTest is MethodReentrancyTest {
     function _ensureItWillNotRevert() internal view {
         uint256 someAmount = 1000_0000e18;
 
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().previewDeposit(someAmount, ISilo.CollateralType.Collateral);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().previewDeposit(someAmount, ISilo.CollateralType.Collateral);
 
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().previewDeposit(someAmount, ISilo.CollateralType.Protected);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().previewDeposit(someAmount, ISilo.CollateralType.Protected);
     }
 }

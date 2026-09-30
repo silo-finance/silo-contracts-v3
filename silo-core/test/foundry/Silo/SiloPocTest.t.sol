@@ -37,6 +37,7 @@ contract SiloPocTest is Test {
         configOverride.configName = SiloConfigsNames.SILO_LOCAL_GAUGE_HOOK_RECEIVER;
 
         // Deploy the silo with the overrides
+        // forge-lint: disable-next-line(unused-return)
         (_siloConfig,,,,,) = siloFixture.deploy_local(configOverride);
     }
 

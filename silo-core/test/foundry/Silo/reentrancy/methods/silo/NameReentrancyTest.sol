@@ -19,7 +19,9 @@ contract NameReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().name();
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().name();
     }
 }

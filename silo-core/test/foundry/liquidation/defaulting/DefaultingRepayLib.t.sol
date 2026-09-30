@@ -21,6 +21,7 @@ uint256 constant OFFSET = 1e3;
 contract ShareDebtTokenMock is ShareDebtToken {
     function mockIt(ISilo _silo) external {
         ShareTokenLib.__ShareToken_init({
+            // forge-lint: disable-next-line(unsafe-typecast)
             _silo: _silo, _hookReceiver: address(0), _tokenType: uint24(Hook.DEBT_TOKEN)
         });
     }
@@ -44,14 +45,17 @@ contract SiloAndConfigMock {
         return ISiloConfig(address(this));
     }
 
+    // forge-lint: disable-next-line(empty-block)
     function turnOnReentrancyProtection() external pure {}
 
+    // forge-lint: disable-next-line(empty-block)
     function turnOffReentrancyProtection() external pure {}
 
     function accrueInterestForSilo(
         address /* _silo */
     )
         external
+        // forge-lint: disable-next-line(empty-block)
         pure {}
 
     function getDebtShareTokenAndAsset(
@@ -84,6 +88,7 @@ contract LibImpl {
 
     function getDebtShareToken() public view returns (address debtShareToken) {
         IShareToken.ShareTokenStorage storage $ = ShareTokenLib.getShareTokenStorage();
+        // forge-lint: disable-next-line(unused-return)
         (debtShareToken,) = $.siloConfig.getDebtShareTokenAndAsset(address(this));
     }
 }

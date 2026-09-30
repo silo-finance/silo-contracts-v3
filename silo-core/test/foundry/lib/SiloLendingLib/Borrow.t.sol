@@ -53,6 +53,7 @@ contract BorrowTest is Test {
 
         vm.expectRevert(ISilo.InputZeroShares.selector);
 
+        // forge-lint: disable-next-item(unused-return)
         impl.borrow({
             _debtShareToken: configData.debtShareToken,
             _token: configData.token,
@@ -74,26 +75,33 @@ contract BorrowTest is Test {
         SiloLendingLibImpl impl = new SiloLendingLibImpl();
 
         for (uint256 i; i < testDatas.length; i++) {
+            // forge-lint: disable-next-line(calls-loop)
             vm.clearMockedCalls();
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_string(testDatas[i].name);
             bool txReverts = testDatas[i].output.reverts != bytes4(0);
 
             if (testDatas[i].mocks.debtSharesTotalSupplyMock) {
+                // forge-lint: disable-next-line(calls-loop)
                 DEBT_SHARE_TOKEN.totalSupplyMock(testDatas[i].mocks.debtSharesTotalSupply, !txReverts);
             }
 
             if (testDatas[i].output.borrowedShare != 0) {
+                // forge-lint: disable-next-line(calls-loop)
                 DEBT_TOKEN.transferMock(testDatas[i].input.receiver, testDatas[i].output.borrowedAssets);
 
+                // forge-lint: disable-next-item(calls-loop)
                 DEBT_SHARE_TOKEN.mintMock(
                     testDatas[i].input.borrower, testDatas[i].input.spender, testDatas[i].output.borrowedShare
                 );
             }
 
             if (txReverts) {
+                // forge-lint: disable-next-line(calls-loop)
                 vm.expectRevert(testDatas[i].output.reverts);
             }
 
+            // forge-lint: disable-next-item(calls-loop)
             (uint256 borrowedAssets, uint256 borrowedShares) = impl.borrow(
                 testDatas[i].input.configData.debtShareToken,
                 testDatas[i].input.configData.token,

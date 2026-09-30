@@ -211,6 +211,7 @@ contract PartialLiquidationLibTest is Test, MaxRepayRawMath {
                 params
             );
 
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("cross check #", i);
 
             if (data[i].output.targetLtvPossible) {
@@ -414,7 +415,9 @@ contract PartialLiquidationLibTest is Test, MaxRepayRawMath {
         uint16 _targetLT,
         uint16 _liquidationFee
     ) public {
+        // forge-lint: disable-next-line(type-based-tautology)
         vm.assume(_targetLT <= 1e18);
+        // forge-lint: disable-next-line(type-based-tautology)
         vm.assume(_liquidationFee <= 1e18);
 
         // prices here are arbitrary

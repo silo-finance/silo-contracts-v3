@@ -19,7 +19,9 @@ contract TotalSupplyReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().totalSupply();
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().totalSupply();
     }
 }

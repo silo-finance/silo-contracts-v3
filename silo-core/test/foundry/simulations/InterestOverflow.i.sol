@@ -32,6 +32,7 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
         configOverride.token0 = address(token0);
         configOverride.token1 = address(token1);
 
+        // forge-lint: disable-next-line(unused-return)
         (, silo0, silo1,,,) = siloFixture.deploy_local(configOverride);
     }
 
@@ -56,9 +57,12 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
         uint256 shares3 = _depositForBorrow(one, makeAddr("user3"));
 
         _deposit(type(uint160).max, borrower);
+        // forge-lint: disable-next-line(divide-before-multiply)
         _borrow(type(uint160).max / 100 * 75, borrower);
 
+        // forge-lint: disable-next-line(divide-before-multiply)
         _deposit(type(uint160).max / 100 * 25 * 2, borrower2);
+        // forge-lint: disable-next-line(divide-before-multiply)
         _borrow(type(uint160).max / 100 * 25, borrower2);
 
         vm.startPrank(makeAddr("user1"));
@@ -71,42 +75,53 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
 
         uint256 ltvBefore = SILO_LENS.getLtv(silo1, borrower);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV before", ltvBefore, 16);
         _printUtilization(silo1);
         vm.warp(1 days);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("silo1.getLiquidity() 1", silo1.getLiquidity(), 18);
 
         uint256 allInterest;
 
         for (uint256 i;; i++) {
             // if we apply interest often, we will generate more interest in shorter time
+            // forge-lint: disable-next-line(calls-loop, uninitialized-local)
             allInterest += silo1.accrueInterest();
+            // forge-lint: disable-next-line(calls-loop, reentrancy-events)
             emit log_named_decimal_uint("silo1.getLiquidity()", silo1.getLiquidity(), 18);
 
+            // forge-lint: disable-next-line(calls-loop)
             uint256 newLtv = SILO_LENS.getLtv(silo1, borrower);
 
             if (ltvBefore != newLtv) {
                 ltvBefore = newLtv;
+                // forge-lint: disable-next-line(calls-loop, environment-read-across-mutation)
                 vm.warp(block.timestamp + 10 days);
+                // forge-lint: disable-next-line(reentrancy-events, uninitialized-local)
                 emit log_named_uint("days pass", i * 10);
                 _printUtilization(silo1);
             } else {
+                // forge-lint: disable-next-line(reentrancy-events)
                 emit log("INTEREST OVERFLOW");
                 break;
             }
         }
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("additional time should make no difference:");
         vm.warp(block.timestamp + 365 days);
         assertEq(silo1.accrueInterest(), 0, "when IRM overflows, there should be no more interest");
         _printUtilization(silo1);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("LTV after", SILO_LENS.getLtv(silo0, borrower), 16);
         _printUtilization(silo1);
 
         uint256 dust = silo1.convertToAssets(1);
         assertGt(dust, 0, "ratio is so high, that even 0.001 share produces some assets");
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("dust", dust);
 
         uint256 revenueLost;
@@ -119,12 +134,16 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
             assertEq(minted, dust, "minted assets");
 
             // this repay covers interest only
+            // forge-lint: disable-next-line(unused-return)
             (uint256 daoAndDeployerRevenue,,,,) = silo1.getSiloStorage();
+            // forge-lint: disable-next-line(unused-return)
             (uint256 daoFee, uint256 deployerFee,,) = silo1.config().getFeesWithAsset(address(silo1));
 
             uint256 revenue = allInterest * (daoFee + deployerFee) / 1e18;
             revenueLost = revenue - daoAndDeployerRevenue;
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("revenueLost", revenueLost, 18);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_decimal_uint("daoAndDeployerRevenue", daoAndDeployerRevenue, 18);
 
             assertLe(revenueLost, 6, "we did not lost revenue (6 wei acceptable)");
@@ -139,21 +158,27 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
         _repay(silo1.maxRepay(borrower), borrower);
         _repay(silo1.maxRepay(borrower2), borrower2);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("_withdrawAndCheck user1");
         _withdrawAndCheck(makeAddr("user1"), 0, shares1);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("_withdrawAndCheck user2");
         _withdrawAndCheck(makeAddr("user2"), 0, shares2);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("_withdrawAndCheck user3");
         _withdrawAndCheck(makeAddr("user3"), one, shares3);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log("_withdrawAndCheck user4");
         _withdrawAndCheck(makeAddr("user4"), silo1.convertToAssets(1), 1);
 
         {
             (address collateralShare,, address debtShare) =
+                // forge-lint: disable-next-line(unused-return)
                 ISiloConfig(silo1.config()).getShareTokens(address(silo1));
+            // forge-lint: disable-next-line(unused-return)
             (uint256 daoAndDeployerRevenue,,,,) = silo1.getSiloStorage();
             assertGe(token1.balanceOf(address(silo1)), daoAndDeployerRevenue, "got balance for fees");
             silo1.withdrawFees();
@@ -179,10 +204,14 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
     }
 
     function _printUtilization(ISilo _silo) private returns (ISilo.UtilizationData memory data) {
+        // forge-lint: disable-next-line(calls-loop)
         data = _silo.utilizationData();
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[UtilizationData] collateralAssets", data.collateralAssets, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("[UtilizationData] debtAssets", data.debtAssets, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("[UtilizationData] interestRateTimestamp", data.interestRateTimestamp);
     }
 
@@ -190,10 +219,13 @@ contract InterestOverflowTest is SiloLittleHelper, Test {
         private
         returns (uint256 withdrawn)
     {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_address("withdraw checks for", _user);
 
         withdrawn = _redeemAll(_user, _shares);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("deposit", _deposited);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("withdraw", withdrawn);
 
         if (_deposited != 0) {

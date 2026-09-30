@@ -33,6 +33,7 @@ contract DynamicKinkModelTest is KinkCommonTest {
     }
 
     function test_kink_version() public view {
+        // forge-lint: disable-next-line(unused-return)
         irm.VERSION();
     }
 
@@ -68,16 +69,21 @@ contract DynamicKinkModelTest is KinkCommonTest {
         immutableArgs.rcompCap = 0;
 
         vm.expectRevert(IDynamicKinkModel.InvalidRcompCap.selector);
+        // forge-lint: disable-next-line(unused-return)
         FACTORY.create(config, immutableArgs, address(this), address(this), bytes32(0));
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         immutableArgs.rcompCap = int96(irm.RCUR_CAP() + 1);
 
         vm.expectRevert(IDynamicKinkModel.InvalidRcompCap.selector);
+        // forge-lint: disable-next-line(unused-return)
         FACTORY.create(config, immutableArgs, address(this), address(this), bytes32(0));
 
         //counterexample for rcompCapPerSecond
+        // forge-lint: disable-next-line(unsafe-typecast)
         immutableArgs.rcompCap = int96(irm.RCUR_CAP());
 
+        // forge-lint: disable-next-line(unused-return)
         FACTORY.create(config, immutableArgs, address(this), address(this), bytes32(0));
     }
 
@@ -93,6 +99,7 @@ contract DynamicKinkModelTest is KinkCommonTest {
         IDynamicKinkModel.Config memory config = _toConfig(_config);
         irm.updateConfig(config);
 
+        // forge-lint: disable-next-line(unused-return)
         (, IDynamicKinkModel.Config memory c,) = irm.getModelStateAndConfig({_usePending: false});
         assertEq(_hashConfig(c), _hashConfig(config), "config is not the same");
 
@@ -115,14 +122,17 @@ contract DynamicKinkModelTest is KinkCommonTest {
 
         vm.warp(667222222);
 
+        // forge-lint: disable-next-line(unused-return)
         (IDynamicKinkModel.ModelState memory stateBefore,,) = irm.getModelStateAndConfig({_usePending: false});
 
+        // forge-lint: disable-next-item(unused-return)
         irm.getCompoundInterestRateAndUpdate({
             _collateralAssets: 445000000000000000000000000,
             _debtAssets: 346111111111111116600547177,
             _interestRateTimestamp: 445000000
         });
 
+        // forge-lint: disable-next-line(unused-return)
         (IDynamicKinkModel.ModelState memory stateAfter,,) = irm.getModelStateAndConfig({_usePending: false});
 
         assertLt(stateBefore.k, stateAfter.k, "k should change (grow)");
@@ -142,6 +152,7 @@ contract DynamicKinkModelTest is KinkCommonTest {
         IDynamicKinkModel.ImmutableArgs memory immutableArgs = _defaultImmutableArgs();
 
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit IDynamicKinkModel.Initialized(_initialOwner, _silo);
 
         IDynamicKinkModel.Config memory config = _toConfig(_config);
@@ -199,6 +210,7 @@ contract DynamicKinkModelTest is KinkCommonTest {
             _makeConfigValid(randomConfig);
 
             bytes32 hash = _hashConfig(randomConfig);
+            // forge-lint: disable-next-line(calls-loop)
             vm.assume(!seen[hash]);
             seen[hash] = true;
 
@@ -234,6 +246,7 @@ contract DynamicKinkModelTest is KinkCommonTest {
         if (_debtAssets == 0) assertEq(rcomp, 0, "[getCompoundInterestRateAndUpdate] rcomp is not 0 when no debt");
 
         assertTrue(
+            // forge-lint: disable-next-line(type-based-tautology, unsafe-typecast)
             rcomp >= 0 && rcomp <= uint256(irm.RCOMP_CAP_PER_SECOND()),
             "[getCompoundInterestRateAndUpdate] rcomp out of range"
         );
@@ -245,9 +258,11 @@ contract DynamicKinkModelTest is KinkCommonTest {
     function test_kink_getCompoundInterestRateAndUpdate_onlySilo() public {
         vm.expectRevert(IDynamicKinkModel.InvalidSilo.selector);
         vm.prank(address(1));
+        // forge-lint: disable-next-line(unused-return)
         irm.getCompoundInterestRateAndUpdate(1, 1, 1);
 
         // counterexample
+        // forge-lint: disable-next-line(unused-return)
         irm.getCompoundInterestRateAndUpdate(1, 1, 1);
     }
 
@@ -300,6 +315,7 @@ contract DynamicKinkModelTest is KinkCommonTest {
             assertEq(rcomp, 0, "[getCompoundInterestRate] rcomp is not 0 when dT == 0 OR no debt");
         } else {
             assertTrue(
+                // forge-lint: disable-next-line(type-based-tautology, unsafe-typecast)
                 rcomp >= 0 && rcomp / dT <= uint256(irm.RCOMP_CAP_PER_SECOND()),
                 "[getCompoundInterestRate] rcomp out of range"
             );
@@ -314,6 +330,7 @@ contract DynamicKinkModelTest is KinkCommonTest {
         vm.mockCall(address(1), abi.encodeWithSelector(ISilo.utilizationData.selector), abi.encode(utilizationData));
 
         vm.expectRevert(IDynamicKinkModel.InvalidSilo.selector);
+        // forge-lint: disable-next-line(unused-return)
         irm.getCompoundInterestRate(address(1), block.timestamp);
     }
 
@@ -322,6 +339,7 @@ contract DynamicKinkModelTest is KinkCommonTest {
     */
     function test_kink_getCurrentInterestRate_revert_whenInvalidSilo() public {
         vm.expectRevert(IDynamicKinkModel.InvalidSilo.selector);
+        // forge-lint: disable-next-line(unused-return)
         irm.getCurrentInterestRate(address(1), block.timestamp);
     }
 
@@ -349,27 +367,37 @@ contract DynamicKinkModelTest is KinkCommonTest {
         if (_utilizationData.debtAssets == 0) {
             assertEq(rcur, 0, "[getCurrentInterestRate] rcur is not 0 when no debt");
         } else {
+            // forge-lint: disable-next-line(type-based-tautology, unsafe-typecast)
             assertTrue(rcur >= 0 && rcur <= uint256(irm.RCUR_CAP()), "[getCurrentInterestRate] rcur out of range");
         }
     }
 
     function _kink_updateConfig_pass(IDynamicKinkModel.Config memory _config) internal {
+        // forge-lint: disable-next-line(calls-loop)
         IDynamicKinkModelConfig prevConfig = irm.irmConfig();
+        // forge-lint: disable-next-line(calls-loop, unused-return)
         (, IDynamicKinkModel.ImmutableConfig memory prevImmutable) = prevConfig.getConfig();
 
+        // forge-lint: disable-next-line(calls-loop)
         uint256 nonce = vm.getNonce(address(irm));
+        // forge-lint: disable-next-line(calls-loop)
         address newConfigAddress = vm.computeCreateAddress(address(irm), nonce);
         console2.log("newConfigAddress %s for nonce %s", newConfigAddress, nonce);
 
+        // forge-lint: disable-next-line(calls-loop)
         vm.expectEmit(true, true, true, true);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit IDynamicKinkModel.NewConfig(IDynamicKinkModelConfig(newConfigAddress), block.timestamp);
 
+        // forge-lint: disable-next-line(calls-loop)
         irm.updateConfig(_config);
         IDynamicKinkModel.ImmutableConfig memory newImmutable = _getIRMImmutableConfig(irm);
 
         _assertConfigEq(_config, _getIRMConfig(irm), "updateConfig_pass");
+        // forge-lint: disable-next-line(calls-loop)
         console2.log("config addr %s", address(irm.irmConfig()));
 
+        // forge-lint: disable-next-line(calls-loop)
         _assertCorrectHistory(irm.irmConfig(), prevConfig);
         assertEq(newImmutable.timelock, prevImmutable.timelock, "timelock is not the same");
         assertEq(newImmutable.rcompCapPerSecond, prevImmutable.rcompCapPerSecond, "rcompCapPerSecond is not the same");
@@ -406,16 +434,23 @@ contract DynamicKinkModelTest is KinkCommonTest {
 
         uint256 blockTimestamp = 365 days;
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         int256 rcur = int256(irm.getCurrentInterestRate(address(this), blockTimestamp));
+        // forge-lint: disable-next-line(unsafe-typecast)
         int256 rcomp = int256(irm.getCompoundInterestRate(address(this), blockTimestamp));
 
         int256 marginRcomp = int256(staticRate) * 0.14e18 / 1e18;
         int256 marginRcur = int256(staticRate) * 1e12 / 1e18; // tiny margin for rcur
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("u", _u, 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_int("staticRate", staticRate, 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_int("      rcur", rcur, 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_int("     rcomp", rcomp, 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_int("marginRcomp", marginRcomp, 16);
 
         assertTrue(rcur.inClosedInterval(staticRate - marginRcur, staticRate), "rcur is not in range");
@@ -490,6 +525,7 @@ contract DynamicKinkModelTest is KinkCommonTest {
         assertGt(kBefore, 0, "expect k > 0 for this test");
         assertNotEq(kBefore, cfg.kmin, "expect k to not be kmin");
 
+        // forge-lint: disable-next-item(unused-return)
         irm.getCompoundInterestRateAndUpdate(
             _collateralAssetsOverflow ? type(uint256).max : 1,
             _debtAssetsOverflow ? type(uint256).max : 1,

@@ -36,6 +36,7 @@ contract LiquidationHelperDebug20250113_0x0a25ac is Test {
     /*
     1. when was first attempt to liquidate this user?
     */
+    // forge-lint: disable-next-line(empty-block)
     function setUp() public {}
 
     /*
@@ -54,19 +55,27 @@ contract LiquidationHelperDebug20250113_0x0a25ac is Test {
         //        uint256 blockToFork = 7686422;  // (Feb-13-2025 11:07:04 AM +UTC)
 
         for (uint256 i = offset; i < offset + 10; i++) {
+            // forge-lint: disable-next-line(calls-loop, unused-return)
             vm.createSelectFork(vm.envString("RPC_SONIC"), blockToFork - i);
 
+            // forge-lint: disable-next-line(environment-read-across-mutation)
             console.log("block %s [-%s]", block.number, i);
+            // forge-lint: disable-next-line(calls-loop)
             bool solvent = silo.isSolvent(borrower);
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_string("solvent?", solvent ? "yes" : ">>>>>>>>>>> NO <<<<<<<");
+            // forge-lint: disable-next-line(calls-loop, reentrancy-events)
             emit log_named_decimal_uint("getLtv", lens.getLtv(silo, borrower), 16);
 
             if (!solvent) {
+                // forge-lint: disable-next-line(environment-read-across-mutation)
                 notSolventBlock = block.number;
             }
         }
 
+        // forge-lint: disable-next-line(uninitialized-local)
         if (notSolventBlock != 0) {
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log_named_uint("notSolventBlock", notSolventBlock);
         }
         /*

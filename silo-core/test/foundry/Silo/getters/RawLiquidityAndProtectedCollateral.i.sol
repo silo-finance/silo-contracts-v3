@@ -29,6 +29,7 @@ contract RawLiquidityAndProtectedCollateralTest is SiloLittleHelper, Test {
         configOverride.token1 = address(token1);
 
         address hook;
+        // forge-lint: disable-next-line(unused-return)
         (_siloConfig, silo0, silo1,,, hook) = siloFixture.deploy_local(configOverride);
         partialLiquidation = IPartialLiquidation(hook);
     }
@@ -49,22 +50,27 @@ contract RawLiquidityAndProtectedCollateralTest is SiloLittleHelper, Test {
         // for borrow
         _deposit(silo1, token1, user1, depositAmount, ISilo.CollateralType.Collateral);
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 30 days);
 
         uint256 borrowAmount = 750; // maxLtv = 75%
         vm.prank(user1);
+        // forge-lint: disable-next-line(unused-return)
         silo0.borrow(borrowAmount, user1, user1);
         _printSiloStats("\nStep2 borrow 750 (Silo0)", silo0, token0);
 
         vm.prank(user0);
+        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(borrowAmount, user0, user0);
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 30 days);
 
         _deposit(silo0, token0, depositorProtected, depositAmount, ISilo.CollateralType.Protected);
         _printSiloStats("\nStep3 deposit protected 1000 (Silo0)", silo0, token0);
 
         vm.warp(block.timestamp + 365 days);
+        // forge-lint: disable-next-line(unused-return)
         silo0.accrueInterest();
         _printSiloStats("\nStep4 accrueInterest in 365 days (Silo0)", silo0, token0);
 
@@ -79,19 +85,23 @@ contract RawLiquidityAndProtectedCollateralTest is SiloLittleHelper, Test {
         assertTrue(sTokenRequired, "sTokenRequired required because NotEnoughLiquidity");
 
         token1.mint(address(this), debtToRepay); // address(this) is liquidator
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(partialLiquidation), debtToRepay);
 
         vm.expectRevert(ISilo.NotEnoughLiquidity.selector);
+        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token0), address(token1), user0, debtToRepay, false /* receive share tokens */
         );
 
         // If there is not liquidity in the silo, the liquidator can receive share tokens
 
+        // forge-lint: disable-next-line(unused-return)
         (, address collateralShareToken,) = _siloConfig.getShareTokens(address(silo0));
 
         assertEq(IERC20(collateralShareToken).balanceOf(address(this)), 0, "expect 0 balance");
 
+        // forge-lint: disable-next-item(unused-return)
         partialLiquidation.liquidationCall(
             address(token0), address(token1), user0, debtToRepay, true /* receive share tokens */
         );
@@ -100,18 +110,26 @@ contract RawLiquidityAndProtectedCollateralTest is SiloLittleHelper, Test {
     }
 
     function _printSiloStats(string memory _step, ISilo _silo, MintableToken _token) internal {
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log(_step);
 
         (uint256 collateralAssets, uint256 protectedAssets) = _silo.getCollateralAndProtectedTotalsStorage();
         uint256 debtAssets = _silo.getDebtAssets();
+        // forge-lint: disable-next-line(unused-return)
         (uint192 daoAndDeployerRevenue,,,,) = _silo.getSiloStorage();
         uint256 liquidity = _silo.getRawLiquidity();
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("collateralAssets", collateralAssets);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("protectedAssets", protectedAssets);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("debtAssets", debtAssets);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("daoAndDeployerRevenue", daoAndDeployerRevenue);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("liquidity", liquidity);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_uint("silo balance", _token.balanceOf(address(_silo)));
     }
 
@@ -125,9 +143,11 @@ contract RawLiquidityAndProtectedCollateralTest is SiloLittleHelper, Test {
         _token.mint(_depositorAddr, _amount);
 
         vm.prank(_depositorAddr);
+        // forge-lint: disable-next-line(unused-return)
         _token.approve(address(_silo), _amount);
 
         vm.prank(_depositorAddr);
+        // forge-lint: disable-next-line(unused-return)
         _silo.deposit(_amount, _depositorAddr, _collateralType);
     }
 }

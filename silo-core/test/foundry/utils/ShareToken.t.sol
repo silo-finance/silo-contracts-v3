@@ -49,6 +49,7 @@ contract ShareTokenTest is Test {
         silo.configMock(siloConfig.ADDRESS());
         siloConfig.getConfigMock(silo.ADDRESS(), configData);
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         sToken.initialize(ISilo(silo.ADDRESS()), address(0), uint24(Hook.DEBT_TOKEN));
 
         // offset for the debt token is 1
@@ -58,6 +59,7 @@ contract ShareTokenTest is Test {
     // FOUNDRY_PROFILE=core_test forge test -vvv --mt test_notRevertWhenNoHook
     function test_notRevertWhenNoHook() public {
         silo.configMock(siloConfig.ADDRESS());
+        // forge-lint: disable-next-line(unsafe-typecast)
         sToken.initialize(ISilo(silo.ADDRESS()), address(0), uint24(Hook.DEBT_TOKEN));
 
         vm.prank(silo.ADDRESS());
@@ -71,6 +73,7 @@ contract ShareTokenTest is Test {
         silo.configMock(siloConfig.ADDRESS());
         address hookAddr = hookReceiverMock.ADDRESS();
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         sToken.initialize(ISilo(siloAddr), hookAddr, uint24(Hook.DEBT_TOKEN));
 
         vm.prank(siloAddr);
@@ -94,6 +97,7 @@ contract ShareTokenTest is Test {
         silo.configMock(siloConfig.ADDRESS());
         siloConfig.reentrancyGuardEnteredMock(false);
         address hookAddr = hookReceiverMock.ADDRESS();
+        // forge-lint: disable-next-line(unsafe-typecast)
         sToken.initialize(ISilo(siloAddr), hookAddr, uint24(Hook.DEBT_TOKEN));
 
         vm.prank(recipient);
@@ -120,11 +124,13 @@ contract ShareTokenTest is Test {
             ShareProtectedCollateralToken(Clones.clone(address(new ShareProtectedCollateralToken())))
         );
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         protectedShareToken.initialize(ISilo(siloAddr), hookAddr, uint24(Hook.PROTECTED_TOKEN));
 
         IShareTokenInitializable debtShareToken =
             IShareTokenInitializable(ShareDebtToken(Clones.clone(address(new ShareDebtToken()))));
 
+        // forge-lint: disable-next-line(unsafe-typecast)
         debtShareToken.initialize(ISilo(siloAddr), hookAddr, uint24(Hook.DEBT_TOKEN));
 
         address someUser = makeAddr("SomeUser");
@@ -133,15 +139,18 @@ contract ShareTokenTest is Test {
         bytes memory data = abi.encodeWithSelector(ERC20UpgradableMock.mockUserBalance.selector, someUser);
 
         vm.expectRevert(ISilo.OnlyHookReceiver.selector);
+        // forge-lint: disable-next-line(unused-return)
         protectedShareToken.callOnBehalfOfShareToken(upgradableMock, amountOfEth, ISilo.CallType.Delegatecall, data);
 
         vm.expectRevert(ISilo.OnlyHookReceiver.selector);
+        // forge-lint: disable-next-line(unused-return)
         debtShareToken.callOnBehalfOfShareToken(upgradableMock, amountOfEth, ISilo.CallType.Delegatecall, data);
 
         assertEq(IERC20(address(protectedShareToken)).balanceOf(someUser), 0);
         assertEq(IERC20(address(debtShareToken)).balanceOf(someUser), 0);
 
         vm.prank(hookAddr);
+        // forge-lint: disable-next-line(unused-return)
         protectedShareToken.callOnBehalfOfShareToken(upgradableMock, amountOfEth, ISilo.CallType.Delegatecall, data);
 
         assertEq(
@@ -151,6 +160,7 @@ contract ShareTokenTest is Test {
         );
 
         vm.prank(hookAddr);
+        // forge-lint: disable-next-line(unused-return)
         debtShareToken.callOnBehalfOfShareToken(upgradableMock, amountOfEth, ISilo.CallType.Delegatecall, data);
 
         assertEq(

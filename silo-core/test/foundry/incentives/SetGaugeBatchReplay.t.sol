@@ -30,6 +30,7 @@ contract SetGaugeBatchReplayTest is Test {
     bytes32 internal constant TYPE_UINT = keccak256("uint");
 
     function test_skip_replayBatchTransactionsFromJson() external {
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_MAINNET"), 25081922);
 
         string memory batchPath = vm.envOr("SET_GAUGE_BATCH_JSON", DEFAULT_BATCH_PATH);
@@ -50,7 +51,9 @@ contract SetGaugeBatchReplayTest is Test {
             address target = json.readAddress(string.concat(txPath, ".to"));
             bytes memory callData = _buildCallData({json: json, txPath: txPath});
 
+            // forge-lint: disable-next-line(calls-loop)
             (bool ok, bytes memory revertData) = target.call(callData);
+            // forge-lint: disable-next-line(require-revert-in-loop)
             if (!ok) revert BatchTxFailed({index: i, target: target, revertData: revertData});
         }
 
@@ -64,12 +67,14 @@ contract SetGaugeBatchReplayTest is Test {
     }
 
     function _txPath(uint256 index) internal pure returns (string memory) {
+        // forge-lint: disable-next-line(calls-loop)
         return string.concat(".transactions[", vm.toString(index), "]");
     }
 
     function _buildCallData(string memory json, string memory txPath) internal view returns (bytes memory) {
         string memory methodName = json.readString(string.concat(txPath, ".contractMethod.name"));
         string memory typesCsv = _typesCsv({json: json, txPath: txPath});
+        // forge-lint: disable-next-line(unsafe-typecast)
         bytes4 selector = bytes4(keccak256(bytes(string.concat(methodName, "(", typesCsv, ")"))));
         bytes memory encodedArgs = _encodeArgs({json: json, txPath: txPath});
         return bytes.concat(selector, encodedArgs);
@@ -119,6 +124,7 @@ contract SetGaugeBatchReplayTest is Test {
             return bytes32(json.readUint(valuePath));
         }
 
+        // forge-lint: disable-next-line(require-revert-in-loop)
         revert UnsupportedInputType(solidityType);
     }
 
@@ -136,6 +142,7 @@ contract SetGaugeBatchReplayTest is Test {
     }
 
     function _inputPath(string memory txPath, uint256 inputIndex) internal pure returns (string memory) {
+        // forge-lint: disable-next-line(calls-loop)
         return string.concat(txPath, ".contractMethod.inputs[", vm.toString(inputIndex), "]");
     }
 }

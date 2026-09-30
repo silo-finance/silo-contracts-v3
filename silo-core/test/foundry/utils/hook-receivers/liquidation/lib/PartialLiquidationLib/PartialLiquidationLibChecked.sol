@@ -246,6 +246,7 @@ library PartialLiquidationLibChecked {
         // here is weird case, sometimes it is impossible to go down to target LTV, however math can calculate it
         // eg with negative numerator and denominator and result will be positive, that's why we simply return all
         // we also cover dust case here
+        // forge-lint: disable-next-line(divide-before-multiply)
         return repayValue * _PRECISION_DECIMALS / _totalBorrowerDebtValue > _FULL_LIQUIDATION_THRESHOLD
             ? _totalBorrowerDebtValue
             : repayValue;

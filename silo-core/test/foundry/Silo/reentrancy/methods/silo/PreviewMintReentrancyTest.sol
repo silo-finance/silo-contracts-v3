@@ -19,7 +19,9 @@ contract PreviewMintReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo0().previewMint(1000_000e18);
+        // forge-lint: disable-next-line(unused-return)
         TestStateLib.silo1().previewMint(1000_000e18);
     }
 }

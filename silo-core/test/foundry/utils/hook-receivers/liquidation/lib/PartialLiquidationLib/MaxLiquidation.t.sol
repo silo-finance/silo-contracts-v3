@@ -47,6 +47,7 @@ contract MaxLiquidationTest is Test, MaxRepayRawMath {
         uint64 liquidationTargetLtv = 0.5e18;
 
         (uint256 collateralToLiquidate, uint256 debtToRepay, uint256 ltvAfter) = _test_maxLiquidation(
+            // forge-lint: disable-next-line(uninitialized-local)
             sumOfCollateralAssets, sumOfCollateralValue, borrowerDebtAssets, liquidationFee, liquidationTargetLtv
         );
 
@@ -89,6 +90,7 @@ contract MaxLiquidationTest is Test, MaxRepayRawMath {
         uint64 liquidationTargetLtv = 0.5e18;
 
         (uint256 collateralToLiquidate, uint256 debtToRepay, uint256 ltvAfter) = _test_maxLiquidation(
+            // forge-lint: disable-next-line(uninitialized-local)
             sumOfCollateralAssets, sumOfCollateralValue, borrowerDebtAssets, liquidationFee, liquidationTargetLtv
         );
 
@@ -131,6 +133,7 @@ contract MaxLiquidationTest is Test, MaxRepayRawMath {
         uint64 liquidationTargetLtv = 0.7e18;
 
         (uint256 collateralToLiquidate, uint256 debtToRepay, uint256 ltvAfter) = _test_maxLiquidation(
+            // forge-lint: disable-next-line(uninitialized-local)
             sumOfCollateralAssets, sumOfCollateralValue, borrowerDebtAssets, liquidationFee, liquidationTargetLtv
         );
 
@@ -173,6 +176,7 @@ contract MaxLiquidationTest is Test, MaxRepayRawMath {
         uint64 liquidationTargetLtv = 0.1e18;
 
         (uint256 collateralToLiquidate, uint256 debtToRepay, uint256 ltvAfter) = _test_maxLiquidation(
+            // forge-lint: disable-next-line(uninitialized-local)
             sumOfCollateralAssets, sumOfCollateralValue, borrowerDebtAssets, liquidationFee, liquidationTargetLtv
         );
 
@@ -273,20 +277,26 @@ contract MaxLiquidationTest is Test, MaxRepayRawMath {
             _liquidationFee
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("collateralToLiquidate", collateralToLiquidate, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("debtToRepay", debtToRepay, 18);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("minExpectedLtv", _liquidationTargetLtv, 16);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("ltvBefore", ltvBefore, 16);
 
         uint256 raw = _estimateMaxRepayValueRaw(
             borrowerDebtValue, _sumOfCollateralValue, _liquidationTargetLtv, _liquidationFee
         );
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("raw", raw, 18);
 
         uint256 deviation =
             raw > debtToRepay ? raw * _DECIMALS_POINTS / debtToRepay : debtToRepay * _DECIMALS_POINTS / raw;
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("deviation on raw calculation", deviation, 18);
 
         if (debtToRepay == _borrowerDebtAssets) {
@@ -303,12 +313,15 @@ contract MaxLiquidationTest is Test, MaxRepayRawMath {
             _sumOfCollateralAssets, _sumOfCollateralValue, _borrowerDebtAssets, collateralToLiquidate, debtToRepay
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("ltvAfter", ltvAfter, 16);
 
         if (debtToRepay == _borrowerDebtAssets) {
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log("full liquidation");
             // there is not really a way to verify this part other than check RAW result, what was done above
         } else {
+            // forge-lint: disable-next-line(reentrancy-events)
             emit log("partial liquidation");
 
             assertLt(ltvAfter, _LT, "we can not expect to be wei precise. as long as we below LT, it is OK");

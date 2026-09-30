@@ -15,6 +15,7 @@ contract MaxLiquidationBadDebtTest is MaxLiquidationTest {
     function _maxLiquidation_partial(uint128 _collateral, bool _receiveSToken) internal virtual override {
         _createDebtForBorrower(_collateral);
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 50 days); // initial time movement to speed up _moveTimeUntilInsolvent
 
         // for same asset interest increasing slower, because borrower is also depositor, also LT is higher

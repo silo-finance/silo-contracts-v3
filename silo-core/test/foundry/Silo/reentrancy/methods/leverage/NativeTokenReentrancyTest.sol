@@ -23,6 +23,7 @@ contract NativeTokenReentrancyTest is MethodReentrancyTest {
 
     function _ensureItWillNotRevert() internal view {
         LeverageUsingSiloFlashloanWithGeneralSwap leverage = _getLeverage();
+        // forge-lint: disable-next-line(unused-return)
         leverage.NATIVE_TOKEN();
     }
 

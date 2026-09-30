@@ -21,7 +21,9 @@ contract Eip712DomainReentrancyTest is MethodReentrancyTest {
     }
 
     function _ensureItWillNotRevert() internal view {
+        // forge-lint: disable-next-line(unused-return)
         IERC5267(address(TestStateLib.silo0())).eip712Domain();
+        // forge-lint: disable-next-line(unused-return)
         IERC5267(address(TestStateLib.silo1())).eip712Domain();
     }
 }

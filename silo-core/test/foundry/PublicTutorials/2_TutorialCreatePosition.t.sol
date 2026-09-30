@@ -28,6 +28,7 @@ contract TutorialCreatePosition is Test {
     // Fork Arbitrum at specific block.
     function setUp() public {
         uint256 blockToFork = 270931754;
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_ARBITRUM"), blockToFork);
 
         // you can get the latest address from V2 protocol deployments
@@ -42,7 +43,9 @@ contract TutorialCreatePosition is Test {
     function test_deposit() public {
         // 1 wstETH to deposit, SILO0 asset is wstETH.
         uint256 depositAssets = 10 ** 18;
+        // forge-lint: disable-next-line(unused-return)
         IERC20(WSTETH).approve(address(SILO0), depositAssets);
+        // forge-lint: disable-next-line(unused-return)
         SILO0.deposit(depositAssets, address(this));
 
         assertTrue(SILO0.balanceOf(address(this)) > 0, "Deposit is successful");
@@ -60,6 +63,7 @@ contract TutorialCreatePosition is Test {
         // will not change. This is critical for UI integrations, but on SC level the assets amount will not change
         // during one transaction.
         uint256 sharesToWithdraw = SILO0.balanceOf(address(this));
+        // forge-lint: disable-next-line(unused-return)
         SILO0.redeem(sharesToWithdraw, address(this), address(this));
 
         uint256 balanceAfterWithdraw = IERC20(WSTETH).balanceOf(address(this));
@@ -79,6 +83,7 @@ contract TutorialCreatePosition is Test {
 
         uint256 borrowAssets = 10 ** 17;
         uint256 balanceBeforeBorrow = IERC20(WETH).balanceOf(address(this));
+        // forge-lint: disable-next-line(unused-return)
         SILO1.borrow(borrowAssets, address(this), address(this));
         uint256 balanceAfterBorrow = IERC20(WETH).balanceOf(address(this));
 
@@ -97,19 +102,24 @@ contract TutorialCreatePosition is Test {
         // during one transaction.
         uint256 sharesToRepay = SILO1.maxRepayShares(address(this));
         uint256 assetsToApprove = SILO1.previewRepayShares(sharesToRepay);
+        // forge-lint: disable-next-line(unused-return)
         IERC20(WETH).approve(address(SILO1), assetsToApprove);
+        // forge-lint: disable-next-line(unused-return)
         SILO1.repayShares(sharesToRepay, address(this));
 
         assertEq(SILO_LENS.getLtv(SILO1, address(this)), 0, "Repay is successful, LTV==0");
     }
 
     function _createDepositPosition(uint256 _depositAssets) internal {
+        // forge-lint: disable-next-line(unused-return)
         IERC20(WSTETH).approve(address(SILO0), _depositAssets);
+        // forge-lint: disable-next-line(unused-return)
         SILO0.deposit(_depositAssets, address(this));
     }
 
     function _createBorrowPosition(uint256 _depositAssets, uint256 _borrowAssets) internal {
         _createDepositPosition(_depositAssets);
+        // forge-lint: disable-next-line(unused-return)
         SILO1.borrow(_borrowAssets, address(this), address(this));
     }
 }

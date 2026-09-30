@@ -86,6 +86,7 @@ contract GlobalPauseTest is Test {
         globalPause.acceptOwnership(address(pausableMock1));
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ContractAdded(address(pausableMock1));
 
         vm.prank(address(gnosisSafeMock));
@@ -103,6 +104,7 @@ contract GlobalPauseTest is Test {
         globalPause.acceptOwnership(address(pausableMock1));
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ContractAdded(address(pausableMock1));
 
         vm.prank(signer1);
@@ -123,6 +125,7 @@ contract GlobalPauseTest is Test {
         globalPause.acceptOwnership(address(pausableMock1));
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ContractAdded(address(pausableMock1));
 
         vm.prank(authorizedAccount);
@@ -156,6 +159,7 @@ contract GlobalPauseTest is Test {
     */
     function test_transferOwnership_startsOwnershipTransfer() public {
         vm.expectEmit(true, true, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit OwnershipTransferStarted(address(gnosisSafeMock), newOwner);
 
         vm.prank(address(gnosisSafeMock));
@@ -185,6 +189,7 @@ contract GlobalPauseTest is Test {
         pausableMock1.transferOwnership(address(globalPause));
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit OwnershipAccepted(address(pausableMock1));
 
         vm.prank(signer1);
@@ -271,6 +276,7 @@ contract GlobalPauseTest is Test {
     */
     function test_grantAuthorization_addsAuthorizedAccount() public {
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Authorized(authorizedAccount);
 
         vm.prank(address(gnosisSafeMock));
@@ -288,6 +294,7 @@ contract GlobalPauseTest is Test {
         globalPause.grantAuthorization(authorizedAccount);
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Unauthorized(authorizedAccount);
 
         vm.prank(address(gnosisSafeMock));
@@ -349,6 +356,7 @@ contract GlobalPauseTest is Test {
         globalPause.acceptOwnership(address(pausableMock1));
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ContractAdded(address(pausableMock1));
 
         vm.prank(address(gnosisSafeMock));
@@ -365,6 +373,7 @@ contract GlobalPauseTest is Test {
     function test_addContract_allowsAuthorizedWithoutOwnership() public {
         // Test that authorized users can add contracts even if GlobalPause is not the owner
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ContractAdded(address(pausableMock1));
 
         vm.prank(address(gnosisSafeMock));
@@ -395,6 +404,7 @@ contract GlobalPauseTest is Test {
         pausableMock1.acceptOwnership();
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ContractRemoved(address(pausableMock1));
 
         vm.prank(address(gnosisSafeMock));
@@ -419,6 +429,7 @@ contract GlobalPauseTest is Test {
 
         // The contract can be removed even if GlobalPause is still the owner
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit ContractRemoved(address(pausableMock1));
 
         vm.prank(address(gnosisSafeMock));
@@ -457,6 +468,7 @@ contract GlobalPauseTest is Test {
         assertFalse(pausableMock1.paused());
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Paused(address(pausableMock1));
 
         vm.prank(signer1);
@@ -484,6 +496,7 @@ contract GlobalPauseTest is Test {
         assertTrue(pausableMock1.paused());
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Unpaused(address(pausableMock1));
 
         vm.prank(signer1);
@@ -515,8 +528,10 @@ contract GlobalPauseTest is Test {
         assertFalse(pausableMock2.paused());
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Paused(address(pausableMock1));
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Paused(address(pausableMock2));
 
         vm.prank(signer1);
@@ -552,8 +567,10 @@ contract GlobalPauseTest is Test {
         assertTrue(pausableMock2.paused());
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Unpaused(address(pausableMock1));
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Unpaused(address(pausableMock2));
 
         vm.prank(signer1);
@@ -643,8 +660,10 @@ contract GlobalPauseTest is Test {
 
         // Expect Paused for pausableMock1 and FailedToPause for pausableMock2
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Paused(address(pausableMock1));
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FailedToPause(address(pausableMock2));
 
         // Call pauseAll - it should not revert
@@ -681,8 +700,10 @@ contract GlobalPauseTest is Test {
 
         // Expect Unpaused for pausableMock1 and FailedToUnpause for pausableMock2
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Unpaused(address(pausableMock1));
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FailedToUnpause(address(pausableMock2));
 
         // Call unpauseAll - it should not revert
@@ -701,6 +722,7 @@ contract GlobalPauseTest is Test {
         // Test 1: Unpause from owner (multisig) - contract not owned by GlobalPause
         // Should emit FailedToUnpause because GlobalPause doesn't own the contract
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FailedToUnpause(address(pausableMock1));
 
         vm.prank(address(gnosisSafeMock));
@@ -708,6 +730,7 @@ contract GlobalPauseTest is Test {
 
         // Test 2: Unpause from signer - contract not owned by GlobalPause
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FailedToUnpause(address(pausableMock1));
 
         vm.prank(signer1);
@@ -718,6 +741,7 @@ contract GlobalPauseTest is Test {
         globalPause.grantAuthorization(authorizedAccount);
 
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FailedToUnpause(address(pausableMock1));
 
         vm.prank(authorizedAccount);
@@ -725,6 +749,7 @@ contract GlobalPauseTest is Test {
 
         // Test 4: Unpause a contract that's not owned by GlobalPause
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FailedToUnpause(address(pausableMock2));
 
         vm.prank(signer1);
@@ -733,6 +758,7 @@ contract GlobalPauseTest is Test {
         // Test 5: Unpause a contract that doesn't implement IPausable
         address nonPausableContract = address(gnosisSafeMock);
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FailedToUnpause(nonPausableContract);
 
         vm.prank(signer1);
@@ -750,6 +776,7 @@ contract GlobalPauseTest is Test {
 
         // First pause it
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Paused(address(pausableMock1));
 
         vm.prank(signer1);
@@ -758,6 +785,7 @@ contract GlobalPauseTest is Test {
 
         // Now unpause - should succeed
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit Unpaused(address(pausableMock1));
 
         vm.prank(signer1);
@@ -767,6 +795,7 @@ contract GlobalPauseTest is Test {
         // Test 7: Unpause already unpaused contract - should still not revert
         // The mock contract will revert with ExpectedPause() when trying to unpause an unpaused contract
         vm.expectEmit(true, false, false, false);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit FailedToUnpause(address(pausableMock1));
 
         vm.prank(signer1);

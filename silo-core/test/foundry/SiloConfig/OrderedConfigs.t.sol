@@ -100,6 +100,7 @@ contract OrderedConfigsTest is Test {
         _mockShareTokensBalances(_siloUser, 1, 0);
 
         vm.prank(_silo0);
+        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(_siloUser);
 
         ISiloConfig.DepositConfig memory depositConfig;
@@ -126,6 +127,7 @@ contract OrderedConfigsTest is Test {
         _mockShareTokensBalances(_siloUser, 0, 1);
 
         vm.prank(_silo1);
+        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(_siloUser);
 
         ISiloConfig.DepositConfig memory depositConfig;
@@ -179,6 +181,7 @@ contract OrderedConfigsTest is Test {
         _mockShareTokensBalances(_siloUser, 1, 0);
 
         vm.prank(_silo0);
+        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(_siloUser);
 
         ISiloConfig.ConfigData memory collateralConfig;
@@ -195,6 +198,7 @@ contract OrderedConfigsTest is Test {
         _mockShareTokensBalances(_siloUser, 0, 1);
 
         vm.prank(_silo1);
+        // forge-lint: disable-next-line(unused-return)
         _siloConfig.setOtherSiloAsCollateralSilo(_siloUser);
 
         ISiloConfig.ConfigData memory collateralConfig;

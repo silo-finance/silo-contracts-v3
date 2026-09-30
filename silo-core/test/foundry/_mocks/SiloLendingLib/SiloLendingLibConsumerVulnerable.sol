@@ -20,6 +20,7 @@ contract SiloLendingLibConsumerVulnerable {
         address _borrower,
         address _repayer
     ) external {
+        // forge-lint: disable-next-line(unused-return)
         SiloLendingLibWithReentrancyIssue.repay(_configData, _assets, _shares, _borrower, _repayer);
     }
 

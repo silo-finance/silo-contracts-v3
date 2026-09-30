@@ -38,6 +38,7 @@ contract SiloLensTest is SiloLittleHelper, Test {
         _makeDeposit(silo0, token0, _AMOUNT_COLLATERAL, _borrower, ISilo.CollateralType.Collateral);
 
         vm.prank(_borrower);
+        // forge-lint: disable-next-line(unused-return)
         silo1.borrow(_AMOUNT_BORROW, _borrower, _borrower);
     }
 
@@ -48,6 +49,7 @@ contract SiloLensTest is SiloLittleHelper, Test {
         // forge found case when code length is 1: 0x00
         // for this address `getVersion` is reverting
         vm.assume(_contract.code.length != 1);
+        // forge-lint: disable-next-line(unused-return)
         SILO_LENS.getVersion(_contract);
     }
 
@@ -101,6 +103,7 @@ contract SiloLensTest is SiloLittleHelper, Test {
         assertEq(collateralToLiquidate, 0, "collateralToLiquidate is 0 when position is solvent");
         assertEq(debtToCover, 0, "debtToCover is 0 when position is solvent");
 
+        // forge-lint: disable-next-line(environment-read-across-mutation)
         vm.warp(block.timestamp + 3000 days);
 
         // insolvent but not bad debt position should return max debt to cover
@@ -111,6 +114,7 @@ contract SiloLensTest is SiloLittleHelper, Test {
 
         assertFalse(silo1.isSolvent(_borrower), "expected position to be insolvent");
 
+        // forge-lint: disable-next-line(unused-return)
         (uint256 maxCollateralToLiquidate, uint256 maxDebtToCover,) = hook.maxLiquidation(_borrower);
 
         assertEq(collateralToLiquidate, maxCollateralToLiquidate, "[collateral] collateral is always max");
@@ -120,6 +124,7 @@ contract SiloLensTest is SiloLittleHelper, Test {
 
         vm.warp(block.timestamp + 1000 days);
 
+        // forge-lint: disable-next-line(unused-return)
         (maxCollateralToLiquidate, maxDebtToCover,) = hook.maxLiquidation(_borrower);
 
         ltv = SILO_LENS.getLtv(silo0, _borrower);
@@ -149,6 +154,7 @@ contract SiloLensTest is SiloLittleHelper, Test {
     function test_SiloLens_getDepositAPR() public view {
         assertEq(SILO_LENS.getDepositAPR(silo0), 0, "Deposit APR in silo0 equal to 0 because there is no debt");
 
+        // forge-lint: disable-next-line(unused-return)
         (,, uint256 daoFee, uint256 deployerFee) = SILO_LENS.getFeesAndFeeReceivers(silo1);
 
         assertTrue(daoFee > 0, "daoFee > 0");
@@ -220,6 +226,7 @@ contract SiloLensTest is SiloLittleHelper, Test {
     */
     function test_SiloLens_getLtv() public view {
         // due to initial state
+        // forge-lint: disable-next-line(divide-before-multiply)
         uint256 expectedLtv = _AMOUNT_BORROW * 100 / _AMOUNT_COLLATERAL * 1e18 / 100;
 
         uint256 ltvSilo0 = SILO_LENS.getLtv(silo0, _borrower);
@@ -335,6 +342,7 @@ contract SiloLensTest is SiloLittleHelper, Test {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_SiloLens_forking_getSiloIncentivesControllerProgramsNames -vvv
     */
     function test_SiloLens_forking_getSiloIncentivesControllerProgramsNames() public {
+        // forge-lint: disable-next-line(unused-return)
         vm.createSelectFork(vm.envString("RPC_SONIC"), 26894678);
 
         address siloIncentivesController = 0xdc5B289bB15C3FEE96d106a607B13cCA8092F4F9;

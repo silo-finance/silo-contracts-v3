@@ -25,10 +25,13 @@ contract GetConfigsForWithdrawReentrancyTest is MethodReentrancyTest {
         address silo1 = address(TestStateLib.silo1());
         address wrongSilo = makeAddr("Wrong silo");
 
+        // forge-lint: disable-next-line(unused-return)
         config.getConfigsForWithdraw(silo0, address(0));
+        // forge-lint: disable-next-line(unused-return)
         config.getConfigsForWithdraw(silo1, address(0));
 
         vm.expectRevert(ISiloConfig.WrongSilo.selector);
+        // forge-lint: disable-next-line(unused-return)
         config.getConfigsForWithdraw(wrongSilo, address(0));
     }
 }

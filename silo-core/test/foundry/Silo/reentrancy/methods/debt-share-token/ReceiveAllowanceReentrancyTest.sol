@@ -29,10 +29,14 @@ contract ReceiveAllowanceReentrancyTest is MethodReentrancyTest {
         address borrower = makeAddr("Borrower");
         address receiver = makeAddr("Receiver");
 
+        // forge-lint: disable-next-line(unused-return)
         (,, address debtToken) = config.getShareTokens(address(silo0));
+        // forge-lint: disable-next-line(unused-return)
         ShareDebtToken(debtToken).receiveAllowance(borrower, receiver);
 
+        // forge-lint: disable-next-line(unused-return)
         (,, debtToken) = config.getShareTokens(address(silo1));
+        // forge-lint: disable-next-line(unused-return)
         ShareDebtToken(debtToken).receiveAllowance(borrower, receiver);
     }
 }

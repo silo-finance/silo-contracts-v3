@@ -31,16 +31,21 @@ contract ManualLiquidationHelperTest is ManualLiquidationHelperCommon {
     FOUNDRY_PROFILE=core_test forge test --ffi --mt test_executeLiquidation -vvv
     */
     function test_executeLiquidation(uint64 _addTimestamp) public {
+        // forge-lint: disable-next-line(block-timestamp)
         vm.assume(block.timestamp + _addTimestamp < 2 ** 64 - 1);
         vm.warp(block.timestamp + _addTimestamp);
 
+        // forge-lint: disable-next-line(unused-return)
         (uint256 collateralToLiquidate, uint256 debtToRepay,) = partialLiquidation.maxLiquidation(BORROWER);
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("collateralToLiquidate", collateralToLiquidate, 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("          debtToRepay", debtToRepay, 18);
         vm.assume(debtToRepay != 0);
 
         token1.mint(address(this), debtToRepay);
+        // forge-lint: disable-next-line(unused-return)
         token1.approve(address(LIQUIDATION_HELPER), debtToRepay);
 
         assertEq(token0.balanceOf(_tokenReceiver()), 0, "no collateral before liquidation");
@@ -55,7 +60,9 @@ contract ManualLiquidationHelperTest is ManualLiquidationHelperCommon {
             "collateralToLiquidate == withdrawCollateral"
         );
 
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("token0.balanceOf(_tokenReceiver())", token0.balanceOf(_tokenReceiver()), 18);
+        // forge-lint: disable-next-line(reentrancy-events)
         emit log_named_decimal_uint("token1.balanceOf(_tokenReceiver())", token1.balanceOf(_tokenReceiver()), 18);
 
         _assertAddressHasNoSTokens(silo0, _tokenReceiver());

@@ -12,9 +12,17 @@ import {OracleScalerFactory} from "silo-oracles/contracts/scaler/OracleScalerFac
 import {OraclesDeployments} from "../OraclesDeployments.sol";
 
 /*
-FOUNDRY_PROFILE=oracles QUOTE_TOKEN=woS \
+FOUNDRY_PROFILE=oracles QUOTE_TOKEN=USDC \
     forge script silo-oracles/deploy/oracle-scaler/OracleScalerDeploy.s.sol \
-    --ffi --rpc-url $RPC_SONIC --broadcast --verify
+    --ffi --rpc-url $RPC_PHAROS --broadcast --verify \
+    --verifier-url $VERIFIER_URL_PHAROS --verifier blockscout
+
+    resume verification:
+    FOUNDRY_PROFILE=oracles QUOTE_TOKEN=USDC \
+    forge script silo-oracles/deploy/oracle-scaler/OracleScalerDeploy.s.sol \
+    --ffi --rpc-url $RPC_PHAROS --verify \
+    --verifier-url $VERIFIER_URL_PHAROS --verifier blockscout \
+    --resume --private-key $PRIVATE_KEY
  */
 contract OracleScalerDeploy is CommonDeploy {
     string public quoteTokenKey;

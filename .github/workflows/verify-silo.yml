@@ -160,15 +160,16 @@ jobs:
       - name: Install Foundry (standard chains)
         if: steps.extract.outputs.CHAIN != 'injective' && steps.extract.outputs.CHAIN != 'pharos'
         uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.4.4
 
-      # Pharos RPC rejects the EIP-1898 block id that Forge 1.8+ sends
-      # (PARAM_VERIFY_ERROR: failed to parse block hash or number). 1.7.1 is the
-      # newest stable release whose forge script still completes against rpc.pharos.xyz.
+      # Stay on v1.4.4. Newer Foundry misreads structs in JSON configs.
+      # Forge 1.8+ also rejects Pharos RPC (EIP-1898 block id, PARAM_VERIFY_ERROR).
       - name: Install Foundry (Pharos)
         if: steps.extract.outputs.CHAIN == 'pharos'
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: v1.7.1
+          version: v1.4.4
 
       # Paradigm installer uses FOUNDRY_DIR=${XDG_CONFIG_HOME:-$HOME}/.foundry (often ~/.config/.foundry on Linux).
       - name: Install Injective Foundry

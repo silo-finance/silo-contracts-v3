@@ -14,6 +14,11 @@ Immunefi bug bounty program is live, more details at https://immunefi.com/bug-bo
 ```shell
 # 1. Install Foundry v1.4.4
 # https://book.getfoundry.sh/getting-started/installation
+$ foundryup -i v1.4.4
+# Stay on v1.4.4. Newer Foundry misreads structs in JSON configs
+# (for example silo-core/deploy/input/irmConfigs/InterestRateModelConfigs.json),
+# so forge reverts. Do not bump Foundry to work around that.
+# Injective: custom fork, see MOREDOCS.md
 
 # 2. Clone repository
 $ git clone https://github.com/silo-finance/silo-contracts-v3.git

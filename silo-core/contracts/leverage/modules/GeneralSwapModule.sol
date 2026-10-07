@@ -6,6 +6,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {RevertLib} from "../../lib/RevertLib.sol";
 import {IGeneralSwapModule} from "../../interfaces/IGeneralSwapModule.sol";
+import {TransientReentrancy} from "../../hooks/_common/TransientReentrancy.sol";
 
 /// @title ERC20 General use Swap Module
 /// @notice Enables ERC20 token swaps via an external exchange (e.g., 0x, ODOS, Pendle)
@@ -13,7 +14,7 @@ import {IGeneralSwapModule} from "../../interfaces/IGeneralSwapModule.sol";
 /// https://github.com/0xProject/0x-api-starter-guide-code/blob/master/contracts/SimpleTokenSwap.sol
 /// The swap module is designed to execute external calls and is under the caller's full control.
 /// It can call any contract using any method. NEVER approve any tokens for it!
-contract GeneralSwapModule is IGeneralSwapModule {
+contract GeneralSwapModule is TransientReentrancy, IGeneralSwapModule {
     using SafeERC20 for IERC20;
 
     /// @notice Executes a token swap using a prebuilt swap quote
@@ -24,6 +25,7 @@ contract GeneralSwapModule is IGeneralSwapModule {
     function fillQuote(SwapArgs memory _swapArgs, uint256 _maxApprovalAmount)
         external
         virtual
+        nonReentrant
         returns (uint256 amountOut)
     {
         if (_swapArgs.exchangeProxy == address(0)) revert ExchangeAddressZero();
